@@ -1,0 +1,22 @@
+// تجربة سريعة: الموظف يحرّك الطلب ويرسل الفاتورة، ثم دفع تجريبي، ونتأكد من الرسائل
+import { sessionFor, api } from './link-check.mjs';
+import { testLinks } from './links.mjs';
+import { sql } from '../tools/sql.mjs';
+const L = await testLinks();
+const s = await sessionFor(L.tok('staff_ahmed'));
+const o = sql(`select o.id, o.number, o.status from orders o join staff st on st.id=o.staff_id where st.name='أحمد' and o.status='confirmed' order by o.number limit 1`)[0];
+console.log('order', o.number, o.status);
+console.log('on_the_way', JSON.stringify(await api(s.jwt, 'order/on_the_way', { order_id: o.id })).slice(0, 120));
+console.log('arrived', JSON.stringify(await api(s.jwt, 'order/arrived', { order_id: o.id })).slice(0, 120));
+const inv = await api(s.jwt, 'order/invoice', { order_id: o.id, items: [{ name: 'زيارة فني وفحص', qty: 1, price: 100 }, { name: 'تغيير خلاط مغسلة', qty: 1, price: 85 }] });
+console.log('invoice', inv.ok, inv.invoice?.number, inv.invoice?.total, inv.pay_link, inv.error || '', inv.detail || '');
+const tok = inv.invoice?.pay_token;
+const info = await (await fetch('https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/pay/info', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: tok }) })).json();
+console.log('info', info.ok, info.invoice?.status, info.invoice?.provider, info.invoice?.pdf_url ? 'pdf✓' : 'nopdf');
+const pdf = await fetch(info.invoice.pdf_url); const buf = Buffer.from(await pdf.arrayBuffer());
+console.log('pdf', pdf.status, buf.slice(0, 5).toString(), buf.length);
+(await import('node:fs')).writeFileSync('tests/out/invoice-sample.pdf', buf);
+const paid = await (await fetch('https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/pay/demo', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: tok, method: 'mada' }) })).json();
+console.log('demo pay', JSON.stringify(paid));
+console.log(sql(`select status, paid_at is not null paid from orders where id='${o.id}'`)[0]);
+for (const r of sql(`select kind, left(preview, 70) p, by_who from wa_log where customer_id = (select customer_id from orders where id='${o.id}') order by id desc limit 6`).reverse()) console.log('  ←', r.kind, '|', r.p.replace(/\n/g, ' ⏎ '), '|', r.by_who);

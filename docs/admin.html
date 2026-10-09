@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0B7A55">
+<title>احجزلي · لوحتي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/ihj.css">
+<style>
+/* لوحتي (مدير احجزلي): المنشآت، منشأة جديدة، طلبات الاشتراك، الاشتراكات، دليل التشغيل، دليل البيع */
+.biz-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.biz-row .lg{width:46px;height:46px;border-radius:13px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;overflow:hidden}
+.biz-row .lg img{width:100%;height:100%;object-fit:cover;background:#fff}
+.prog{height:7px;border-radius:9px;background:var(--soft2);overflow:hidden;width:120px}
+.prog i{display:block;height:100%;background:var(--accent)}
+.steps10{display:grid;gap:8px;counter-reset:s}
+.st10{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;counter-increment:s}
+.st10::before{content:counter(s);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--soft2);color:var(--muted);font-family:var(--display);font-weight:800;font-size:13px}
+.st10.done::before{content:"✓";background:var(--accent);color:var(--accent-ink)}
+.st10 b{display:block;font-size:14.5px} .st10 span{font-size:12.5px;color:var(--muted)}
+.dtabs{display:flex;gap:6px;flex-wrap:wrap}
+.tpl{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.form-sec{display:grid;gap:12px}
+.form-sec h3{display:flex;gap:8px;align-items:center}
+.form-sec h3 i{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-style:normal;font-size:13px}
+.rowline{display:grid;grid-template-columns:1fr 130px 40px;gap:8px;align-items:center}
+.staffline{display:grid;grid-template-columns:1fr 150px;gap:8px;align-items:start}
+.citychips{display:flex;flex-wrap:wrap;gap:6px}
+.citychips label{display:inline-flex;gap:6px;align-items:center;border:1.5px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13.5px;cursor:pointer;background:var(--card)}
+.citychips label:has(input:checked){background:var(--soft);border-color:var(--accent);color:var(--accent)}
+.citychips input{display:none}
+.result{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--card))}
+/* دليل البيع والتشغيل */
+.guide{display:grid;gap:14px;max-width:880px;counter-reset:g}
+.guide h2{font-size:23px} .guide .intro{color:var(--muted);font-size:15px;margin:0}
+.gpath{display:flex;flex-wrap:wrap;gap:6px;font-size:13px} .gpath span{background:var(--soft);border-radius:999px;padding:4px 10px;font-weight:600}
+.gs{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;gap:9px;counter-increment:g;box-shadow:var(--shadow)}
+.gs h3{display:flex;align-items:center;gap:10px;font-size:17px}
+.gs h3::before{content:counter(g);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:13px;flex:none;font-family:var(--display)}
+.gs p{margin:0;font-size:14.5px} .gs .m{color:var(--muted)}
+.gs ul,.gs ol{margin:0;padding-inline-start:20px;display:grid;gap:4px;font-size:14.5px}
+.tagz{display:flex;gap:6px;flex-wrap:wrap} .tg{font-size:12px;border-radius:999px;padding:2px 9px;background:var(--soft);color:var(--fg);font-weight:600} .tg.you{background:var(--gold);color:var(--gold-ink)} .tg.cl{background:color-mix(in srgb,var(--warn) 18%,var(--card));color:var(--warn)} .tg.sys{background:color-mix(in srgb,var(--info) 15%,var(--card));color:var(--info)}
+.scr{background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px 10px 60px;font-size:14px;white-space:pre-wrap;position:relative;line-height:1.7}
+.scr b{display:block;margin-bottom:4px;color:var(--muted);font-size:12.5px}
+.scr button{position:absolute;top:8px;left:8px;font-size:12px;padding:3px 9px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.req{display:grid;gap:8px} .req div{display:grid;gap:2px;font-size:14.5px;border-bottom:1px dashed var(--line);padding-bottom:6px} .req b{font-family:var(--display)} .req span{color:var(--muted);font-size:13.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px} .two>div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px} .two b{display:block;font-family:var(--display);margin-bottom:4px}
+.gs .go{justify-self:start}
+@media (max-width:620px){ .two{grid-template-columns:1fr} .rowline{grid-template-columns:1fr 100px 36px} .staffline{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<template id="tplSales"><section class="guide" id="salesGuide">
+  <h2>دليل البيع: من أول رسالة إلى عميل شغّال</h2>
+  <p class="intro">هذا مسارك كامل. كل خطوة فيها وش تسوي، وش تحتاج من العميل، ونصوص جاهزة تنسخها. الحالات في اللوحة تمشي مع نفس الترتيب: جديد ← تواصلنا ← اتفقنا ← قيد التجهيز ← شغّال.</p>
+  <div class="gpath"><span>0. جهّز عدّتك</span><span>1. ابحث</span><span>2. أول رسالة</span><span>3. مكالمة وتجربة</span><span>4. العرض</span><span>5. الاتفاق والدفعة</span><span>6. المتطلبات</span><span>7. التجهيز</span><span>8. التسليم</span><span>9. بعد التشغيل</span></div>
+
+  <div class="gs" style="counter-increment:none"><h3 style="--n:0">قبل أي بيع: وش لازم يكون معك</h3>
+    <div class="tagz"><span class="tg you">عليك، مرة وحدة</span></div>
+    <ul>
+      <li><b>رابط الموقع</b> ترسله لأي أحد: fadiaalzhrani-debug.github.io/ihjizli (ولما نربط الدومين يصير أقصر).</li>
+      <li><b>التجربة الحية:</b> افتح محاكي «محلك» من تبويب المنشآت (أو أنشئ منشأة باسم العميل وشعاره خلال دقايق وافتح محاكيها)، وخلّه يضغط «احجز من هنا» ← الموقع ← اليوم ← الوقت ← التأكيد، وافتح له لوحة المنشأة يسمع صوت الطلب الجديد.</li>
+      <li><b>لقطات الفاتورة والتنبيه</b> من الموقع (قسم «كذا يشوفها العميل») لو ما تقدر تعرض الجوال.</li>
+      <li><b>اتفاقية بسيطة</b> بالبنود اللي تحت (خطوة 5) جاهزة تعبّيها باسم العميل.</li>
+      <li><b>حساب تستلم فيه الدفعات</b> باسم المؤسسة (تحويل بنكي أو STC Pay)، وفاتورة فيها الباقة والدفعة. لو ما عندك تسجيل ضريبي، الفاتورة بدون ضريبة.</li>
+      <li><b>هذه اللوحة:</b> كل عميل تكلمه سجّله هنا بحالته وتاريخ متابعته، عشان ما يضيع أحد.</li>
+    </ul>
+  </div>
+
+  <div class="gs"><h3>ابحث عن العملاء المناسبين</h3>
+    <div class="tagz"><span class="tg you">عليك</span><span class="tg">هدف: 10 محادثات جديدة بالأسبوع</span></div>
+    <p>المناسب: أي محل طلباته أو حجوزاته تجيه بالواتساب ويحتاج موعد: صيانة منزلية، مغاسل سيارات، صالونات، تنظيف، عيادات ومراكز، تأجير معدات، مطابخ ومناسبات.</p>
+    <ul>
+      <li>ابدأ بـ3 من معارفك بسعر مخفّض مقابل إنك تذكرهم في الموقع بعدين كعملاء حقيقيين (بموافقتهم).</li>
+      <li>قوقل ماب: ابحث «مغسلة سيارات الخبر» أو «صيانة منزلية الدمام» وافتح الأعلى تقييمًا، رقم الواتساب عادة في صفحتهم.</li>
+      <li>إنستقرام وسناب: حسابات المحلات اللي تكتب «للحجز واتساب».</li>
+      <li>العلامة الأوضح: محل يرد متأخر، أو يكتب «الرد خلال ساعات العمل»، أو زباينه يشتكون من عدم الرد.</li>
+    </ul>
+    <p class="m">سجّل كل محل هنا بحالة «جديد» قبل ما تراسله، حتى لو من عندك.</p>
+  </div>
+
+  <div class="gs"><h3>أول رسالة</h3>
+    <div class="tagz"><span class="tg you">عليك</span><span class="tg">الحالة بعدها: تواصلنا</span></div>
+    <p class="m">قصيرة، فيها الفايدة، وتنتهي بسؤال سهل. أرسلها بين 10 الصباح و9 المساء.</p>
+    <div class="scr"><b>لواحد تعرفه</b><span class="tx">هلا [الاسم]، سويت نظام يخلي طلبات الواتساب تمشي لحالها: العميل يراسل رقمك، والنظام يرد ويحجز له موعد وينزّل الطلب عندك، وبعد الخدمة يرسل له الفاتورة ورابط الدفع. شغّال عندنا بالفعل. تبي أوريك إياه على جوالك خلال دقيقتين؟</span><button type="button">نسخ</button></div>
+    <div class="scr"><b>لمحل ما تعرفه</b><span class="tx">السلام عليكم، معك [اسمك] من احجزلي. شفت إن زباينكم يحجزون عن طريق الواتساب. عندنا نظام يرد عنكم ويحجز ويأكد ويذكّر ويرسل الفاتورة لحاله 24 ساعة، بنفس رقمكم وبدون ما يحمّل العميل شي. أقدر أرسل لكم تجربة قصيرة تشوفونها على جوالكم؟</span><button type="button">نسخ</button></div>
+    <div class="scr"><b>متابعة بعد يومين لو ما رد</b><span class="tx">هلا [الاسم]، بس أتأكد وصلتك رسالتي؟ لو تبي، أرسل لك رابط فيه الشرح كامل والأسعار، وتقرر على راحتك: fadiaalzhrani-debug.github.io/ihjizli</span><button type="button">نسخ</button></div>
+  </div>
+
+  <div class="gs"><h3>مكالمة أو زيارة قصيرة، وتجربة حية</h3>
+    <div class="tagz"><span class="tg you">عليك</span><span class="tg">15 دقيقة</span></div>
+    <p><b>اسأل قبل ما تشرح</b> (جوابه يحدد الباقة):</p>
+    <ol>
+      <li>كم طلب أو حجز يجيكم باليوم تقريبًا؟ ومتى أكثر وقت؟</li>
+      <li>مين يرد على الواتساب الحين؟ ووش يصير بعد الدوام؟</li>
+      <li>كيف تاخذون الموعد والموقع؟ وكم مرة يصير تعارض أو نسيان؟</li>
+      <li>كيف تستلمون الفلوس؟ كاش، تحويل، أو رابط دفع؟</li>
+      <li>عندكم نظام أو جدول تسجلون فيه الطلبات؟ ومين يروح للعميل؟</li>
+    </ol>
+    <p><b>بعدها اعرض التجربة الحية</b> في المحاكي من رسالة «السلام عليكم» لين رقم الطلب، وخلّه هو يضغط الأزرار. ثم افتح له لوحة المنشأة وصوت الطلب الجديد، ولوحة الموظف وزر «الفاتورة».</p>
+    <p class="m">لو قال «كم السعر؟» قبل التجربة: «خلني أوريك أول وش يسوي بالضبط، وبعدها الأسعار واضحة على الموقع».</p>
+  </div>
+
+  <div class="gs"><h3>العرض والرد على الاعتراضات</h3>
+    <div class="tagz"><span class="tg you">عليك</span></div>
+    <div class="two">
+      <div><b>أتمتة الحجز · 3,500 + 350 شهريًا</b>مغاسل، صالونات، تنظيف، صيانة صغيرة، أي محل ما ياخذ الفلوس عن طريق الواتساب.</div>
+      <div><b>أتمتة الحجز + الدفع · 5,500 + 600 شهريًا</b>صيانة منزلية، عيادات، تأجير، أي خدمة فيها فاتورة ومبلغ من العميل. اعرضها أول لأنها تحل مشكلة التحصيل.</div>
+      <div><b>تطبيق باسمه · 9,000 + 150 شهريًا</b>اعرضه بعد ما يشتغل النظام، مو من أول يوم.</div>
+      <div><b>الدفع</b>التأسيس نصين: عند الاتفاق وعند التسليم. الشهري يبدأ بعد التشغيل ويُدفع مقدمًا كل شهر. الأسعار قبل الضريبة.</div>
+    </div>
+    <div class="scr"><b>«ليش أدفع مقدم؟»</b><span class="tx">لأنه تجهيز يتسوّى لكم مرة وحدة وباسمكم: ربط رقمكم بواجهة واتساب الرسمية، توثيق نشاطكم عند ميتا، كتابة الرسائل بلهجة زباينكم، اللوحة والتدريب. والنص الثاني ما تدفعونه إلا بعد ما تشوفونه شغّال عندكم.</span><button type="button">نسخ</button></div>
+    <div class="scr"><b>«عندي موظف يرد»</b><span class="tx">ممتاز، خلّه يشتغل بدل ما يرد. النظام يرد خلال ثانية حتى بعد الدوام وفي الإجازات، والموظف يستلم طلبات جاهزة بالموقع والموعد ويروح.</span><button type="button">نسخ</button></div>
+    <div class="scr"><b>«فيه ركاز وسلة وأرخص»</b><span class="tx">هم يعطونك رابط وتجهّزه بنفسك، والعميل يطلع من الواتساب يعبّيه. احنا نجهّز لك كل شي داخل الواتساب نفسه، ونكمّل بعد الحجز: تنبيه وتذكير وفاتورة ودفع. وبياناتك وعملاؤك عندك مو عندهم.</span><button type="button">نسخ</button></div>
+    <div class="scr"><b>«غالي»</b><span class="tx">احسبها بالطلب: 350 ريال بالشهر على 300 طلب تطلع ريال وشوي للطلب الواحد. وكل طلب كان يضيع بعد الدوام أو لأن أحد ما رد، صار حجز مؤكد. على الموقع حاسبة تحسبها بعدد طلباتك.</span><button type="button">نسخ</button></div>
+    <div class="scr"><b>«أبي أفكر»</b><span class="tx">أكيد. خلني أرسل لك الرابط وفيه كل شي، وأتابع معك يوم [اليوم]. ولو تبي نبدأ هذا الأسبوع أحتاج منك السجل التجاري ورقم الواتساب وقائمة الخدمات، والباقي علينا.</span><button type="button">نسخ</button></div>
+    <p class="m">سجّل تاريخ المتابعة في اللوحة فورًا، وتابع مرتين بحد أقصى ثم خلّه «ما تم» مع ملاحظة السبب.</p>
+  </div>
+
+  <div class="gs"><h3>الاتفاق والدفعة الأولى</h3>
+    <div class="tagz"><span class="tg you">عليك</span><span class="tg">الحالة بعدها: اتفقنا</span></div>
+    <p>اتفاقية من صفحة وحدة تكفي. البنود المقترحة (عدّلها على كيفك):</p>
+    <ol>
+      <li>الطرفان: مؤسستك، واسم نشاطه وسجله التجاري وجواله.</li>
+      <li>الباقة ووش تشمل (انسخ بنودها من الموقع) والإضافات لو فيه.</li>
+      <li>السعر: التأسيس (50% عند التوقيع، 50% عند التسليم) والاشتراك الشهري ومتى يبدأ (من يوم التشغيل) وكيف يُدفع (مقدمًا كل شهر).</li>
+      <li>مدة التجهيز تبدأ من اكتمال المتطلبات اللي عليه (خطوة 6)، وتوثيق ميتا بيد ميتا مو بيدنا.</li>
+      <li>اللي يدفعه هو لغيرنا: رسائل القوالب عند ميتا، مزوّد الربط (نحو 45 ريال شهريًا)، نسبة بوابة الدفع، وحسابات المتاجر للتطبيق.</li>
+      <li>بياناته وعملاؤه ملكه، ويقدر ياخذها لو وقف.</li>
+      <li>التعديلات الصغيرة ضمن الشهري، والتعديلات الكبيرة بعرض سعر.</li>
+      <li>الإيقاف: الشهري يوقف بإشعار قبلها بشهر، والتأسيس ما يُسترد بعد بداية الشغل. لو تأخر الشهري أكثر من 10 أيام تتوقف الخدمة لين يُسدد.</li>
+    </ol>
+    <p>بعد التوقيع: أرسل له الفاتورة، استلم الدفعة الأولى، سجّل «المدفوع» في اللوحة، وحدّد معه يوم البداية.</p>
+  </div>
+
+  <div class="gs"><h3>وش تحتاج يكون معه (المتطلبات)</h3>
+    <div class="tagz"><span class="tg cl">على العميل</span><span class="tg">علّم خطوات التجهيز في اللوحة وهي تكتمل</span></div>
+    <div class="req">
+      <div><b>سجل تجاري ساري باسم النشاط</b><span>لتوثيق النشاط عند ميتا (من يومين إلى أسبوعين). لو ما عنده سجل: يقدر يبدأ بوثيقة العمل الحر، لكن التوثيق يكون أصعب وقد يتأخر، وبدون توثيق النظام يشتغل بالرسائل والأزرار العادية بس.</span></div>
+      <div><b>رقم جوال للواتساب باسم النشاط</b><span>الأفضل شريحة مخصصة للنشاط. لو يبي رقمه الحالي: لازم يكون على واتساب عادي أو واتساب الأعمال العادي (مو مربوط بنظام ثاني)، وبيحتاج يستقبل رمز تحقق بالرسائل على نفس الرقم وقت الربط، والمحادثات القديمة ما تنتقل، فننصحه يصوّر المهم منها قبل.</span></div>
+      <div><b>حساب ميتا للأعمال (فيسبوك)</b><span>لو ما عنده، ننشئه له بإيميله وهو معنا على الجوال 10 دقايق.</span></div>
+      <div><b>الشعار وقائمة الخدمات والأسعار وأوقات العمل ومدن التغطية</b><span>عشان نكتب رسائل النظام بلهجته ونبني المواعيد المتاحة فعلًا.</span></div>
+      <div><b>أسماء وأرقام الموظفين أو الفنيين ومدنهم</b><span>عشان يوصلهم الطلب والإشعار، ونعطيهم لوحة الموظف.</span></div>
+      <div><b>بوابة دفع (لباقة الدفع)</b><span>حساب ميسر أو مثله: يحتاج السجل التجاري وحساب بنكي (IBAN) باسم المنشأة وهوية المالك. نجهّز الطلب معه، والموافقة عادة أيام.</span></div>
+      <div><b>نظامه الحالي لو فيه</b><span>رابط موقعه أو نظامه أو جدول جوجل اللي يبي الطلبات تنزل فيه. لو ما فيه، اللوحة تكفي.</span></div>
+      <div><b>للتطبيق فقط</b><span>حساب مطور آبل (99 دولار سنويًا، باسم المنشأة ويحتاج D‑U‑N‑S) وقوقل (25 دولار مرة وحدة)، والشعار بدقة عالية.</span></div>
+    </div>
+  </div>
+
+  <div class="gs"><h3>التجهيز (نحو 7 أيام عمل من اكتمال المتطلبات)</h3>
+    <div class="tagz"><span class="tg">التجهيز التقني</span><span class="tg">الحالة: قيد التجهيز</span></div>
+    <ul>
+      <li>اليوم 1: إنشاء منشأته من لوحتك (عشر دقايق: الاسم والشعار والخدمات والمدن والأوقات والموظفون)، وطلب توثيق ميتا يمشي بالتوازي.</li>
+      <li>اليوم 1 إلى 3: ربط رقمه بواجهة واتساب الرسمية (يحتاج رمز التحقق منه)، وكتابة الترحيب والخدمات والمدن وأوقات العمل بلهجته.</li>
+      <li>اليوم 3 إلى 5: لوحته وتنبيهاته، إشعارات الموظفين، الربط بنظامه أو جدوله، وبوابة الدفع والفاتورة لو باقة الدفع.</li>
+      <li>اليوم 6: تجربة داخلية كاملة بطلب تجريبي من جوالك: حجز، تنبيه، تذكير، فاتورة، دفع تجريبي.</li>
+      <li>بعد توثيق ميتا: تفعيل صفحة الحجز داخل الواتساب ورفع حدود الإرسال.</li>
+    </ul>
+    <p class="m">دورك هنا: تطمّنه كل يومين برسالة قصيرة عن اللي خلص، وتجيب منه أي ناقص بسرعة. علّم خطوات التجهيز في اللوحة.</p>
+  </div>
+
+  <div class="gs"><h3>التسليم والتدريب</h3>
+    <div class="tagz"><span class="tg you">عليك</span><span class="tg">الحالة بعدها: شغّال</span></div>
+    <ol>
+      <li>جلسة 30 دقيقة معه ومع موظفيه: يسوون طلب حقيقي من جوال أحدهم ويشوفونه يوصل اللوحة بالصوت والموظف بالإشعار.</li>
+      <li>تسليم رابط لوحته (ورابط لوحة الموظفين)، وكيف يوقف النظام ويشغّله ويعدّل الأوقات والعطل.</li>
+      <li>يبلّغ زباينه: نص جاهز يحطه في حالته أو يرسله: «صار الحجز عندنا أسهل: أرسل لنا على الواتساب واحجز موعدك خلال دقيقة».</li>
+      <li>استلم الدفعة الثانية، وسجّل «المدفوع» وتاريخ بداية الشهري في اللوحة.</li>
+    </ol>
+  </div>
+
+  <div class="gs"><h3>بعد التشغيل</h3>
+    <div class="tagz"><span class="tg you">عليك</span><span class="tg">كل شهر</span></div>
+    <ul>
+      <li>بعد أسبوع: اسأله كم طلب وصل، ووش الرسائل اللي ما فهمها النظام، ونعدّلها.</li>
+      <li>بعد شهر: تقرير بسيط بالطلبات والمبالغ، وتذكير الشهري قبل موعده بثلاثة أيام.</li>
+      <li>لما يرتاح: اطلب منه يذكر نشاطه كعميل حقيقي في الموقع، ويحيل لك محل ثاني (وفّر له حافز مثل شهر مجاني لكل إحالة تشتغل).</li>
+      <li>بعد شهرين: اعرض عليه التطبيق باسمه لو حجم طلباته يستاهل.</li>
+    </ul>
+    <div class="scr"><b>تذكير الاشتراك الشهري</b><span class="tx">هلا [الاسم]، اشتراك احجزلي لشهر [الشهر] يستحق يوم [التاريخ]: [المبلغ] ريال. هذا الحساب: [الحساب]. ولو تبي تقرير الشهر اللي راح أرسله لك.</span><button type="button">نسخ</button></div>
+  </div>
+</section>
+</template>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/ihj.js"></script>
+<script>
+(async function () {
+  const I = window.IHJ, { $, esc, icon, money } = I;
+  I.loading('نفتح لوحتك…');
+  let session = null, me = null;
+  try { const r = await I.boot('ihj-admin'); session = r.session; me = r.me; } catch (e) { return I.gate('الرابط غير صالح', 'الرابط ما عاد يشتغل، اطلب رابطًا جديدًا', 'err'); }
+  if (!session || !me) return I.gate('افتح رابط لوحتك', 'اللوحة تنفتح من الرابط الخاص فقط، ومرة وحدة تكفي لكل جهاز', 'err');
+  if (!me.admin) return I.gate('هذا مو رابط المدير', 'افتح رابط لوحتك الخاص', 'err');
+  const sb = I.sb;
+  async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
+
+  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], stats: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null };
+  const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['sales', 'دليل البيع', 'sale']];
+  const PLAN = { bot: 'أتمتة الحجز', bot_pay: 'أتمتة الحجز + الدفع' };
+  const BSTATUS = { setup: ['قيد التجهيز', 'b-warn'], live: ['شغّالة', 'b-ok'], paused: ['موقفة', 'b-cancelled'], ended: ['منتهية', 'b-cancelled'] };
+  const LSTATUS = { new: ['جديد', 'b-gold'], contacted: ['تواصلنا', 'b-confirmed'], agreed: ['اتفقنا', 'b-arrived'], setup: ['قيد التجهيز', 'b-warn'], live: ['شغّال', 'b-ok'], lost: ['ما تم', 'b-cancelled'] };
+
+  async function loadAll() {
+    const [biz, set, ch, subs, pays, steps, stats, leads] = await Promise.all([
+      q1(sb.from('businesses').select('*').order('created_at', { ascending: false })),
+      q1(sb.from('settings').select('business_id,pay_provider,vat_percent,capacity_mode')),
+      q1(sb.from('channels').select('*')),
+      q1(sb.from('subscriptions').select('*')),
+      q1(sb.from('sub_payments').select('*').order('paid_on', { ascending: false })),
+      q1(sb.from('setup_steps').select('*')),
+      q1(sb.rpc('ihj_admin_stats')),
+      q1(sb.from('signup_requests').select('*').order('created_at', { ascending: false }).limit(500)),
+    ]);
+    S.biz = biz; S.set = Object.fromEntries(set.map((x) => [x.business_id, x])); S.ch = Object.fromEntries(ch.map((x) => [x.business_id, x]));
+    S.subs = Object.fromEntries(subs.map((x) => [x.business_id, x])); S.pays = pays; S.steps = steps; S.stats = Object.fromEntries(stats.map((x) => [x.business_id, x])); S.leads = leads;
+    leads.forEach((l) => S.seenLeads.add(l.id));
+  }
+  try { await loadAll(); } catch (e) { console.error(e); return I.gate('ما قدرنا نفتح اللوحة', 'حدّث الصفحة', 'err'); }
+
+  // ───── قائمة التجهيز العشرية لكل منشأة ─────
+  const STEPS = [
+    ['contract', 'التوقيع والدفعة الأولى', 'اتفاقية من صفحة، والنص الأول من التأسيس', null],
+    ['docs', 'المتطلبات من العميل', 'السجل التجاري، الشعار، الخدمات والأوقات والمدن', (b, st) => !!b.logo_url && st.services > 0],
+    ['setup', 'إعداد المنشأة', 'الخدمات والمدن والأوقات والموظفون', (b, st) => st.services > 0 && st.cities > 0 && st.hours > 0 && (st.staff > 0 || (S.set[b.id] || {}).capacity_mode === 'fixed')],
+    ['test', 'تجربة كاملة في المحاكي', 'حجز من المحاكي يوصل اللوحة بالصوت', (b, st) => st.sim_orders > 0],
+    ['number', 'رقم واتساب للنشاط', 'شريحة مخصصة أو رقمه الحالي (Coexistence)', null],
+    ['connect', 'ربط الرقم بمزوّد الربط', 'معرّف الرقم والمفتاح والويبهوك', (b) => (S.ch[b.id] || {}).status === 'connected'],
+    ['meta', 'توثيق النشاط عند ميتا', 'من مركز الأمان في حساب ميتا للأعمال', (b) => (S.ch[b.id] || {}).meta_verification === 'verified'],
+    ['templates', 'اعتماد القوالب', 'التذكير والفاتورة ووصلنا دفعك', (b) => ((S.ch[b.id] || {}).templates || []).filter((t) => t.status === 'APPROVED').length >= 8],
+    ['payment', 'بوابة الدفع (ميسر)', 'لباقة الحجز والدفع فقط', (b) => b.plan !== 'bot_pay' || (S.set[b.id] || {}).pay_provider === 'moyasar'],
+    ['handover', 'التسليم والتدريب', 'رابط المالك والموظفين، وتجربة من جوال حقيقي', (b) => b.status === 'live'],
+  ];
+  function stepState(b) {
+    const st = S.stats[b.id] || {};
+    return STEPS.map(([k, t, d, auto]) => {
+      const row = S.steps.find((x) => x.business_id === b.id && x.step === k);
+      const a = auto ? auto(b, st) : false;
+      return { k, t, d, auto: !!auto, done: a || !!(row && row.done_at), manual: !!(row && row.done_at) };
+    });
+  }
+  const progress = (b) => stepState(b).filter((x) => x.done).length;
+
+  // ───── الهيكل ─────
+  function shell() {
+    const nav = TABS.map(([k, t, ic]) => `<a href="#${k}" data-tab="${k}">${icon(ic)}<span>${t}</span>${k === 'leads' ? '<span class="cnt g" id="cntLeads" hidden></span>' : ''}</a>`).join('');
+    const bn = ['home', 'biz', 'new', 'leads', 'more'];
+    $('root').innerHTML = `<div class="app">
+      <aside class="side"><div class="brand"><span class="lg">${icon('check')}</span><div><b>احجزلي</b><small>لوحتي</small></div></div><nav class="nav">${nav}</nav>
+        <div class="foot"><button class="btn ghost sm" id="sndBtn" type="button"></button></div></aside>
+      <div class="main"><header class="top"><div class="grow"><h1 id="tTitle"></h1><div class="sub" id="tSub"></div></div><span class="live" id="live"><i></i><span>مباشر</span></span><button class="ib" id="sndIb" type="button" aria-label="الصوت"></button></header><main class="content" id="view"></main></div>
+      <nav class="bnav">${bn.map((k) => k === 'more' ? `<a href="#more" data-tab="more">${icon('menu')}<span>المزيد</span></a>` : (() => { const t = TABS.find((x) => x[0] === k); return `<a href="#${k}" data-tab="${k}">${icon(t[2])}<span>${t[1]}</span></a>`; })()).join('')}</nav></div>`;
+    document.querySelectorAll('[data-tab]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.tab); }));
+    $('sndBtn').onclick = $('sndIb').onclick = () => { I.toggleAlerts(); paintSnd(); };
+    paintSnd(); paintCounts();
+  }
+  function paintSnd() { const on = I.alertsState(); $('sndBtn').innerHTML = `${icon(on ? 'bell' : 'belloff')}${on ? 'صوت التنبيه شغّال' : 'صوت التنبيه موقف'}`; $('sndIb').innerHTML = icon(on ? 'bell' : 'belloff'); $('sndIb').classList.toggle('on', on); }
+  function paintCounts() { const n = S.leads.filter((l) => l.status === 'new').length; const el = $('cntLeads'); if (el) { el.hidden = !n; el.textContent = n; } }
+  function go(tab) {
+    if (tab === 'more') { const m = I.modal(`<div class="mh"><h3 class="grow">المزيد</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">${['subs', 'onboard', 'sales'].map((k) => { const t = TABS.find((x) => x[0] === k); return `<a class="btn ghost block" href="#${k}" data-go="${k}" style="justify-content:flex-start">${icon(t[2])}${t[1]}</a>`; }).join('')}</div>`); m.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); }); return; }
+    I.closeAll(); S.tab = tab; history.replaceState(null, '', '#' + tab);
+    document.querySelectorAll('[data-tab]').forEach((a) => a.classList.toggle('on', a.dataset.tab === tab));
+    $('tTitle').textContent = (TABS.find((x) => x[0] === tab) || [])[1] || '';
+    $('tSub').textContent = '';
+    render(); window.scrollTo(0, 0);
+  }
+  function render() { ({ home: vHome, biz: vBiz, new: vNew, leads: vLeads, subs: vSubs, onboard: vOnboard, sales: vSales }[S.tab] || vHome)($('view')); }
+  const simUrl = (b) => `sim.html?b=${b.slug}&k=${b.sim_key}`;
+  const logo = (b) => b.logo_url ? `<span class="lg"><img src="${esc(b.logo_url)}" alt=""></span>` : `<span class="lg">${esc(I.initials(b.name))}</span>`;
+  const mrr = (b) => { const s = S.subs[b.id] || {}; return Number(s.monthly_fee || 0) + Number(s.app_monthly_fee || 0); };
+  const daysTo = (d) => d ? Math.round((new Date(d + 'T00:00:00+03:00') - new Date(I.today() + 'T00:00:00+03:00')) / 86400000) : null;
+
+  // ═════ الرئيسية ═════
+  function vHome(v) {
+    const live = S.biz.filter((b) => b.status === 'live' && !b.is_demo), setup = S.biz.filter((b) => b.status === 'setup' && !b.is_demo);
+    const monthly = live.reduce((a, b) => a + mrr(b), 0);
+    const orders = Object.values(S.stats).reduce((a, s) => a + (s.orders_month || 0), 0);
+    const renew = S.biz.filter((b) => { const d = daysTo((S.subs[b.id] || {}).next_renewal); return d !== null && d >= 0 && d <= 14; });
+    const newLeads = S.leads.filter((l) => l.status === 'new');
+    const demo = S.biz.find((b) => b.slug === 'mahalak');
+    v.innerHTML = `
+      <div class="kpis"><div class="kpi accent"><b>${live.length}</b><span>منشآت شغّالة</span></div><div class="kpi"><b>${setup.length}</b><span>قيد التجهيز</span></div><div class="kpi"><b>${money(monthly)}</b><span>الاشتراكات الشهرية (ر.س)</span></div><div class="kpi"><b>${newLeads.length}</b><span>طلبات اشتراك جديدة</span></div></div>
+      <div class="g2">
+        <div class="card stack"><div class="sec-h"><h3>ابدأ من هنا</h3></div>
+          <a class="btn lg block" href="#new" data-go="new">${icon('plus')}منشأة جديدة</a>
+          ${demo ? `<a class="btn ghost block" href="${simUrl(demo)}" target="_blank" rel="noopener">${icon('wa')}محاكي «محلك» للعرض</a><a class="btn ghost block" href="biz.html?b=${demo.id}" target="_blank" rel="noopener">${icon('store')}لوحة «محلك»</a>` : ''}
+        </div>
+        <div class="card stack"><div class="sec-h"><h3>هذا الشهر</h3></div>
+          <div class="row"><span class="grow">الطلبات عبر كل المنشآت</span><b>${orders}</b></div>
+          <div class="row"><span class="grow">التجديدات خلال 14 يوم</span><b>${renew.length}</b></div>
+          ${renew.map((b) => `<div class="row small"><span class="grow">${esc(b.name)}</span><span class="tiny">${esc(I.dayName((S.subs[b.id] || {}).next_renewal))}</span></div>`).join('')}
+          <div class="row"><span class="grow">عملاء يحتاجون رد (كل المنشآت)</span><b>${Object.values(S.stats).reduce((a, s) => a + (s.open_handoffs || 0), 0)}</b></div>
+        </div>
+      </div>
+      <div class="card stack"><div class="sec-h"><h3>المنشآت قيد التجهيز</h3></div>${setup.length ? setup.map((b) => `<div class="biz-row item click" data-b="${b.id}">${logo(b)}<div><b>${esc(b.name)}</b><div class="tiny">${PLAN[b.plan]} · ${progress(b)} من 10 خطوات</div></div><span class="prog"><i style="width:${progress(b) * 10}%"></i></span></div>`).join('') : '<div class="tiny">ما فيه منشآت قيد التجهيز</div>'}</div>
+      <div class="card stack"><div class="sec-h"><h3>آخر طلبات الاشتراك</h3><a class="btn sm ghost" href="#leads" data-go="leads">الكل</a></div>${S.leads.slice(0, 5).map(leadRow).join('') || '<div class="tiny">ما فيه طلبات</div>'}</div>`;
+    v.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); });
+    v.querySelectorAll('[data-b]').forEach((el) => el.onclick = () => openBiz(el.dataset.b));
+    v.querySelectorAll('[data-lead]').forEach((el) => el.onclick = () => openLead(el.dataset.lead));
+  }
+
+  // ═════ المنشآت ═════
+  function vBiz(v) {
+    v.innerHTML = `<div class="row"><a class="btn" href="#new" data-go="new">${icon('plus')}منشأة جديدة</a><span class="sp"></span><span class="tiny">${S.biz.length} منشأة</span></div>
+      <div class="list">${S.biz.map((b) => { const ch = S.ch[b.id] || {}, st = S.stats[b.id] || {}, bs = BSTATUS[b.status]; const p = progress(b);
+        return `<div class="item click" data-b="${b.id}"><div class="biz-row">${logo(b)}<div style="min-width:0"><div class="row"><b style="font-family:var(--display);font-size:16.5px">${esc(b.name)}</b><span class="badge ${bs[1]}">${bs[0]}</span>${b.is_demo ? '<span class="badge b-test plain">تجريبية</span>' : ''}</div>
+          <div class="meta"><span>${PLAN[b.plan]}${b.wants_app ? ' + تطبيق' : ''}</span><span><span class="dot ${ch.status === 'connected' ? 'ok' : ch.status === 'error' ? 'bad' : ''}"></span>${ch.status === 'connected' ? 'الرقم مربوط' : ch.status === 'error' ? 'خطأ بالربط' : 'الرقم غير مربوط'}</span><span>${st.orders_month || 0} طلب هذا الشهر</span>${st.open_handoffs ? `<span style="color:var(--warn)">${st.open_handoffs} يحتاج رد</span>` : ''}</div></div>
+          <div style="display:grid;gap:4px;justify-items:end"><span class="tiny">${p}/10</span><span class="prog"><i style="width:${p * 10}%"></i></span></div></div></div>`; }).join('') || `<div class="empty">${icon('store')}<b>ما فيه منشآت</b></div>`}</div>`;
+    v.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); });
+    v.querySelectorAll('[data-b]').forEach((el) => el.onclick = () => openBiz(el.dataset.b));
+  }
+
+  let dtab = 'overview';
+  async function openBiz(id, tab) {
+    const b = S.biz.find((x) => x.id === id); if (!b) return;
+    dtab = tab || dtab || 'overview';
+    const DT = [['overview', 'نظرة'], ['steps', 'التجهيز'], ['connect', 'ربط الرقم'], ['templates', 'القوالب والتوثيق'], ['links', 'الروابط'], ['sub', 'الاشتراك']];
+    const d = I.openDrawer(`<div class="dh">${logo(b).replace('class="lg"', 'class="avatar" style="overflow:hidden"')}<h2 class="grow">${esc(b.name)}</h2><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button></div>
+      <div class="db"><div class="dtabs">${DT.map(([k, l]) => `<button class="chip ${dtab === k ? 'on' : ''}" data-dt="${k}" type="button">${l}</button>`).join('')}</div><div id="dBody"></div></div>`);
+    d.querySelectorAll('[data-dt]').forEach((x) => x.onclick = () => { dtab = x.dataset.dt; openBiz(id, dtab); });
+    const body = d.querySelector('#dBody');
+    ({ overview: dOverview, steps: dSteps, connect: dConnect, templates: dTemplates, links: dLinks, sub: dSub }[dtab] || dOverview)(body, b);
+  }
+
+  function dOverview(el, b) {
+    const st = S.stats[b.id] || {};
+    el.innerHTML = `<div class="stack">
+      <div class="g2"><a class="btn" href="biz.html?b=${b.id}" target="_blank" rel="noopener">${icon('store')}افتح لوحة المنشأة</a><a class="btn ghost" href="${simUrl(b)}" target="_blank" rel="noopener">${icon('wa')}افتح المحاكي</a></div>
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr)"><div class="kpi"><b>${st.orders_month || 0}</b><span>طلبات الشهر</span></div><div class="kpi"><b>${money(st.paid_month || 0)}</b><span>مدفوع للمنشأة هذا الشهر</span></div><div class="kpi"><b>${st.sim_orders || 0}</b><span>تجارب المحاكي</span></div></div>
+      <div class="card flat stack s"><h3>الحالة والباقة</h3><div class="g2">
+        <label class="f"><span>حالة المنشأة</span><select id="bStatus">${Object.entries(BSTATUS).map(([k, [l]]) => `<option value="${k}" ${b.status === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label class="f"><span>الباقة</span><select id="bPlan"><option value="bot" ${b.plan === 'bot' ? 'selected' : ''}>${PLAN.bot}</option><option value="bot_pay" ${b.plan === 'bot_pay' ? 'selected' : ''}>${PLAN.bot_pay}</option></select></label></div>
+        <label class="check"><input type="checkbox" id="bApp" ${b.wants_app ? 'checked' : ''}>تطبيق باسم العميل</label></div>
+      <div class="card flat stack s"><h3>البيانات</h3><div class="g2 small">
+        <div><span class="tiny">النشاط</span><div>${esc(b.activity || 'غير محدد')}</div></div><div><span class="tiny">المدينة</span><div>${esc(b.city || 'غير محدد')}</div></div>
+        <div><span class="tiny">رقم الواتساب</span><div class="ltr">${esc(I.phone(b.wa_number) || 'غير محدد')}</div></div><div><span class="tiny">المالك</span><div>${esc(b.owner_name || '')} <span class="ltr">${esc(I.phone(b.owner_phone))}</span></div></div>
+        <div><span class="tiny">الخدمات / المدن / الموظفون</span><div>${st.services || 0} / ${st.cities || 0} / ${st.staff || 0}</div></div><div><span class="tiny">أنشئت</span><div>${esc(I.dayName(I.parts(b.created_at).ymd))}</div></div>
+      </div></div>
+      ${b.is_demo ? `<div class="card flat stack s"><h3>منشأة تجريبية</h3><button class="btn ghost bad" id="bReset">${icon('trash')}امسح تجارب المحاكي (الطلبات والمحادثات)</button></div>` : ''}
+    </div>`;
+    const upd = async (patch, msg) => { try { await q1(sb.from('businesses').update(patch).eq('id', b.id).select('id')); Object.assign(b, patch); I.toast(msg || 'انحفظ ✓'); } catch (e) { I.fail(e); } };
+    $('bStatus').onchange = (e) => upd({ status: e.target.value });
+    $('bPlan').onchange = async (e) => { await upd({ plan: e.target.value }); try { const fees = await q1(sb.rpc('ihj_plan_fees', { p_plan: e.target.value, p_app: b.wants_app })); await q1(sb.from('subscriptions').update({ plan: e.target.value, ...fees }).eq('business_id', b.id).select('business_id')); Object.assign(S.subs[b.id], { plan: e.target.value }, fees); } catch (x) { I.fail(x); } };
+    $('bApp').onchange = async (e) => { await upd({ wants_app: e.target.checked }); try { const fees = await q1(sb.rpc('ihj_plan_fees', { p_plan: b.plan, p_app: e.target.checked })); await q1(sb.from('subscriptions').update({ app_setup_fee: fees.app_setup_fee, app_monthly_fee: fees.app_monthly_fee }).eq('business_id', b.id).select('business_id')); Object.assign(S.subs[b.id], { app_setup_fee: fees.app_setup_fee, app_monthly_fee: fees.app_monthly_fee }); } catch (x) { I.fail(x); } };
+    if ($('bReset')) $('bReset').onclick = async (e) => { if (!confirm('مسح كل طلبات ومحادثات المحاكي لهذه المنشأة؟')) return; e.target.disabled = true; try { await I.api('admin/demo/reset', { business_id: b.id }); I.toast('انمسحت التجارب ✓'); await refreshStats(); } catch (x) { I.fail(x); } e.target.disabled = false; };
+  }
+
+  function dSteps(el, b) {
+    const ss = stepState(b);
+    el.innerHTML = `<div class="stack"><div class="row"><b>${ss.filter((x) => x.done).length} من 10</b><span class="prog" style="width:160px"><i style="width:${ss.filter((x) => x.done).length * 10}%"></i></span><span class="sp"></span><a class="btn sm ghost" href="#onboard" data-go="onboard">${icon('guide')}دليل التشغيل</a></div>
+      <div class="steps10">${ss.map((s) => `<div class="st10 ${s.done ? 'done' : ''}"><div><b>${s.t}</b><span>${s.d}${s.auto ? ' · يتعلّم تلقائيًا' : ''}</span></div>${s.auto ? (s.done ? '<span class="badge b-ok plain">تم</span>' : '<span class="tiny">ينتظر</span>') : `<label class="sw"><input type="checkbox" data-step="${s.k}" ${s.manual ? 'checked' : ''}><i></i></label>`}</div>`).join('')}</div></div>`;
+    el.querySelector('[data-go]').onclick = (e) => { e.preventDefault(); go('onboard'); };
+    el.querySelectorAll('[data-step]').forEach((cb) => cb.onchange = async () => {
+      try {
+        await q1(sb.from('setup_steps').upsert({ business_id: b.id, step: cb.dataset.step, done_at: cb.checked ? new Date().toISOString() : null }, { onConflict: 'business_id,step' }).select('step'));
+        const i = S.steps.findIndex((x) => x.business_id === b.id && x.step === cb.dataset.step);
+        const row = { business_id: b.id, step: cb.dataset.step, done_at: cb.checked ? new Date().toISOString() : null };
+        if (i >= 0) S.steps[i] = row; else S.steps.push(row);
+        dSteps(el, b);
+      } catch (e) { I.fail(e); cb.checked = !cb.checked; }
+    });
+  }
+
+  async function dConnect(el, b) {
+    const ch = S.ch[b.id] || {};
+    let info = {}; try { info = await I.api('admin/channel/info', { business_id: b.id }); } catch (e) { /* */ }
+    el.innerHTML = `<div class="stack">
+      <div class="card flat row"><span class="dot ${ch.status === 'connected' ? 'ok' : ch.status === 'error' ? 'bad' : ''}"></span><b class="grow">${ch.status === 'connected' ? 'الرقم مربوط' : ch.status === 'error' ? 'فيه خطأ بالربط' : 'الرقم غير مربوط'}</b>${ch.display_phone ? `<span class="ltr tiny">${esc(ch.display_phone)}</span>` : ''}${ch.verified_name ? `<span class="tiny">${esc(ch.verified_name)}</span>` : ''}</div>
+      ${ch.last_error ? `<div class="hint" style="color:var(--bad)">${esc(ch.last_error)}</div>` : ''}
+      <div class="card flat stack s"><h3>1. بيانات المزوّد</h3>
+        <label class="f"><span>مزوّد الربط</span><select id="cProv"><option value="none">بدون (المحاكي فقط)</option><option value="dualhook" ${ch.provider === 'dualhook' ? 'selected' : ''}>Dualhook</option><option value="d360" ${ch.provider === 'd360' ? 'selected' : ''}>360dialog</option><option value="meta" ${ch.provider === 'meta' ? 'selected' : ''}>ميتا مباشرة (Cloud API)</option></select></label>
+        <div class="g2"><label class="f"><span>معرّف الرقم Phone Number ID</span><input id="cPid" dir="ltr" value="${esc(ch.phone_number_id || '')}"></label><label class="f"><span>معرّف الحساب WABA ID</span><input id="cWaba" dir="ltr" value="${esc(ch.waba_id || '')}"></label></div>
+        <label class="f"><span>مفتاح الإرسال (Token / API key)</span><input id="cTok" dir="ltr" type="password" autocomplete="off" placeholder="${info.has_token ? 'محفوظ ' + esc(info.token_mask || '') + ' · اتركه فاضي لو ما تبي تغيّره' : ''}"></label>
+        <label class="f"><span>App Secret (لتوقيع ميتا، اختياري)</span><input id="cSec" dir="ltr" type="password" autocomplete="off" placeholder="${info.has_app_secret ? 'محفوظ' : ''}"></label>
+        <label class="f"><span>رابط الـAPI (لو المزوّد له رابط مختلف)</span><input id="cBase" dir="ltr" value="${esc(ch.api_base || '')}" placeholder="افتراضي حسب المزوّد"></label>
+        <label class="check"><input type="checkbox" id="cDry" ${ch.dry_run ? 'checked' : ''}>وضع فحص: يسجّل الرسائل بدون ما يرسلها</label>
+        <div class="row"><button class="btn" id="cSave">${icon('check')}حفظ وفحص الاتصال</button><button class="btn ghost" id="cTest">${icon('refresh')}فحص فقط</button></div></div>
+      <div class="card flat stack s"><h3>2. الويبهوك عند المزوّد</h3><p class="tiny">الصقهم في إعدادات الويبهوك عند المزوّد (الرسائل والحالات، وsmb_message_echoes لو الرقم على تطبيق واتساب بزنس).</p>
+        <span class="tiny">رابط الويبهوك</span><div class="copybox"><code>${esc(info.webhook_url || '')}</code><button class="btn sm" type="button" data-cp="${esc(info.webhook_url || '')}">${icon('copy')}نسخ</button></div>
+        <span class="tiny">رمز التحقق Verify token</span><div class="copybox"><code>${esc(info.verify_token || '')}</code><button class="btn sm" type="button" data-cp="${esc(info.verify_token || '')}">${icon('copy')}نسخ</button></div></div>
+    </div>`;
+    el.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+    const save = async (e, testOnly) => {
+      e.target.disabled = true;
+      try {
+        const r = testOnly ? await I.api('admin/channel/test', { business_id: b.id }) : await I.api('admin/channel/save', { business_id: b.id, provider: $('cProv').value, phone_number_id: $('cPid').value.trim(), waba_id: $('cWaba').value.trim(), token: $('cTok').value, app_secret: $('cSec').value, api_base: $('cBase').value.trim(), dry_run: $('cDry').checked });
+        S.ch[b.id] = { ...(S.ch[b.id] || {}), ...r.channel };
+        I.toast(r.channel.status === 'connected' ? 'الرقم مربوط ✓' : r.channel.status === 'error' ? 'الفحص فشل، شوف الخطأ' : 'انحفظ');
+        dConnect(el, b);
+      } catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+    $('cSave').onclick = (e) => save(e, false); $('cTest').onclick = (e) => save(e, true);
+  }
+
+  function dTemplates(el, b) {
+    const ch = S.ch[b.id] || {};
+    const list = ch.templates || [];
+    const NAMES = { ihj_reminder: 'التذكير قبل الموعد', ihj_on_the_way: 'الموظف في الطريق', ihj_arrived: 'الموظف وصل', ihj_invoice: 'الفاتورة', ihj_paid: 'وصلنا دفعك', ihj_update: 'تحديث على الطلب', ihj_new_order: 'تنبيه المالك بطلب جديد', ihj_handoff: 'تنبيه المالك بعميل يحتاج رد' };
+    const stBadge = (s) => s === 'APPROVED' ? '<span class="badge b-ok">معتمد</span>' : s === 'PENDING' || s === 'IN_APPEAL' ? '<span class="badge b-gold">قيد المراجعة</span>' : s === 'REJECTED' ? '<span class="badge b-bad">مرفوض</span>' : s ? `<span class="badge plain">${esc(s)}</span>` : '<span class="badge b-cancelled">ما انرفع</span>';
+    el.innerHTML = `<div class="stack">
+      <div class="card flat stack s"><h3>توثيق النشاط عند ميتا</h3>
+        <select id="mv">${[['unknown', 'غير معروف'], ['not_started', 'ما بدأ'], ['pending', 'قيد المراجعة'], ['verified', 'موثّق'], ['rejected', 'مرفوض']].map(([k, l]) => `<option value="${k}" ${ch.meta_verification === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        <p class="tiny">من حساب ميتا للأعمال: الإعدادات ← مركز الأمان ← التوثيق. حالة الاسم الظاهر: <b>${esc(ch.name_status || 'غير معروفة')}</b>${ch.quality ? ` · جودة الرقم: <b>${esc(ch.quality)}</b>` : ''}</p></div>
+      <div class="card flat stack s"><div class="sec-h"><h3>القوالب</h3><span class="tiny">${ch.templates_checked_at ? 'آخر تحديث ' + I.ago(ch.templates_checked_at) : ''}</span></div>
+        <p class="tiny">القوالب تخلي التذكير والفاتورة وتنبيه «في الطريق» توصل حتى بعد مرور 24 ساعة على آخر رسالة من العميل.</p>
+        ${Object.keys(NAMES).map((n) => `<div class="tpl"><span>${NAMES[n]}</span>${stBadge((list.find((t) => t.name === n && t.language === 'ar') || {}).status)}${stBadge((list.find((t) => t.name === n && t.language === 'en') || {}).status)}</div>`).join('')}
+        <div class="row"><button class="btn" id="tCreate" ${ch.status !== 'connected' ? 'disabled' : ''}>${icon('send')}ارفع القوالب لميتا</button><button class="btn ghost" id="tSync" ${ch.status !== 'connected' ? 'disabled' : ''}>${icon('refresh')}تحديث الحالة</button></div>
+        ${ch.status !== 'connected' ? '<p class="tiny">اربط الرقم أول من تبويب «ربط الرقم».</p>' : ''}<div id="tRes"></div></div></div>`;
+    $('mv').onchange = async (e) => { try { await q1(sb.from('channels').update({ meta_verification: e.target.value }).eq('business_id', b.id).select('business_id')); S.ch[b.id].meta_verification = e.target.value; I.toast('انحفظ ✓'); } catch (x) { I.fail(x); } };
+    $('tSync').onclick = async (e) => { e.target.disabled = true; try { const r = await I.api('admin/templates/sync', { business_id: b.id }); S.ch[b.id].templates = r.templates; S.ch[b.id].templates_checked_at = new Date().toISOString(); dTemplates(el, b); I.toast('تحدّثت ✓'); } catch (x) { I.fail(x); e.target.disabled = false; } };
+    $('tCreate').onclick = async (e) => { if (!confirm('رفع 16 قالب (عربي وإنجليزي) لحساب ميتا الخاص بهذه المنشأة؟')) return; e.target.disabled = true; try { const r = await I.api('admin/templates/create', { business_id: b.id }); S.ch[b.id].templates = r.templates; dTemplates(el, b); const bad = r.results.filter((x) => x.ok === false); $('tRes').innerHTML = bad.length ? `<div class="hint" style="color:var(--bad)">${bad.map((x) => esc(x.name + ' ' + x.lang + ': ' + x.error)).join('<br>')}</div>` : '<div class="hint">انرفعت، والمراجعة عند ميتا عادة دقايق إلى ساعات.</div>'; } catch (x) { I.fail(x); e.target.disabled = false; } };
+  }
+
+  async function dLinks(el, b) {
+    el.innerHTML = '<div class="spin"></div>';
+    let links = [];
+    try { links = (await I.api('admin/link/list', { business_id: b.id })).links; } catch (e) { I.fail(e); }
+    const KIND = { owner: 'المالك', staff: 'موظف', admin: 'مدير' };
+    el.innerHTML = `<div class="stack">
+      <div class="card flat stack s"><h3>رابط المحاكي</h3><div class="copybox"><code>${esc(new URL(simUrl(b), location.href).href)}</code><button class="btn sm" type="button" id="cpSim">${icon('copy')}نسخ</button></div></div>
+      <div class="card flat stack s"><div class="sec-h"><h3>روابط الدخول</h3><button class="btn sm" id="newOwner">${icon('plus')}رابط مالك جديد</button></div>
+        ${links.filter((l) => !l.revoked_at).map((l) => `<div class="stack s" style="border-bottom:1px dashed var(--line);padding-bottom:8px"><div class="row"><span class="badge plain">${KIND[l.kind]}</span><b>${esc(l.label || '')}</b><span class="tiny">${l.last_used_at ? 'آخر دخول ' + I.ago(l.last_used_at) : 'ما انفتح بعد'}</span><span class="sp"></span><button class="btn sm bad ghost" data-rv="${l.id}">إلغاء</button></div><div class="copybox"><code>${esc(l.url)}</code><button class="btn sm" type="button" data-cp="${esc(l.url)}">${icon('copy')}نسخ</button></div></div>`).join('') || '<div class="tiny">ما فيه روابط</div>'}
+        <p class="tiny">روابط الموظفين ينشئها المالك من لوحته (تبويب الموظفون)، أو من هنا عبر لوحة المنشأة.</p></div></div>`;
+    $('cpSim').onclick = () => I.copy(new URL(simUrl(b), location.href).href);
+    el.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+    el.querySelectorAll('[data-rv]').forEach((x) => x.onclick = async () => { if (!confirm('إلغاء الرابط؟ اللي يستخدمه يطلع فورًا')) return; try { await I.api('admin/link/revoke', { link_id: x.dataset.rv }); I.toast('انلغى'); dLinks(el, b); } catch (e) { I.fail(e); } });
+    $('newOwner').onclick = async (e) => { e.target.disabled = true; try { const r = await I.api('admin/link/create', { kind: 'owner', business_id: b.id, label: b.owner_name || 'المالك' }); I.copy(r.url, 'انسخ رابط المالك ✓'); dLinks(el, b); } catch (x) { I.fail(x); e.target.disabled = false; } };
+  }
+
+  function dSub(el, b) {
+    const s = S.subs[b.id] || {};
+    const pays = S.pays.filter((p) => p.business_id === b.id);
+    const paid = pays.reduce((a, p) => a + Number(p.amount), 0);
+    const KIND = { setup: 'تأسيس', monthly: 'شهري', app: 'تطبيق', other: 'أخرى' };
+    el.innerHTML = `<div class="stack">
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr)"><div class="kpi"><b>${money(Number(s.setup_fee || 0) + Number(s.app_setup_fee || 0))}</b><span>التأسيس</span></div><div class="kpi"><b>${money(Number(s.monthly_fee || 0) + Number(s.app_monthly_fee || 0))}</b><span>الشهري</span></div><div class="kpi accent"><b>${money(paid)}</b><span>المدفوع المسجّل</span></div></div>
+      <div class="card flat stack s"><h3>الاشتراك</h3><div class="g2">
+        <label class="f"><span>التأسيس</span><input type="number" data-s="setup_fee" value="${s.setup_fee || 0}"></label><label class="f"><span>الشهري</span><input type="number" data-s="monthly_fee" value="${s.monthly_fee || 0}"></label>
+        <label class="f"><span>بداية الاشتراك</span><input type="date" data-s="started_on" value="${s.started_on || ''}"></label><label class="f"><span>التجديد القادم</span><input type="date" data-s="next_renewal" value="${s.next_renewal || ''}"></label></div>
+        <label class="f"><span>ملاحظات</span><textarea data-s="notes" rows="2">${esc(s.notes || '')}</textarea></label></div>
+      <div class="card flat stack s"><div class="sec-h"><h3>المدفوعات</h3><button class="btn sm" id="addPay">${icon('plus')}سجّل دفعة</button></div>
+        ${pays.map((p) => `<div class="row small" style="border-bottom:1px dashed var(--line);padding:6px 0"><b>${money(p.amount)} ر.س</b><span class="badge plain">${KIND[p.kind]}</span><span class="tiny grow">${esc(I.dayName(p.paid_on))}${p.covers_until ? ' · يغطي لين ' + esc(I.dayName(p.covers_until)) : ''}${p.note ? ' · ' + esc(p.note) : ''}</span><button class="ib" data-del="${p.id}" aria-label="حذف">${icon('trash')}</button></div>`).join('') || '<div class="tiny">ما فيه مدفوعات مسجّلة</div>'}</div></div>`;
+    el.querySelectorAll('[data-s]').forEach((inp) => inp.onchange = async () => { const k = inp.dataset.s; let v = inp.value; if (k.endsWith('_fee')) v = Number(v) || 0; if (inp.type === 'date' && !v) v = null; try { await q1(sb.from('subscriptions').update({ [k]: v }).eq('business_id', b.id).select('business_id')); S.subs[b.id][k] = v; I.toast('انحفظ ✓'); } catch (e) { I.fail(e); } });
+    el.querySelectorAll('[data-del]').forEach((x) => x.onclick = async () => { if (!confirm('حذف الدفعة المسجّلة؟')) return; try { await q1(sb.from('sub_payments').delete().eq('id', x.dataset.del).select('id')); S.pays = S.pays.filter((p) => p.id !== x.dataset.del); dSub(el, b); } catch (e) { I.fail(e); } });
+    $('addPay').onclick = () => payModal(b, () => dSub(el, b));
+  }
+
+  function payModal(b, after) {
+    const s = S.subs[b.id] || {};
+    const m = I.modal(`<div class="mh"><h3 class="grow">دفعة من ${esc(b.name)}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">
+      <div class="g2"><label class="f"><span>النوع</span><select id="pK"><option value="monthly">شهري</option><option value="setup">تأسيس</option><option value="app">تطبيق</option><option value="other">أخرى</option></select></label><label class="f"><span>المبلغ</span><input id="pA" type="number" min="1" value="${s.monthly_fee || ''}"></label>
+      <label class="f"><span>تاريخ الاستلام</span><input id="pD" type="date" value="${I.today()}"></label><label class="f"><span>يغطي لين (للشهري)</span><input id="pC" type="date" value="${s.next_renewal ? I.addDays(s.next_renewal, 30) : I.addDays(I.today(), 30)}"></label></div>
+      <label class="f"><span>ملاحظة</span><input id="pN" maxlength="120"></label><label class="check"><input type="checkbox" id="pR" checked>حدّث تاريخ التجديد القادم لنهاية الفترة</label></div>
+      <div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="pGo">${icon('check')}سجّل</button></div>`);
+    $('pK').onchange = (e) => { const k = e.target.value; $('pA').value = k === 'monthly' ? (s.monthly_fee || '') : k === 'setup' ? (s.setup_fee || '') : k === 'app' ? (s.app_setup_fee || '') : ''; };
+    m.querySelector('#pGo').onclick = async (e) => {
+      const amount = Number($('pA').value); if (!(amount > 0)) return I.toast('اكتب المبلغ', true);
+      e.target.disabled = true;
+      try {
+        const kind = $('pK').value, covers = kind === 'monthly' ? ($('pC').value || null) : null;
+        const row = (await q1(sb.from('sub_payments').insert({ business_id: b.id, amount, kind, paid_on: $('pD').value || I.today(), covers_until: covers, note: $('pN').value }).select('*')))[0];
+        S.pays.unshift(row);
+        const patch = {};
+        if (covers && $('pR').checked) patch.next_renewal = covers;
+        if (!s.started_on && kind !== 'other') patch.started_on = $('pD').value || I.today();
+        if (Object.keys(patch).length) { await q1(sb.from('subscriptions').update(patch).eq('business_id', b.id).select('business_id')); Object.assign(S.subs[b.id], patch); }
+        I.closeAll(); I.toast('انسجلت الدفعة ✓'); after && after();
+      } catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+  }
+
+  // ═════ منشأة جديدة ═════
+  const PRESETS = [['الرياض', 24.7136, 46.6753, 40], ['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['الطائف', 21.2703, 40.4158, 25], ['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['حائل', 27.5114, 41.7208, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20], ['ينبع', 24.0895, 38.0618, 20], ['الخرج', 24.1556, 47.312, 20], ['حفر الباطن', 28.4328, 45.9708, 20]];
+  const HOURS = { std: ['كل يوم 9 الصبح إلى 9 الليل، والجمعة من 4 العصر', null], work: ['الأحد إلى الخميس 8 إلى 5', [0, 1, 2, 3, 4].map((d) => ({ weekday: d, open: '08:00', close: '17:00' }))], eve: ['كل يوم 4 العصر إلى 12 الليل', [0, 1, 2, 3, 4, 5, 6].map((d) => ({ weekday: d, open: '16:00', close: '00:00' }))], full: ['كل يوم 8 الصبح إلى 11 الليل', [0, 1, 2, 3, 4, 5, 6].map((d) => ({ weekday: d, open: '08:00', close: '23:00' }))] };
+  function vNew(v) {
+    const p = S.prefill || {};
+    const pCities = PRESETS.filter((c) => p.city && p.city.includes(c[0])).map((c) => c[0]);
+    v.innerHTML = `<form id="nf" class="stack l" autocomplete="off">
+      ${p.lead_id ? `<div class="hint">من طلب اشتراك: <b>${esc(p.name)}</b></div>` : ''}
+      <div class="card form-sec"><h3><i>1</i>النشاط</h3><div class="g2">
+        <label class="f"><span>اسم المنشأة (يظهر للعميل في الواتساب)</span><input name="name" required maxlength="80" value="${esc(p.name || '')}" placeholder="مثل: مغسلة النور"></label>
+        <label class="f"><span>الاسم بالإنجليزي (للرابط والعملاء الإنجليز)</span><input name="name_en" maxlength="80" dir="ltr" placeholder="Alnoor Wash"></label>
+        <label class="f"><span>نوع النشاط</span><input name="activity" maxlength="60" value="${esc(p.activity || '')}" list="acts"><datalist id="acts"><option>صيانة منزلية</option><option>مغسلة سيارات</option><option>صالون أو تجميل</option><option>تنظيف</option><option>عيادة أو مركز</option><option>تأجير</option></datalist></label>
+        <label class="f"><span>رقم واتساب النشاط</span><input name="wa_number" inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></label>
+        <label class="f"><span>اسم المالك</span><input name="owner_name" maxlength="60" value="${esc(p.contact_name || '')}"></label>
+        <label class="f"><span>جوال المالك</span><input name="owner_phone" inputmode="tel" dir="ltr" value="${esc(p.phone ? I.phone(p.phone) : '')}" placeholder="05xxxxxxxx"></label>
+      </div></div>
+      <div class="card form-sec"><h3><i>2</i>الباقة</h3><div class="row">
+        <label class="check"><input type="radio" name="plan" value="bot" ${p.package !== 'bot_pay' ? 'checked' : ''}>أتمتة الحجز · 3,500 + 350 شهريًا</label>
+        <label class="check"><input type="radio" name="plan" value="bot_pay" ${p.package === 'bot_pay' ? 'checked' : ''}>أتمتة الحجز + الدفع · 5,500 + 600 شهريًا</label>
+        <label class="check"><input type="checkbox" name="wants_app" ${p.wants_app ? 'checked' : ''}>تطبيق باسمه · 9,000 + 150</label></div>
+        <label class="check"><input type="checkbox" name="is_demo">منشأة تجريبية للعرض (الدفع تجريبي بدون فلوس)</label></div>
+      <div class="card form-sec"><h3><i>3</i>الخدمات</h3><p class="tiny">خدمة وحدة = البوت ما يسأل عن الخدمة. اترك السعر فاضي لو يتحدد بعد الزيارة.</p><div class="stack s" id="svcs"></div><button type="button" class="btn sm ghost" id="addSvc" style="justify-self:start">${icon('plus')}خدمة</button></div>
+      <div class="card form-sec"><h3><i>4</i>مدن التغطية</h3><div class="citychips">${PRESETS.map((c) => `<label><input type="checkbox" name="city" value="${c[0]}" ${pCities.includes(c[0]) ? 'checked' : ''}>${c[0]}</label>`).join('')}</div></div>
+      <div class="card form-sec"><h3><i>5</i>أوقات العمل</h3><select name="hours">${Object.entries(HOURS).map(([k, [l]]) => `<option value="${k}">${l}</option>`).join('')}</select><p class="tiny">تتعدل بالتفصيل بعدين من لوحة المنشأة.</p></div>
+      <div class="card form-sec"><h3><i>6</i>الموظفون</h3><p class="tiny">الطلبات تتوزع عليهم حسب المدينة. تقدر تتركها وتضيفهم بعدين.</p><div class="stack s" id="stf"></div><button type="button" class="btn sm ghost" id="addStf" style="justify-self:start">${icon('plus')}موظف</button></div>
+      <div class="card form-sec"><h3><i>7</i>الفاتورة (اختياري)</h3><div class="g2"><label class="f"><span>السجل التجاري</span><input name="cr_number" dir="ltr" maxlength="20"></label><label class="f"><span>الرقم الضريبي</span><input name="vat_number" dir="ltr" maxlength="20"></label><label class="f"><span>العنوان</span><input name="address" maxlength="120"></label><label class="f"><span>لون المنشأة</span><input name="brand_color" type="color" value="#0B7A55"></label></div></div>
+      <button class="btn lg" id="nGo">${icon('check')}أنشئ المنشأة</button>
+    </form><div id="nRes"></div>`;
+    const svcs = [{ name: 'زيارة فني', price: '' }], staff = [];
+    const paintSvc = () => { $('svcs').innerHTML = svcs.map((s, i) => `<div class="rowline"><input data-sv="${i}" data-k="name" value="${esc(s.name)}" placeholder="اسم الخدمة" maxlength="24"><input data-sv="${i}" data-k="price" type="number" min="0" value="${s.price}" placeholder="السعر"><button type="button" class="ib" data-rs="${i}">${icon('x')}</button></div>`).join(''); $('svcs').querySelectorAll('input').forEach((x) => x.oninput = () => { svcs[+x.dataset.sv][x.dataset.k] = x.value; }); $('svcs').querySelectorAll('[data-rs]').forEach((x) => x.onclick = () => { svcs.splice(+x.dataset.rs, 1); paintSvc(); }); };
+    const chosen = () => [...v.querySelectorAll('input[name=city]:checked')].map((x) => x.value);
+    const paintStf = () => { $('stf').innerHTML = staff.map((s, i) => `<div class="card flat stack s"><div class="staffline"><input data-st="${i}" data-k="name" value="${esc(s.name)}" placeholder="اسم الموظف" maxlength="40"><input data-st="${i}" data-k="phone" value="${esc(s.phone)}" placeholder="جواله" dir="ltr" inputmode="tel"></div><div class="row small">${chosen().map((c) => `<label class="check"><input type="checkbox" data-sc="${i}" value="${c}" ${s.cities.includes(c) ? 'checked' : ''}>${c}</label>`).join('') || '<span class="tiny">اختر المدن فوق</span>'}<span class="sp"></span><button type="button" class="btn sm ghost bad" data-rf="${i}">حذف</button></div></div>`).join(''); $('stf').querySelectorAll('[data-k]').forEach((x) => x.oninput = () => { staff[+x.dataset.st][x.dataset.k] = x.value; }); $('stf').querySelectorAll('[data-sc]').forEach((x) => x.onchange = () => { const s = staff[+x.dataset.sc]; s.cities = x.checked ? [...new Set([...s.cities, x.value])] : s.cities.filter((c) => c !== x.value); }); $('stf').querySelectorAll('[data-rf]').forEach((x) => x.onclick = () => { staff.splice(+x.dataset.rf, 1); paintStf(); }); };
+    paintSvc(); paintStf();
+    $('addSvc').onclick = () => { svcs.push({ name: '', price: '' }); paintSvc(); };
+    $('addStf').onclick = () => { staff.push({ name: '', phone: '', cities: chosen() }); paintStf(); };
+    v.querySelectorAll('input[name=city]').forEach((x) => x.onchange = paintStf);
+    $('nf').onsubmit = async (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const name = String(f.get('name') || '').trim(); if (name.length < 2) return I.toast('اكتب اسم المنشأة', true);
+      const cities = chosen().map((n) => { const c = PRESETS.find((x) => x[0] === n); return { name: c[0], lat: c[1], lng: c[2], radius_km: c[3] }; });
+      const en = String(f.get('name_en') || '').trim();
+      const body = {
+        name, name_en: en, slug: en.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'biz', activity: f.get('activity'), city: chosen()[0] || '',
+        wa_number: f.get('wa_number'), owner_name: f.get('owner_name'), owner_phone: f.get('owner_phone'), plan: f.get('plan'), wants_app: !!f.get('wants_app'), is_demo: !!f.get('is_demo'),
+        services: svcs.filter((s) => String(s.name).trim()).map((s) => ({ name: String(s.name).trim(), price: s.price === '' ? null : Number(s.price) })),
+        cities, staff: staff.filter((s) => String(s.name).trim()), hours: HOURS[f.get('hours')][1] || [],
+        cr_number: f.get('cr_number'), vat_number: f.get('vat_number'), address: f.get('address'), brand_color: f.get('brand_color'), lead_id: p.lead_id || '',
+        settings: f.get('is_demo') ? { pay_provider: 'demo' } : {},
+      };
+      $('nGo').disabled = true;
+      try {
+        const r = await I.api('admin/business/create', body);
+        S.prefill = null;
+        await loadAll();
+        const simAbs = new URL(r.sim_url.replace(/^.*\/ihjizli\//, ''), location.href).href;
+        $('nf').hidden = true;
+        $('nRes').innerHTML = `<div class="card result stack"><h2>${icon('check')} انشأت «${esc(r.business.name)}»</h2>
+          <div class="stack s"><span class="tiny">رابط لوحة المالك (أرسله له)</span><div class="copybox"><code>${esc(r.owner_url)}</code><button class="btn sm" type="button" data-cp="${esc(r.owner_url)}">${icon('copy')}نسخ</button></div></div>
+          <div class="stack s"><span class="tiny">رابط المحاكي (للعرض والتجربة)</span><div class="copybox"><code>${esc(simAbs)}</code><button class="btn sm" type="button" data-cp="${esc(simAbs)}">${icon('copy')}نسخ</button></div></div>
+          <div class="row"><a class="btn" href="${simAbs}" target="_blank" rel="noopener">${icon('wa')}افتح المحاكي</a><a class="btn ghost" href="biz.html?b=${r.business.id}" target="_blank" rel="noopener">${icon('store')}لوحة المنشأة</a><label class="btn ghost">${icon('plus')}ارفع الشعار<input type="file" id="nLogo" accept="image/*" hidden></label><button class="btn ghost" type="button" id="nMore">${icon('plus')}منشأة ثانية</button></div></div>`;
+        $('nRes').querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+        $('nMore').onclick = () => vNew(v);
+        $('nLogo').onchange = (ev) => uploadLogo(r.business.id, ev.target.files[0]);
+        I.toast('انشأت المنشأة ✓');
+      } catch (x) { I.fail(x); $('nGo').disabled = false; }
+    };
+  }
+  function uploadLogo(bizId, file) {
+    if (!file) return;
+    const img = new Image();
+    img.onload = async () => { const s = Math.min(1, 512 / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * s) || 256; c.height = Math.round(img.height * s) || 256; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); try { const r = await I.api('biz/logo', { business_id: bizId, data_url: c.toDataURL('image/png') }); const b = S.biz.find((x) => x.id === bizId); if (b) b.logo_url = r.logo_url; I.toast('انرفع الشعار ✓'); } catch (e) { I.fail(e); } };
+    img.src = URL.createObjectURL(file);
+  }
+
+  // ═════ طلبات الاشتراك ═════
+  function leadRow(l) {
+    const st = LSTATUS[l.status] || LSTATUS.new;
+    return `<div class="item click" data-lead="${l.id}"><div class="h"><b style="font-family:var(--display);font-size:16px">${esc(l.business_name)}</b><span class="badge ${st[1]}">${st[0]}</span>${l.business_id ? '<span class="badge b-ok plain">صارت منشأة</span>' : ''}<span class="sp"></span><span class="tiny">${I.ago(l.created_at)}</span></div>
+      <div class="meta"><span>${esc(l.activity || 'نشاط غير محدد')}</span><span>${esc(l.city || '')}</span><span>${l.package === 'bot_pay' ? PLAN.bot_pay : PLAN.bot}${l.wants_app ? ' + تطبيق' : ''}</span>${l.orders_per_day ? `<span>${esc(l.orders_per_day)} طلب يوميًا</span>` : ''}${l.follow_up ? `<span>متابعة ${esc(I.relDay(l.follow_up))}</span>` : ''}</div></div>`;
+  }
+  function vLeads(v) {
+    const F = [['open', 'المفتوحة'], ['new', 'جديد'], ['contacted', 'تواصلنا'], ['agreed', 'اتفقنا'], ['setup', 'قيد التجهيز'], ['live', 'شغّال'], ['lost', 'ما تم'], ['all', 'الكل']];
+    const match = (l, k) => k === 'all' ? true : k === 'open' ? !['live', 'lost'].includes(l.status) : l.status === k;
+    let list = S.leads.filter((l) => match(l, S.leadFilter));
+    if (S.leadSearch) list = list.filter((l) => [l.business_name, l.contact_name, l.city, l.phone].join(' ').includes(S.leadSearch));
+    v.innerHTML = `<div class="row">${F.map(([k, l]) => `<button class="chip ${S.leadFilter === k ? 'on' : ''}" data-f="${k}" type="button">${l}<span class="n">${S.leads.filter((x) => match(x, k)).length}</span></button>`).join('')}<span class="sp"></span><input id="lS" placeholder="بحث" value="${esc(S.leadSearch)}" style="max-width:220px"></div>
+      <div class="list">${list.map(leadRow).join('') || `<div class="empty">${icon('bell')}<b>ما فيه طلبات هنا</b><span class="tiny">طلبات الاشتراك من الموقع توصل هنا لحظيًا بصوت</span></div>`}</div>`;
+    v.querySelectorAll('[data-f]').forEach((b) => b.onclick = () => { S.leadFilter = b.dataset.f; render(); });
+    $('lS').oninput = I.debounce((e) => { S.leadSearch = e.target.value.trim(); render(); setTimeout(() => { const x = $('lS'); if (x) { x.focus(); x.setSelectionRange(x.value.length, x.value.length); } }, 0); }, 250);
+    v.querySelectorAll('[data-lead]').forEach((el) => el.onclick = () => openLead(el.dataset.lead));
+  }
+  function openLead(id) {
+    const l = S.leads.find((x) => x.id === id); if (!l) return;
+    const waMsg = encodeURIComponent(`هلا ${l.contact_name || ''}، معك احجزلي بخصوص طلب الاشتراك لـ${l.business_name}.`);
+    const d = I.openDrawer(`<div class="dh"><h2 class="grow">${esc(l.business_name)}</h2><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button></div><div class="db">
+      <div class="card flat stack s"><div class="row"><span class="avatar">${esc(I.initials(l.contact_name || l.business_name))}</span><div class="grow"><b>${esc(l.contact_name || 'بدون اسم')}</b><div class="tiny ltr" style="text-align:right">${esc(I.phone(l.phone))}</div></div><a class="btn sm" href="https://wa.me/${esc(l.phone)}?text=${waMsg}" target="_blank" rel="noopener">${icon('wa')}واتساب</a><button class="btn sm ghost" id="lCp">${icon('copy')}نسخ</button></div>
+        <div class="g2 small"><div><span class="tiny">النشاط</span><div>${esc(l.activity || 'غير محدد')}</div></div><div><span class="tiny">المدينة</span><div>${esc(l.city || 'غير محدد')}</div></div><div><span class="tiny">الطلبات يوميًا</span><div>${esc(l.orders_per_day || 'غير محدد')}</div></div><div><span class="tiny">وصل</span><div>${esc(I.ago(l.created_at))}</div></div></div>
+        ${l.notes ? `<div class="hint">${esc(l.notes)}</div>` : ''}</div>
+      <div class="card flat stack s"><div class="g2">
+        <label class="f"><span>الحالة</span><select data-l="status">${Object.entries(LSTATUS).map(([k, [t]]) => `<option value="${k}" ${l.status === k ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+        <label class="f"><span>الباقة</span><select data-l="package"><option value="bot" ${l.package === 'bot' ? 'selected' : ''}>${PLAN.bot}</option><option value="bot_pay" ${l.package === 'bot_pay' ? 'selected' : ''}>${PLAN.bot_pay}</option></select></label>
+        <label class="f"><span>تاريخ المتابعة</span><input type="date" data-l="follow_up" value="${l.follow_up || ''}"></label>
+        <label class="f"><span>المدفوع</span><input type="number" data-l="paid" value="${l.paid || 0}"></label></div>
+        <label class="check"><input type="checkbox" data-l="wants_app" ${l.wants_app ? 'checked' : ''}>يبي تطبيق باسمه</label>
+        <label class="f"><span>ملاحظاتي</span><textarea data-l="admin_notes" rows="3">${esc(l.admin_notes || '')}</textarea></label></div>
+      <div class="row">${l.business_id ? `<a class="btn ghost" href="#biz" id="lBiz">${icon('store')}افتح المنشأة</a>` : `<button class="btn" id="lConv">${icon('store')}حوّلها لمنشأة</button>`}<span class="sp"></span><button class="btn ghost bad" id="lDel">${icon('trash')}حذف</button></div></div>`);
+    $('lCp').onclick = () => I.copy(I.phone(l.phone));
+    d.querySelectorAll('[data-l]').forEach((inp) => inp.onchange = async () => {
+      const k = inp.dataset.l; let v = inp.type === 'checkbox' ? inp.checked : inp.value;
+      if (k === 'paid') v = Number(v) || 0; if (k === 'follow_up' && !v) v = null;
+      const log = [...(l.log || []), { t: new Date().toISOString(), what: `${k}: ${v}` }].slice(-60);
+      try { await q1(sb.from('signup_requests').update({ [k]: v, log }).eq('id', l.id).select('id')); l[k] = v; l.log = log; I.toast('انحفظ ✓'); paintCounts(); } catch (e) { I.fail(e); }
+    });
+    if ($('lConv')) $('lConv').onclick = () => { S.prefill = { lead_id: l.id, name: l.business_name, activity: l.activity, city: l.city, contact_name: l.contact_name, phone: l.phone, package: l.package, wants_app: l.wants_app }; go('new'); };
+    if ($('lBiz')) $('lBiz').onclick = (e) => { e.preventDefault(); I.closeAll(); go('biz'); setTimeout(() => openBiz(l.business_id), 50); };
+    $('lDel').onclick = async () => { if (!confirm('حذف الطلب نهائيًا؟')) return; try { await q1(sb.from('signup_requests').delete().eq('id', l.id).select('id')); S.leads = S.leads.filter((x) => x.id !== l.id); I.closeAll(); render(); paintCounts(); } catch (e) { I.fail(e); } };
+  }
+
+  // ═════ الاشتراكات ═════
+  function vSubs(v) {
+    const rows = S.biz.filter((b) => !b.is_demo);
+    const live = rows.filter((b) => b.status === 'live');
+    const totalPaid = S.pays.filter((p) => rows.some((b) => b.id === p.business_id)).reduce((a, p) => a + Number(p.amount), 0);
+    const month = I.today().slice(0, 7);
+    const monthPaid = S.pays.filter((p) => String(p.paid_on).startsWith(month)).reduce((a, p) => a + Number(p.amount), 0);
+    v.innerHTML = `<div class="kpis"><div class="kpi accent"><b>${money(live.reduce((a, b) => a + mrr(b), 0))}</b><span>الشهري للمنشآت الشغّالة</span></div><div class="kpi"><b>${money(monthPaid)}</b><span>مستلم هذا الشهر</span></div><div class="kpi"><b>${money(totalPaid)}</b><span>كل المستلم</span></div><div class="kpi"><b>${live.length}</b><span>اشتراكات شغّالة</span></div></div>
+      <div class="tbl"><table class="t"><thead><tr><th>المنشأة</th><th>الباقة</th><th>الشهري</th><th>البداية</th><th>التجديد القادم</th><th>آخر دفعة</th><th></th></tr></thead><tbody>
+      ${rows.map((b) => { const s = S.subs[b.id] || {}; const last = S.pays.find((p) => p.business_id === b.id); const d = daysTo(s.next_renewal);
+        return `<tr><td><b>${esc(b.name)}</b><div class="tiny">${(BSTATUS[b.status] || [''])[0]}</div></td><td class="small">${PLAN[b.plan]}${b.wants_app ? ' + تطبيق' : ''}</td><td class="num">${money(mrr(b))}</td><td class="small">${s.started_on ? esc(I.dayName(s.started_on)) : '<span class="tiny">لم يبدأ</span>'}</td><td class="small">${s.next_renewal ? `${esc(I.dayName(s.next_renewal))}${d !== null && d >= 0 && d <= 7 ? ` <span class="badge b-gold plain">بعد ${d} ${d === 1 ? 'يوم' : 'أيام'}</span>` : ''}` : '<span class="tiny">غير محدد</span>'}</td><td class="small">${last ? `${money(last.amount)} · ${esc(I.dayName(last.paid_on))}` : '<span class="tiny">ما فيه</span>'}</td><td><button class="btn sm ghost" data-pay="${b.id}">${icon('plus')}دفعة</button></td></tr>`; }).join('') || '<tr><td colspan="7" class="tiny">ما فيه منشآت</td></tr>'}
+      </tbody></table></div>`;
+    v.querySelectorAll('[data-pay]').forEach((x) => x.onclick = () => payModal(S.biz.find((b) => b.id === x.dataset.pay), () => render()));
+  }
+
+  // ═════ دليل التشغيل ═════
+  function vOnboard(v) {
+    v.innerHTML = `<section class="guide">
+      <h2>دليل تشغيل عميل جديد: من التوقيع إلى التسليم</h2>
+      <p class="intro">نفس ترتيب «قائمة التجهيز» العشرية في كل منشأة. الخطوات اللي عليها «النظام» تتعلّم لحالها لما تكتمل.</p>
+      <div class="gpath"><span>التوقيع</span><span>المتطلبات</span><span>الإعداد</span><span>المحاكي</span><span>الرقم</span><span>الربط</span><span>ميتا</span><span>القوالب</span><span>الدفع</span><span>التسليم</span></div>
+      <div class="gs"><h3>التوقيع والدفعة الأولى</h3><div class="tagz"><span class="tg you">عليك</span></div>
+        <ul><li>اتفاقية من صفحة وحدة (البنود في دليل البيع، خطوة الاتفاق).</li><li>استلم نص التأسيس الأول، وسجّله من تبويب الاشتراكات ← «دفعة» بنوع تأسيس.</li><li>لو جا من الموقع: افتح طلب الاشتراك ← «حوّلها لمنشأة» عشان تنربط البيانات.</li></ul></div>
+      <div class="gs"><h3>المتطلبات من العميل</h3><div class="tagz"><span class="tg cl">على العميل</span></div>
+        <div class="req">
+          <div><b>سجل تجاري ساري</b><span>لتوثيق النشاط عند ميتا ولبوابة الدفع. يُرفع في مركز الأمان باسم مطابق للسجل.</span></div>
+          <div><b>رقم واتساب للنشاط</b><span>شريحة جديدة أسهل. ولو رقمه الحالي على تطبيق واتساب بزنس: الربط يكون Coexistence (يبقى التطبيق شغّال والنظام معه)، ويلزم يفتح التطبيق مرة كل أقل من 14 يوم.</span></div>
+          <div><b>الشعار والخدمات والأسعار</b><span>الشعار PNG أو JPG. الخدمات بأسمائها (24 حرف كحد أقصى)، والسعر لو ثابت.</span></div>
+          <div><b>أوقات العمل والعطل ومدن التغطية</b><span>عشان المواعيد المتاحة تطلع صحيحة.</span></div>
+          <div><b>الموظفون ومدنهم وجوالاتهم</b><span>كل موظف ياخذ رابط لوحته (الطلب، وصلت، الفاتورة).</span></div>
+          <div><b>بوابة دفع (لباقة الدفع)</b><span>حساب ميسر باسم المنشأة: السجل والهوية والآيبان. بعد الموافقة يعطينا المفتاح السري والعام.</span></div>
+        </div></div>
+      <div class="gs"><h3>إعداد المنشأة (عشر دقايق)</h3><div class="tagz"><span class="tg you">عليك</span><span class="tg sys">النظام يعلّمها</span></div>
+        <ol><li>تبويب «منشأة جديدة»: الاسم والباقة والخدمات والمدن والأوقات والموظفون، ثم «أنشئ المنشأة».</li><li>يطلع لك رابط لوحة المالك ورابط المحاكي. ارفع الشعار من نفس الشاشة.</li><li>التفاصيل (أوقات كل يوم، العطل، نصوص الرد، الضريبة) من لوحة المنشأة.</li></ol>
+        <button class="btn sm go" type="button" data-go="new">${icon('plus')}منشأة جديدة</button></div>
+      <div class="gs"><h3>تجربة كاملة في المحاكي</h3><div class="tagz"><span class="tg you">عليك</span><span class="tg sys">النظام يعلّمها</span></div>
+        <ul><li>افتح المحاكي ولوحة المنشأة جنب بعض: «السلام عليكم» ← احجز من هنا ← الموقع ← اليوم ← الوقت. الطلب ينزل باللوحة بصوت الفلوس.</li><li>من لوحة الموظف: في الطريق ← وصلت ← الفاتورة. يوصل في المحاكي PDF ورابط دفع.</li><li>اعرضها على العميل نفسه قبل ربط رقمه، عشان يعتمد النصوص والخدمات.</li></ul></div>
+      <div class="gs"><h3>رقم واتساب للنشاط</h3><div class="tagz"><span class="tg cl">على العميل</span></div>
+        <ul><li>الرقم لازم يستقبل رمز تحقق (رسالة أو اتصال) وقت الربط، والعميل معك على الجوال.</li><li>لو رقم جديد: يُسجّل مباشرة على الواجهة الرسمية بدون تطبيق.</li></ul></div>
+      <div class="gs"><h3>ربط الرقم بمزوّد الربط</h3><div class="tagz"><span class="tg you">عليك</span><span class="tg sys">النظام يعلّمها</span></div>
+        <ol><li>المزوّد على حساب العميل (Dualhook نحو 45 ريال شهريًا، أو 360dialog، أو ميتا مباشرة). الربط من صفحة التسجيل عند المزوّد، والعميل يدخل بحساب فيسبوك حقه.</li><li>من المزوّد خذ: Phone Number ID وWABA ID ومفتاح الإرسال.</li><li>في المنشأة ← «ربط الرقم»: الصقها واضغط «حفظ وفحص الاتصال».</li><li>انسخ رابط الويبهوك ورمز التحقق والصقهم عند المزوّد (الرسائل والحالات، وsmb_message_echoes للـCoexistence).</li><li>أرسل «السلام عليكم» للرقم من جوالك وتأكد يرد.</li></ol></div>
+      <div class="gs"><h3>توثيق النشاط عند ميتا</h3><div class="tagz"><span class="tg cl">مع العميل</span></div>
+        <ul><li>حساب ميتا للأعمال ← الإعدادات ← مركز الأمان ← بدء التوثيق: الاسم القانوني مطابق للسجل، والعنوان والجوال والموقع.</li><li>المراجعة من يومين إلى 14 يوم عمل. حدّث حالتها في «القوالب والتوثيق».</li><li>النظام يشتغل قبل التوثيق، والتوثيق يرفع حدود الإرسال ويعتمد الاسم الظاهر.</li></ul></div>
+      <div class="gs"><h3>اعتماد القوالب</h3><div class="tagz"><span class="tg you">عليك</span><span class="tg sys">النظام يعلّمها</span></div>
+        <ul><li>المنشأة ← «القوالب والتوثيق» ← «ارفع القوالب لميتا» (8 قوالب بالعربي والإنجليزي).</li><li>بعد دقايق أو ساعات اضغط «تحديث الحالة». المعتمدة تخلي التذكير والفاتورة توصل حتى بعد 24 ساعة من آخر رسالة للعميل.</li></ul></div>
+      <div class="gs"><h3>بوابة الدفع (ميسر)</h3><div class="tagz"><span class="tg cl">على العميل</span><span class="tg sys">النظام يعلّمها</span></div>
+        <ul><li>العميل يسجل في ميسر باسم المنشأة. بعد التفعيل: لوحة ميسر ← الإعدادات ← مفاتيح API.</li><li>في لوحة المنشأة ← الإعدادات ← الدفع: يلصق المفتاح السري والعام (أو أنت معه). النظام يتأكد من المفتاح بدون أي عملية دفع.</li><li>الفاتورة تطلع برابط دفع (مدى، أبل باي، البطاقة)، والمبلغ يدخل حسابه مباشرة، وبعد الدفع يوصل العميل «وصلنا دفعك» وينقفل الطلب.</li></ul></div>
+      <div class="gs"><h3>التسليم والتدريب</h3><div class="tagz"><span class="tg you">عليك</span><span class="tg sys">يتعلّم لما تصير الحالة «شغّالة»</span></div>
+        <ol><li>جلسة 30 دقيقة: طلب حقيقي من جوال أحدهم، ويشوفونه يوصل اللوحة بالصوت والموظف.</li><li>أرسل رابط لوحة المالك، وخلّه يرسل روابط الموظفين من تبويب «الموظفون».</li><li>علّمه: إيقاف الرد الآلي، الأوقات والعطل، المحادثات اللي تحتاج رد، والتقرير الشهري.</li><li>استلم الدفعة الثانية، وحط تاريخ بداية الشهري والتجديد، وغيّر حالة المنشأة إلى «شغّالة».</li></ol></div>
+    </section>`;
+    v.querySelectorAll('[data-go]').forEach((a) => a.onclick = () => go(a.dataset.go));
+  }
+
+  // ═════ دليل البيع ═════
+  function vSales(v) {
+    v.innerHTML = document.getElementById('tplSales').innerHTML;
+    v.querySelectorAll('.scr button').forEach((b) => b.onclick = () => { const t = b.parentElement.querySelector('.tx'); I.copy(t ? t.textContent : ''); });
+  }
+
+  // ═════ البث المباشر ═════
+  async function refreshStats() { try { const st = await q1(sb.rpc('ihj_admin_stats')); S.stats = Object.fromEntries(st.map((x) => [x.business_id, x])); } catch (e) { /* */ } }
+  sb.channel('admin').on('postgres_changes', { event: '*', schema: 'public', table: 'signup_requests' }, (p) => {
+    if (p.eventType === 'INSERT' && p.new && !S.seenLeads.has(p.new.id)) { S.seenLeads.add(p.new.id); S.leads.unshift(p.new); I.alertNew('طلب اشتراك جديد', `${p.new.business_name}${p.new.city ? ' · ' + p.new.city : ''}`); }
+    else if (p.eventType === 'UPDATE' && p.new) { const i = S.leads.findIndex((x) => x.id === p.new.id); if (i >= 0) S.leads[i] = p.new; }
+    else if (p.eventType === 'DELETE' && p.old) S.leads = S.leads.filter((x) => x.id !== p.old.id);
+    paintCounts(); if (S.tab === 'leads' || S.tab === 'home') render();
+  }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => { refreshStats(); })
+    .subscribe((st) => { const el = $('live'); if (el) el.classList.toggle('on', st === 'SUBSCRIBED'); });
+
+  shell();
+  go(TABS.some((t) => t[0] === location.hash.slice(1)) ? location.hash.slice(1) : 'home');
+  window.__admin = { S, go, openBiz };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+.secrets/
+node_modules/
+tests/out/
+*.local.*
+.claude/
+supabase/.temp/
+supabase/.branches/

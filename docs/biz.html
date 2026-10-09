@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0B7A55">
+<title>لوحة المنشأة</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/ihj.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+.asadmin{background:var(--gold);color:var(--gold-ink);padding:7px 16px;font-size:13.5px;font-weight:700;display:flex;gap:10px;align-items:center}
+.asadmin a{color:inherit}
+.ord .acts{display:flex;gap:6px;flex-wrap:wrap}
+.ord .who{display:flex;gap:10px;align-items:center;min-width:0}
+.ord .who b{font-family:var(--display);font-size:15.5px}
+.ord .when{font-family:var(--display);font-weight:800;font-size:15px}
+.ord.cancelled{opacity:.62}
+.slotgrid{display:flex;flex-wrap:wrap;gap:6px}
+.slotgrid button{border:1.5px solid var(--line);background:var(--card);border-radius:9px;padding:6px 10px;font-size:13.5px;cursor:pointer}
+.slotgrid button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.conv{display:grid;gap:6px;background:var(--soft2);border:1px solid var(--line);border-radius:var(--r);padding:12px;max-height:52vh;overflow:auto}
+.conv .m{max-width:82%;padding:7px 11px;border-radius:12px;font-size:14px;white-space:pre-wrap;line-height:1.55}
+.conv .m.c{background:var(--card);align-self:flex-start;justify-self:start;border:1px solid var(--line)}
+.conv .m.b{background:var(--soft);justify-self:end}
+.conv .m.o{background:color-mix(in srgb,var(--gold) 30%,var(--card));justify-self:end}
+.conv .m small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.hrow{display:grid;grid-template-columns:110px auto 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.hrow:last-child{border-bottom:0}
+.hrow .ranges{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hrow .rg{display:flex;gap:4px;align-items:center;background:var(--soft2);border-radius:10px;padding:4px 6px}
+.hrow input[type=time]{width:auto;padding:5px 7px;font-size:14px}
+@media (max-width:640px){ .hrow{grid-template-columns:1fr auto} .hrow .ranges{grid-column:1/-1} }
+.city-map{height:280px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.txt-row{display:grid;gap:6px}
+.txt-row .lbl{display:flex;gap:8px;align-items:center}
+.more-sheet a{display:flex;gap:12px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--fg);font-weight:600}
+.more-sheet a svg{width:21px;height:21px;color:var(--accent)}
+.inv-items{display:grid;gap:8px}
+.inv-item{display:grid;grid-template-columns:1fr 70px 100px 36px;gap:6px;align-items:center}
+@media (max-width:480px){ .inv-item{grid-template-columns:1fr 56px 84px 34px} }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/ihj.js"></script>
+<script>
+(async function () {
+  const I = window.IHJ, { $, esc, icon, money, badge } = I;
+  const q = new URLSearchParams(location.search);
+  I.loading('نفتح لوحة المنشأة…');
+
+  // ───── الدخول ─────
+  let session = null, asAdmin = false, me = null;
+  try {
+    if (q.get('b') && !location.hash.includes('k=')) { const r = await I.boot('ihj-admin'); session = r.session; me = r.me; }
+    if (!session || !me || !me.admin) { const r = await I.boot('ihj-owner'); session = r.session; me = r.me; }
+  } catch (e) { return I.gate('الرابط غير صالح', 'اطلب رابط لوحتك الجديد من احجزلي', 'err'); }
+  if (!session || !me) return I.gate('افتح رابط لوحتك', 'لوحة المنشأة تنفتح من الرابط الخاص اللي وصلك', 'err');
+  const ownerOf = me.members.find((m) => m.role === 'owner');
+  const BIZ = (me.admin && q.get('b')) ? q.get('b') : ownerOf && ownerOf.business_id;
+  if (!BIZ) return I.gate('ما فيه منشأة', 'هذا الرابط ما هو لوحة منشأة', 'err');
+  asAdmin = me.admin && !ownerOf;
+  const sb = I.sb;
+
+  // ───── الحالة ─────
+  const S = { biz: null, set: null, cities: [], services: [], staff: [], hours: [], holidays: [], orders: [], handoffs: [], customers: {}, tab: 'orders', filter: 'upcoming', search: '', seen: new Set(), ready: false, links: [] };
+  const TABS = [
+    ['orders', 'الطلبات', 'orders'], ['chats', 'المحادثات', 'chat'], ['staff', 'الموظفون', 'users'], ['catalog', 'الخدمات والمدن', 'box'],
+    ['hours', 'الأوقات والعطل', 'clock'], ['texts', 'نصوص الرد', 'text'], ['report', 'التقرير', 'chart'], ['settings', 'الإعدادات', 'gear'],
+  ];
+  const BNAV = ['orders', 'chats', 'staff', 'report', 'more'];
+
+  async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
+  async function loadAll() {
+    const since = new Date(Date.now() - 62 * 86400000).toISOString();
+    const [biz, set, cities, services, staff, hours, holidays, orders, handoffs] = await Promise.all([
+      q1(sb.from('businesses').select('*').eq('id', BIZ).single()),
+      q1(sb.from('settings').select('*').eq('business_id', BIZ).single()),
+      q1(sb.from('cities').select('*').eq('business_id', BIZ).order('sort').order('created_at')),
+      q1(sb.from('services').select('*').eq('business_id', BIZ).order('sort').order('created_at')),
+      q1(sb.from('staff').select('*').eq('business_id', BIZ).order('created_at')),
+      q1(sb.from('hours').select('*').eq('business_id', BIZ).order('weekday').order('open_time')),
+      q1(sb.from('holidays').select('*').eq('business_id', BIZ).gte('day', I.today()).order('day')),
+      q1(sb.from('orders').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused)').eq('business_id', BIZ).gte('slot_start', since).order('slot_start', { ascending: false }).limit(600)),
+      q1(sb.from('handoffs').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused,paused_reason)').eq('business_id', BIZ).is('resolved_at', null).order('created_at', { ascending: false })),
+    ]);
+    Object.assign(S, { biz, set, cities, services, staff, hours, holidays, orders, handoffs });
+    orders.forEach((o) => S.seen.add(o.id));
+  }
+  try { await loadAll(); } catch (e) { console.error(e); return I.gate('ما قدرنا نفتح اللوحة', 'جرّب تحدّث الصفحة', 'err'); }
+  I.setTitle(`${S.biz.name} · لوحة المنشأة`);
+
+  const staffName = (id) => (S.staff.find((s) => s.id === id) || {}).name || '';
+  const cityName = (id) => (S.cities.find((s) => s.id === id) || {}).name || '';
+  const svcName = (id) => (S.services.find((s) => s.id === id) || {}).name || '';
+  const custName = (c) => c ? (c.name || (c.is_sim ? 'عميل المحاكي' : I.phone(c.wa_id))) : '';
+  const isOpen = (o) => ['confirmed', 'on_the_way', 'arrived', 'invoiced'].includes(o.status);
+
+  // ───── الهيكل ─────
+  function shell() {
+    const nav = TABS.map(([k, t, ic]) => `<a href="#${k}" data-tab="${k}">${icon(ic)}<span>${t}</span>${k === 'chats' ? '<span class="cnt" id="cntChats" hidden></span>' : k === 'orders' ? '<span class="cnt g" id="cntOrders" hidden></span>' : ''}</a>`).join('');
+    const bnav = BNAV.map((k) => { const t = TABS.find((x) => x[0] === k); return k === 'more' ? `<a href="#more" data-tab="more">${icon('menu')}<span>المزيد</span></a>` : `<a href="#${k}" data-tab="${k}">${icon(t[2])}<span>${t[1]}</span>${k === 'chats' ? '<span class="cnt" id="cntChats2" hidden></span>' : ''}</a>`; }).join('');
+    $('root').innerHTML = `
+    ${asAdmin ? `<div class="asadmin">${icon('shield')}<span>تشوف لوحة «${esc(S.biz.name)}» كمدير</span><span class="sp"></span><a href="admin.html">رجوع للوحتي</a></div>` : ''}
+    <div class="app">
+      <aside class="side">
+        <div class="brand">${I.logoHtml(S.biz)}<div><b>${esc(S.biz.name)}</b><small>لوحة المنشأة</small></div></div>
+        <nav class="nav">${nav}</nav>
+        <div class="foot">
+          <label class="sw" title="الرد الآلي على الواتساب"><input type="checkbox" id="botSw" ${S.biz.bot_enabled ? 'checked' : ''}><i></i><span id="botLbl"></span></label>
+          <button class="btn ghost sm" id="soundBtn" type="button"></button>
+        </div>
+      </aside>
+      <div class="main">
+        <header class="top"><div class="grow"><h1 id="tTitle"></h1><div class="sub" id="tSub"></div></div>
+          <span class="live" id="live"><i></i><span>مباشر</span></span>
+          <button class="ib" id="soundIb" type="button" aria-label="صوت التنبيه"></button>
+        </header>
+        <main class="content" id="view"></main>
+      </div>
+      <nav class="bnav">${bnav}</nav>
+    </div>`;
+    document.querySelectorAll('[data-tab]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.tab); }));
+    $('botSw').addEventListener('change', toggleBot);
+    $('soundBtn').onclick = $('soundIb').onclick = () => { I.toggleAlerts(); paintSound(); };
+    paintSound(); paintBot(); paintCounts();
+  }
+  function paintSound() { const on = I.alertsState(); $('soundBtn').innerHTML = `${icon(on ? 'bell' : 'belloff')}${on ? 'صوت التنبيه شغّال' : 'صوت التنبيه موقف'}`; $('soundIb').innerHTML = icon(on ? 'bell' : 'belloff'); $('soundIb').classList.toggle('on', on); }
+  function paintBot() { $('botLbl').textContent = S.biz.bot_enabled ? 'الرد الآلي شغّال' : 'الرد الآلي موقف'; $('botSw').checked = !!S.biz.bot_enabled; }
+  function paintCounts() {
+    const n = S.handoffs.length;
+    ['cntChats', 'cntChats2'].forEach((id) => { const el = $(id); if (el) { el.hidden = !n; el.textContent = n; } });
+    const today = S.orders.filter((o) => I.parts(o.slot_start).ymd === I.today() && isOpen(o)).length;
+    const el = $('cntOrders'); if (el) { el.hidden = !today; el.textContent = today; }
+  }
+  async function toggleBot() {
+    const on = $('botSw').checked;
+    try { await q1(sb.from('businesses').update({ bot_enabled: on }).eq('id', BIZ).select('id')); S.biz.bot_enabled = on; paintBot(); I.toast(on ? 'الرد الآلي شغّال ✓' : 'الرد الآلي موقف'); }
+    catch (e) { $('botSw').checked = !on; I.fail(e); }
+  }
+
+  function go(tab) {
+    if (tab === 'more') return moreSheet();
+    I.closeAll();
+    S.tab = tab; history.replaceState(null, '', '#' + tab);
+    document.querySelectorAll('[data-tab]').forEach((a) => a.classList.toggle('on', a.dataset.tab === tab));
+    const t = TABS.find((x) => x[0] === tab);
+    $('tTitle').textContent = t ? t[1] : '';
+    $('tSub').textContent = tab === 'orders' ? `${S.biz.name}` : '';
+    render();
+    window.scrollTo(0, 0);
+  }
+  function moreSheet() {
+    const m = I.modal(`<div class="mh"><h3 class="grow">المزيد</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb more-sheet">${['catalog', 'hours', 'texts', 'settings'].map((k) => { const t = TABS.find((x) => x[0] === k); return `<a href="#${k}" data-go="${k}">${icon(t[2])}${t[1]}</a>`; }).join('')}</div>`);
+    m.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.go); }));
+  }
+  function render() {
+    const v = $('view');
+    if (['settings', 'report', 'staff'].includes(S.tab) && v.dataset.tab !== S.tab) v.innerHTML = '<div class="card" style="display:grid;place-items:center;padding:40px"><div class="spin"></div></div>';
+    v.dataset.tab = S.tab;
+    ({ orders: vOrders, chats: vChats, staff: vStaff, catalog: vCatalog, hours: vHours, texts: vTexts, report: vReport, settings: vSettings }[S.tab] || vOrders)(v);
+  }
+
+  // ═════ الطلبات ═════
+  function vOrders(v) {
+    const t = I.today(), monthStart = t.slice(0, 8) + '01';
+    const todayN = S.orders.filter((o) => I.parts(o.slot_start).ymd === t && o.status !== 'cancelled').length;
+    const upcoming = S.orders.filter((o) => isOpen(o) && new Date(o.slot_end) > Date.now()).length;
+    const unpaid = S.orders.filter((o) => o.status === 'invoiced').length;
+    const monthDone = S.orders.filter((o) => o.status === 'done' && I.parts(o.slot_start).ymd >= monthStart);
+    const F = [['upcoming', 'القادمة'], ['today', 'اليوم'], ['action', 'تحتاج إجراء'], ['done', 'المكتملة'], ['cancelled', 'الملغية'], ['all', 'الكل']];
+    const list = filtered();
+    v.innerHTML = `
+      <div class="kpis">
+        <div class="kpi accent"><b>${todayN}</b><span>طلبات اليوم</span></div>
+        <div class="kpi"><b>${upcoming}</b><span>طلبات قادمة</span></div>
+        <div class="kpi"><b>${unpaid}</b><span>بانتظار الدفع</span></div>
+        <div class="kpi"><b>${monthDone.length}</b><span>مكتملة هذا الشهر</span></div>
+      </div>
+      <div class="row">
+        ${F.map(([k, l]) => `<button class="chip ${S.filter === k ? 'on' : ''}" data-f="${k}" type="button">${l}<span class="n">${count(k)}</span></button>`).join('')}
+        <span class="sp"></span>
+        <input id="oSearch" placeholder="بحث برقم الطلب أو الاسم أو الجوال" value="${esc(S.search)}" style="max-width:280px">
+      </div>
+      <div class="list" id="oList">${list.length ? list.map(orderCard).join('') : `<div class="empty">${icon('orders')}<b>ما فيه طلبات هنا</b><span class="tiny">الطلبات توصل من الواتساب لحالها، وتطلع هنا مع صوت التنبيه</span></div>`}</div>`;
+    v.querySelectorAll('[data-f]').forEach((b) => b.addEventListener('click', () => { S.filter = b.dataset.f; render(); }));
+    $('oSearch').addEventListener('input', I.debounce((e) => { S.search = e.target.value.trim(); const l = filtered(); $('oList').innerHTML = l.length ? l.map(orderCard).join('') : `<div class="empty">${icon('search')}<b>ما لقينا شي</b></div>`; bindCards(); }, 200));
+    bindCards();
+  }
+  function count(k) { return S.orders.filter((o) => match(o, k)).length; }
+  function match(o, k) {
+    const t = I.today();
+    switch (k) {
+      case 'today': return I.parts(o.slot_start).ymd === t && o.status !== 'cancelled';
+      case 'upcoming': return isOpen(o) && new Date(o.slot_end).getTime() > Date.now() - 3 * 3600000;
+      case 'action': return (isOpen(o) && !o.staff_id) || o.status === 'invoiced' || (isOpen(o) && new Date(o.slot_end).getTime() < Date.now() - 3 * 3600000);
+      case 'done': return o.status === 'done';
+      case 'cancelled': return o.status === 'cancelled';
+      default: return true;
+    }
+  }
+  function filtered() {
+    let l = S.orders.filter((o) => match(o, S.filter));
+    if (S.search) { const s = S.search.replace(/^#/, ''); l = l.filter((o) => String(o.number).includes(s) || (o.customer && ((o.customer.name || '').includes(s) || I.phone(o.customer.wa_id).includes(s.replace(/\D/g, '') || '¤')))); }
+    const asc = S.filter === 'upcoming' || S.filter === 'today' || S.filter === 'action';
+    return l.sort((a, b) => asc ? new Date(a.slot_start) - new Date(b.slot_start) : new Date(b.slot_start) - new Date(a.slot_start));
+  }
+  function orderCard(o) {
+    const c = o.customer || {};
+    const staffSel = isOpen(o) ? `<select data-assign="${o.id}" aria-label="الموظف" style="width:auto;padding:5px 8px;font-size:13.5px"><option value="">بدون موظف</option>${S.staff.filter((s) => s.active || s.id === o.staff_id).map((s) => `<option value="${s.id}" ${s.id === o.staff_id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select>` : (o.staff_id ? `<span>${icon('users')}${esc(staffName(o.staff_id))}</span>` : '');
+    return `<div class="item ord click ${o.status} ${S.fresh && S.fresh.has(o.id) ? 'new' : ''}" data-oid="${o.id}">
+      <div class="h"><span class="no">#${o.number}</span>${badge(o.status)}${o.is_test ? '<span class="badge b-test plain">تجربة</span>' : ''}${isOpen(o) && !o.staff_id ? '<span class="badge b-warn plain">بدون موظف</span>' : ''}<span class="sp"></span><span class="when">${I.when(o.slot_start)}</span></div>
+      <div class="who"><span class="avatar">${esc(I.initials(custName(c)))}</span><div class="grow"><b>${esc(custName(c))}</b><div class="tiny">${c.is_sim ? 'من المحاكي' : `<span class="ltr">${esc(I.phone(c.wa_id))}</span>`}${c.bot_paused ? ' · <span style="color:var(--warn)">البوت موقف معه</span>' : ''}</div></div></div>
+      <div class="meta">${o.city_id ? `<span>${icon('pin')}${esc(cityName(o.city_id))}</span>` : ''}${o.service_id ? `<span>${icon('box')}${esc(svcName(o.service_id))}</span>` : ''}${o.price != null ? `<span>${icon('money')}${money(o.price)} ر.س</span>` : ''}${staffSel}</div>
+    </div>`;
+  }
+  function bindCards() {
+    document.querySelectorAll('[data-oid]').forEach((el) => el.addEventListener('click', (e) => { if (e.target.closest('select,button,a')) return; openOrder(el.dataset.oid); }));
+    document.querySelectorAll('[data-assign]').forEach((s) => s.addEventListener('change', async () => {
+      try { await I.api('order/assign', { order_id: s.dataset.assign, staff_id: s.value || null }); const o = S.orders.find((x) => x.id === s.dataset.assign); if (o) o.staff_id = s.value || null; I.toast('انسند الطلب ✓'); render(); }
+      catch (e) { I.fail(e); render(); }
+    }));
+  }
+
+  async function openOrder(id) {
+    const o = S.orders.find((x) => x.id === id); if (!o) return;
+    const c = o.customer || {};
+    const d = I.openDrawer(`<div class="dh"><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button><h2 class="grow">طلب #${o.number}</h2>${badge(o.status)}</div><div class="db" id="od"><div class="spin"></div></div>`);
+    let events = [], inv = null;
+    try {
+      [events, inv] = await Promise.all([
+        q1(sb.from('order_events').select('*').eq('order_id', id).order('id')),
+        q1(sb.from('invoices').select('number,total,status,paid_method,created_at').eq('order_id', id).neq('status', 'void').order('created_at', { ascending: false }).limit(1)).then((r) => r[0] || null),
+      ]);
+    } catch (e) { /* */ }
+    const EV = { created: 'انحجز من الواتساب', assigned: 'انسند لموظف', rescheduled: 'تغيّر الموعد', cancelled: 'انلغى', on_the_way: 'الموظف في الطريق', arrived: 'الموظف وصل', invoiced: 'انرسلت الفاتورة', paid: 'وصل الدفع', done: 'اكتمل', reminder: 'انرسل التذكير' };
+    const maps = o.maps_url || (o.lat ? `https://maps.google.com/?q=${o.lat},${o.lng}` : '');
+    d.querySelector('#od').innerHTML = `
+      <div class="card flat stack s">
+        <div class="row"><span class="avatar">${esc(I.initials(custName(c)))}</span><div class="grow"><b style="font-family:var(--display);font-size:16px">${esc(custName(c))}</b><div class="tiny">${c.is_sim ? 'من المحاكي' : `<span class="ltr">${esc(I.phone(c.wa_id))}</span>`}</div></div>
+          ${c.is_sim ? '' : `<a class="btn sm ghost" href="${I.waLink(c.wa_id)}" target="_blank" rel="noopener">${icon('wa')}واتساب</a><a class="btn sm ghost" href="tel:+${esc(c.wa_id)}">${icon('phone')}اتصال</a>`}</div>
+        <div class="g2 small">
+          <div><span class="tiny">الموعد</span><div><b>${esc(I.day(o.slot_start))}</b> · ${I.time(o.slot_start)}</div></div>
+          <div><span class="tiny">المدينة</span><div>${esc(cityName(o.city_id) || 'غير محدد')}</div></div>
+          <div><span class="tiny">الخدمة</span><div>${esc(svcName(o.service_id) || 'غير محدد')}</div></div>
+          <div><span class="tiny">السعر</span><div>${o.price != null ? money(o.price) + ' ر.س' : 'بعد الزيارة'}</div></div>
+        </div>
+        ${maps ? `<a class="btn ghost sm" href="${esc(maps)}" target="_blank" rel="noopener" style="justify-self:start">${icon('pin')}افتح الموقع في الخرائط</a>` : ''}
+      </div>
+      ${isOpen(o) ? `<div class="card flat stack s"><h3>تحريك الطلب</h3>
+        <div class="row">
+          ${['confirmed'].includes(o.status) ? `<button class="btn sm" data-act="on_the_way">${icon('car')}في الطريق</button>` : ''}
+          ${['confirmed', 'on_the_way'].includes(o.status) ? `<button class="btn sm soft" data-act="arrived">${icon('pin')}وصل الموظف</button>` : ''}
+          ${['confirmed', 'on_the_way', 'arrived', 'invoiced'].includes(o.status) ? `<button class="btn sm gold" data-act="invoice">${icon('file')}${o.status === 'invoiced' ? 'فاتورة جديدة' : 'الفاتورة'}</button>` : ''}
+          ${o.status === 'invoiced' ? `<button class="btn sm soft" data-act="cash">${icon('money')}وصل الدفع يدويًا</button>` : ''}
+          ${['confirmed', 'on_the_way', 'arrived'].includes(o.status) ? `<button class="btn sm ghost" data-act="done">${icon('check')}إكمال بدون فاتورة</button>` : ''}
+        </div>
+        ${o.status === 'confirmed' ? `<div class="row"><button class="btn sm ghost" data-act="resched">${icon('cal')}تغيير الموعد</button><button class="btn sm bad ghost" data-act="cancel">${icon('x')}إلغاء الطلب</button></div>` : ''}
+      </div>` : ''}
+      ${inv ? `<div class="card flat row"><span class="grow">فاتورة رقم <b>${inv.number}</b> · ${money(inv.total)} ر.س · ${inv.status === 'paid' ? `<span class="badge b-done">مدفوعة ${esc(inv.paid_method || '')}</span>` : '<span class="badge b-invoiced">غير مدفوعة</span>'}</span><button class="btn sm ghost" data-act="pdf">${icon('file')}عرض الفاتورة</button></div>` : ''}
+      <div class="card flat stack s"><h3>ملاحظات داخلية</h3><textarea id="oNotes" rows="2" placeholder="تظهر لكم فقط">${esc(o.notes || '')}</textarea><button class="btn sm ghost" data-act="notes" style="justify-self:start">حفظ الملاحظة</button></div>
+      <div class="card flat"><h3>سجل الطلب</h3><div class="tl" style="margin-top:10px">${events.map((e) => `<div><b>${esc(EV[e.kind] || e.kind)}</b>${e.kind === 'assigned' && e.data && e.data.staff_id ? ' · ' + esc(staffName(e.data.staff_id)) : ''}${e.kind === 'rescheduled' && e.data && e.data.slot ? ' · ' + esc(I.when(e.data.slot)) : ''}<span>${esc(I.ago(e.created_at))}</span></div>`).join('') || '<div class="tiny">لا يوجد</div>'}</div></div>`;
+    d.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => orderAct(o, b.dataset.act, b)));
+  }
+
+  async function orderAct(o, act, btn) {
+    const run = async (path, body, okMsg) => {
+      btn.disabled = true;
+      try { const r = await I.api(path, { order_id: o.id, ...(body || {}) }); I.toast(okMsg); await refreshOrder(o.id); openOrder(o.id); return r; }
+      catch (e) { I.fail(e); btn.disabled = false; }
+    };
+    if (act === 'on_the_way') return run('order/on_the_way', {}, 'انرسل للعميل إن الموظف في الطريق ✓');
+    if (act === 'arrived') return run('order/arrived', {}, 'تم ✓');
+    if (act === 'done') return run('order/done', {}, 'اكتمل الطلب ✓');
+    if (act === 'cash') return payManual(o);
+    if (act === 'invoice') return invoiceForm(o);
+    if (act === 'pdf') { try { const r = await I.api('order/pdf', { order_id: o.id }); window.open(r.url, '_blank', 'noopener'); } catch (e) { I.fail(e); } return; }
+    if (act === 'notes') { try { await q1(sb.from('orders').update({ notes: $('oNotes').value.slice(0, 1000) }).eq('id', o.id).select('id')); o.notes = $('oNotes').value; I.toast('انحفظت ✓'); } catch (e) { I.fail(e); } return; }
+    if (act === 'cancel') {
+      const m = I.modal(`<div class="mh"><h3 class="grow">إلغاء طلب #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><label class="f"><span>السبب (يوصل للعميل)</span><input id="cxR" maxlength="200" placeholder="اختياري"></label><label class="check"><input type="checkbox" id="cxN" checked>أرسل للعميل رسالة الإلغاء</label></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn bad" id="cxGo">ألغِ الطلب</button></div>`);
+      m.querySelector('#cxGo').onclick = async (e) => { e.target.disabled = true; try { await I.api('order/cancel', { order_id: o.id, reason: $('cxR').value, notify: $('cxN').checked }); I.toast('انلغى الطلب'); await refreshOrder(o.id); I.closeAll(); render(); } catch (x) { I.fail(x); e.target.disabled = false; } };
+      return;
+    }
+    if (act === 'resched') return reschedule(o);
+  }
+
+  async function reschedule(o) {
+    const m = I.modal(`<div class="mh"><h3 class="grow">تغيير موعد #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb" id="rsB"><div class="spin"></div></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="rsGo" disabled>اعتمد الموعد</button></div>`);
+    let slots = [];
+    try { slots = (await I.api('slots', { business_id: BIZ, city_id: o.city_id, service_id: o.service_id, days: 10, exclude: o.id })).slots; } catch (e) { I.fail(e); }
+    const byDay = {}; slots.forEach((s) => { const d = I.parts(s.slot_start).ymd; (byDay[d] = byDay[d] || []).push(s); });
+    let day = Object.keys(byDay)[0], pick = null;
+    const paint = () => {
+      $('rsB').innerHTML = Object.keys(byDay).length ? `<div class="slotgrid">${Object.keys(byDay).map((d) => `<button type="button" class="${d === day ? 'on' : ''}" data-d="${d}">${esc(I.relDay(d))}</button>`).join('')}</div><hr class="s"><div class="slotgrid">${(byDay[day] || []).map((s) => `<button type="button" class="${pick === s.slot_start ? 'on' : ''}" data-s="${s.slot_start}">${I.time(s.slot_start)}</button>`).join('')}</div><p class="tiny">يوصل للعميل رسالة بالموعد الجديد</p>` : '<div class="empty">ما فيه مواعيد متاحة</div>';
+      $('rsB').querySelectorAll('[data-d]').forEach((b) => b.onclick = () => { day = b.dataset.d; pick = null; $('rsGo').disabled = true; paint(); });
+      $('rsB').querySelectorAll('[data-s]').forEach((b) => b.onclick = () => { pick = b.dataset.s; $('rsGo').disabled = false; paint(); });
+    };
+    paint();
+    m.querySelector('#rsGo').onclick = async (e) => { e.target.disabled = true; try { await I.api('order/reschedule', { order_id: o.id, start: pick }); I.toast('تغيّر الموعد وانرسل للعميل ✓'); await refreshOrder(o.id); I.closeAll(); render(); } catch (x) { I.fail(x); e.target.disabled = false; } };
+  }
+
+  function invoiceForm(o) {
+    const svc = S.services.find((s) => s.id === o.service_id);
+    const items = [{ name: svc ? svc.name : 'الخدمة', qty: 1, price: o.price != null ? o.price : (svc && svc.price != null ? svc.price : '') }];
+    const vp = Number(S.set.vat_percent || 0);
+    const m = I.modal(`<div class="mh"><h3 class="grow">فاتورة طلب #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div>
+      <div class="mb"><div class="inv-items" id="invItems"></div><button class="btn sm ghost" id="invAdd" type="button" style="justify-self:start">${icon('plus')}بند</button>
+      <div class="card flat row"><span class="grow">الإجمالي${vp ? ` شامل الضريبة ${vp}%` : ''}</span><b id="invTot" style="font-family:var(--display);font-size:20px">0</b></div></div>
+      <div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="invGo">${icon('send')}أرسل الفاتورة للعميل</button></div>`);
+    const paint = () => {
+      $('invItems').innerHTML = `<div class="inv-item tiny"><span>البند</span><span>الكمية</span><span>السعر</span><span></span></div>` + items.map((it, i) => `<div class="inv-item"><input data-i="${i}" data-k="name" value="${esc(it.name)}" maxlength="60"><input data-i="${i}" data-k="qty" type="number" min="1" value="${it.qty}" inputmode="numeric"><input data-i="${i}" data-k="price" type="number" min="0" step="0.01" value="${it.price}" inputmode="decimal" placeholder="0"><button class="ib" type="button" data-del="${i}" aria-label="حذف">${icon('trash')}</button></div>`).join('');
+      $('invItems').querySelectorAll('input').forEach((x) => x.addEventListener('input', () => { const it = items[+x.dataset.i]; it[x.dataset.k] = x.dataset.k === 'name' ? x.value : x.value; total(); }));
+      $('invItems').querySelectorAll('[data-del]').forEach((b) => b.onclick = () => { if (items.length > 1) { items.splice(+b.dataset.del, 1); paint(); } });
+      total();
+    };
+    const total = () => { const sub = items.reduce((a, it) => a + (Number(it.qty) || 0) * (Number(it.price) || 0), 0); $('invTot').textContent = money(Math.round((sub + sub * vp / 100) * 100) / 100) + ' ر.س'; };
+    $('invAdd').onclick = () => { items.push({ name: '', qty: 1, price: '' }); paint(); };
+    paint();
+    m.querySelector('#invGo').onclick = async (e) => {
+      const clean = items.map((it) => ({ name: String(it.name).trim(), qty: Number(it.qty), price: Number(it.price) })).filter((it) => it.name);
+      if (!clean.length || clean.some((it) => !(it.qty >= 1) || !(it.price >= 0) || it.price === '')) return I.toast('اكتب البنود والأسعار', true);
+      e.target.disabled = true;
+      try { const r = await I.api('order/invoice', { order_id: o.id, items: clean }); I.toast(r.pay_link ? 'انرسلت الفاتورة ورابط الدفع للعميل ✓' : 'انرسلت الفاتورة للعميل ✓'); await refreshOrder(o.id); I.closeAll(); openOrder(o.id); }
+      catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+  }
+
+  function payManual(o) {
+    const m = I.modal(`<div class="mh"><h3 class="grow">وصل الدفع · #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><div class="seg" id="pmSeg"><button class="on" data-m="cash">نقدًا</button><button data-m="card">شبكة</button><button data-m="transfer">تحويل</button></div><p class="tiny">يوصل للعميل «وصلنا دفعك» وينقفل الطلب</p></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="pmGo">${icon('check')}تأكيد</button></div>`);
+    let method = 'cash';
+    m.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => { method = b.dataset.m; m.querySelectorAll('[data-m]').forEach((x) => x.classList.toggle('on', x === b)); });
+    m.querySelector('#pmGo').onclick = async (e) => { e.target.disabled = true; try { await I.api('order/cash', { order_id: o.id, method }); I.toast('وصل الدفع وانقفل الطلب ✓'); await refreshOrder(o.id); I.closeAll(); render(); } catch (x) { I.fail(x); e.target.disabled = false; } };
+  }
+
+  async function refreshOrder(id) {
+    try {
+      const o = (await q1(sb.from('orders').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused)').eq('id', id).limit(1)))[0];
+      if (!o) return;
+      const i = S.orders.findIndex((x) => x.id === id);
+      if (i >= 0) S.orders[i] = o; else S.orders.unshift(o);
+      paintCounts();
+    } catch (e) { /* */ }
+  }
+
+  // ═════ المحادثات ═════
+  const REASON = { complaint: ['شكوى', 'b-bad'], human: ['طلب يكلم موظف', 'b-warn'], unknown: ['رسالة ما فهمها البوت', 'b-gold'], location: ['مشكلة بالموقع', 'b-warn'], order: ['بخصوص طلب', 'b-warn'] };
+  function vChats(v) {
+    const list = S.handoffs;
+    v.innerHTML = `<div class="hint">هنا العملاء اللي البوت حوّلهم لكم، والبوت متوقف معهم لين ترجعونه. تقدرون تردون من هنا أو من واتساب المحل.</div>
+      <div class="list">${list.length ? list.map((h) => { const c = h.customer || {}; const r = REASON[h.reason] || REASON.unknown; return `<div class="item click" data-cid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge ${r[1]} plain">${r[0]}</span><span class="sp"></span><span class="tiny">${I.ago(h.created_at)}</span></div><div class="small" style="white-space:pre-wrap">${esc(h.last_text || '')}</div></div>`; }).join('') : `<div class="empty">${icon('chat')}<b>ما فيه محادثات تنتظر رد</b><span class="tiny">البوت ماسك كل المحادثات الحين</span></div>`}</div>`;
+    v.querySelectorAll('[data-cid]').forEach((el) => el.addEventListener('click', () => openChat(el.dataset.cid)));
+  }
+  let chatCid = null;
+  async function openChat(cid) {
+    chatCid = cid;
+    const h = S.handoffs.find((x) => x.customer && x.customer.id === cid);
+    const c = (h && h.customer) || {};
+    const d = I.openDrawer(`<div class="dh"><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button><h2 class="grow">${esc(custName(c))}</h2>${c.is_sim ? '' : `<a class="btn sm ghost" href="${I.waLink(c.wa_id)}" target="_blank" rel="noopener">${icon('wa')}واتساب</a>`}</div>
+      <div class="db"><div class="conv" id="conv"><div class="spin"></div></div>
+      <form class="row nw" id="replyF"><input id="replyT" placeholder="اكتب ردك للعميل" maxlength="1500" class="grow"><button class="btn" type="submit">${icon('send')}أرسل</button></form>
+      <div class="row"><button class="btn soft" id="resumeB" type="button">${icon('bot')}رجّع الرد الآلي لهذا العميل</button></div></div>`);
+    await paintConv(cid);
+    d.querySelector('#replyF').onsubmit = async (e) => {
+      e.preventDefault(); const t = $('replyT').value.trim(); if (!t) return;
+      const b = e.target.querySelector('button'); b.disabled = true;
+      try { await I.api('customer/reply', { customer_id: cid, text: t }); $('replyT').value = ''; await paintConv(cid); } catch (x) { I.fail(x); }
+      b.disabled = false;
+    };
+    d.querySelector('#resumeB').onclick = async (e) => {
+      e.target.disabled = true;
+      try { await I.api('customer/resume', { customer_id: cid }); S.handoffs = S.handoffs.filter((x) => !x.customer || x.customer.id !== cid); paintCounts(); I.closeAll(); I.toast('رجع الرد الآلي لهذا العميل ✓'); if (S.tab === 'chats') render(); }
+      catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+  }
+  async function paintConv(cid) {
+    let msgs = [];
+    try { msgs = await q1(sb.from('wa_log').select('id,direction,preview,by_who,created_at,status,error').eq('customer_id', cid).order('id', { ascending: false }).limit(60)); } catch (e) { /* */ }
+    msgs.reverse();
+    const el = $('conv'); if (!el) return;
+    el.innerHTML = msgs.map((m) => `<div class="m ${m.direction === 'in' ? 'c' : m.by_who === 'owner' ? 'o' : 'b'}">${esc(m.preview)}<small>${m.direction === 'in' ? 'العميل' : m.by_who === 'owner' ? 'أنتم' : 'البوت'} · ${I.ago(m.created_at)}${m.status === 'failed' ? ' · ما انرسلت' : ''}</small></div>`).join('') || '<div class="tiny">لا يوجد</div>';
+    el.scrollTop = el.scrollHeight;
+  }
+
+  // ═════ الموظفون ═════
+  async function vStaff(v) {
+    try { S.links = await q1(sb.from('access_links').select('id, staff_id, created_at, last_used_at, revoked_at, kind').eq('business_id', BIZ).eq('kind', 'staff').is('revoked_at', null)); } catch (e) { S.links = []; }
+    v.innerHTML = `
+      <div class="card stack">
+        <div class="sec-h"><h3>طريقة التوزيع</h3></div>
+        <div class="seg" id="capSeg"><button data-c="staff" class="${S.set.capacity_mode === 'staff' ? 'on' : ''}">حسب الموظفين والمدينة</button><button data-c="fixed" class="${S.set.capacity_mode === 'fixed' ? 'on' : ''}">عدد ثابت لكل موعد</button></div>
+        <p class="tiny">${S.set.capacity_mode === 'staff' ? 'كل طلب يروح تلقائيًا لموظف فاضي يغطي مدينة العميل، والأقل طلبات في نفس اليوم. والموعد ما ينعرض إلا لو فيه موظف فاضي.' : 'كل موعد يستقبل عدد ثابت من الطلبات، والطلبات تتوزع يدويًا من صفحة الطلبات.'}</p>
+        <label class="f" ${S.set.capacity_mode === 'fixed' ? '' : 'hidden'} style="max-width:220px"><span>عدد الطلبات في نفس الموعد</span><input id="capN" type="number" min="1" max="100" value="${S.set.capacity_per_slot}"></label>
+      </div>
+      <div class="list">${S.staff.map(staffCard).join('') || `<div class="empty">${icon('users')}<b>ما أضفتم موظفين</b></div>`}</div>
+      <form class="card stack s" id="addStaff"><h3>إضافة موظف</h3>
+        <div class="g2"><label class="f"><span>الاسم</span><input name="name" required maxlength="40"></label><label class="f"><span>الجوال</span><input name="phone" inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></label></div>
+        <div class="row">${S.cities.map((c) => `<label class="check"><input type="checkbox" name="city" value="${c.id}" checked>${esc(c.name)}</label>`).join('')}</div>
+        <button class="btn" style="justify-self:start">${icon('plus')}إضافة</button></form>`;
+    v.querySelectorAll('[data-c]').forEach((b) => b.onclick = async () => { try { await q1(sb.from('settings').update({ capacity_mode: b.dataset.c }).eq('business_id', BIZ).select('business_id')); S.set.capacity_mode = b.dataset.c; render(); } catch (e) { I.fail(e); } });
+    const capN = $('capN'); if (capN) capN.onchange = async () => { try { await q1(sb.from('settings').update({ capacity_per_slot: Math.max(1, +capN.value || 1) }).eq('business_id', BIZ).select('business_id')); S.set.capacity_per_slot = +capN.value; I.toast('انحفظ ✓'); } catch (e) { I.fail(e); } };
+    $('addStaff').onsubmit = async (e) => {
+      e.preventDefault(); const f = new FormData(e.target);
+      const city_ids = f.getAll('city');
+      try { const row = (await q1(sb.from('staff').insert({ business_id: BIZ, name: String(f.get('name')).trim(), phone: String(f.get('phone') || '').trim(), city_ids }).select('*')))[0]; S.staff.push(row); I.toast('انضاف الموظف ✓'); render(); }
+      catch (x) { I.fail(x); }
+    };
+    v.querySelectorAll('[data-st]').forEach((el) => {
+      const id = el.dataset.st, s = S.staff.find((x) => x.id === id);
+      el.querySelector('[data-active]').onchange = async (e) => { try { await q1(sb.from('staff').update({ active: e.target.checked }).eq('id', id).select('id')); s.active = e.target.checked; I.toast(s.active ? 'الموظف فعّال ✓' : 'الموظف موقف'); } catch (x) { I.fail(x); e.target.checked = !e.target.checked; } };
+      el.querySelectorAll('[data-sc]').forEach((cb) => cb.onchange = async () => { const ids = [...el.querySelectorAll('[data-sc]:checked')].map((x) => x.value); try { await q1(sb.from('staff').update({ city_ids: ids }).eq('id', id).select('id')); s.city_ids = ids; I.toast('انحفظت المدن ✓'); } catch (x) { I.fail(x); } });
+      el.querySelector('[data-link]').onclick = async (e) => { e.target.disabled = true; try { const r = await I.api('biz/staff-link', { business_id: BIZ, staff_id: id }); I.copy(r.url, 'انسخ رابط الموظف ✓ أرسله له'); linkBox(el, r.url); } catch (x) { I.fail(x); } e.target.disabled = false; };
+      el.querySelectorAll('[data-revoke]').forEach((b) => b.onclick = async () => { if (!confirm('إلغاء رابط هذا الموظف؟')) return; try { await I.api('biz/link-revoke', { business_id: BIZ, link_id: b.dataset.revoke }); I.toast('انلغى الرابط'); render(); } catch (x) { I.fail(x); } });
+    });
+  }
+  function staffCard(s) {
+    const links = S.links.filter((l) => l.staff_id === s.id);
+    const load = S.orders.filter((o) => o.staff_id === s.id && isOpen(o)).length;
+    return `<div class="item" data-st="${s.id}"><div class="h"><span class="avatar">${esc(I.initials(s.name))}</span><b style="font-family:var(--display);font-size:16px">${esc(s.name)}</b>${s.phone ? `<span class="tiny ltr">${esc(s.phone)}</span>` : ''}<span class="badge plain">${load} طلب مفتوح</span><span class="sp"></span><label class="sw"><input type="checkbox" data-active ${s.active ? 'checked' : ''}><i></i></label></div>
+      <div class="row">${S.cities.map((c) => `<label class="check small"><input type="checkbox" data-sc value="${c.id}" ${(s.city_ids || []).length === 0 || (s.city_ids || []).includes(c.id) ? 'checked' : ''}>${esc(c.name)}</label>`).join('')}</div>
+      <div class="row"><button class="btn sm ghost" data-link type="button">${icon('link')}${links.length ? 'رابط جديد للموظف' : 'رابط لوحة الموظف'}</button>${links.map((l) => `<span class="tiny">رابط فعّال${l.last_used_at ? ' · آخر دخول ' + I.ago(l.last_used_at) : ''}</span><button class="btn sm bad ghost" data-revoke="${l.id}" type="button">إلغاء</button>`).join('')}</div>
+      <div data-linkbox></div></div>`;
+  }
+  function linkBox(el, url) { el.querySelector('[data-linkbox]').innerHTML = `<div class="copybox"><code>${esc(url)}</code><button class="btn sm" type="button">${icon('copy')}نسخ</button></div>`; el.querySelector('[data-linkbox] button').onclick = () => I.copy(url); }
+
+  // ═════ الخدمات والمدن ═════
+  const PRESETS = [['الرياض', 24.7136, 46.6753, 40], ['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['الطائف', 21.2703, 40.4158, 25], ['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['حائل', 27.5114, 41.7208, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20], ['ينبع', 24.0895, 38.0618, 20], ['الخرج', 24.1556, 47.312, 20], ['حفر الباطن', 28.4328, 45.9708, 20]];
+  function vCatalog(v) {
+    v.innerHTML = `
+      <div class="card stack"><div class="sec-h"><h3>الخدمات</h3><span class="tiny">لو أكثر من خدمة، البوت يسأل العميل يختار. بدون سعر = السعر بعد الزيارة</span></div>
+        <div class="tbl"><table class="t"><thead><tr><th>الخدمة</th><th>بالإنجليزي</th><th>السعر</th><th>المدة (دقيقة)</th><th>فعّالة</th><th></th></tr></thead><tbody>
+        ${S.services.map((s) => `<tr data-sv="${s.id}"><td><input data-k="name" value="${esc(s.name)}" maxlength="24"></td><td><input data-k="name_en" value="${esc(s.name_en)}" maxlength="24" dir="ltr"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${s.price ?? ''}" placeholder="بعد الزيارة" style="max-width:120px"></td><td><input data-k="duration_min" type="number" min="10" max="720" value="${s.duration_min ?? ''}" placeholder="${S.set.slot_minutes}" style="max-width:100px"></td><td><input type="checkbox" data-k="active" ${s.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
+        </tbody></table></div>
+        <button class="btn sm ghost" id="svAdd" style="justify-self:start">${icon('plus')}خدمة</button></div>
+      <div class="card stack"><div class="sec-h"><h3>المدن ونطاق الخدمة</h3><span class="tiny">البوت يعرف مدينة العميل من موقعه، واللي برا النطاق يوصله إنه خارج التغطية</span></div>
+        <div class="list">${S.cities.map((c) => `<div class="item" data-ct="${c.id}"><div class="h"><b style="font-family:var(--display)">${esc(c.name)}</b><span class="tiny">نصف قطر ${c.radius_km} كم</span><span class="sp"></span><label class="sw"><input type="checkbox" data-k="active" ${c.active ? 'checked' : ''}><i></i></label><button class="btn sm ghost" data-map>${icon('pin')}النطاق على الخريطة</button><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></div></div>`).join('') || '<div class="empty">ما فيه مدن، والبوت يقبل أي موقع</div>'}</div>
+        <div class="row"><select id="ctPreset" style="max-width:220px"><option value="">أضف مدينة…</option>${PRESETS.filter((p) => !S.cities.some((c) => c.name === p[0])).map((p, i) => `<option value="${PRESETS.indexOf(p)}">${p[0]}</option>`).join('')}</select></div></div>`;
+    v.querySelectorAll('[data-sv]').forEach((tr) => {
+      const id = tr.dataset.sv;
+      tr.querySelectorAll('[data-k]').forEach((inp) => inp.addEventListener('change', async () => {
+        const k = inp.dataset.k; let val = inp.type === 'checkbox' ? inp.checked : inp.value;
+        if (k === 'price' || k === 'duration_min') val = inp.value === '' ? null : Number(inp.value);
+        try { await q1(sb.from('services').update({ [k]: val }).eq('id', id).select('id')); Object.assign(S.services.find((s) => s.id === id), { [k]: val }); I.toast('انحفظ ✓'); } catch (e) { I.fail(e); }
+      }));
+      tr.querySelector('[data-del]').onclick = async () => { if (!confirm('حذف الخدمة؟')) return; try { await q1(sb.from('services').delete().eq('id', id).select('id')); S.services = S.services.filter((s) => s.id !== id); render(); } catch (e) { I.fail(e); } };
+    });
+    $('svAdd').onclick = async () => { try { const row = (await q1(sb.from('services').insert({ business_id: BIZ, name: 'خدمة جديدة', sort: S.services.length }).select('*')))[0]; S.services.push(row); render(); } catch (e) { I.fail(e); } };
+    v.querySelectorAll('[data-ct]').forEach((el) => {
+      const id = el.dataset.ct;
+      el.querySelector('[data-k=active]').onchange = async (e) => { try { await q1(sb.from('cities').update({ active: e.target.checked }).eq('id', id).select('id')); S.cities.find((c) => c.id === id).active = e.target.checked; } catch (x) { I.fail(x); } };
+      el.querySelector('[data-del]').onclick = async () => { if (!confirm('حذف المدينة؟')) return; try { await q1(sb.from('cities').delete().eq('id', id).select('id')); S.cities = S.cities.filter((c) => c.id !== id); render(); } catch (x) { I.fail(x); } };
+      el.querySelector('[data-map]').onclick = () => cityMap(S.cities.find((c) => c.id === id));
+    });
+    $('ctPreset').onchange = async (e) => { const p = PRESETS[+e.target.value]; if (!p) return; try { const row = (await q1(sb.from('cities').insert({ business_id: BIZ, name: p[0], lat: p[1], lng: p[2], radius_km: p[3], sort: S.cities.length }).select('*')))[0]; S.cities.push(row); I.toast('انضافت ' + p[0] + ' ✓'); render(); } catch (x) { I.fail(x); } };
+  }
+  function cityMap(c) {
+    const m = I.modal(`<div class="mh"><h3 class="grow">نطاق ${esc(c.name)}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><div class="city-map" id="cmap"></div><label class="f"><span>نصف القطر (كم)</span><input id="crad" type="range" min="2" max="80" value="${Math.min(80, c.radius_km)}"></label><p class="tiny">اضغط على الخريطة لتحديد المركز</p></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="csave">حفظ</button></div>`);
+    let lat = +c.lat, lng = +c.lng, rad = +c.radius_km;
+    setTimeout(() => {
+      if (!window.L) return;
+      const map = L.map('cmap').setView([lat, lng], 10);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap' }).addTo(map);
+      const circ = L.circle([lat, lng], { radius: rad * 1000, color: '#0B7A55' }).addTo(map);
+      map.fitBounds(circ.getBounds());
+      map.on('click', (e) => { lat = e.latlng.lat; lng = e.latlng.lng; circ.setLatLng(e.latlng); });
+      $('crad').oninput = (e) => { rad = +e.target.value; circ.setRadius(rad * 1000); };
+    }, 200);
+    m.querySelector('#csave').onclick = async () => { try { await q1(sb.from('cities').update({ lat, lng, radius_km: rad }).eq('id', c.id).select('id')); Object.assign(c, { lat, lng, radius_km: rad }); I.closeAll(); I.toast('انحفظ النطاق ✓'); render(); } catch (e) { I.fail(e); } };
+  }
+
+  // ═════ الأوقات والعطل ═════
+  const WD = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  function vHours(v) {
+    const by = WD.map((_, d) => S.hours.filter((h) => h.weekday === d && !h.city_id));
+    v.innerHTML = `
+      <div class="card"><div class="sec-h"><h3>أوقات العمل الأسبوعية</h3><button class="btn sm" id="hSave">${icon('check')}حفظ الأوقات</button></div>
+        ${WD.map((n, d) => `<div class="hrow" data-wd="${d}"><b>${n}</b><label class="sw small"><input type="checkbox" data-open ${by[d].length ? 'checked' : ''}><i></i><span>${by[d].length ? 'مفتوح' : 'مغلق'}</span></label>
+          <div class="ranges">${(by[d].length ? by[d] : [{ open_time: '09:00', close_time: '21:00' }]).map((h) => `<span class="rg"><input type="time" data-o value="${h.open_time.slice(0, 5)}"> إلى <input type="time" data-c value="${h.close_time.slice(0, 5)}"><button class="ib" type="button" data-rm style="width:28px;height:28px" aria-label="حذف الفترة">${icon('x')}</button></span>`).join('')}<button class="btn sm ghost" type="button" data-add>${icon('plus')}فترة</button></div></div>`).join('')}
+      </div>
+      <div class="card stack"><h3>المواعيد</h3><div class="g4">
+        <label class="f"><span>مدة الموعد</span><select data-s="slot_minutes">${[30, 45, 60, 90, 120, 180].map((x) => `<option value="${x}" ${S.set.slot_minutes === x ? 'selected' : ''}>${x} دقيقة</option>`).join('')}</select></label>
+        <label class="f"><span>كم يوم قدام يقدر يحجز</span><select data-s="days_ahead">${[3, 5, 7, 10, 14, 21, 30].map((x) => `<option value="${x}" ${S.set.days_ahead === x ? 'selected' : ''}>${x} أيام</option>`).join('')}</select></label>
+        <label class="f"><span>أقل وقت قبل الموعد</span><select data-s="lead_minutes">${[[0, 'بدون'], [30, 'نص ساعة'], [60, 'ساعة'], [120, 'ساعتين'], [180, '3 ساعات'], [360, '6 ساعات'], [720, '12 ساعة'], [1440, 'يوم']].map(([x, l]) => `<option value="${x}" ${S.set.lead_minutes === x ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label class="f"><span>وقت بين المواعيد</span><select data-s="buffer_minutes">${[0, 15, 30, 45, 60].map((x) => `<option value="${x}" ${S.set.buffer_minutes === x ? 'selected' : ''}>${x ? x + ' دقيقة' : 'بدون'}</option>`).join('')}</select></label>
+      </div></div>
+      <div class="card stack"><h3>العطل والإجازات</h3>
+        <div class="list">${S.holidays.map((h) => `<div class="item row" data-hd="${h.id}"><b>${esc(I.dayName(h.day))}</b><span class="tiny grow">${esc(h.note || '')}</span><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></div>`).join('') || '<div class="tiny">ما فيه عطل قادمة</div>'}</div>
+        <form class="row" id="hdF"><input type="date" name="day" required min="${I.today()}" style="max-width:190px"><input name="note" placeholder="السبب (اختياري)" maxlength="60" style="max-width:260px"><button class="btn sm">${icon('plus')}إضافة عطلة</button></form></div>`;
+    v.querySelectorAll('[data-wd]').forEach((row) => {
+      row.querySelector('[data-open]').onchange = (e) => { row.querySelector('.sw span').textContent = e.target.checked ? 'مفتوح' : 'مغلق'; row.querySelector('.ranges').style.opacity = e.target.checked ? 1 : .4; };
+      row.querySelector('.ranges').style.opacity = row.querySelector('[data-open]').checked ? 1 : .4;
+      row.querySelector('[data-add]').onclick = () => { const s = document.createElement('span'); s.className = 'rg'; s.innerHTML = `<input type="time" data-o value="16:00"> إلى <input type="time" data-c value="22:00"><button class="ib" type="button" data-rm style="width:28px;height:28px">${icon('x')}</button>`; row.querySelector('[data-add]').before(s); s.querySelector('[data-rm]').onclick = () => s.remove(); };
+      row.querySelectorAll('[data-rm]').forEach((b) => b.onclick = () => { if (row.querySelectorAll('.rg').length > 1) b.closest('.rg').remove(); });
+    });
+    $('hSave').onclick = async (e) => {
+      const rows = [];
+      v.querySelectorAll('[data-wd]').forEach((row) => { if (!row.querySelector('[data-open]').checked) return; row.querySelectorAll('.rg').forEach((r) => { const o = r.querySelector('[data-o]').value, c = r.querySelector('[data-c]').value; if (o && c) rows.push({ business_id: BIZ, weekday: +row.dataset.wd, open_time: o, close_time: c }); }); });
+      e.target.disabled = true;
+      try { await q1(sb.from('hours').delete().eq('business_id', BIZ).is('city_id', null).select('id')); if (rows.length) await q1(sb.from('hours').insert(rows).select('id')); S.hours = await q1(sb.from('hours').select('*').eq('business_id', BIZ).order('weekday').order('open_time')); I.toast('انحفظت الأوقات ✓'); render(); }
+      catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+    v.querySelectorAll('[data-s]').forEach((sel) => sel.onchange = async () => { try { await q1(sb.from('settings').update({ [sel.dataset.s]: +sel.value }).eq('business_id', BIZ).select('business_id')); S.set[sel.dataset.s] = +sel.value; I.toast('انحفظ ✓'); } catch (e) { I.fail(e); } });
+    $('hdF').onsubmit = async (e) => { e.preventDefault(); const f = new FormData(e.target); try { const row = (await q1(sb.from('holidays').insert({ business_id: BIZ, day: f.get('day'), note: String(f.get('note') || '') }).select('*')))[0]; S.holidays.push(row); S.holidays.sort((a, b) => a.day.localeCompare(b.day)); render(); } catch (x) { I.fail(x); } };
+    v.querySelectorAll('[data-hd]').forEach((el) => el.querySelector('[data-del]').onclick = async () => { try { await q1(sb.from('holidays').delete().eq('id', el.dataset.hd).select('id')); S.holidays = S.holidays.filter((h) => h.id !== el.dataset.hd); render(); } catch (x) { I.fail(x); } });
+  }
+
+  // ═════ نصوص الرد ═════
+  const DEF = {
+    ar: { welcome: 'هلا وسهلا في {biz} 👋\nكيف نقدر نخدمك؟', ask_location: 'أرسل موقعك من زر «إرسال الموقع» 📍\nأو الصق رابط الموقع من قوقل ماب.', out_of_area: 'نعتذر، موقعك خارج نطاق خدمتنا حاليًا.\nنغطي: {cities}', ask_day: 'اختر اليوم المناسب 📅', confirmed_tail: 'بيوصلك تذكير قبل الموعد، وتنبيه لما يكون الموظف في الطريق.', reminder: 'تذكير بموعدك ⏰\nطلب رقم {no}\n📅 {day}\n⏰ {time}', on_the_way: '{staff} في الطريق لك 🚗\nطلب رقم {no}', paid: 'وصلنا دفعك ✅\nشكرًا لك، طلب رقم {no} مكتمل.', handoff: 'وصلت رسالتك لفريق {biz} 🙏\nبيرد عليك واحد منهم بأقرب وقت.', handoff_complaint: 'نعتذر لك 🙏 وصلت ملاحظتك لفريق {biz}، وبيتواصلون معك بأسرع وقت.', thanks: 'العفو، في الخدمة دايم 🌷' },
+    en: { welcome: 'Welcome to {biz} 👋\nHow can we help you?', ask_location: 'Send your location using the «Send location» button 📍\nor paste a Google Maps link.', out_of_area: 'Sorry, your location is outside our service area.\nWe cover: {cities}', ask_day: 'Pick a day 📅', confirmed_tail: "You'll get a reminder before your appointment, and a message when our staff is on the way.", reminder: 'Appointment reminder ⏰\nOrder #{no}\n📅 {day}\n⏰ {time}', on_the_way: '{staff} is on the way 🚗\nOrder #{no}', paid: 'Payment received ✅\nThank you, order #{no} is complete.', handoff: 'Your message reached the {biz} team 🙏\nSomeone will reply shortly.', handoff_complaint: "We're sorry 🙏 The {biz} team got your note and will contact you soon.", thanks: "You're welcome 🌷" },
+  };
+  const LBL = { welcome: 'الترحيب', ask_location: 'طلب الموقع', out_of_area: 'خارج النطاق', ask_day: 'اختيار اليوم', confirmed_tail: 'سطر بعد تأكيد الطلب', reminder: 'التذكير قبل الموعد', on_the_way: 'الموظف في الطريق', paid: 'وصلنا دفعك', handoff: 'التحويل للفريق', handoff_complaint: 'الرد على الشكوى', thanks: 'الرد على الشكر' };
+  let txLang = 'ar';
+  function vTexts(v) {
+    const cur = (S.set.texts && S.set.texts[txLang]) || {};
+    v.innerHTML = `<div class="row"><div class="seg" id="txSeg"><button data-l="ar" class="${txLang === 'ar' ? 'on' : ''}">عربي</button><button data-l="en" class="${txLang === 'en' ? 'on' : ''}">English</button></div><span class="sp"></span><button class="btn" id="txSave">${icon('check')}حفظ النصوص</button></div>
+      <div class="hint">الكلمات بين القوسين مثل {biz} و{no} تتبدل تلقائيًا باسم المحل ورقم الطلب.</div>
+      <div class="card stack">${Object.keys(LBL).map((k) => `<div class="txt-row"><div class="lbl"><b>${LBL[k]}</b><span class="sp"></span>${cur[k] ? `<button class="btn sm ghost" data-reset="${k}" type="button">رجّع الأصلي</button>` : '<span class="tiny">النص الأصلي</span>'}</div><textarea data-tx="${k}" rows="2" dir="${txLang === 'en' ? 'ltr' : 'rtl'}" placeholder="${esc(DEF[txLang][k])}">${esc(cur[k] || DEF[txLang][k])}</textarea></div>`).join('')}</div>`;
+    v.querySelectorAll('[data-l]').forEach((b) => b.onclick = () => { txLang = b.dataset.l; render(); });
+    v.querySelectorAll('[data-reset]').forEach((b) => b.onclick = () => { v.querySelector(`[data-tx=${b.dataset.reset}]`).value = DEF[txLang][b.dataset.reset]; });
+    $('txSave').onclick = async (e) => {
+      const texts = JSON.parse(JSON.stringify(S.set.texts || {})); texts[txLang] = {};
+      v.querySelectorAll('[data-tx]').forEach((t) => { const val = t.value.trim(); if (val && val !== DEF[txLang][t.dataset.tx]) texts[txLang][t.dataset.tx] = val.slice(0, 900); });
+      e.target.disabled = true;
+      try { await q1(sb.from('settings').update({ texts }).eq('business_id', BIZ).select('business_id')); S.set.texts = texts; I.toast('انحفظت النصوص ✓ والبوت يستخدمها الحين'); render(); } catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+  }
+
+  // ═════ التقرير الشهري ═════
+  let repMonth = I.today().slice(0, 7);
+  async function vReport(v) {
+    v.innerHTML = `<div class="row"><input type="month" id="rMonth" value="${repMonth}" style="max-width:200px"><span class="sp"></span><button class="btn ghost" id="rCsv">${icon('file')}تنزيل الطلبات (CSV)</button></div><div id="rBody"><div class="spin"></div></div>`;
+    $('rMonth').onchange = (e) => { repMonth = e.target.value; vReport(v); };
+    $('rCsv').onclick = csvMonth;
+    let r;
+    try { r = (await I.api('biz/report', { business_id: BIZ, month: repMonth })).report; } catch (e) { return I.fail(e); }
+    if (!$('rBody')) return;
+    const maxDay = Math.max(1, ...r.by_day.map((x) => x.n));
+    const [y, m] = repMonth.split('-').map(Number); const days = new Date(y, m, 0).getDate();
+    const dayMap = Object.fromEntries(r.by_day.map((x) => [x.day, x.n]));
+    const bars = (arr) => { const mx = Math.max(1, ...arr.map((x) => x.n)); return arr.length ? `<div class="bars">${arr.map((x) => `<div class="bar"><span>${esc(x.name)}</span><span class="tr"><i style="width:${(x.n / mx) * 100}%"></i></span><b>${x.n}</b></div>`).join('')}</div>` : '<div class="tiny">لا يوجد</div>'; };
+    $('rBody').innerHTML = `
+      <div class="kpis"><div class="kpi accent"><b>${r.orders}</b><span>كل الطلبات</span></div><div class="kpi"><b>${r.done}</b><span>مكتملة</span></div><div class="kpi"><b>${r.cancelled}</b><span>ملغية</span></div><div class="kpi"><b>${r.customers}</b><span>عملاء</span></div></div>
+      <div class="kpis" style="margin-top:10px"><div class="kpi"><b>${money(r.paid_total)}</b><span>مدفوع (ر.س)</span></div><div class="kpi"><b>${money(r.unpaid_total)}</b><span>فواتير غير مدفوعة (ر.س)</span></div><div class="kpi"><b>${money(r.invoiced_total)}</b><span>إجمالي الفواتير (ر.س)</span></div><div class="kpi"><b>${r.orders ? Math.round((r.done / r.orders) * 100) : 0}%</b><span>نسبة الإكمال</span></div></div>
+      <div class="card" style="margin-top:12px"><h3>الطلبات باليوم</h3><div class="cols" style="margin-top:12px">${Array.from({ length: days }, (_, i) => { const d = `${repMonth}-${String(i + 1).padStart(2, '0')}`; const n = dayMap[d] || 0; return `<div title="${i + 1}: ${n}" style="height:${(n / maxDay) * 100}%;${n ? '' : 'opacity:.18'}"></div>`; }).join('')}</div><div class="cols-x">${Array.from({ length: days }, (_, i) => `<span>${(i + 1) % 5 === 0 || i === 0 ? i + 1 : ''}</span>`).join('')}</div></div>
+      <div class="g3" style="margin-top:12px"><div class="card"><h3>حسب الموظف</h3>${bars(r.by_staff)}</div><div class="card"><h3>حسب المدينة</h3>${bars(r.by_city)}</div><div class="card"><h3>حسب الخدمة</h3>${bars(r.by_service)}</div></div>`;
+  }
+  async function csvMonth() {
+    try {
+      const [y, m] = repMonth.split('-').map(Number);
+      const from = new Date(Date.UTC(y, m - 1, 1) - 3 * 3600000).toISOString(), to = new Date(Date.UTC(y, m, 1) - 3 * 3600000).toISOString();
+      const rows = await q1(sb.from('orders').select('number,status,slot_start,price,channel,is_test,city_id,service_id,staff_id,maps_url,created_at,paid_at, customer:customers(name,wa_id,is_sim)').eq('business_id', BIZ).gte('slot_start', from).lt('slot_start', to).order('slot_start'));
+      const out = [['رقم الطلب', 'الحالة', 'اليوم', 'الوقت', 'العميل', 'الجوال', 'المدينة', 'الخدمة', 'الموظف', 'السعر', 'الموقع', 'تجربة']].concat(rows.map((o) => [o.number, I.STATUS[o.status], I.day(o.slot_start), I.time(o.slot_start), custName(o.customer), o.customer && !o.customer.is_sim ? I.phone(o.customer.wa_id) : '', cityName(o.city_id), svcName(o.service_id), staffName(o.staff_id), o.price ?? '', o.maps_url, o.is_test ? 'نعم' : '']));
+      I.download(`orders-${repMonth}.csv`, I.csv(out));
+    } catch (e) { I.fail(e); }
+  }
+
+  // ═════ الإعدادات ═════
+  async function vSettings(v) {
+    const b = S.biz, s = S.set;
+    let pay = S.payStatus || { provider: s.pay_provider, moyasar: '' };
+    if (!S.payStatus) I.api('biz/payment-status', { business_id: BIZ }).then((p) => { S.payStatus = p; if (S.tab === 'settings') vSettings($('view')); }).catch(() => {});
+    const payPlan = b.plan === 'bot_pay' || b.is_demo;
+    v.innerHTML = `
+      <div class="card stack"><h3>الشعار وبيانات الفاتورة</h3>
+        <div class="row">${I.logoHtml(b, 'avatar" style="width:64px;height:64px;border-radius:16px;overflow:hidden')}<label class="btn ghost sm">${icon('plus')}تغيير الشعار<input type="file" id="logoF" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden></label></div>
+        <div class="g2">
+          <label class="f"><span>اسم المنشأة</span><input data-b="name" value="${esc(b.name)}" maxlength="80"></label>
+          <label class="f"><span>الاسم بالإنجليزي</span><input data-b="name_en" value="${esc(b.name_en)}" maxlength="80" dir="ltr"></label>
+          <label class="f"><span>السجل التجاري</span><input data-b="cr_number" value="${esc(b.cr_number)}" maxlength="20" dir="ltr"></label>
+          <label class="f"><span>الرقم الضريبي</span><input data-b="vat_number" value="${esc(b.vat_number)}" maxlength="20" dir="ltr" placeholder="لو مسجلين بالضريبة"></label>
+          <label class="f"><span>العنوان في الفاتورة</span><input data-b="address" value="${esc(b.address)}" maxlength="120"></label>
+          <label class="f"><span>لون المنشأة</span><input data-b="brand_color" type="color" value="${esc(b.brand_color)}"></label>
+          <label class="f"><span>نسبة الضريبة على الفاتورة</span><select id="vatP"><option value="0" ${+s.vat_percent === 0 ? 'selected' : ''}>بدون ضريبة</option><option value="15" ${+s.vat_percent === 15 ? 'selected' : ''}>15%</option></select></label>
+        </div></div>
+      <div class="card stack"><h3>الدفع الإلكتروني (ميسر)</h3>
+        ${payPlan ? `<div class="row"><span class="dot ${pay.provider === 'moyasar' ? 'ok' : pay.provider === 'demo' ? 'warn' : ''}"></span><b>${pay.provider === 'moyasar' ? 'مربوط بحسابكم في ميسر' + (pay.test_mode ? ' (وضع تجريبي)' : '') : pay.provider === 'demo' ? 'وضع تجريبي بدون فلوس' : 'غير مربوط'}</b>${pay.moyasar ? `<span class="tiny ltr">${esc(pay.moyasar)}</span>` : ''}</div>
+          <p class="tiny">من لوحة ميسر: الإعدادات ← مفاتيح API. العميل يدفع بمدى أو أبل باي أو البطاقة، والمبلغ يدخل حسابكم مباشرة.</p>
+          <div class="g2"><label class="f"><span>المفتاح السري</span><input id="sk" dir="ltr" placeholder="sk_live_…" autocomplete="off"></label><label class="f"><span>المفتاح العام</span><input id="pk" dir="ltr" placeholder="pk_live_…" autocomplete="off"></label></div>
+          <div class="row"><button class="btn" id="paySave">${icon('check')}ربط ميسر</button>${pay.provider === 'moyasar' ? '<button class="btn ghost bad" id="payOff">فك الربط</button>' : ''}</div>`
+        : '<p class="muted">الفاتورة PDF توصل للعميل، والدفع الإلكتروني متاح في باقة «أتمتة الحجز والدفع».</p>'}
+      </div>
+      <div class="card stack"><h3>التذكير والتحويل والتنبيه</h3><div class="g3">
+        <label class="f"><span>التذكير قبل الموعد</span><select data-s="reminder_minutes">${[[0, 'بدون تذكير'], [60, 'ساعة'], [120, 'ساعتين'], [180, '3 ساعات'], [360, '6 ساعات'], [720, '12 ساعة'], [1440, 'يوم']].map(([x, l]) => `<option value="${x}" ${s.reminder_minutes === x ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label class="f"><span>يرجع البوت للعميل المحوّل بعد</span><select data-s="resume_hours">${[[0, 'يدويًا فقط'], [2, 'ساعتين'], [6, '6 ساعات'], [12, '12 ساعة'], [24, 'يوم'], [48, 'يومين']].map(([x, l]) => `<option value="${x}" ${s.resume_hours === x ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label class="f"><span>جوال المالك للتنبيهات</span><input data-b="owner_phone" value="${esc(I.phone(b.owner_phone))}" dir="ltr" placeholder="05xxxxxxxx"></label>
+      </div><label class="check"><input type="checkbox" id="notifyStaff" ${s.notify_staff ? 'checked' : ''}>إشعار واتساب للموظف المسؤول مع كل طلب ينسند له</label><label class="check"><input type="checkbox" id="notifyOwner" ${s.notify_owner ? 'checked' : ''}>تنبيه واتساب على جوال المالك مع كل طلب جديد ومع كل عميل يحتاج رد</label></div>
+      <div class="card stack"><h3>التصدير لجدول قوقل أو Webhook</h3>
+        <div class="seg" id="exSeg">${[['none', 'بدون'], ['sheet', 'جدول قوقل'], ['webhook', 'Webhook']].map(([k, l]) => `<button data-x="${k}" class="${s.export_kind === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+        <div id="exBody"></div></div>`;
+    // البيانات
+    v.querySelectorAll('[data-b]').forEach((inp) => inp.addEventListener('change', async () => {
+      const k = inp.dataset.b; let val = inp.value.trim();
+      if (k === 'owner_phone') { const d = val.replace(/\D/g, '').replace(/^00/, '').replace(/^966/, '').replace(/^0/, ''); val = /^5\d{8}$/.test(d) ? '966' + d : ''; }
+      try { await q1(sb.from('businesses').update({ [k]: val }).eq('id', BIZ).select('id')); S.biz[k] = val; I.toast('انحفظ ✓'); if (k === 'name') shell(), go('settings'); } catch (e) { I.fail(e); }
+    }));
+    $('vatP').onchange = async (e) => { try { await q1(sb.from('settings').update({ vat_percent: +e.target.value }).eq('business_id', BIZ).select('business_id')); S.set.vat_percent = +e.target.value; I.toast('انحفظ ✓'); } catch (x) { I.fail(x); } };
+    v.querySelectorAll('[data-s]').forEach((sel) => sel.onchange = async () => { try { await q1(sb.from('settings').update({ [sel.dataset.s]: +sel.value }).eq('business_id', BIZ).select('business_id')); S.set[sel.dataset.s] = +sel.value; I.toast('انحفظ ✓'); } catch (e) { I.fail(e); } });
+    $('notifyStaff').onchange = async (e) => { try { await q1(sb.from('settings').update({ notify_staff: e.target.checked }).eq('business_id', BIZ).select('business_id')); S.set.notify_staff = e.target.checked; I.toast('انحفظ ✓'); } catch (x) { I.fail(x); } };
+    $('notifyOwner').onchange = async (e) => { try { await q1(sb.from('settings').update({ notify_owner: e.target.checked }).eq('business_id', BIZ).select('business_id')); S.set.notify_owner = e.target.checked; I.toast('انحفظ ✓'); } catch (x) { I.fail(x); } };
+    $('logoF').onchange = (e) => uploadLogo(e.target.files[0]);
+    if ($('paySave')) $('paySave').onclick = async (e) => { e.target.disabled = true; try { await I.api('biz/payment-keys', { business_id: BIZ, sk: $('sk').value, pk: $('pk').value }); I.toast('انربط ميسر ✓'); S.set.pay_provider = 'moyasar'; S.payStatus = null; vSettings(v); } catch (x) { I.fail(x); e.target.disabled = false; } };
+    if ($('payOff')) $('payOff').onclick = async () => { if (!confirm('فك ربط ميسر؟ الفواتير بتوصل بدون رابط دفع')) return; try { await I.api('biz/payment-keys', { business_id: BIZ, clear: true }); I.toast('انفك الربط'); S.payStatus = null; vSettings(v); } catch (x) { I.fail(x); } };
+    const paintEx = async () => {
+      const k = S.set.export_kind, el = $('exBody');
+      if (k === 'none') { el.innerHTML = '<p class="tiny">فعّل التصدير عشان كل طلب جديد وكل تحديث ينضاف لجدولكم أو نظامكم تلقائيًا.</p>'; return; }
+      let secret = ''; try { secret = (await I.api('biz/export-info', { business_id: BIZ })).secret; } catch (e) { /* */ }
+      el.innerHTML = `${k === 'sheet' ? `<ol class="small" style="margin:0;padding-inline-start:20px;display:grid;gap:4px"><li>افتح جدول قوقل جديد</li><li>من القائمة: الإضافات ← Apps Script، وامسح الموجود والصق الكود تحت</li><li>اضغط نشر ← نشر جديد ← تطبيق ويب، والوصول «أي شخص»</li><li>انسخ رابط تطبيق الويب والصقه هنا، ثم اضغط «جرّب»</li></ol>
+        <pre class="code" id="gsCode">${esc(GS_CODE)}</pre><button class="btn sm ghost" id="gsCopy" style="justify-self:start">${icon('copy')}نسخ الكود</button>` : `<p class="tiny">نرسل POST بصيغة JSON مع كل حدث (طلب جديد، تغيير موعد، إلغاء، فاتورة، دفع). التوقيع في الترويسة x-ihj-signature (HMAC-SHA256 بالمفتاح تحت).</p><div class="copybox"><code>${esc(secret)}</code><button class="btn sm" id="secCopy" type="button">${icon('copy')}نسخ المفتاح</button></div>`}
+        <label class="f"><span>${k === 'sheet' ? 'رابط تطبيق الويب' : 'رابط الـWebhook'}</span><input id="exUrl" dir="ltr" value="${esc(S.set.export_url)}" placeholder="https://"></label>
+        <div class="row"><button class="btn" id="exSave">${icon('check')}حفظ</button><button class="btn ghost" id="exTest">${icon('send')}جرّب</button><span class="tiny" id="exMsg"></span></div>`;
+      if ($('gsCopy')) $('gsCopy').onclick = () => I.copy(GS_CODE, 'انسخ الكود ✓');
+      if ($('secCopy')) $('secCopy').onclick = () => I.copy(secret);
+      $('exSave').onclick = async () => { const url = $('exUrl').value.trim(); if (url && !/^https:\/\//.test(url)) return I.toast('الرابط لازم يبدأ بـ https://', true); try { await q1(sb.from('settings').update({ export_url: url }).eq('business_id', BIZ).select('business_id')); S.set.export_url = url; I.toast('انحفظ ✓'); } catch (e) { I.fail(e); } };
+      $('exTest').onclick = async (e) => { e.target.disabled = true; $('exMsg').textContent = '…'; try { const r = await I.api('biz/export-test', { business_id: BIZ }); $('exMsg').textContent = r.ok ? 'وصل ✓' : `ما وصل (${r.status || r.error || ''})`; } catch (x) { $('exMsg').textContent = I.errText(x); } e.target.disabled = false; };
+    };
+    v.querySelectorAll('[data-x]').forEach((btn) => btn.onclick = async () => { try { await q1(sb.from('settings').update({ export_kind: btn.dataset.x }).eq('business_id', BIZ).select('business_id')); S.set.export_kind = btn.dataset.x; v.querySelectorAll('[data-x]').forEach((x) => x.classList.toggle('on', x === btn)); paintEx(); } catch (e) { I.fail(e); } });
+    paintEx();
+  }
+  const GS_CODE = `function doPost(e) {
+  var d = JSON.parse(e.postData.contents);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('الطلبات') || ss.insertSheet('الطلبات');
+  if (sh.getLastRow() === 0) sh.appendRow(['الحدث','رقم الطلب','الحالة','اليوم','الوقت','العميل','الجوال','المدينة','الخدمة','الموظف','السعر','الموقع','وقت الإرسال']);
+  var o = d.order || {};
+  sh.appendRow([d.event, o.number, o.status, o.day, o.time, o.customer_name, o.customer_phone, o.city, o.service, o.staff, o.price, o.maps_url, d.sent_at]);
+  return ContentService.createTextOutput('ok');
+}`;
+  function uploadLogo(file) {
+    if (!file) return;
+    const img = new Image();
+    img.onload = async () => {
+      const max = 512, s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width * s) || 256; c.height = Math.round(img.height * s) || 256;
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      try { const r = await I.api('biz/logo', { business_id: BIZ, data_url: c.toDataURL('image/png') }); S.biz.logo_url = r.logo_url; I.toast('تغيّر الشعار ✓'); shell(); go('settings'); } catch (e) { I.fail(e); }
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => I.toast('ما قدرت أقرأ الصورة', true);
+    img.src = URL.createObjectURL(file);
+  }
+
+  // ═════ البث المباشر ═════
+  S.fresh = new Set();
+  function live() {
+    const ch = sb.channel('biz-' + BIZ)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders', filter: `business_id=eq.${BIZ}` }, async (p) => {
+        const o = p.new; if (!o || !o.id) return;
+        const isNew = p.eventType === 'INSERT' && !S.seen.has(o.id);
+        S.seen.add(o.id);
+        await refreshOrder(o.id);
+        if (isNew) {
+          S.fresh.add(o.id); setTimeout(() => S.fresh.delete(o.id), 4000);
+          const x = S.orders.find((y) => y.id === o.id) || o;
+          I.alertNew(`طلب جديد #${x.number}`, `${I.when(x.slot_start)}${x.city_id ? ' · ' + cityName(x.city_id) : ''}`);
+        }
+        if (S.tab === 'orders') render();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'handoffs', filter: `business_id=eq.${BIZ}` }, async (p) => {
+        try { S.handoffs = await q1(sb.from('handoffs').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused,paused_reason)').eq('business_id', BIZ).is('resolved_at', null).order('created_at', { ascending: false })); } catch (e) { /* */ }
+        paintCounts();
+        if (p.eventType === 'INSERT') { const h = S.handoffs.find((x) => x.id === p.new.id); I.alertNew('عميل يحتاج رد 💬', h ? custName(h.customer) : ''); }
+        if (S.tab === 'chats') render();
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'wa_log', filter: `business_id=eq.${BIZ}` }, (p) => { if (chatCid && p.new && p.new.customer_id === chatCid) paintConv(chatCid); })
+      .subscribe((status) => { const el = $('live'); if (el) el.classList.toggle('on', status === 'SUBSCRIBED'); window.__live = status; });
+    return ch;
+  }
+
+  shell();
+  go(TABS.some((t) => t[0] === location.hash.slice(1)) ? location.hash.slice(1) : 'orders');
+  live();
+  // احتياط لو انقطع البث: تحديث هادئ كل دقيقة
+  setInterval(async () => { if (document.visibilityState !== 'visible') return; try { const since = new Date(Date.now() - 62 * 86400000).toISOString(); const fresh = await q1(sb.from('orders').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused)').eq('business_id', BIZ).gte('slot_start', since).order('slot_start', { ascending: false }).limit(600)); const added = fresh.filter((o) => !S.seen.has(o.id)); S.orders = fresh; fresh.forEach((o) => S.seen.add(o.id)); if (added.length) { added.forEach((o) => S.fresh.add(o.id)); I.alertNew(`طلب جديد #${added[0].number}`, I.when(added[0].slot_start)); } paintCounts(); if (S.tab === 'orders') render(); } catch (e) { /* */ } }, 60000);
+  window.__biz = { S, go, render };
+})();
+</script>
+</body>
+</html>
