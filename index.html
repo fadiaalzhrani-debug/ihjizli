@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="احجزلي: بوت واتساب يستقبل طلبات زباينك ويحجزها لك، مع لوحة إدارة وفواتير ورابط دفع. تأسيس مرة وحدة واشتراك شهري ثابت.">
-<meta property="og:title" content="احجزلي · بوت واتساب يحجز لك">
-<meta property="og:description" content="زباينك يراسلون رقمك، والبوت ياخذ الموقع والموعد ويأكد الطلب ويبلّغ موظفينك. فاتورة ورابط دفع بعد الخدمة.">
+<meta name="description" content="احجزلي: أتمتة كاملة لطلبات الواتساب. الرد والحجز والتأكيد والتنبيه والفاتورة والدفع تصير لحالها بدون موظف. تأسيس مرة وحدة واشتراك شهري ثابت.">
+<meta property="og:title" content="احجزلي · طلبات الواتساب تمشي لحالها بالكامل">
+<meta property="og:description" content="زباينك يراسلون رقمك، والنظام يرد ويحجز وينزّل الطلب عندك ويبلّغ موظفك، ويرسل الفاتورة ورابط الدفع بعد الخدمة. أوتوماتيك 100%.">
 <style>html{color-scheme:light dark} body{margin:0} img{max-width:100%}</style>
 <title>احجزلي</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
@@ -61,6 +61,21 @@ section:first-of-type{border-top:0}
 .b .act{display:grid;margin:8px -11px -8px;border-top:1px solid rgba(255,255,255,.08)}
 .b .act span{display:block;text-align:center;padding:8px;color:var(--wa-link);font-weight:600;border-top:1px solid rgba(255,255,255,.08)}
 .b .act span:first-child{border-top:0}
+/* الفكرة: سلسلة الخطوات الأوتوماتيكية + قبل/بعد */
+.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px;counter-reset:c}
+.link{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;display:grid;gap:6px;align-content:start;counter-increment:c;min-width:0;position:relative}
+.link::before{content:counter(c);font-family:var(--display);font-weight:900;font-size:13px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;margin-bottom:4px}
+.link b{font-family:var(--display);font-size:16px;line-height:1.35}
+.link span{color:var(--muted);font-size:14px;line-height:1.6}
+.link i{position:absolute;top:14px;inset-inline-end:14px;font-style:normal;font-size:12px;font-weight:700;color:var(--accent);background:var(--soft);border-radius:999px;padding:3px 9px}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.ba>div{border-radius:var(--r);padding:18px 20px;border:1px solid var(--line);background:var(--card);min-width:0}
+.ba>div:last-child{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+.ba h3{margin-bottom:8px}
+.ba ul{margin:0;padding-inline-start:18px;color:var(--muted);font-size:15px;display:grid;gap:5px}
+.ba>div:last-child ul{color:var(--fg)}
+.only{margin-top:16px;background:var(--soft2);border-radius:var(--r);padding:14px 18px;font-size:15px;display:flex;gap:12px;align-items:flex-start;line-height:1.7}
+.only .ic{width:24px;height:24px;flex:none;margin-top:3px;color:var(--accent)}
 /* لمن */
 .who{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
 .who span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:8px}
@@ -148,8 +163,8 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
 /* شريط سفلي ثابت على الجوال */
 .dock{position:fixed;bottom:0;left:0;right:0;display:none;gap:10px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:5}
 .dock .btn{flex:1;padding:12px 10px;font-size:16px}
-@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:30px} .steps,.grid,.shots{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} }
-@media (max-width:620px){ .steps,.grid,.why{grid-template-columns:1fr} .shots{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-inline:-16px;padding:4px 16px 12px;scrollbar-width:none} .shots::-webkit-scrollbar{display:none} .shot{flex:0 0 76%;scroll-snap-align:center} section{padding-block:44px} .price b{font-size:34px} .addon{grid-template-columns:1fr} .dock{display:flex} .cmp .row{grid-template-columns:1fr 1fr} .cmp .row>div:first-child{grid-column:1/-1;background:var(--soft);padding-block:8px;font-weight:700} .cmp .row:first-child>div:first-child{display:none} }
+@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:30px} .steps,.grid,.shots,.chain{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} }
+@media (max-width:620px){ .steps,.grid,.why,.chain,.ba{grid-template-columns:1fr} .shots{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-inline:-16px;padding:4px 16px 12px;scrollbar-width:none} .shots::-webkit-scrollbar{display:none} .shot{flex:0 0 76%;scroll-snap-align:center} section{padding-block:44px} .price b{font-size:34px} .addon{grid-template-columns:1fr} .dock{display:flex} .cmp .row{grid-template-columns:1fr 1fr} .cmp .row>div:first-child{grid-column:1/-1;background:var(--soft);padding-block:8px;font-weight:700} .cmp .row:first-child>div:first-child{display:none} }
 @media (prefers-reduced-motion:no-preference){ .b{animation:pop .5s ease both} .b:nth-child(2){animation-delay:.15s} .b:nth-child(3){animation-delay:.3s} .b:nth-child(4){animation-delay:.45s} @keyframes pop{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}} }
 </style>
 </head>
@@ -176,19 +191,19 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
 <section class="hero">
   <div class="copy">
     <span class="live"><i></i>شغّال الحين مع خافت للصيانة المنزلية في الخبر</span>
-    <h1>زباينك يحجزون من الواتساب، والبوت يرتّب الباقي</h1>
-    <p class="sub">العميل يراسل رقمك مثل عادته. البوت ياخذ موقعه وموعده، يأكد الطلب، وينزّله عندك مع تنبيه. وبعد الخدمة يرسل له الفاتورة ورابط الدفع.</p>
+    <h1>طلبات زباينك تمشي لحالها بالكامل، من أول رسالة إلى الفاتورة المدفوعة</h1>
+    <p class="sub">ما تحتاج أحد يرد، ولا أحد يسجّل الطلب، ولا أحد يرسل الفاتورة. العميل يراسل رقمك مثل عادته، والنظام يرد ويحجز وينزّل الطلب عندك ويبلّغ موظفك، وبعد الخدمة يرسل له الفاتورة ورابط الدفع. أنت بس تشوف الطلبات تجيك.</p>
     <div class="cta">
       <a class="btn" href="#signup">اشترك الحين</a>
       <a class="btn ghost" href="https://wa.me/966504652455?text=%D8%A7%D8%A8%D9%8A%20%D8%A3%D8%B9%D8%B1%D9%81%20%D8%B9%D9%86%20%D8%A7%D8%AD%D8%AC%D8%B2%D9%84%D9%8A" target="_blank" rel="noopener">كلّمنا على واتساب</a>
     </div>
     <div class="trust">
+      <span><svg class="ic"><use href="#i-bolt"/></svg>أوتوماتيك 100%، بدون موظف رد</span>
       <span><svg class="ic"><use href="#i-clock"/></svg>يرد خلال ثانية، 24 ساعة</span>
       <span><svg class="ic"><use href="#i-chat"/></svg>بدون تطبيق ولا رابط للعميل</span>
-      <span><svg class="ic"><use href="#i-bolt"/></svg>يشتغل خلال 7 أيام</span>
     </div>
   </div>
-  <div class="phone" aria-label="مثال حي من بوت خافت">
+  <div class="phone" aria-label="مثال حي من نظام خافت">
     <div class="bar"><div class="av">خافت</div><div><b>مؤسسة خافت</b><small>Business account</small></div></div>
     <div class="chat">
       <div class="b out">السلام عليكم ابي سباك<span class="t">6:27 PM</span></div>
@@ -202,10 +217,31 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
   </div>
 </section>
 
+<section id="auto">
+  <span class="eyebrow">الفكرة</span>
+  <h2>أتمتة كاملة: كل خطوة في الطلب تصير لحالها</h2>
+  <p class="sub">مو رد تلقائي وبس. سلسلة كاملة تشتغل بدون يد بشرية، من لحظة ما يكتب العميل إلى ما يدفع. هذي الخطوات الثمان، وكلها أوتوماتيك:</p>
+  <div class="chain">
+    <div class="link"><i>لحاله</i><b>يرد على العميل</b><span>خلال ثانية، في أي وقت، حتى بعد الدوام</span></div>
+    <div class="link"><i>لحاله</i><b>ياخذ موقعه</b><span>بزر «إرسال الموقع» أو رابط قوقل ماب</span></div>
+    <div class="link"><i>لحاله</i><b>يعرض المواعيد المتاحة</b><span>من جدولك الحقيقي، بدون ازدواج ولا تعارض</span></div>
+    <div class="link"><i>لحاله</i><b>يأكد الطلب ويسجّله</b><span>برقم طلب، في لوحتك ونظامك مباشرة</span></div>
+    <div class="link"><i>لحاله</i><b>ينبّه ويوزّع</b><span>صوت في اللوحة، وإشعار للموظف المسؤول حسب المدينة</span></div>
+    <div class="link"><i>لحاله</i><b>يذكّر العميل</b><span>قبل الموعد، و«الموظف في الطريق» عند الوصول</span></div>
+    <div class="link"><i>لحاله</i><b>يرسل الفاتورة ورابط الدفع</b><span>PDF بالعربي مع زر دفع بمدى وأبل باي والبطاقة</span></div>
+    <div class="link"><i>لحاله</i><b>يأكد الدفع ويقفل الطلب</b><span>«وصلنا دفعك» للعميل، والطلب يتسكّر في لوحتك</span></div>
+  </div>
+  <div class="ba">
+    <div><h3>اليوم، يدويًا</h3><ul><li>موظف يرد لما يفضى، والطلبات بعد الدوام تضيع</li><li>يسجّل الطلب بيده ويتصل يأكد الموعد</li><li>ينسى التذكير، ويكتب الفاتورة ويرسلها بنفسه</li><li>يلحق العميل عشان يدفع</li></ul></div>
+    <div><h3>مع احجزلي، أوتوماتيك</h3><ul><li>الرد والحجز والتأكيد يصير لحاله في ثوانٍ</li><li>الطلب ينزل عندك مسجّلًا بالموقع والموعد</li><li>التذكير والفاتورة ورابط الدفع ينرسلون لحالهم</li><li>موظفك يروح يشتغل، ما يرد على أحد</li></ul></div>
+  </div>
+  <p class="only"><svg class="ic"><use href="#i-users"/></svg><span><b>الحالة الوحيدة اللي ترجع لك:</b> لو كتب العميل شي ما يفهمه النظام، أو اشتكى، يحوّله لك ويوقف عنه لين تردون. غير كذا ما يحتاجك.</span></p>
+</section>
+
 <section id="who">
   <span class="eyebrow">لمن احجزلي؟</span>
   <h2>لأي محل طلباته تجيه بالواتساب</h2>
-  <p class="sub">إذا زباينك يكتبون لك «ابي موعد» أو «كم السعر» أو «تجون اليوم؟»، فالبوت يرد عنك ويحجز.</p>
+  <p class="sub">إذا زباينك يكتبون لك «ابي موعد» أو «كم السعر» أو «تجون اليوم؟»، فالنظام يرد عنك ويحجز لحاله.</p>
   <div class="who">
     <span><svg class="ic"><use href="#i-check"/></svg>صيانة منزلية</span><span><svg class="ic"><use href="#i-check"/></svg>مغاسل سيارات</span><span><svg class="ic"><use href="#i-check"/></svg>صالونات وتجميل</span><span><svg class="ic"><use href="#i-check"/></svg>تنظيف</span><span><svg class="ic"><use href="#i-check"/></svg>عيادات ومراكز</span><span><svg class="ic"><use href="#i-check"/></svg>تأجير ومعدات</span><span><svg class="ic"><use href="#i-check"/></svg>أي خدمة بموعد</span>
   </div>
@@ -213,11 +249,11 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
 
 <section id="how">
   <span class="eyebrow">كيف يشتغل</span>
-  <h2>ثلاث خطوات، كلها داخل الواتساب</h2>
+  <h2>ثلاث خطوات، كلها داخل الواتساب وبدون تدخل منك</h2>
   <div class="steps">
-    <div class="step"><span class="n"></span><svg class="ic"><use href="#i-chat"/></svg><h3>العميل يراسل رقمك</h3><p>أي رسالة توصل، البوت يرد فورًا بترحيب وزر «احجز من هنا». ولو كتب كلام حر يفهمه.</p></div>
-    <div class="step"><span class="n"></span><svg class="ic"><use href="#i-cal"/></svg><h3>يحدد الموقع والموعد</h3><p>يطلب اللوكيشن بزر واحد، ويعرض الأيام والأوقات المتاحة فعلًا حسب جدولك، ثم يأكد الطلب.</p></div>
-    <div class="step"><span class="n"></span><svg class="ic"><use href="#i-bell"/></svg><h3>الطلب عندك مع تنبيه</h3><p>يظهر في لوحتك بصوت، ويوصل للموظف المناسب. وبعد الخدمة فاتورة ورابط دفع للعميل.</p></div>
+    <div class="step"><span class="n"></span><svg class="ic"><use href="#i-chat"/></svg><h3>العميل يراسل رقمك</h3><p>أي رسالة توصل، النظام يرد فورًا بترحيب وزر «احجز من هنا»، ما ينتظر أحد. ولو كتب كلام حر يفهمه.</p></div>
+    <div class="step"><span class="n"></span><svg class="ic"><use href="#i-cal"/></svg><h3>يحدد الموقع والموعد لحاله</h3><p>يطلب اللوكيشن بزر واحد، ويعرض الأيام والأوقات المتاحة فعلًا من جدولك، ثم يأكد الطلب ويسجّله.</p></div>
+    <div class="step"><span class="n"></span><svg class="ic"><use href="#i-bell"/></svg><h3>الطلب عندك والفاتورة عنده</h3><p>يظهر في لوحتك بصوت ويوصل الموظف المسؤول. وبعد الخدمة تنرسل الفاتورة ورابط الدفع للعميل لحالها.</p></div>
   </div>
 </section>
 
@@ -225,7 +261,7 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
   <span class="eyebrow">وش تحصل عليه</span>
   <h2>كل اللي يحتاجه محل خدمات، جاهز ومربوط</h2>
   <div class="grid">
-    <div class="tile"><svg class="ic"><use href="#i-chat"/></svg><div><b>بوت حجز كامل</b><span>موقع، يوم، وقت، تأكيد، وتذكير قبل الموعد</span></div></div>
+    <div class="tile"><svg class="ic"><use href="#i-chat"/></svg><div><b>حجز أوتوماتيك كامل</b><span>موقع، يوم، وقت، تأكيد، وتذكير قبل الموعد</span></div></div>
     <div class="tile"><svg class="ic"><use href="#i-edit"/></svg><div><b>العميل يتصرف بنفسه</b><span>يعدّل موعده أو يلغي طلبه من «طلباتي» بدون ما يكلّمك</span></div></div>
     <div class="tile"><svg class="ic"><use href="#i-bell"/></svg><div><b>لوحة إدارة بتنبيه</b><span>كل الطلبات في مكان واحد، وصوت لكل طلب جديد</span></div></div>
     <div class="tile"><svg class="ic"><use href="#i-users"/></svg><div><b>إشعار الموظفين</b><span>الطلب يوصل الفني أو الموظف المسؤول، و«الفني برا» للعميل</span></div></div>
@@ -243,10 +279,10 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
   <p class="sub">التأسيس على دفعتين: النص عند البداية والنص عند التسليم. والاشتراك الشهري ما يبدأ إلا بعد ما يشتغل عندك.</p>
   <div class="plans">
     <div class="plan">
-      <h3>بوت الحجز</h3>
+      <h3>أتمتة الحجز</h3>
       <div class="price"><b>3,500</b><span>ريال تأسيس</span><small>ثم 350 ريال شهريًا</small></div>
       <ul>
-        <li><svg class="ic"><use href="#i-check"/></svg>بوت حجز على رقمك: ترحيب، موقع، موعد، تأكيد، تذكير</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>حجز أوتوماتيك على رقمك: ترحيب، موقع، موعد، تأكيد، تذكير</li>
         <li><svg class="ic"><use href="#i-check"/></svg>العميل يعدّل موعده أو يلغي بنفسه</li>
         <li><svg class="ic"><use href="#i-check"/></svg>لوحة إدارة للطلبات مع تنبيه صوتي</li>
         <li><svg class="ic"><use href="#i-check"/></svg>إشعار واتساب للموظف المسؤول</li>
@@ -257,10 +293,10 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
     </div>
     <div class="plan hot">
       <span class="tag">الأكثر طلبًا</span>
-      <h3>بوت الحجز + الدفع</h3>
+      <h3>أتمتة الحجز + الدفع</h3>
       <div class="price"><b>5,500</b><span>ريال تأسيس</span><small>ثم 600 ريال شهريًا</small></div>
       <ul>
-        <li><svg class="ic"><use href="#i-check"/></svg>كل مزايا باقة بوت الحجز</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>كل مزايا باقة أتمتة الحجز</li>
         <li><svg class="ic"><use href="#i-check"/></svg>فواتير PDF بالعربي ورابط دفع (مدى، أبل باي، بطاقة، تمارا)</li>
         <li><svg class="ic"><use href="#i-check"/></svg>صفحة حجز داخل الواتساب بعد توثيق النشاط عند ميتا</li>
         <li><svg class="ic"><use href="#i-check"/></svg>لوحة للموظفين: الطلب، وصلت، الفاتورة</li>
@@ -271,7 +307,7 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
     </div>
   </div>
   <div class="addon">
-    <div><h3>إضافة: تطبيق باسمك في المتاجر</h3><p class="sub" style="font-size:15px;margin-top:4px">تطبيق iOS وAndroid بشعارك: حجز، طلباتي، دفع، إشعارات، تتبع الموظف. نفس الطلبات ونفس اللوحة مع البوت. المدة 3 إلى 4 أسابيع بسبب مراجعة المتاجر.</p></div>
+    <div><h3>إضافة: تطبيق باسمك في المتاجر</h3><p class="sub" style="font-size:15px;margin-top:4px">تطبيق iOS وAndroid بشعارك: حجز، طلباتي، دفع، إشعارات، تتبع الموظف. نفس الطلبات ونفس اللوحة مع الأتمتة. المدة 3 إلى 4 أسابيع بسبب مراجعة المتاجر.</p></div>
     <div class="price"><b>9,000</b><span>ريال مرة وحدة</span><small>ثم 150 ريال شهريًا للمتاجر والتحديثات</small></div>
   </div>
   <div class="fine"><b>اللي يدفعه العميل لغيرنا (مو داخل الأسعار):</b> الواتساب: محادثة الخدمة مجانية لما يراسلك العميل، والرسالة القالبية (تذكير أو فاتورة بعد 24 ساعة) نحو 17 هللة. مزوّد ربط الواتساب نحو 45 ريال شهريًا. بوابة الدفع تاخذ نسبة من كل عملية. حساب مطور آبل 99 دولار سنويًا وقوقل 25 دولار مرة وحدة للتطبيق. الأسعار قبل ضريبة القيمة المضافة.</div>
@@ -287,11 +323,12 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
     <div class="row" role="row"><div class="k">مين يجهّز الربط والتوثيق؟</div><div><span class="ok"><svg class="ic"><use href="#i-check"/></svg>احنا، كامل</span></div><div><span class="no"><svg class="ic"><use href="#i-x"/></svg>أنت أو موظفك</span></div></div>
     <div class="row" role="row"><div class="k">مفصّل على شغلك؟</div><div><span class="ok"><svg class="ic"><use href="#i-check"/></svg>لهجتك ومدنك وفريقك وتسعيرك</span></div><div><span class="no"><svg class="ic"><use href="#i-x"/></svg>قالب واحد للجميع</span></div></div>
     <div class="row" role="row"><div class="k">السعر مع الزيادة؟</div><div><span class="ok"><svg class="ic"><use href="#i-check"/></svg>ثابت مهما زادوا الطلبات والموظفين</span></div><div><span class="no"><svg class="ic"><use href="#i-x"/></svg>يكبر مع كل مستخدم وفرع وإضافة</span></div></div>
+    <div class="row" role="row"><div class="k">وش يصير بعد الحجز؟</div><div><span class="ok"><svg class="ic"><use href="#i-check"/></svg>يكمل لحاله: تنبيه، تذكير، فاتورة، دفع</span></div><div><span class="no"><svg class="ic"><use href="#i-x"/></svg>تتابعه أنت يدويًا</span></div></div>
     <div class="row" role="row"><div class="k">فواتير ودفع وتوزيع على الفنيين؟</div><div><span class="ok"><svg class="ic"><use href="#i-check"/></svg>مبنية داخله</span></div><div><span class="no"><svg class="ic"><use href="#i-x"/></svg>إضافات أو غير موجودة</span></div></div>
     <div class="row" role="row"><div class="k">بياناتك وعملاؤك؟</div><div><span class="ok"><svg class="ic"><use href="#i-check"/></svg>قاعدة باسمك تاخذها معك</span></div><div><span class="no"><svg class="ic"><use href="#i-x"/></svg>على منصتهم</span></div></div>
   </div>
   <div class="why">
-    <div class="box"><h3>ليش تأسيس مقدّم؟</h3><p>لأنه مشروع تجهيز يتسوّى لك مرة وحدة، مو تسجيل في موقع: ربط رقمك بواجهة واتساب الرسمية وتوثيق نشاطك عند ميتا، كتابة رسائل البوت بلهجة زباينك، لوحتك وتنبيهاتك، الربط بنظامك، وتدريب موظفيك.</p></div>
+    <div class="box"><h3>ليش تأسيس مقدّم؟</h3><p>لأنه مشروع تجهيز يتسوّى لك مرة وحدة، مو تسجيل في موقع: ربط رقمك بواجهة واتساب الرسمية وتوثيق نشاطك عند ميتا، كتابة رسائل النظام بلهجة زباينك، لوحتك وتنبيهاتك، الربط بنظامك، وتدريب موظفيك.</p></div>
     <div class="box"><h3>وبالأرقام</h3><p>موظف استقبال يرد على الواتساب يكلّفك 3,000 ريال وفوق كل شهر، يداوم 8 ساعات ويسهو. احجزلي يرد خلال ثانية طول اليوم بـ350 ريال في الشهر، وكل طلب كان يضيع بعد الدوام يصير حجزًا مؤكدًا.</p></div>
   </div>
 </section>
@@ -312,7 +349,7 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
     <div class="box">
       <h3>المدة</h3>
       <div class="timeline">
-        <div><span>الربط مع واتساب والبوت واللوحة</span><b>7 أيام عمل</b></div>
+        <div><span>الربط مع واتساب والأتمتة واللوحة</span><b>7 أيام عمل</b></div>
         <div><span>الفواتير ورابط الدفع</span><b>3 أيام إضافية</b></div>
         <div><span>صفحة الحجز داخل الواتساب</span><b>بعد توثيق ميتا</b></div>
         <div><span>التطبيق في المتاجر</span><b>3 إلى 4 أسابيع</b></div>
@@ -324,9 +361,9 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
 
 <section id="shots">
   <span class="eyebrow">نماذج حقيقية</span>
-  <h2>من بوت خافت للصيانة المنزلية، شغّال اليوم مع عملاء حقيقيين</h2>
+  <h2>من نظام خافت للصيانة المنزلية، شغّال اليوم مع عملاء حقيقيين</h2>
   <div class="shots">
-    <div class="shot"><img src="img/loc.png" alt="البوت يطلب موقع البيت بزر إرسال الموقع" loading="lazy"><span>طلب الموقع بزر واحد</span></div>
+    <div class="shot"><img src="img/loc.png" alt="النظام يطلب موقع البيت بزر إرسال الموقع" loading="lazy"><span>طلب الموقع بزر واحد</span></div>
     <div class="shot"><img src="img/confirmed.png" alt="رسالة تأكيد الطلب مع رقم الطلب والموعد" loading="lazy"><span>تأكيد الطلب بالموعد</span></div>
     <div class="shot"><img src="img/invoice.png" alt="فاتورة الطلب مع زر الدفع" loading="lazy"><span>الفاتورة مع زر الدفع</span></div>
   </div>
@@ -335,10 +372,11 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
 <section id="faq">
   <span class="eyebrow">أسئلة تتكرر</span>
   <h2>قبل ما تسأل</h2>
-  <details><summary>هل البوت يبدّل موظف الرد؟</summary><p>ياخذ عنه الطلبات الروتينية: الحجز والموعد والموقع والتأكيد والتذكير والفاتورة. أي رسالة ما يفهمها أو شكوى، يحوّلها لكم ويوقف عن هذا العميل لين تردون.</p></details>
+  <details><summary>وش معنى «أوتوماتيك بالكامل»؟</summary><p>يعني ما فيه خطوة في الطلب تنتظر موظف: الرد، الموقع، الموعد، التأكيد، التنبيه، التذكير، الفاتورة، الدفع، كلها تصير لحالها على مدار الساعة. الشي الوحيد اللي يرجع لك هو الشكاوى والرسائل اللي ما يفهمها النظام.</p></details>
+  <details><summary>هل الأتمتة تغني عن موظف الرد؟</summary><p>تاخذ عنه كل الطلبات الروتينية: الحجز والموعد والموقع والتأكيد والتذكير والفاتورة. أي رسالة ما يفهمها النظام أو شكوى، يحوّلها لكم ويوقف عن هذا العميل لين تردون.</p></details>
   <details><summary>وش يصير لو العميل كتب كلام حر؟</summary><p>يفهم اللهجة والطلبات المكتوبة («ابي سباك بكرة العصر»)، ويكمل الحجز منها. ولو ما فهم يرد بأزرار واضحة بدل ما يتركه.</p></details>
   <details><summary>الطلبات تروح لنظامنا الحالي؟</summary><p>نعم. تنزل في لوحة الإدارة، وتقدر توصلها لموقعك أو نظامك عبر رابط برمجي، أو لجدول جوجل لو ما عندك نظام.</p></details>
-  <details><summary>ليش توثيق ميتا مهم؟</summary><p>بدون توثيق النشاط البوت يشتغل بالرسائل والأزرار العادية. بعد التوثيق تنفتح «صفحة الحجز» داخل الواتساب (شاشة كاملة فيها الأيام والأوقات) وتزيد حدود الإرسال. التوثيق باسم السجل التجاري ونساعدك فيه.</p></details>
+  <details><summary>ليش توثيق ميتا مهم؟</summary><p>بدون توثيق النشاط النظام يشتغل بالرسائل والأزرار العادية. بعد التوثيق تنفتح «صفحة الحجز» داخل الواتساب (شاشة كاملة فيها الأيام والأوقات) وتزيد حدود الإرسال. التوثيق باسم السجل التجاري ونساعدك فيه.</p></details>
   <details><summary>أقدر أوقفه أو أعدّل كلامه بنفسي؟</summary><p>نعم، من لوحة الإدارة: تشغيل وإيقاف، نصوص الترحيب، المدن، أوقات العمل، والعطل. والتعديلات الأكبر ضمن الاشتراك الشهري.</p></details>
 </section>
 
@@ -358,8 +396,8 @@ details p{padding:0 0 16px;color:var(--muted);font-size:15px}
     <div class="f"><label for="f_orders">كم طلب يجيك باليوم تقريبًا؟</label>
       <select id="f_orders" name="orders_per_day"><option value="">اختر</option><option>أقل من 5</option><option>5 إلى 15</option><option>15 إلى 40</option><option>أكثر من 40</option></select></div>
     <fieldset class="f wide"><legend>الباقة اللي تهمّك</legend>
-      <label class="opt"><input type="radio" name="package" value="bot" checked><span><b>بوت الحجز</b> · 3,500 تأسيس + 350 شهريًا</span></label>
-      <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>بوت الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
+      <label class="opt"><input type="radio" name="package" value="bot" checked><span><b>أتمتة الحجز</b> · 3,500 تأسيس + 350 شهريًا</span></label>
+      <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>أتمتة الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
       <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
     </fieldset>
     <div class="f wide"><label for="f_notes">ملاحظات (اختياري)</label><textarea id="f_notes" name="notes" rows="3" maxlength="600" placeholder="وش أكثر شي يضيّع عليك طلبات؟ وش نظامك الحالي؟"></textarea></div>

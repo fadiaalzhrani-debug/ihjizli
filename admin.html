@@ -77,9 +77,9 @@ const SUPABASE_URL='https://zulogtqxbuqxmdmjpzqj.supabase.co', SUPABASE_ANON='sb
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
 const $=id=>document.getElementById(id);
 const STATUS={new:'جديد',contacted:'تواصلنا',agreed:'اتفقنا',setup:'قيد التجهيز',live:'شغّال',lost:'ما تم'};
-const PKG={bot:'بوت الحجز',bot_pay:'بوت الحجز + الدفع'};
+const PKG={bot:'أتمتة الحجز',bot_pay:'أتمتة الحجز + الدفع'};
 const FEES={bot:[3500,350],bot_pay:[5500,600],app:[9000,150]};
-const CK=[['cr','سجل تجاري'],['wa_number','رقم واتساب للنشاط'],['meta','توثيق ميتا'],['connect','ربط الواتساب (المزوّد)'],['pay','بوابة الدفع'],['catalog','الخدمات والنصوص'],['bot','البوت جاهز'],['dash','لوحة العميل'],['train','تدريب الموظفين'],['app','التطبيق في المتاجر']];
+const CK=[['cr','سجل تجاري'],['wa_number','رقم واتساب للنشاط'],['meta','توثيق ميتا'],['connect','ربط الواتساب (المزوّد)'],['pay','بوابة الدفع'],['catalog','الخدمات والنصوص'],['bot','الأتمتة جاهزة'],['dash','لوحة العميل'],['train','تدريب الموظفين'],['app','التطبيق في المتاجر']];
 let LEADS=[], filter='all', q='', me=null, otpPhone='', openId=null, rt=null;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toast=m=>{ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),2400); };
