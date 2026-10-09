@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="احجزلي: بوت واتساب يستقبل طلبات زباينك ويحجزها لك، مع لوحة إدارة وفواتير ورابط دفع. تأسيس مرة وحدة واشتراك شهري ثابت.">
+<meta property="og:title" content="احجزلي · بوت واتساب يحجز لك">
+<meta property="og:description" content="زباينك يراسلون رقمك، والبوت ياخذ الموقع والموعد ويأكد الطلب ويبلّغ موظفينك. فاتورة ورابط دفع بعد الخدمة.">
+<style>html{color-scheme:light dark} body{margin:0} img{max-width:100%}</style>
+<title>احجزلي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* التخطيط: صفحة عرض خدمة بعمود واحد عرضه 1040px، الرأس نصّ على اليمين وجوال واتساب حي على اليسار، ثم أقسام متباعدة وبطاقات الباقات ثلاثًا تنزل عمودًا واحدًا على الجوال */
+:root{
+  --bg:#F5F8F4; --fg:#15201A; --muted:#5F6D65; --card:#FFFFFF; --line:#D9E3DC; --soft:#E9F3EC;
+  --accent:#0E7A5A; --accent-ink:#FFFFFF; --gold:#E3AE2E; --gold-ink:#2A1F05;
+  --wa-bg:#0B141A; --wa-in:#1F2C34; --wa-out:#005C4B; --wa-ink:#E9EDEF; --wa-sub:#8696A0; --wa-link:#53BDEB;
+  --display:"Tajawal",system-ui,"Segoe UI",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0F1512; --fg:#E7EEE9; --muted:#9AA8A0; --card:#161F1A; --line:#27332C; --soft:#1A2822; --accent:#38C78F; --accent-ink:#06211A; --gold:#F0C14B; --gold-ink:#2A1F05; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#0F1512; --fg:#E7EEE9; --muted:#9AA8A0; --card:#161F1A; --line:#27332C; --soft:#1A2822; --accent:#38C78F; --accent-ink:#06211A; --gold:#F0C14B; --gold-ink:#2A1F05; color-scheme:dark }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.75;direction:rtl;text-align:right;padding-block:0 48px;padding-inline:16px}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);line-height:1.25;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,6vw,52px);font-weight:800}
+h2{font-size:clamp(24px,3.6vw,32px);font-weight:800;margin-bottom:8px}
+h3{font-size:20px;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.04em;color:var(--accent);text-transform:uppercase}
+section{padding-block:56px;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0}
+.lead{font-size:18px;color:var(--muted);max-width:60ch}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:700;font-size:17px;padding:13px 22px;border-radius:12px;text-decoration:none;border:0;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.btn:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+/* الرأس */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-block:40px 56px}
+.hero .copy{display:grid;gap:18px}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.facts span{background:var(--soft);color:var(--fg);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+/* جوال واتساب حي */
+.phone{justify-self:center;width:min(340px,100%);background:var(--wa-bg);border-radius:30px;padding:12px;box-shadow:0 30px 60px -30px rgba(0,0,0,.5);border:6px solid #1c1c1e}
+.phone .bar{display:flex;align-items:center;gap:10px;padding:8px 6px 12px;color:var(--wa-ink)}
+.phone .av{width:38px;height:38px;border-radius:50%;background:var(--gold);color:var(--gold-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px}
+.phone .bar small{display:block;color:var(--wa-sub);font-size:12px}
+.chat{display:grid;gap:8px;padding:6px 4px 10px;font-size:14px;line-height:1.6;color:var(--wa-ink)}
+.b{max-width:86%;padding:8px 11px;border-radius:12px;position:relative;white-space:pre-line}
+.b.in{background:var(--wa-in);justify-self:start;border-top-right-radius:4px}
+.b.out{background:var(--wa-out);justify-self:end;border-top-left-radius:4px}
+.b .t{display:block;text-align:left;color:var(--wa-sub);font-size:10px;margin-top:2px}
+.b .act{display:grid;gap:1px;margin:8px -11px -8px;border-top:1px solid rgba(255,255,255,.08)}
+.b .act span{display:block;text-align:center;padding:8px;color:var(--wa-link);font-weight:600;border-top:1px solid rgba(255,255,255,.08)}
+.b .act span:first-child{border-top:0}
+/* كيف يشتغل: تسلسل حقيقي بأربع خطوات */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px;counter-reset:s}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:8px;counter-increment:s}
+.step::before{content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-variant-numeric:tabular-nums}
+.step p{color:var(--muted);font-size:15px}
+/* المزايا */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 28px;margin-top:20px;padding:0;list-style:none}
+.feats li{padding-inline-start:26px;position:relative;font-size:15.5px}
+.feats li::before{content:"";position:absolute;inset-inline-start:0;top:9px;width:14px;height:14px;border-radius:50%;background:var(--accent);mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' d='M4 12.5 9.5 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' d='M4 12.5 9.5 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat}
+/* الباقات */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;align-items:stretch}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;grid-template-rows:auto auto auto 1fr auto;gap:12px;min-width:0}
+.plan.hot{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.plan .tag{justify-self:start;background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px}
+.plan .tag.quiet{background:var(--soft);color:var(--muted)}
+.price{font-family:var(--display);font-variant-numeric:tabular-nums}
+.price b{font-size:34px;font-weight:800;line-height:1}
+.price small{display:block;color:var(--muted);font-size:14px;margin-top:4px;font-family:var(--body)}
+.plan ul{margin:0;padding:0;list-style:none;display:grid;gap:7px;font-size:15px}
+.plan li{padding-inline-start:20px;position:relative}
+.plan li::before{content:"";position:absolute;inset-inline-start:0;top:11px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.plan .foot{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:10px}
+.note{margin-top:18px;background:var(--soft);border-radius:14px;padding:16px 18px;font-size:14.5px;color:var(--fg);display:grid;gap:6px}
+.note b{font-family:var(--display)}
+/* المقارنة مع المنصات الجاهزة */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.cmp .box ul{list-style:none;padding:0;gap:9px}
+.cmp .box li{padding-inline-start:24px;position:relative;font-size:15px;color:var(--muted)}
+.cmp .box li::before{content:"";position:absolute;inset-inline-start:2px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--line)}
+.cmp .box.pick{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card))}
+.cmp .box.pick li{color:var(--fg)}
+.cmp .box.pick li::before{background:var(--accent)}
+.why-pay{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.why-pay p{color:var(--muted);font-size:15px}
+@media (max-width:760px){ .cmp,.why-pay{grid-template-columns:1fr} }
+/* المتطلبات والمدة */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:10px;min-width:0}
+.box ol,.box ul{margin:0;padding-inline-start:22px;display:grid;gap:6px;font-size:15px}
+.timeline{display:grid;gap:10px}
+.timeline div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:8px;font-size:15px}
+.timeline b{font-family:var(--display);color:var(--accent);white-space:nowrap}
+/* الأسئلة */
+details{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 16px;margin-top:10px}
+summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:16.5px;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-weight:800;font-size:20px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{padding:0 0 14px;color:var(--muted);font-size:15px}
+/* نماذج */
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.shot{display:grid;gap:8px;min-width:0}
+.shot img{width:100%;max-width:100%;border-radius:18px;border:1px solid var(--line);display:block}
+.shot span{font-size:14px;color:var(--muted);text-align:center}
+/* نموذج الاشتراك */
+.lead-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.lead-form .f{display:grid;gap:6px;min-width:0} .lead-form .wide{grid-column:1/-1}
+.lead-form label,.lead-form legend{font-size:14px;color:var(--muted)}
+.lead-form input,.lead-form select,.lead-form textarea{width:100%;font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.lead-form input:focus,.lead-form select:focus,.lead-form textarea:focus{outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:1px}
+.lead-form fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
+.lead-form .opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--fg);font-size:15px}
+.lead-form .opt input{width:auto;margin:0} .lead-form .opt b{font-family:var(--display)}
+.lead-form .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.done{margin-top:22px;background:var(--soft);border-radius:18px;padding:24px;display:grid;gap:10px;justify-items:start}
+@media (max-width:620px){ .lead-form{grid-template-columns:1fr} }
+/* التواصل */
+.contact{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;gap:14px;justify-items:start;margin-top:8px}
+.num{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--display);font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;direction:ltr}
+.num button{font-family:var(--body);font-size:13px;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.tiny{color:var(--muted);font-size:13px}
+@media (max-width:860px){ .hero{grid-template-columns:1fr;gap:28px} .steps,.feats,.plans,.shots{grid-template-columns:1fr 1fr} }
+@media (max-width:560px){ .steps,.feats,.plans,.shots,.two{grid-template-columns:1fr} section{padding-block:40px} .price b{font-size:30px} }
+@media (prefers-reduced-motion:no-preference){ .b{animation:pop .5s ease both} .b:nth-child(2){animation-delay:.15s} .b:nth-child(3){animation-delay:.3s} .b:nth-child(4){animation-delay:.45s} @keyframes pop{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<section class="hero">
+  <div class="copy">
+    <span class="eyebrow">خدمة أتمتة الطلبات عبر الواتساب</span>
+    <h1>احجزلي: بوت واتساب يستقبل طلبات زباينك ويحجزها لك</h1>
+    <p class="lead">زباينك يراسلون رقمك مثل عادتهم، والبوت ياخذ الموقع والموعد ويأكد الطلب وينزّله في لوحتك ويبلّغ موظفينك. بدون تطبيق يحمّلونه، وبدون موظف يرد على كل رسالة.</p>
+    <div class="facts"><span>يشتغل 24 ساعة</span><span>نفس رقم الواتساب اللي عندك</span><span>الطلبات تنزل في لوحتك أو موقعك</span><span>فاتورة ورابط دفع للعميل</span></div>
+    <div class="cta">
+      <a class="btn" href="https://wa.me/966504652455?text=%D8%A7%D8%A8%D9%8A%20%D8%A3%D8%B9%D8%B1%D9%81%20%D8%B9%D9%86%20%D8%A7%D8%AD%D8%AC%D8%B2%D9%84%D9%8A" target="_blank" rel="noopener">كلّمنا على واتساب</a>
+      <a class="btn ghost" href="#signup">اشترك الحين</a>
+    </div>
+  </div>
+  <div class="phone" aria-label="مثال حي من بوت خافت للصيانة المنزلية">
+    <div class="bar"><div class="av">خافت</div><div><b>مؤسسة خافت</b><small>Business account</small></div></div>
+    <div class="chat">
+      <div class="b out">السلام عليكم ابي سباك<span class="t">6:27 PM</span></div>
+      <div class="b in">هلا فيك 👋 تفضل
+تقدر تحجز من هنا بالواتساب، أو من تطبيق خافت 📲
+👷 فريق سباكة وكهرباء يجونك مع بعض، والسعر بعد ما يشوف الفني الشغل ويعرف التفاصيل<span class="t">6:27 PM</span><div class="act"><span>🗓️ احجز من هنا</span><span>📋 طلباتي</span></div></div>
+      <div class="b in">📍 أرسل موقع البيت (لوكيشن): اضغط «إرسال الموقع» تحت، أو أرسل رابط موقعك من قوقل ماب<span class="t">6:27 PM</span><div class="act"><span>Send location</span></div></div>
+      <div class="b in">✅ تأكد طلبك · رقم الطلب 19293
+📅 اليوم · الخميس 8/10 · من 8 م إلى 10 م
+الفني يتواصل معك قبل الموعد 👍
+🧾 والفاتورة توصلك هنا بعد الزيارة مع رابط الدفع<span class="t">6:28 PM</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <span class="eyebrow">كيف يشتغل</span>
+  <h2>من رسالة العميل إلى الفاتورة، بدون ما تلمس شي</h2>
+  <div class="steps">
+    <div class="step"><h3>العميل يراسل رقمك</h3><p>أي رسالة تجي رقم الواتساب حقك، البوت يرد فيها فورًا بترحيب وزر «احجز من هنا».</p></div>
+    <div class="step"><h3>البوت ياخذ الموقع والموعد</h3><p>يطلب الموقع (لوكيشن أو رابط قوقل ماب)، ويعرض الأيام والأوقات المتاحة فعلًا حسب جدولك، ويأكد الطلب.</p></div>
+    <div class="step"><h3>الطلب ينزل عندك مع تنبيه</h3><p>يظهر في لوحة الإدارة بصوت تنبيه، ويوصل إشعار للموظف أو الفني المناسب، وينتقل لموقعك أو جدولك لو تبي.</p></div>
+    <div class="step"><h3>فاتورة ورابط دفع</h3><p>بعد الخدمة توصل العميل فاتورة PDF على الواتساب مع زر دفع بمدى أو أبل باي أو البطاقة، وتوصلك «وصلنا الدفع».</p></div>
+  </div>
+</section>
+
+<section id="features">
+  <span class="eyebrow">وش يشمل</span>
+  <h2>كل اللي يحتاجه محل خدمات عشان يستقبل طلباته بنفسه</h2>
+  <ul class="feats">
+    <li>حجز كامل داخل الواتساب: موقع، يوم، وقت، تأكيد</li>
+    <li>العميل يعدّل موعده أو يلغي طلبه بنفسه من «طلباتي»</li>
+    <li>تذكير العميل قبل الموعد، ورسالة «الفني برا» عند الوصول</li>
+    <li>لوحة إدارة للطلبات مع تنبيه صوتي لكل طلب جديد</li>
+    <li>إشعار الموظفين والفنيين بالطلبات الجديدة</li>
+    <li>فواتير PDF بالعربي مع رابط دفع إلكتروني</li>
+    <li>الطلبات تنتقل لموقعك أو نظامك أو جدول جوجل</li>
+    <li>يفهم اللهجة والرسائل الحرة، ويحوّل الصعب لكم</li>
+    <li>عربي وإنجليزي، ويشتغل على نفس رقمك الحالي</li>
+  </ul>
+</section>
+
+<section id="why">
+  <span class="eyebrow">ليش معنا مو منصة جاهزة؟</span>
+  <h2>المنصات الجاهزة تعطيك رابطًا وتتركك تجهّزه، واحنا نجهّز لك نظامًا كاملًا داخل الواتساب</h2>
+  <p class="lead">منصات الاشتراك الجاهزة (مثل ركاز للحجوزات أو سلة للمتاجر) ممتازة لمن يبي رابط حجز أو متجر يعبّيه العميل بنفسه. احجزلي لمن طلباته تجيه بالواتساب أصلًا ويبي أحد يستقبلها ويرتبها بدل ما يضيعها.</p>
+  <div class="cmp">
+    <div class="box">
+      <h3>منصة اشتراك جاهزة</h3>
+      <ul>
+        <li>العميل يطلع من الواتساب لرابط أو تطبيق ويعبّي بياناته بنفسه، وكثير ما يكمّلون</li>
+        <li>نموذج واحد للجميع: تلبّس شغلك على شكلهم</li>
+        <li>تجهّز الربط والتوثيق والباقات بنفسك أو بموظف</li>
+        <li>اشتراك يكبر مع كل مستخدم وفرع وإضافة، وأحيانًا نسبة من المبيعات</li>
+        <li>الفاتورة والدفع والتوزيع على الفنيين إضافات أو غير موجودة</li>
+        <li>بياناتك وعملاؤك على منصتهم، ولو طلعت تبدأ من الصفر</li>
+      </ul>
+    </div>
+    <div class="box pick">
+      <h3>احجزلي</h3>
+      <ul>
+        <li>الحجز كله داخل محادثة الواتساب: موقع، موعد، تأكيد، بدون رابط ولا تسجيل، فيكمل أغلب العملاء</li>
+        <li>مفصّل على شغلك: لهجة رسائلك، مدنك، فريقك، مواعيدك، وطريقة تسعيرك</li>
+        <li>نجهّز لك كل شي: ربط الواتساب، توثيق ميتا، بوابة الدفع، اللوحة، وتدريب موظفيك</li>
+        <li>تأسيس مرة وحدة واشتراك ثابت مهما زاد عدد الطلبات والموظفين</li>
+        <li>مبني لخدمات الزيارة: توزيع على الفنيين، «الفني برا»، فاتورة PDF ورابط دفع بعد الزيارة</li>
+        <li>قاعدة بياناتك باسمك وبإمكانك أخذها معك في أي وقت</li>
+      </ul>
+    </div>
+  </div>
+  <div class="why-pay">
+    <div class="box">
+      <h3>ليش تأسيس مقدّم؟</h3>
+      <p>لأنه مشروع تجهيز يتسوّى لك مرة وحدة، مو تسجيل في موقع: ربط رقمك بواجهة واتساب الرسمية وتوثيق نشاطك عند ميتا، كتابة رسائل البوت بلهجة زباينك وخدماتك ومدنك، لوحة إدارتك وتنبيهاتك، الربط بموقعك أو جدولك، وتدريب موظفيك. التأسيس على دفعتين: النص عند البداية والنص عند التسليم، وما تدفع الاشتراك الشهري إلا بعد ما يشتغل.</p>
+    </div>
+    <div class="box">
+      <h3>وبالأرقام</h3>
+      <p>موظف استقبال واحد يرد على الواتساب يكلّفك 3,000 ريال وفوق كل شهر، ويداوم 8 ساعات، ويسهو. احجزلي يرد خلال ثانية طول اليوم بـ350 ريال في الشهر، وكل طلب كان يضيع لأنه جاك بعد الدوام يصير حجزًا مؤكدًا.</p>
+    </div>
+  </div>
+</section>
+
+<section id="plans">
+  <span class="eyebrow">الباقات والأسعار</span>
+  <h2>تأسيس مرة وحدة، واشتراك شهري يغطي التشغيل والدعم</h2>
+  <div class="plans">
+    <div class="plan">
+      <span class="tag quiet">البداية</span>
+      <h3>بوت الحجز</h3>
+      <div class="price"><b>3,500 ريال</b><small>تأسيس، ثم 350 ريال شهريًا</small></div>
+      <ul>
+        <li>بوت حجز على الواتساب: ترحيب، موقع، موعد، تأكيد، تذكير</li>
+        <li>تعديل الموعد وإلغاء الطلب من العميل</li>
+        <li>لوحة إدارة للطلبات مع تنبيه صوتي</li>
+        <li>إشعار واتساب للموظف المسؤول عن كل طلب</li>
+        <li>نقل الطلبات لجدول جوجل أو موقعك برابط</li>
+        <li>تعديلات بسيطة على النصوص والمواعيد كل شهر</li>
+      </ul>
+      <div class="foot">يناسب: مغاسل السيارات، الصالونات، خدمات التنظيف، الصيانة الصغيرة</div>
+    </div>
+    <div class="plan hot">
+      <span class="tag">الأكثر طلبًا</span>
+      <h3>بوت الحجز + الدفع</h3>
+      <div class="price"><b>5,500 ريال</b><small>تأسيس، ثم 600 ريال شهريًا</small></div>
+      <ul>
+        <li>كل مزايا باقة البداية</li>
+        <li>فواتير PDF بالعربي ورابط دفع (مدى، أبل باي، بطاقة، تمارا)</li>
+        <li>صفحة حجز داخل الواتساب بعد توثيق النشاط عند ميتا</li>
+        <li>لوحة ويب للموظفين: الطلب، وصلت، الفاتورة</li>
+        <li>أكثر من فرع أو فريق، وتوزيع الطلبات حسب المدينة</li>
+        <li>عربي وإنجليزي، وتقرير شهري بالطلبات والمبالغ</li>
+      </ul>
+      <div class="foot">يناسب: الصيانة المنزلية، العيادات، التأجير، أي خدمة تاخذ مبالغ من العميل</div>
+    </div>
+    <div class="plan">
+      <span class="tag quiet">إضافة</span>
+      <h3>تطبيق باسمك</h3>
+      <div class="price"><b>9,000 ريال</b><small>مرة وحدة، ثم 150 ريال شهريًا للمتاجر والتحديثات</small></div>
+      <ul>
+        <li>تطبيق iOS وAndroid بشعارك وألوانك</li>
+        <li>حجز، طلباتي، دفع، إشعارات، تتبع الموظف</li>
+        <li>نشر في آب ستور وقوقل بلاي باسم منشأتك</li>
+        <li>نفس الطلبات ونفس اللوحة مع البوت</li>
+        <li>تحديثات المتاجر وإصلاح أي رفض</li>
+      </ul>
+      <div class="foot">يُضاف لأي باقة. المدة 3 إلى 4 أسابيع بسبب مراجعة المتاجر</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>اللي يدفعه العميل لغيرنا (مو داخل الأسعار):</b>
+    <span>الواتساب: محادثة الخدمة مجانية لما يراسلك العميل، والرسالة القالبية (تذكير أو فاتورة بعد 24 ساعة) نحو 17 هللة. مزوّد ربط الواتساب نحو 45 ريال شهريًا. بوابة الدفع تاخذ نسبة من كل عملية. حساب مطور آبل 99 دولار سنويًا وقوقل 25 دولار مرة وحدة للتطبيق. الأسعار أعلاه قبل ضريبة القيمة المضافة.</span>
+  </div>
+</section>
+
+<section id="needs">
+  <span class="eyebrow">وش نحتاج منك</span>
+  <h2>أربعة أشياء، والباقي علينا</h2>
+  <div class="two">
+    <div class="box">
+      <h3>قبل ما نبدأ</h3>
+      <ol>
+        <li>سجل تجاري ساري (لتوثيق النشاط عند ميتا، وياخذ من يومين إلى أسبوعين)</li>
+        <li>رقم جوال للواتساب باسم النشاط، ويفضّل يكون جديدًا أو على واتساب أعمال</li>
+        <li>الشعار وقائمة الخدمات وأوقات العمل ومدن التغطية</li>
+        <li>حساب بوابة دفع لو تبي الفواتير ورابط الدفع</li>
+      </ol>
+    </div>
+    <div class="box">
+      <h3>المدة</h3>
+      <div class="timeline">
+        <div><span>الربط مع واتساب والبوت واللوحة</span><b>7 أيام عمل</b></div>
+        <div><span>الفواتير ورابط الدفع</span><b>3 أيام إضافية</b></div>
+        <div><span>صفحة الحجز داخل الواتساب</span><b>بعد توثيق ميتا</b></div>
+        <div><span>التطبيق في المتاجر</span><b>3 إلى 4 أسابيع</b></div>
+      </div>
+      <p class="tiny">المدد تبدأ من اكتمال الحسابات اللي فوق، ونشتغل معك خطوة خطوة في تجهيزها.</p>
+    </div>
+  </div>
+</section>
+
+<section id="shots">
+  <span class="eyebrow">نماذج حقيقية</span>
+  <h2>من بوت «خافت للصيانة المنزلية»، شغّال اليوم مع عملاء حقيقيين</h2>
+  <div class="shots">
+    <div class="shot"><img src="img/loc.png" alt="البوت يطلب موقع البيت بزر إرسال الموقع" loading="lazy"><span>طلب الموقع بزر واحد</span></div>
+    <div class="shot"><img src="img/confirmed.png" alt="رسالة تأكيد الطلب مع رقم الطلب والموعد" loading="lazy"><span>تأكيد الطلب بالموعد</span></div>
+    <div class="shot"><img src="img/invoice.png" alt="فاتورة الطلب مع زر الدفع" loading="lazy"><span>الفاتورة مع زر الدفع</span></div>
+  </div>
+</section>
+
+<section id="faq">
+  <span class="eyebrow">أسئلة تتكرر</span>
+  <h2>قبل ما تسأل</h2>
+  <details><summary>هل البوت يبدّل موظف الرد؟</summary><p>ياخذ عنه الطلبات الروتينية: الحجز والموعد والموقع والتأكيد والتذكير والفاتورة. أي رسالة ما يفهمها أو شكوى، يحوّلها لكم ويوقف عن هذا العميل لين تردون.</p></details>
+  <details><summary>وش يصير لو العميل كتب كلام حر؟</summary><p>يفهم اللهجة والطلبات المكتوبة («ابي سباك بكرة العصر»)، ويكمل الحجز منها. ولو ما فهم يرد بأزرار واضحة بدل ما يتركه.</p></details>
+  <details><summary>الطلبات تروح لنظامنا الحالي؟</summary><p>نعم. تنزل في لوحة الإدارة، وتقدر توصلها لموقعك أو نظامك عبر رابط برمجي، أو لجدول جوجل لو ما عندك نظام.</p></details>
+  <details><summary>ليش توثيق ميتا مهم؟</summary><p>بدون توثيق النشاط البوت يشتغل بالرسائل والأزرار العادية. بعد التوثيق تنفتح «صفحة الحجز» داخل الواتساب (شاشة كاملة فيها الأيام والأوقات) وتزيد حدود الإرسال. التوثيق باسم السجل التجاري ونساعدك فيه.</p></details>
+  <details><summary>أقدر أوقفه أو أعدّل كلامه بنفسي؟</summary><p>نعم، من لوحة الإدارة: تشغيل وإيقاف، نصوص الترحيب، المدن، أوقات العمل، والعطل. والتعديلات الأكبر ضمن الاشتراك الشهري.</p></details>
+</section>
+
+<section id="signup">
+  <span class="eyebrow">اشترك الحين</span>
+  <h2>عبّي بياناتك ونتواصل معك خلال يوم عمل</h2>
+  <p class="lead">ما تدفع شي الحين. نكلّمك على الواتساب، نشوف طلباتك وين تجيك، ونرسل لك الباقة المناسبة وخطة التنفيذ.</p>
+  <form id="leadForm" class="lead-form" novalidate>
+    <div class="f"><label for="f_business">اسم النشاط أو المحل</label><input id="f_business" name="business_name" required maxlength="80" placeholder="مثل: مغاسل النور، صالون لمسة، مؤسسة خافت"></div>
+    <div class="f"><label for="f_activity">نوع النشاط</label>
+      <select id="f_activity" name="activity">
+        <option value="">اختر</option><option>صيانة منزلية</option><option>مغسلة سيارات</option><option>صالون أو تجميل</option><option>تنظيف</option><option>عيادة أو مركز</option><option>مطعم أو كافيه</option><option>تأجير</option><option>أخرى</option>
+      </select></div>
+    <div class="f"><label for="f_city">المدينة</label><input id="f_city" name="city" maxlength="60" placeholder="الخبر، الدمام، الرياض…"></div>
+    <div class="f"><label for="f_contact">اسمك</label><input id="f_contact" name="contact_name" maxlength="60" placeholder="اسم المسؤول"></div>
+    <div class="f"><label for="f_phone">جوالك (واتساب)</label><input id="f_phone" name="phone" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></div>
+    <div class="f"><label for="f_orders">كم طلب يجيك باليوم تقريبًا؟</label>
+      <select id="f_orders" name="orders_per_day"><option value="">اختر</option><option>أقل من 5</option><option>5 إلى 15</option><option>15 إلى 40</option><option>أكثر من 40</option></select></div>
+    <fieldset class="f wide"><legend>الباقة اللي تهمّك</legend>
+      <label class="opt"><input type="radio" name="package" value="bot" checked><span><b>بوت الحجز</b> · 3,500 تأسيس + 350 شهريًا</span></label>
+      <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>بوت الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
+      <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
+    </fieldset>
+    <div class="f wide"><label for="f_notes">ملاحظات (اختياري)</label><textarea id="f_notes" name="notes" rows="3" maxlength="600" placeholder="وش أكثر شي يضيّع عليك طلبات؟ وش نظامك الحالي؟"></textarea></div>
+    <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+    <div class="f wide actions"><button type="submit" class="btn" id="leadBtn">أرسل طلب الاشتراك</button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
+  </form>
+  <div id="leadDone" class="done" hidden>
+    <h3>وصلنا طلبك ✅</h3>
+    <p>نتواصل معك على الواتساب خلال يوم عمل. ولو تبي تستعجلنا، كلّمنا الحين:</p>
+    <a class="btn" href="https://wa.me/966504652455?text=%D8%A3%D8%B1%D8%B3%D9%84%D8%AA%20%D8%B7%D9%84%D8%A8%20%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A7%D8%AD%D8%AC%D8%B2%D9%84%D9%8A" target="_blank" rel="noopener">افتح الواتساب</a>
+  </div>
+</section>
+<script>
+(function(){
+  var API='https://zulogtqxbuqxmdmjpzqj.supabase.co/functions/v1/ihjizli/lead';
+  var form=document.getElementById('leadForm'), btn=document.getElementById('leadBtn'), msg=document.getElementById('leadMsg'), done=document.getElementById('leadDone');
+  if(!form) return;
+  function digits(v){ return String(v||'').replace(/[٠-٩]/g,function(d){ return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D+/g,''); }
+  form.addEventListener('submit',async function(e){
+    e.preventDefault(); msg.textContent='';
+    var fd=new FormData(form), name=(fd.get('business_name')||'').toString().trim(), ph=digits(fd.get('phone'));
+    if(ph.indexOf('00')===0) ph=ph.slice(2); if(ph.indexOf('966')===0) ph=ph.slice(3); if(ph.indexOf('0')===0) ph=ph.slice(1);
+    if(name.length<2){ msg.textContent='اكتب اسم النشاط'; document.getElementById('f_business').focus(); return; }
+    if(!/^5\d{8}$/.test(ph)){ msg.textContent='اكتب جوال سعودي صحيح مثل 05xxxxxxxx'; document.getElementById('f_phone').focus(); return; }
+    var body={ business_name:name, activity:fd.get('activity')||'', city:fd.get('city')||'', contact_name:fd.get('contact_name')||'', phone:'966'+ph, package:fd.get('package')||'bot', wants_app:fd.get('wants_app')==='1', orders_per_day:fd.get('orders_per_day')||'', notes:fd.get('notes')||'', website:fd.get('website')||'', source:'site' };
+    btn.disabled=true; var old=btn.textContent; btn.textContent='جارٍ الإرسال…';
+    try{
+      var r=await fetch(API,{ method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(body) });
+      var j=await r.json().catch(function(){ return {}; });
+      if(r.ok && j.ok){ form.hidden=true; done.hidden=false; done.scrollIntoView({behavior:'smooth',block:'center'}); try{ localStorage.setItem('ihj_lead_sent','1'); }catch(x){} return; }
+      msg.textContent = j.error==='phone' ? 'الجوال غير صحيح' : j.error==='busy' ? 'حاول بعد شوي' : 'ما انرسل، جرّب مرة ثانية أو كلّمنا على الواتساب';
+    }catch(err){ msg.textContent='تعذّر الاتصال، جرّب مرة ثانية أو كلّمنا على الواتساب'; }
+    btn.disabled=false; btn.textContent=old;
+  });
+})();
+</script>
+
+<section id="contact">
+  <span class="eyebrow">تواصل</span>
+  <h2>خلّنا نشوف طلباتك وين تضيع، ونرتبها لك</h2>
+  <div class="contact">
+    <p>أرسل لنا نوع نشاطك وعدد طلباتك التقريبي في اليوم، ونرد عليك بالباقة المناسبة وخطة التنفيذ.</p>
+    <div class="num"><span id="num">+966 50 465 2455</span><button type="button" id="copyBtn">نسخ الرقم</button></div>
+    <a class="btn" href="https://wa.me/966504652455?text=%D8%A7%D8%A8%D9%8A%20%D8%A3%D8%B9%D8%B1%D9%81%20%D8%B9%D9%86%20%D8%A7%D8%AD%D8%AC%D8%B2%D9%84%D9%8A" target="_blank" rel="noopener">افتح الواتساب</a>
+    <p class="tiny">احجزلي خدمة من فريق خافت للصيانة المنزلية، الخبر. التنفيذ والدعم باللغة العربية.</p>
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+  var btn=document.getElementById('copyBtn'), num='+966504652455';
+  if(!btn) return;
+  btn.addEventListener('click',function(){
+    var done=function(ok){ btn.textContent=ok?'انتسخ ✓':'حدّد الرقم وانسخه'; setTimeout(function(){ btn.textContent='نسخ الرقم'; },1800); };
+    try{ navigator.clipboard.writeText(num).then(function(){ done(true); },function(){ sel(); }); }catch(e){ sel(); }
+    function sel(){ try{ var r=document.createRange(); r.selectNodeContents(document.getElementById('num')); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(e){} done(false); }
+  });
+})();
+</script>
+
+</body>
+</html>
