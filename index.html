@@ -109,7 +109,7 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
 .shot img{width:100%;max-width:100%;border-radius:18px;border:1px solid var(--line);display:block}
 .shot span{font-size:14px;color:var(--muted);text-align:center}
 /* نموذج الاشتراك */
-.lead-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.lead-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;position:relative}
 .lead-form .f{display:grid;gap:6px;min-width:0} .lead-form .wide{grid-column:1/-1}
 .lead-form label,.lead-form legend{font-size:14px;color:var(--muted)}
 .lead-form input,.lead-form select,.lead-form textarea{width:100%;font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -118,7 +118,7 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
 .lead-form .opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--fg);font-size:15px}
 .lead-form .opt input{width:auto;margin:0} .lead-form .opt b{font-family:var(--display)}
 .lead-form .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.hp{position:absolute;top:0;right:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;border:0;padding:0}
 .done{margin-top:22px;background:var(--soft);border-radius:18px;padding:24px;display:grid;gap:10px;justify-items:start}
 @media (max-width:620px){ .lead-form{grid-template-columns:1fr} }
 /* التواصل */
