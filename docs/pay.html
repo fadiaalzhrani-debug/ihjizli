@@ -26,7 +26,7 @@ body{min-height:100vh;display:grid;place-items:start center;padding:24px 16px 40
 .methods{display:grid;gap:8px}
 .mth{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card);cursor:pointer;font-weight:600;font-size:15px}
 .mth.on{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
-.mth .lgo{width:54px;height:30px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:800;font-family:Arial,sans-serif;flex:none}
+.mth .lgo{min-width:54px;padding:0 7px;height:30px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:800;font-family:Arial,sans-serif;flex:none}
 .mth input{margin-inline-start:auto}
 .paid{display:grid;justify-items:center;gap:8px;text-align:center;padding:26px 16px}
 .paid .ok{width:74px;height:74px;border-radius:50%;background:color-mix(in srgb,var(--accent) 15%,var(--card));color:var(--accent);display:grid;place-items:center}
@@ -57,7 +57,7 @@ body{min-height:100vh;display:grid;place-items:start center;padding:24px 16px 40
   const b = d.business || {}, inv = d.invoice;
   document.documentElement.style.setProperty('--brand', b.brand_color || '#0B7A55');
   document.title = `فاتورة ${inv.number} · ${b.name}`;
-  const head = `<div class="head"><span class="lg">${b.logo_url ? `<img src="${esc(b.logo_url)}" alt="">` : esc((b.name || '؟').slice(0, 1))}</span><div><b>${esc(b.name)}</b><span class="tiny">فاتورة رقم ${inv.number} · طلب #${inv.order}</span></div></div>`;
+  const head = `<div class="head"><span class="lg">${b.logo_url ? `<img src="${esc(b.logo_url)}" alt="">` : esc((b.name || '؟').slice(0, 1))}</span><div><b>${esc(b.name)}</b><span class="tiny">فاتورة رقم ${inv.number} · طلب رقم ${inv.order}</span></div></div>`;
   const lines = `<div class="body">${(inv.items || []).map((it) => `<div class="li"><span>${esc(it.name)}</span><span class="q">${it.qty} ×</span><span class="num">${money(it.price)}</span></div>`).join('')}
     <div class="tot">${Number(inv.vat) > 0 ? `<div class="li"><span>قبل الضريبة</span><span class="num">${money(inv.subtotal)}</span></div><div class="li"><span>الضريبة ${Number(inv.vat_percent)}%</span><span class="num">${money(inv.vat)}</span></div>` : ''}<div class="li"><b>الإجمالي</b><b class="num">${money(inv.total)} ر.س</b></div></div></div>`;
   const pdf = inv.pdf_url ? `<a class="btn ghost block" href="${esc(inv.pdf_url)}" target="_blank" rel="noopener">${icon('file')}الفاتورة PDF</a>` : '';
@@ -71,7 +71,7 @@ body{min-height:100vh;display:grid;place-items:start center;padding:24px 16px 40
     return;
   }
   if (inv.provider === 'demo') {
-    const M = [['mada', 'مدى', '<span class="lgo" style="background:#1D3D7E;color:#fff">mada</span>'], ['applepay', 'أبل باي', '<span class="lgo" style="background:#000;color:#fff"> Pay</span>'], ['card', 'بطاقة ائتمانية', '<span class="lgo" style="background:#F3F4F6;color:#1A1F71;border:1px solid var(--line)">VISA</span>']];
+    const M = [['mada', 'مدى', '<span class="lgo" style="background:#1D3D7E;color:#fff">mada</span>'], ['applepay', 'أبل باي', '<span class="lgo" style="background:#000;color:#fff">Apple Pay</span>'], ['card', 'بطاقة ائتمانية', '<span class="lgo" style="background:#F3F4F6;color:#1A1F71;border:1px solid var(--line)">VISA</span>']];
     root.innerHTML = `${head}<div class="inv"><div class="top"><span>المبلغ المطلوب</span><strong>${money(inv.total)} ر.س</strong></div>${lines}</div>
       <div class="methods">${M.map(([k, l, lg], i) => `<label class="mth ${i === 0 ? 'on' : ''}">${lg}<span>${l}</span><input type="radio" name="m" value="${k}" ${i === 0 ? 'checked' : ''}></label>`).join('')}</div>
       <button class="btn lg block" id="payBtn">${icon('check')}ادفع ${money(inv.total)} ر.س</button><p class="demo">صفحة دفع تجريبية، ما فيها خصم فلوس حقيقي</p>${pdf}`;

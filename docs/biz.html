@@ -230,7 +230,7 @@
   async function openOrder(id) {
     const o = S.orders.find((x) => x.id === id); if (!o) return;
     const c = o.customer || {};
-    const d = I.openDrawer(`<div class="dh"><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button><h2 class="grow">طلب #${o.number}</h2>${badge(o.status)}</div><div class="db" id="od"><div class="spin"></div></div>`);
+    const d = I.openDrawer(`<div class="dh"><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button><h2 class="grow">طلب رقم ${o.number}</h2>${badge(o.status)}</div><div class="db" id="od"><div class="spin"></div></div>`);
     let events = [], inv = null;
     try {
       [events, inv] = await Promise.all([
@@ -282,7 +282,7 @@
     if (act === 'pdf') { try { const r = await I.api('order/pdf', { order_id: o.id }); window.open(r.url, '_blank', 'noopener'); } catch (e) { I.fail(e); } return; }
     if (act === 'notes') { try { await q1(sb.from('orders').update({ notes: $('oNotes').value.slice(0, 1000) }).eq('id', o.id).select('id')); o.notes = $('oNotes').value; I.toast('انحفظت ✓'); } catch (e) { I.fail(e); } return; }
     if (act === 'cancel') {
-      const m = I.modal(`<div class="mh"><h3 class="grow">إلغاء طلب #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><label class="f"><span>السبب (يوصل للعميل)</span><input id="cxR" maxlength="200" placeholder="اختياري"></label><label class="check"><input type="checkbox" id="cxN" checked>أرسل للعميل رسالة الإلغاء</label></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn bad" id="cxGo">ألغِ الطلب</button></div>`);
+      const m = I.modal(`<div class="mh"><h3 class="grow">إلغاء الطلب رقم ${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><label class="f"><span>السبب (يوصل للعميل)</span><input id="cxR" maxlength="200" placeholder="اختياري"></label><label class="check"><input type="checkbox" id="cxN" checked>أرسل للعميل رسالة الإلغاء</label></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn bad" id="cxGo">ألغِ الطلب</button></div>`);
       m.querySelector('#cxGo').onclick = async (e) => { e.target.disabled = true; try { await I.api('order/cancel', { order_id: o.id, reason: $('cxR').value, notify: $('cxN').checked }); I.toast('انلغى الطلب'); await refreshOrder(o.id); I.closeAll(); render(); } catch (x) { I.fail(x); e.target.disabled = false; } };
       return;
     }
@@ -290,7 +290,7 @@
   }
 
   async function reschedule(o) {
-    const m = I.modal(`<div class="mh"><h3 class="grow">تغيير موعد #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb" id="rsB"><div class="spin"></div></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="rsGo" disabled>اعتمد الموعد</button></div>`);
+    const m = I.modal(`<div class="mh"><h3 class="grow">تغيير موعد الطلب رقم ${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb" id="rsB"><div class="spin"></div></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="rsGo" disabled>اعتمد الموعد</button></div>`);
     let slots = [];
     try { slots = (await I.api('slots', { business_id: BIZ, city_id: o.city_id, service_id: o.service_id, days: 10, exclude: o.id })).slots; } catch (e) { I.fail(e); }
     const byDay = {}; slots.forEach((s) => { const d = I.parts(s.slot_start).ymd; (byDay[d] = byDay[d] || []).push(s); });
@@ -308,7 +308,7 @@
     const svc = S.services.find((s) => s.id === o.service_id);
     const items = [{ name: svc ? svc.name : 'الخدمة', qty: 1, price: o.price != null ? o.price : (svc && svc.price != null ? svc.price : '') }];
     const vp = Number(S.set.vat_percent || 0);
-    const m = I.modal(`<div class="mh"><h3 class="grow">فاتورة طلب #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div>
+    const m = I.modal(`<div class="mh"><h3 class="grow">فاتورة الطلب رقم ${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div>
       <div class="mb"><div class="inv-items" id="invItems"></div><button class="btn sm ghost" id="invAdd" type="button" style="justify-self:start">${icon('plus')}بند</button>
       <div class="card flat row"><span class="grow">الإجمالي${vp ? ` شامل الضريبة ${vp}%` : ''}</span><b id="invTot" style="font-family:var(--display);font-size:20px">0</b></div></div>
       <div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="invGo">${icon('send')}أرسل الفاتورة للعميل</button></div>`);
@@ -331,7 +331,7 @@
   }
 
   function payManual(o) {
-    const m = I.modal(`<div class="mh"><h3 class="grow">وصل الدفع · #${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><div class="seg" id="pmSeg"><button class="on" data-m="cash">نقدًا</button><button data-m="card">شبكة</button><button data-m="transfer">تحويل</button></div><p class="tiny">يوصل للعميل «وصلنا دفعك» وينقفل الطلب</p></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="pmGo">${icon('check')}تأكيد</button></div>`);
+    const m = I.modal(`<div class="mh"><h3 class="grow">وصل الدفع · الطلب رقم ${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><div class="seg" id="pmSeg"><button class="on" data-m="cash">نقدًا</button><button data-m="card">شبكة</button><button data-m="transfer">تحويل</button></div><p class="tiny">يوصل للعميل «وصلنا دفعك» وينقفل الطلب</p></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="pmGo">${icon('check')}تأكيد</button></div>`);
     let method = 'cash';
     m.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => { method = b.dataset.m; m.querySelectorAll('[data-m]').forEach((x) => x.classList.toggle('on', x === b)); });
     m.querySelector('#pmGo').onclick = async (e) => { e.target.disabled = true; try { await I.api('order/cash', { order_id: o.id, method }); I.toast('وصل الدفع وانقفل الطلب ✓'); await refreshOrder(o.id); I.closeAll(); render(); } catch (x) { I.fail(x); e.target.disabled = false; } };
@@ -656,7 +656,7 @@
         if (isNew) {
           S.fresh.add(o.id); setTimeout(() => S.fresh.delete(o.id), 4000);
           const x = S.orders.find((y) => y.id === o.id) || o;
-          I.alertNew(`طلب جديد #${x.number}`, `${I.when(x.slot_start)}${x.city_id ? ' · ' + cityName(x.city_id) : ''}`);
+          I.alertNew(`طلب جديد رقم ${x.number}`, `${I.when(x.slot_start)}${x.city_id ? ' · ' + cityName(x.city_id) : ''}`);
         }
         if (S.tab === 'orders') render();
       })
@@ -675,7 +675,7 @@
   go(TABS.some((t) => t[0] === location.hash.slice(1)) ? location.hash.slice(1) : 'orders');
   live();
   // احتياط لو انقطع البث: تحديث هادئ كل دقيقة
-  setInterval(async () => { if (document.visibilityState !== 'visible') return; try { const since = new Date(Date.now() - 62 * 86400000).toISOString(); const fresh = await q1(sb.from('orders').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused)').eq('business_id', BIZ).gte('slot_start', since).order('slot_start', { ascending: false }).limit(600)); const added = fresh.filter((o) => !S.seen.has(o.id)); S.orders = fresh; fresh.forEach((o) => S.seen.add(o.id)); if (added.length) { added.forEach((o) => S.fresh.add(o.id)); I.alertNew(`طلب جديد #${added[0].number}`, I.when(added[0].slot_start)); } paintCounts(); if (S.tab === 'orders') render(); } catch (e) { /* */ } }, 60000);
+  setInterval(async () => { if (document.visibilityState !== 'visible') return; try { const since = new Date(Date.now() - 62 * 86400000).toISOString(); const fresh = await q1(sb.from('orders').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused)').eq('business_id', BIZ).gte('slot_start', since).order('slot_start', { ascending: false }).limit(600)); const added = fresh.filter((o) => !S.seen.has(o.id)); S.orders = fresh; fresh.forEach((o) => S.seen.add(o.id)); if (added.length) { added.forEach((o) => S.fresh.add(o.id)); I.alertNew(`طلب جديد رقم ${added[0].number}`, I.when(added[0].slot_start)); } paintCounts(); if (S.tab === 'orders') render(); } catch (e) { /* */ } }, 60000);
   window.__biz = { S, go, render };
 })();
 </script>
