@@ -578,7 +578,7 @@
         <label class="f"><span>المدفوع</span><input type="number" data-l="paid" value="${l.paid || 0}"></label></div>
         <label class="check"><input type="checkbox" data-l="wants_app" ${l.wants_app ? 'checked' : ''}>يبي تطبيق باسمه</label>
         <label class="f"><span>ملاحظاتي</span><textarea data-l="admin_notes" rows="3">${esc(l.admin_notes || '')}</textarea></label></div>
-      <div class="row">${l.business_id ? `<a class="btn ghost" href="#biz" id="lBiz">${icon('store')}افتح المنشأة</a>` : `<button class="btn" id="lConv">${icon('store')}حوّلها لمنشأة</button>`}<span class="sp"></span><button class="btn ghost bad" id="lDel">${icon('trash')}حذف</button></div></div>`);
+      <div class="row">${l.business_id ? `<a class="btn ghost" href="#biz" id="lBiz">${icon('store')}افتح المنشأة</a>` : `<button class="btn" id="lNow">${icon('store')}حوّلها لمنشأة</button><button class="btn ghost" id="lConv">${icon('edit')}عدّل قبل الإنشاء</button>`}<span class="sp"></span><button class="btn ghost bad" id="lDel">${icon('trash')}حذف</button></div></div>`);
     $('lCp').onclick = () => I.copy(I.phone(l.phone));
     d.querySelectorAll('[data-l]').forEach((inp) => inp.onchange = async () => {
       const k = inp.dataset.l; let v = inp.type === 'checkbox' ? inp.checked : inp.value;
@@ -586,6 +586,19 @@
       const log = [...(l.log || []), { t: new Date().toISOString(), what: `${k}: ${v}` }].slice(-60);
       try { await q1(sb.from('signup_requests').update({ [k]: v, log }).eq('id', l.id).select('id')); l[k] = v; l.log = log; I.toast('انحفظ ✓'); paintCounts(); } catch (e) { I.fail(e); }
     });
+    if ($('lNow')) $('lNow').onclick = async (e) => {
+      e.target.disabled = true;
+      const city = PRESETS.find((c) => (l.city || '').includes(c[0]));
+      try {
+        const r = await I.api('admin/business/create', { name: l.business_name, slug: 'biz', activity: l.activity, plan: l.package, wants_app: l.wants_app, lead_id: l.id,
+          owner_name: l.contact_name, owner_phone: l.phone, wa_number: l.phone, city: city ? city[0] : (l.city || ''),
+          services: [{ name: 'زيارة', price: null }], cities: city ? [{ name: city[0], lat: city[1], lng: city[2], radius_km: city[3] }] : [] });
+        await loadAll();
+        I.closeAll(); go('biz');
+        setTimeout(() => openBiz(r.business.id, 'links'), 60);
+        I.toast('صارت منشأة ✓ أكمل بياناتها من التجهيز');
+      } catch (x) { I.fail(x); e.target.disabled = false; }
+    };
     if ($('lConv')) $('lConv').onclick = () => { S.prefill = { lead_id: l.id, name: l.business_name, activity: l.activity, city: l.city, contact_name: l.contact_name, phone: l.phone, package: l.package, wants_app: l.wants_app }; go('new'); };
     if ($('lBiz')) $('lBiz').onclick = (e) => { e.preventDefault(); I.closeAll(); go('biz'); setTimeout(() => openBiz(l.business_id), 50); };
     $('lDel').onclick = async () => { if (!confirm('حذف الطلب نهائيًا؟')) return; try { await q1(sb.from('signup_requests').delete().eq('id', l.id).select('id')); S.leads = S.leads.filter((x) => x.id !== l.id); I.closeAll(); render(); paintCounts(); } catch (e) { I.fail(e); } };

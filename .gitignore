@@ -5,3 +5,4 @@ tests/out/
 .claude/
 supabase/.temp/
 supabase/.branches/
+site-src/legacy-offer/
