@@ -1,12 +1,17 @@
 // قلب احجزلي: محادثة الحجز لكل المنشآت (نفس المنطق للواتساب الحقيقي وللمحاكي)
-// المسار: ترحيب «احجز من هنا» ← (الخدمة لو أكثر من وحدة) ← اللوكيشن ← اليوم ← الوقت ← تأكيد برقم طلب
-// ومعه: طلباتي (تغيير الموعد والإلغاء)، الأسعار، الأوقات، المناطق، والتحويل للمنشأة مع إيقاف البوت عن العميل
+// المسار: ترحيب «احجز من هنا» ← (الخدمة لو أكثر من وحدة) ← المكان ← اليوم ← الوقت ← تأكيد برقم طلب
+//   المكان حسب المنشأة أو الخدمة: عند العميل (اللوكيشن) · في المحل (اختيار الفرع) · أونلاين (بدون مكان)
+//   الدفع: بعد الخدمة (فاتورة) · قبل الحجز (رابط دفع والموعد محجوز لين المهلة) · في المحل
+// ويرد على أي رسالة: الأسئلة والأجوبة الخاصة بالمنشأة، الأسعار، الخدمات، الموقع، الأوقات، الدفع، طلباتي،
+// والباقي يتحوّل للمنشأة مع إيقاف البوت عن العميل
 import { db, norm, hasArabic, hasLatin, money } from "./util.ts";
 import { textsFor, type Lang, type TextBag } from "./texts.ts";
 import { addDays, dayLabel, hm, local, shortDay, timeLabel, todayYmd, weekdayName } from "./dates.ts";
 import { locationFromText, mapsLink, nearestCity, type Pt } from "./maps.ts";
 import { type Out, type Row, sendToCustomer } from "./wa.ts";
 import { orderEvent } from "./events.ts";
+import { mapsOf, type Mode, modeOf, placeLine, tailFor } from "./place.ts";
+import { createPrepay } from "./prepay.ts";
 
 export type Inbound = {
   type: "text" | "reply" | "location" | "other";
@@ -26,27 +31,47 @@ const KW: [string, string[]][] = [
   ["orders", ["طلباتي", "طلبي", "حجوزاتي", "حجزي", "مواعيدي", "موعدي", "my order", "my orders", "my booking", "my appointment"]],
   ["resched", ["تغيير الموعد", "غير الموعد", "اغير الموعد", "ابي اغير", "تاجيل", "اقدم الموعد", "reschedule", "change time", "change the time", "another time"]],
   ["cancel", ["الغاء", "الغي", "كنسل", "cancel"]],
+  ["location", ["وين موقعكم", "موقعكم", "وين مكانكم", "مكانكم", "وين المحل", "وين الفرع", "فروعكم", "العنوان", "عنوانكم", "اللوكيشن", "لوكيشن", "location", "address", "where are you"]],
+  ["payment", ["طرق الدفع", "طريقه الدفع", "كيف ادفع", "كيف الدفع", "الدفع", "تقبلون", "مدي", "ابل باي", "كاش", "شبكه", "تحويل بنكي", "payment", "pay by", "cash", "card"]],
   ["book", ["احجز", "حجز", "موعد", "ابي فني", "ابغي فني", "اطلب", "طلب جديد", "book", "appointment", "booking", "reserve", "schedule"]],
+  ["services", ["خدماتكم", "الخدمات", "وش تقدمون", "وش عندكم", "ايش عندكم", "services", "what do you offer"]],
   ["price", ["سعر", "بكم", "كم يكلف", "تكلفه", "تكلف", "الاسعار", "اسعار", "price", "prices", "cost", "how much"]],
-  ["hours", ["متي تفتحون", "متي تسكرون", "الدوام", "اوقات العمل", "ساعات العمل", "تفتحون", "hours", "opening", "open today"]],
-  ["areas", ["تغطون", "مناطق", "المناطق", "نطاق", "وين تخدمون", "وين مكانكم", "وين موقعكم", "area", "areas", "cover", "coverage"]],
+  ["hours", ["متي تفتحون", "متي تسكرون", "الدوام", "اوقات العمل", "ساعات العمل", "تفتحون", "مفتوحين", "hours", "opening", "open today"]],
+  ["areas", ["تغطون", "مناطق", "المناطق", "نطاق", "وين تخدمون", "area", "areas", "cover", "coverage"]],
   ["thanks", ["شكرا", "مشكور", "يعطيك العافيه", "الله يعطيك", "تسلم", "thanks", "thank you", "thx"]],
   ["menu", ["القائمه", "قائمه", "البدايه", "رجوع", "menu", "start", "main menu"]],
   ["greeting", ["السلام", "سلام", "هلا", "مرحبا", "اهلين", "اهلا", "صباح", "مساء", "hi", "hello", "hey", "salam", "good morning", "good evening"]],
 ];
 
+const hit = (n: string, w: string) => {
+  const latin = /^[a-z ]+$/.test(w);
+  return latin ? n.includes(` ${w} `) || n.includes(` ${w}?`) || n.includes(` ${w}!`) : n.includes(w);
+};
+
 export function intentOf(text: string): string {
   const n = ` ${norm(text)} `;
-  for (const [k, words] of KW) {
-    for (const w of words) {
-      const latin = /^[a-z ]+$/.test(w);
-      if (latin ? n.includes(` ${w} `) || n.includes(` ${w}?`) || n.includes(` ${w}!`) : n.includes(w)) return k;
-    }
-  }
+  for (const [k, words] of KW) for (const w of words) if (hit(n, w)) return k;
   return "";
 }
 
-const STATES_WITH_LIST = new Set(["svc", "day", "time", "orders", "order", "cancel_confirm"]);
+// الأسئلة والأجوبة الخاصة بالمنشأة: [{q: "كلمات, مفصولة, بفاصلة", a: "الجواب"}]؛ الأطول تطابقًا يكسب
+export function faqMatch(faq: any, text: string): { a: string } | null {
+  if (!Array.isArray(faq) || !faq.length) return null;
+  const n = ` ${norm(text)} `;
+  let best: { a: string; len: number } | null = null;
+  for (const e of faq) {
+    const a = String(e?.a || "").trim();
+    if (!a) continue;
+    for (const raw of String(e?.q || "").split(/[,،\n]+/)) {
+      const w = norm(raw);
+      if (w.length < 2) continue;
+      if (hit(n, w) && (!best || w.length > best.len)) best = { a, len: w.length };
+    }
+  }
+  return best ? { a: best.a } : null;
+}
+
+const STATES_WITH_LIST = new Set(["svc", "branch", "day", "time", "orders", "order", "cancel_confirm"]);
 
 class Bot {
   b: any; s: any; c: any; ctx: Ctx;
@@ -57,7 +82,7 @@ class Bot {
   constructor(ctx: Ctx, first: boolean) {
     this.ctx = ctx; this.b = ctx.business; this.s = ctx.settings; this.c = ctx.customer;
     this.lang = this.c.lang === "en" ? "en" : "ar";
-    this.T = textsFor(this.lang, this.s.texts);
+    this.T = textsFor(this.lang, this.s.texts, this.s.tone);
     this.tz = this.b.timezone || "Asia/Riyadh";
     this.state = this.c.state || "idle";
     this.data = this.c.state_data || {};
@@ -71,6 +96,9 @@ class Bot {
   svcName(s: any) { return (this.lang === "en" && s.name_en) ? s.name_en : s.name; }
   cityName(c: any) { return (this.lang === "en" && c.name_en) ? c.name_en : c.name; }
   bizName() { return (this.lang === "en" && this.b.name_en) ? this.b.name_en : this.b.name; }
+  svc(id?: string | null) { return this.ctx.services.find((s: any) => s.id === (id ?? this.data.svc)) || null; }
+  mode(): Mode { return modeOf(this.s, this.svc()); }
+  menuButtons() { return [{ id: "m:book", title: this.T("btn_book") }, { id: "m:orders", title: this.T("btn_orders") }]; }
   list(text: string, button: string, rows: Row[], extra: Partial<Out> = {}) {
     this.data.rows = rows.map((r) => r.id);
     this.say({ t: "list", text, button, sections: [{ rows }], ...(extra as any) });
@@ -101,18 +129,24 @@ class Bot {
         if (id) return this.onId(id);
       }
       const it = intentOf(text);
+      if (it === "lang_en") return this.setLang("en");
+      if (it === "lang_ar") return this.setLang("ar");
+      if (it === "complaint") return this.handoff("complaint", text);
+      if (it === "human") return this.handoff("human", text);
+      // أسئلة المنشأة الخاصة قبل الأسئلة العامة
+      const fa = faqMatch(this.s.faq, text);
+      if (fa) { this.say({ t: "buttons", text: fa.a, buttons: this.menuButtons() }); return; }
       switch (it) {
-        case "lang_en": return this.setLang("en");
-        case "lang_ar": return this.setLang("ar");
-        case "complaint": return this.handoff("complaint", text);
-        case "human": return this.handoff("human", text);
         case "orders": return this.listOrders("");
         case "resched": return this.listOrders("resched");
-        case "cancel": return STATES_WITH_LIST.has(this.state) || this.state === "loc" ? this.listOrders("cancel") : this.listOrders("cancel");
+        case "cancel": return this.listOrders("cancel");
+        case "location": return this.locationInfo();
+        case "payment": return this.paymentInfo();
         case "book": return this.startBooking();
+        case "services": return this.servicesInfo();
         case "price": return this.prices();
         case "hours": return this.hoursInfo();
-        case "areas": return this.areasInfo();
+        case "areas": return this.locationInfo();
         case "thanks": this.say({ t: "text", text: this.T("thanks") }); return;
         case "menu": return this.welcome();
         case "greeting": return this.welcome();
@@ -148,6 +182,7 @@ class Bot {
         if (v === "contact") return this.handoff("human", this.lang === "en" ? "Contact us" : "تواصل معنا");
         return this.welcome();
       case "svc": return this.onService(v);
+      case "br": return this.onBranch(v);
       case "loc": return this.askLocation();
       case "day": return this.onDay(v);
       case "more": { const [ymd, page] = v.split(":"); return this.askTime(ymd, +page || 0); }
@@ -166,14 +201,13 @@ class Bot {
   welcome() {
     this.set("idle", {});
     this.say({ t: "buttons", text: this.T("welcome", { biz: this.bizName() }), buttons: [
-      { id: "m:book", title: this.T("btn_book") },
-      { id: "m:orders", title: this.T("btn_orders") },
+      ...this.menuButtons(),
       { id: this.lang === "en" ? "m:lang:ar" : "m:lang:en", title: this.T("btn_lang") },
     ] });
   }
 
   async setLang(l: Lang) {
-    this.lang = l; this.T = textsFor(l, this.s.texts); this.c.lang = l;
+    this.lang = l; this.T = textsFor(l, this.s.texts, this.s.tone); this.c.lang = l;
     await db().from("customers").update({ lang: l }).eq("id", this.c.id);
     return this.welcome();
   }
@@ -184,14 +218,14 @@ class Bot {
     const svcs = this.ctx.services;
     if (svcs.length > 1) return this.askService();
     this.data.svc = svcs[0]?.id || null;
-    return this.askLocation();
+    return this.afterService();
   }
 
   askService() {
     this.set("svc");
     const rows = this.ctx.services.slice(0, 10).map((s: any) => ({
       id: `svc:${s.id}`, title: this.svcName(s),
-      desc: s.price != null ? this.T("price_fixed", { price: money(s.price) }) : this.T("price_after"),
+      desc: s.price != null ? this.T("price_fixed", { price: money(s.price) }) : (modeOf(this.s, s) === "visit" ? this.T("price_after") : ""),
     }));
     this.list(this.T("ask_service"), this.T("btn_services"), rows);
   }
@@ -200,8 +234,38 @@ class Bot {
     const s = this.ctx.services.find((x: any) => x.id === id);
     if (!s) return this.askService();
     this.data.svc = s.id;
-    if (Number.isFinite(this.data.lat)) return this.askDay();
-    return this.askLocation();
+    return this.afterService();
+  }
+
+  // بعد الخدمة: حسب مكانها
+  afterService() {
+    const mode = this.mode();
+    if (mode === "visit") {
+      if (Number.isFinite(this.data.lat)) { this.data.placed = true; return this.askDay(); }
+      return this.askLocation();
+    }
+    if (mode === "shop") {
+      const br = this.ctx.cities;
+      if (br.length > 1) return this.askBranch();
+      this.data.city = br[0]?.id || null;
+    } else {
+      this.data.city = null;
+    }
+    this.data.placed = true;
+    return this.askDay();
+  }
+
+  askBranch() {
+    this.set("branch");
+    const rows = this.ctx.cities.slice(0, 10).map((c: any) => ({ id: `br:${c.id}`, title: this.cityName(c), desc: c.address || "" }));
+    this.list(this.T("ask_branch"), this.T("btn_branches"), rows);
+  }
+
+  onBranch(id: string) {
+    const c = this.ctx.cities.find((x: any) => x.id === id);
+    if (!c) return this.askBranch();
+    this.data.city = c.id; this.data.placed = true;
+    return this.askDay();
   }
 
   askLocation() {
@@ -230,6 +294,7 @@ class Bot {
       if (this.ctx.services.length > 1) return this.askService();
       this.data.svc = this.ctx.services[0]?.id || null;
     }
+    this.data.placed = true;
     return this.askDay();
   }
 
@@ -258,13 +323,13 @@ class Bot {
       const cnt = n === 1 ? this.T("day_desc_one") : n === 2 ? this.T("day_desc_two") : n <= 10 ? this.T("day_desc", { n }) : this.T("day_desc_many", { n });
       return { id: `day:${d}`, title: dayLabel(d, this.lang, this.tz, false), desc: rel ? `${rel} · ${cnt}` : cnt };
     });
-    this.set(this.data.rs ? "day" : "day");
+    this.set("day");
     this.list(this.T("ask_day"), this.T("btn_days"), rows);
   }
 
   onDay(ymd: string) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return this.welcome();
-    if (!this.data.rs && !Number.isFinite(this.data.lat)) return this.startBooking();
+    if (!this.data.rs && !this.data.placed) return this.startBooking();
     this.data.day = ymd;
     return this.askTime(ymd, 0);
   }
@@ -284,29 +349,53 @@ class Bot {
     this.list(this.T("ask_time", { day: dayLabel(ymd, this.lang, this.tz, false) }), this.T("btn_times"), rows);
   }
 
+  // كم يدفع العميل قبل التأكيد (صفر = ما فيه دفع مقدم)
+  prepayAmount(svc: any): number {
+    if (this.s.pay_timing !== "before") return 0;
+    if (!(this.b.plan === "bot_pay" || this.b.is_demo)) return 0;
+    if (!["demo", "moyasar"].includes(this.s.pay_provider)) return 0;
+    const amt = svc?.price != null && Number(svc.price) > 0 ? Number(svc.price) : Number(this.s.prepay_amount || 0);
+    return amt >= 1 ? amt : 0;
+  }
+
   async onSlot(iso: string) {
     const t = new Date(iso);
     if (isNaN(t.getTime())) return this.welcome();
     if (this.data.rs) return this.doResched(t.toISOString());
-    if (!Number.isFinite(this.data.lat)) return this.startBooking();
+    if (!this.data.placed) return this.startBooking();
+    const svc = this.svc();
+    const amount = this.prepayAmount(svc);
+    const hold = Number(this.s.hold_minutes || 30);
     const { data: o, error } = await db().rpc("ihj_book", {
       p_business: this.b.id, p_customer: this.c.id, p_city: this.data.city || null, p_service: this.data.svc || null,
-      p_start: t.toISOString(), p_lat: this.data.lat, p_lng: this.data.lng, p_maps_url: this.data.maps || "", p_address: this.data.addr || "",
+      p_start: t.toISOString(), p_lat: this.data.lat ?? null, p_lng: this.data.lng ?? null, p_maps_url: this.data.maps || "", p_address: this.data.addr || "",
       p_channel: this.c.is_sim ? "sim" : "wa", p_notes: "",
+      p_status: amount > 0 ? "pending_payment" : "confirmed", p_hold_until: amount > 0 ? new Date(Date.now() + hold * 60_000).toISOString() : null,
     });
     if (error) {
       if (/slot_taken/.test(error.message)) { this.say({ t: "text", text: this.T("slot_taken") }); return this.askTime(this.data.day || local(t, this.tz).ymd, 0); }
       throw new Error("book: " + error.message);
     }
     const order = o as any;
-    const svc = this.ctx.services.find((s: any) => s.id === order.service_id);
     const city = this.ctx.cities.find((c: any) => c.id === order.city_id);
-    const price = order.price != null ? this.T("price_fixed", { price: money(order.price) }) : this.T("price_after");
+    const mode = this.mode();
+    const day = dayLabel(local(order.slot_start, this.tz).ymd, this.lang, this.tz, false), time = timeLabel(order.slot_start, this.lang, this.tz);
+    const city_line = placeLine(this.T, this.s, mode, city, this.lang);
     this.set("idle", {});
-    this.say({ t: "buttons", text: this.T("confirmed", {
-      no: order.number, day: dayLabel(local(order.slot_start, this.tz).ymd, this.lang, this.tz, false), time: timeLabel(order.slot_start, this.lang, this.tz),
-      city_line: city ? this.T("city_line", { city: this.cityName(city) }) : "", price, tail: this.T("confirmed_tail"), service: svc ? this.svcName(svc) : "",
-    }), buttons: [{ id: "m:orders", title: this.T("btn_orders") }, { id: "m:new", title: this.T("btn_new_order") }] });
+    if (order.status === "pending_payment") {
+      const pre = await createPrepay(this.b, this.s, order, amount, svc ? `${this.svcName(svc)} · ${this.T("prepay_label")}` : this.T("prepay_label"));
+      if (pre) {
+        this.say({ t: "cta", text: this.T("pay_to_confirm", { amount: money(amount), day, time, city_line, hold }), label: this.T("btn_pay_confirm"), url: pre.link });
+        return;
+      }
+      // ما فيه بوابة دفع شغالة: نأكد الحجز عادي
+      await db().from("orders").update({ status: "confirmed", hold_until: null }).eq("id", order.id);
+      order.status = "confirmed";
+    }
+    const price = order.price != null ? this.T("price_fixed", { price: money(order.price) }) : this.T("price_after");
+    const price_line = order.price != null || mode === "visit" ? this.T("price_line", { price }) : "";
+    this.say({ t: "buttons", text: this.T("confirmed", { no: order.number, day, time, city_line, price, price_line, tail: tailFor(this.T, this.s, mode, this.lang) }),
+      buttons: [{ id: "m:orders", title: this.T("btn_orders") }, { id: "m:new", title: this.T("btn_new_order") }] });
     await orderEvent(this.b.id, "order.created", { order_id: order.id, is_test: order.is_test });
   }
 
@@ -329,7 +418,7 @@ class Bot {
     if (rows.length === 1) return this.onOrder(rows[0].id, mode);
     this.set("orders", { mode });
     this.list(this.T("my_orders"), this.T("btn_orders"), rows.map((o: any) => ({
-      id: `ord:${o.id}`, title: `${this.lang === 'en' ? '#' : 'رقم '}${o.number} · ${shortDay(local(o.slot_start, this.tz).ymd, this.lang)}`,
+      id: `ord:${o.id}`, title: `${this.lang === "en" ? "#" : "رقم "}${o.number} · ${shortDay(local(o.slot_start, this.tz).ymd, this.lang)}`,
       desc: `${timeLabel(o.slot_start, this.lang, this.tz)} · ${this.statusLabel(o.status)}`,
     })));
   }
@@ -348,6 +437,17 @@ class Bot {
     const o = await this.getOrder(id);
     if (!o) return this.listOrders("");
     mode = mode || this.data?.mode || "";
+    if (o.status === "pending_payment") {
+      // حجز ينتظر الدفع: نعيد له رابط الدفع
+      const { data: inv } = await db().from("invoices").select("pay_token, total").eq("order_id", o.id).eq("status", "issued").order("created_at", { ascending: false }).limit(1).maybeSingle();
+      this.set("idle", {});
+      if (inv && mode !== "cancel") {
+        const { payGo } = await import("./prepay.ts");
+        this.say({ t: "cta", text: `${this.orderInfo(o)}`, label: this.T("btn_pay_confirm"), url: payGo(inv.pay_token) });
+        return;
+      }
+      return this.askCancel(o.id);
+    }
     if (o.status !== "confirmed") {
       this.set("idle", {});
       this.say({ t: "buttons", text: `${this.orderInfo(o)}\n\n${this.T("order_locked", { no: o.number })}`, buttons: [{ id: "m:contact", title: this.T("btn_contact") }] });
@@ -389,7 +489,7 @@ class Bot {
   async askCancel(id: string) {
     const o = await this.getOrder(id);
     if (!o) return this.listOrders("");
-    if (o.status !== "confirmed") return this.onOrder(o.id, "");
+    if (!["confirmed", "pending_payment"].includes(o.status)) return this.onOrder(o.id, "");
     this.set("cancel_confirm", { oid: o.id });
     this.data.rows = [`cy:${o.id}`, `cn:${o.id}`];
     this.say({ t: "buttons", text: this.T("confirm_cancel", { no: o.number }), buttons: [
@@ -403,9 +503,10 @@ class Bot {
     if (!o) return this.listOrders("");
     const { data: x, error } = await db().rpc("ihj_cancel", { p_order: o.id, p_by: "customer", p_reason: "" });
     if (error) { return this.onOrder(o.id, ""); }
+    await db().from("invoices").update({ status: "void" }).eq("order_id", o.id).eq("status", "issued");
     this.set("idle", {});
     this.say({ t: "buttons", text: this.T("cancelled", { no: o.number }), buttons: [{ id: "m:book", title: this.T("btn_book") }] });
-    await orderEvent(this.b.id, "order.cancelled", { order_id: o.id, is_test: (x as any)?.is_test });
+    if (o.status !== "pending_payment") await orderEvent(this.b.id, "order.cancelled", { order_id: o.id, is_test: (x as any)?.is_test });
   }
 
   async keepOrder(id: string) {
@@ -414,14 +515,22 @@ class Bot {
     this.say({ t: "buttons", text: this.T("kept", { no: o?.number ?? "" }), buttons: [{ id: "m:orders", title: this.T("btn_orders") }] });
   }
 
-  // ───────── معلومات ─────────
+  // ───────── أي سؤال: معلومات ─────────
+  servicesLines(withPrice: boolean) {
+    return this.ctx.services.map((s: any) => `• ${this.svcName(s)}${withPrice ? `: ${s.price != null ? this.T("price_fixed", { price: money(s.price) }) : this.T("price_after")}` : (s.price != null ? ` · ${this.T("price_fixed", { price: money(s.price) })}` : "")}`).join("\n");
+  }
+
   prices() {
     const svcs = this.ctx.services;
     const priced = svcs.filter((s: any) => s.price != null);
-    const text = priced.length
-      ? this.T("prices", { list: svcs.map((s: any) => `• ${this.svcName(s)}: ${s.price != null ? this.T("price_fixed", { price: money(s.price) }) : this.T("price_after")}`).join("\n") })
-      : this.T("prices_after");
-    this.say({ t: "buttons", text, buttons: [{ id: "m:book", title: this.T("btn_book") }] });
+    const text = priced.length ? this.T("prices", { list: this.servicesLines(true) })
+      : (this.mode() === "visit" || !svcs.length) ? this.T("prices_after") : this.T("services_list", { list: this.servicesLines(false) });
+    this.say({ t: "buttons", text, buttons: this.menuButtons() });
+  }
+
+  servicesInfo() {
+    const text = this.ctx.services.length ? this.T("services_list", { list: this.servicesLines(false) }) : this.T("prices_after");
+    this.say({ t: "buttons", text, buttons: this.menuButtons() });
   }
 
   hoursInfo() {
@@ -430,17 +539,30 @@ class Bot {
       const hs = this.ctx.hours.filter((h: any) => h.weekday === d && !h.city_id);
       lines.push(`${weekdayName(d, this.lang)}: ${hs.length ? hs.map((h: any) => `${hm(h.open_time, this.lang)} ${this.lang === "en" ? "to" : "إلى"} ${hm(h.close_time, this.lang)}`).join("، ") : this.T("closed")}`);
     }
-    this.say({ t: "buttons", text: this.T("hours", { list: lines.join("\n") }), buttons: [{ id: "m:book", title: this.T("btn_book") }] });
+    this.say({ t: "buttons", text: this.T("hours", { list: lines.join("\n") }), buttons: this.menuButtons() });
   }
 
-  areasInfo() {
+  locationInfo() {
+    const mode = this.mode();
     const names = this.ctx.cities.map((c: any) => this.cityName(c));
-    this.say({ t: "buttons", text: this.T("areas", { cities: names.length ? names.join("، ") : this.b.city || "" }), buttons: [{ id: "m:book", title: this.T("btn_book") }] });
+    let text: string;
+    if (mode === "online") text = this.T("loc_online");
+    else if (mode === "shop") text = this.T("loc_shop", { list: this.ctx.cities.map((c: any) => `• ${this.cityName(c)}${mapsOf(c) ? "\n" + mapsOf(c) : ""}`).join("\n") || this.b.address || this.b.city || "" });
+    else text = this.T("loc_visit", { cities: names.length ? names.join("، ") : this.b.city || "" });
+    this.say({ t: "buttons", text, buttons: this.menuButtons() });
+  }
+
+  paymentInfo() {
+    const pre = this.s.pay_timing === "before" && this.prepayAmount(this.svc() || this.ctx.services[0]) > 0;
+    const online = ["demo", "moyasar"].includes(this.s.pay_provider) && (this.b.plan === "bot_pay" || this.b.is_demo);
+    const key = pre ? "pay_before" : (this.s.pay_timing === "none" || !online) ? "pay_none" : "pay_after";
+    this.say({ t: "buttons", text: this.T(key), buttons: this.menuButtons() });
   }
 
   repeatPrompt() {
     switch (this.state) {
       case "svc": return this.askService();
+      case "branch": return this.askBranch();
       case "day": return this.askDay();
       case "time": return this.data.day ? this.askTime(this.data.day, 0) : this.askDay();
       case "orders": case "order": case "cancel_confirm": return this.listOrders(this.data?.mode || "");
@@ -496,10 +618,26 @@ export async function handleMessage(ctx: Ctx, m: Inbound): Promise<void> {
   await bot.flush();
 }
 
+// تخصيص تجربة المحاكي لكل جلسة (الاسم، المكان، الدفع، أسلوب الردود، الترحيب) بدون ما يتغير شي في المنشأة نفسها
+export function applySimConfig(ctx: Ctx) {
+  const cfg = ctx.customer?.is_sim ? ctx.customer.sim_config : null;
+  if (!cfg || typeof cfg !== "object" || !Object.keys(cfg).length) return ctx;
+  const b = { ...ctx.business }, s = { ...ctx.settings, texts: JSON.parse(JSON.stringify(ctx.settings.texts || {})) };
+  if (cfg.name) { b.name = cfg.name; b.name_en = cfg.name; }
+  if (["visit", "shop", "online"].includes(cfg.place)) s.place_mode = cfg.place;
+  if (["after", "before", "none"].includes(cfg.pay)) s.pay_timing = cfg.pay;
+  if (["friendly", "formal", "short"].includes(cfg.tone)) s.tone = cfg.tone;
+  if (cfg.welcome) { s.texts.ar = { ...(s.texts.ar || {}), welcome: cfg.welcome }; s.texts.en = { ...(s.texts.en || {}), welcome: cfg.welcome }; }
+  // لما المكان متخصص للجلسة، يمشي على كل الخدمات
+  const services = cfg.place ? ctx.services.map((x: any) => ({ ...x, place_mode: null })) : ctx.services;
+  return { ...ctx, business: b, settings: s, services };
+}
+
 // سياق المنشأة والعميل من استدعاء واحد
 export async function loadCtx(businessId: string, waId: string, isSim: boolean, name: string): Promise<Ctx> {
   const { data, error } = await db().rpc("ihj_ctx", { p_business: businessId, p_wa_id: waId, p_is_sim: isSim, p_name: name || "" });
   if (error) throw new Error("ctx: " + error.message);
   const j = data as any;
-  return { business: j.business, settings: j.settings, customer: j.customer, services: j.services || [], cities: j.cities || [], hours: j.hours || [], channel: j.channel || {} };
+  const ctx = { business: j.business, settings: j.settings, customer: j.customer, services: j.services || [], cities: j.cities || [], hours: j.hours || [], channel: j.channel || {} };
+  return applySimConfig(ctx);
 }

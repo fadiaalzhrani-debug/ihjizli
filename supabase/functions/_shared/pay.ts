@@ -3,8 +3,9 @@ const MOYASAR = "https://api.moyasar.com/v1";
 
 const auth = (sk: string) => ({ authorization: "Basic " + btoa(sk + ":"), "content-type": "application/json" });
 
-export async function moyasarCreateInvoice(sk: string, p: { amount: number; description: string; callback_url: string; success_url: string; back_url: string; metadata: Record<string, string> }) {
-  const body = { amount: Math.round(p.amount * 100), currency: "SAR", description: p.description.slice(0, 250), callback_url: p.callback_url, success_url: p.success_url, back_url: p.back_url, metadata: p.metadata };
+export async function moyasarCreateInvoice(sk: string, p: { amount: number; description: string; callback_url: string; success_url: string; back_url: string; metadata: Record<string, string>; expired_at?: string }) {
+  const body: Record<string, unknown> = { amount: Math.round(p.amount * 100), currency: "SAR", description: p.description.slice(0, 250), callback_url: p.callback_url, success_url: p.success_url, back_url: p.back_url, metadata: p.metadata };
+  if (p.expired_at) body.expired_at = p.expired_at;
   const r = await fetch(`${MOYASAR}/invoices`, { method: "POST", headers: auth(sk), body: JSON.stringify(body), signal: AbortSignal.timeout(15000) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j?.id || !j?.url) throw new Error(`moyasar_${r.status}: ${j?.message || j?.type || ""}`.slice(0, 200));

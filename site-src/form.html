@@ -1,14 +1,14 @@
 <section id="signup">
-  <span class="eyebrow">اشترك الحين</span>
+  <span class="eyebrow">اشترك</span>
   <h2>عبّي بياناتك ونتواصل معك خلال يوم عمل</h2>
-  <p class="sub">ما تدفع شي الحين. نكلّمك على الواتساب، نشوف طلباتك وين تجيك، ونرسل لك الباقة المناسبة وخطة التنفيذ.</p>
+  <p class="sub">ما تدفع شي الحين. نكلمك على الواتساب، ونرسل لك تجربة على نشاطك والباقة المناسبة.</p>
   <form id="leadForm" class="lead-form" novalidate>
-    <div class="f"><label for="f_business">اسم النشاط أو المحل</label><input id="f_business" name="business_name" required maxlength="80" placeholder="مثل: مغسلة النور، صالون لمسة، مؤسسة الأمان للصيانة"></div>
-    <div class="f"><label for="f_activity">نوع النشاط</label>
+    <div class="f"><label for="f_business">اسم النشاط أو المحل</label><input id="f_business" name="business_name" required maxlength="80" placeholder="مثل: صالون لمسة، مغسلة النور"></div>
+    <div class="f"><label for="f_activity">المجال</label>
       <select id="f_activity" name="activity">
-        <option value="">اختر</option><option>صيانة منزلية</option><option>مغسلة سيارات</option><option>صالون أو تجميل</option><option>تنظيف</option><option>عيادة أو مركز</option><option>مطعم أو كافيه</option><option>تأجير</option><option>أخرى</option>
+        <option value="">اختر</option><option>صيانة منزلية</option><option>صالون أو حلاق</option><option>عيادة أو مركز</option><option>استشارات أو خدمات أونلاين</option><option>مغسلة سيارات</option><option>مطعم أو كافيه</option><option>تنظيف</option><option>تدريب أو تعليم</option><option>تأجير أو فعاليات</option><option>أخرى</option>
       </select></div>
-    <div class="f"><label for="f_city">المدينة</label><input id="f_city" name="city" maxlength="60" placeholder="الخبر، الدمام، الرياض…"></div>
+    <div class="f"><label for="f_city">المدينة</label><input id="f_city" name="city" maxlength="60" placeholder="الرياض، جدة، الخبر…"></div>
     <div class="f"><label for="f_contact">اسمك</label><input id="f_contact" name="contact_name" maxlength="60" placeholder="اسم المسؤول"></div>
     <div class="f"><label for="f_phone">جوالك (واتساب)</label><input id="f_phone" name="phone" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></div>
     <div class="f"><label for="f_orders">كم طلب يجيك باليوم تقريبًا؟</label>
@@ -18,37 +18,37 @@
       <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>أتمتة الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
       <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
     </fieldset>
-    <div class="f wide"><label for="f_notes">ملاحظات (اختياري)</label><textarea id="f_notes" name="notes" rows="3" maxlength="600" placeholder="وش أكثر شي يضيّع عليك طلبات؟ وش نظامك الحالي؟"></textarea></div>
+    <div class="f wide"><label for="f_notes">ملاحظات (اختياري)</label><textarea id="f_notes" name="notes" rows="2" maxlength="600" placeholder="كيف تجيك الطلبات اليوم؟ وش أكثر شي يتعبك فيها؟"></textarea></div>
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
     <div class="f wide actions"><button type="submit" class="btn" id="leadBtn">أرسل طلب الاشتراك</button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
   </form>
   <div id="leadDone" class="done" hidden>
     <h3>وصلنا طلبك ✅</h3>
-    <p>نتواصل معك على الواتساب خلال يوم عمل. ولو تبي تستعجلنا، كلّمنا الحين:</p>
-    <a class="btn" href="https://wa.me/966504652455?text=%D8%A3%D8%B1%D8%B3%D9%84%D8%AA%20%D8%B7%D9%84%D8%A8%20%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A7%D8%AD%D8%AC%D8%B2%D9%84%D9%8A" target="_blank" rel="noopener">افتح الواتساب</a>
+    <p>نتواصل معك على الواتساب خلال يوم عمل. وبالانتظار، جرّب النظام على مجالك:</p>
+    <a class="btn" href="SIMLINK" target="_blank" rel="noopener">جرّبه بنفسك</a>
   </div>
 </section>
 <script>
 (function(){
-  var API='https://zulogtqxbuqxmdmjpzqj.supabase.co/functions/v1/ihjizli/lead';
-  var form=document.getElementById('leadForm'), btn=document.getElementById('leadBtn'), msg=document.getElementById('leadMsg'), done=document.getElementById('leadDone');
-  if(!form) return;
-  function digits(v){ return String(v||'').replace(/[٠-٩]/g,function(d){ return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D+/g,''); }
-  form.addEventListener('submit',async function(e){
-    e.preventDefault(); msg.textContent='';
-    var fd=new FormData(form), name=(fd.get('business_name')||'').toString().trim(), ph=digits(fd.get('phone'));
-    if(ph.indexOf('00')===0) ph=ph.slice(2); if(ph.indexOf('966')===0) ph=ph.slice(3); if(ph.indexOf('0')===0) ph=ph.slice(1);
-    if(name.length<2){ msg.textContent='اكتب اسم النشاط'; document.getElementById('f_business').focus(); return; }
-    if(!/^5\d{8}$/.test(ph)){ msg.textContent='اكتب جوال سعودي صحيح مثل 05xxxxxxxx'; document.getElementById('f_phone').focus(); return; }
-    var body={ business_name:name, activity:fd.get('activity')||'', city:fd.get('city')||'', contact_name:fd.get('contact_name')||'', phone:'966'+ph, package:fd.get('package')||'bot', wants_app:fd.get('wants_app')==='1', orders_per_day:fd.get('orders_per_day')||'', notes:fd.get('notes')||'', website:fd.get('website')||'', source:'site' };
-    btn.disabled=true; var old=btn.textContent; btn.textContent='جارٍ الإرسال…';
-    try{
-      var r=await fetch(API,{ method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(body) });
-      var j=await r.json().catch(function(){ return {}; });
-      if(r.ok && j.ok){ form.hidden=true; done.hidden=false; done.scrollIntoView({behavior:'smooth',block:'center'}); try{ localStorage.setItem('ihj_lead_sent','1'); }catch(x){} return; }
-      msg.textContent = j.error==='phone' ? 'الجوال غير صحيح' : j.error==='busy' ? 'حاول بعد شوي' : 'ما انرسل، جرّب مرة ثانية أو كلّمنا على الواتساب';
-    }catch(err){ msg.textContent='تعذّر الاتصال، جرّب مرة ثانية أو كلّمنا على الواتساب'; }
-    btn.disabled=false; btn.textContent=old;
+  var API = 'LEADAPI';
+  var form = document.getElementById('leadForm'), btn = document.getElementById('leadBtn'), msg = document.getElementById('leadMsg'), done = document.getElementById('leadDone');
+  if (!form) return;
+  function digits(v){ return String(v || '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D+/g, ''); }
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault(); msg.textContent = '';
+    var fd = new FormData(form), name = (fd.get('business_name') || '').toString().trim(), ph = digits(fd.get('phone'));
+    if (ph.indexOf('00') === 0) ph = ph.slice(2); if (ph.indexOf('966') === 0) ph = ph.slice(3); if (ph.indexOf('0') === 0) ph = ph.slice(1);
+    if (name.length < 2) { msg.textContent = 'اكتب اسم النشاط'; document.getElementById('f_business').focus(); return; }
+    if (!/^5\d{8}$/.test(ph)) { msg.textContent = 'اكتب جوال سعودي صحيح مثل 05xxxxxxxx'; document.getElementById('f_phone').focus(); return; }
+    var body = { business_name: name, activity: fd.get('activity') || '', city: fd.get('city') || '', contact_name: fd.get('contact_name') || '', phone: '966' + ph, package: fd.get('package') || 'bot', wants_app: fd.get('wants_app') === '1', orders_per_day: fd.get('orders_per_day') || '', notes: fd.get('notes') || '', website: fd.get('website') || '', source: 'site' };
+    btn.disabled = true; var old = btn.textContent; btn.textContent = 'جارٍ الإرسال…';
+    try {
+      var r = await fetch(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      var j = await r.json().catch(function () { return {}; });
+      if (r.ok && j.ok) { form.hidden = true; done.hidden = false; done.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+      msg.textContent = j.error === 'phone' ? 'الجوال غير صحيح' : j.error === 'busy' ? 'حاول بعد شوي' : 'ما انرسل، جرّب مرة ثانية';
+    } catch (err) { msg.textContent = 'تعذّر الاتصال، جرّب مرة ثانية'; }
+    btn.disabled = false; btn.textContent = old;
   });
 })();
 </script>

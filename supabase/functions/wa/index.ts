@@ -2,7 +2,7 @@
 //   GET/POST /wa/hook/<مفتاح المنشأة>   ويبهوك المزوّد (Cloud API) لكل رقم، والمنشأة تنعرف من المفتاح أو من phone_number_id
 //   GET/POST /wa/hook                    ويبهوك مشترك (تطبيق ميتا واحد للمنصة) والمنشأة تنعرف من رقمها
 //   POST /wa/sim  ·  GET /wa/sim  ·  POST /wa/sim/reset  ·  GET /wa/sim/info   محاكي الواتساب (بدون إرسال حقيقي)
-import { background, clip, CORS, db, errMsg, hmacHex, ipOf, json, limiter, readJson, routeParts, sameSecret } from "../_shared/util.ts";
+import { background, clip, clipLines, CORS, db, errMsg, hmacHex, ipOf, json, limiter, readJson, routeParts, sameSecret } from "../_shared/util.ts";
 import { handleMessage, type Inbound, loadCtx } from "../_shared/bot.ts";
 import { loadSecrets, markRead } from "../_shared/wa.ts";
 
@@ -168,11 +168,31 @@ async function sim(req: Request, sub: string): Promise<Response> {
   if (!biz) return json({ ok: false, error: "unauthorized" }, 401);
 
   if (sub === "info") {
-    const { data: cities } = await db().from("cities").select("name, lat, lng, radius_km").eq("business_id", biz.id).eq("active", true).order("sort");
-    return json({ ok: true, business: { name: biz.name, name_en: biz.name_en, logo_url: biz.logo_url, brand_color: biz.brand_color, city: biz.city, bot_enabled: biz.bot_enabled, status: biz.status }, cities: cities || [] });
+    const [{ data: cities }, { data: st }, { data: svcs }] = await Promise.all([
+      db().from("cities").select("name, lat, lng, radius_km").eq("business_id", biz.id).eq("active", true).order("sort"),
+      db().from("settings").select("place_mode, pay_timing, tone, faq").eq("business_id", biz.id).maybeSingle(),
+      db().from("services").select("name, price").eq("business_id", biz.id).eq("active", true).order("sort"),
+    ]);
+    const faqQ = (Array.isArray(st?.faq) ? st.faq : []).map((e: any) => String(e?.chip || String(e?.q || "").split(/[,،]/)[0] || "").trim()).filter(Boolean).slice(0, 4);
+    return json({ ok: true, business: { name: biz.name, name_en: biz.name_en, logo_url: biz.logo_url, brand_color: biz.brand_color, city: biz.city, bot_enabled: biz.bot_enabled, status: biz.status, activity: biz.activity },
+      cities: cities || [], defaults: { place: st?.place_mode || "visit", pay: st?.pay_timing || "after", tone: st?.tone || "friendly" }, faq: faqQ, services: svcs || [] });
   }
   const from = String(q.from || "");
   if (!SIM_FROM.test(from)) return json({ ok: false, error: "from" }, 400);
+
+  if (sub === "config") {
+    const c = q.cfg || {};
+    const cfg: Record<string, string> = {};
+    const name = clip(c.name, 40); if (name.length >= 2) cfg.name = name;
+    if (["visit", "shop", "online"].includes(c.place)) cfg.place = c.place;
+    if (["after", "before", "none"].includes(c.pay)) cfg.pay = c.pay;
+    if (["friendly", "formal", "short"].includes(c.tone)) cfg.tone = c.tone;
+    const welcome = clipLines(c.welcome, 300); if (welcome.length >= 2) cfg.welcome = welcome;
+    const ctx = await loadCtx(biz.id, from, true, "");
+    await db().from("customers").update({ sim_config: cfg, state: "idle", state_data: {}, misses: 0, bot_paused: false, paused_at: null, paused_reason: "", last_inbound_at: null, last_outbound_at: null }).eq("id", ctx.customer.id);
+    await db().from("handoffs").update({ resolved_at: new Date().toISOString(), resolved_by: "sim_config" }).eq("customer_id", ctx.customer.id).is("resolved_at", null);
+    return json({ ok: true, cfg });
+  }
 
   if (sub === "reset") {
     const { data: c } = await db().from("customers").select("id").eq("business_id", biz.id).eq("wa_id", from).maybeSingle();
@@ -182,9 +202,9 @@ async function sim(req: Request, sub: string): Promise<Response> {
   }
 
   if (req.method === "GET") {
-    const { data: c } = await db().from("customers").select("id, bot_paused, lang").eq("business_id", biz.id).eq("wa_id", from).maybeSingle();
-    if (!c) return json({ ok: true, messages: [], paused: false });
-    return json({ ok: true, messages: await simMessages(c.id, Number(q.after || 0)), paused: c.bot_paused, lang: c.lang });
+    const { data: c } = await db().from("customers").select("id, bot_paused, lang, sim_config").eq("business_id", biz.id).eq("wa_id", from).maybeSingle();
+    if (!c) return json({ ok: true, messages: [], paused: false, cfg: {} });
+    return json({ ok: true, messages: await simMessages(c.id, Number(q.after || 0)), paused: c.bot_paused, lang: c.lang, cfg: c.sim_config || {} });
   }
 
   // رسالة من «العميل» في المحاكي

@@ -91,6 +91,7 @@ input[type=color]{padding:3px;height:40px}
 .b-arrived{background:color-mix(in srgb,var(--teal) 15%,var(--card));color:var(--teal)}
 .b-invoiced{background:color-mix(in srgb,var(--warn) 15%,var(--card));color:var(--warn)}
 .b-done{background:color-mix(in srgb,var(--accent) 15%,var(--card));color:var(--accent)}
+.b-pending_payment{background:color-mix(in srgb,var(--gold) 30%,var(--card));color:var(--gold-ink)}
 .b-cancelled{background:var(--soft2);color:var(--muted)}
 .b-test{background:color-mix(in srgb,var(--violet) 14%,var(--card));color:var(--violet)}
 .b-warn{background:color-mix(in srgb,var(--warn) 15%,var(--card));color:var(--warn)}
@@ -199,8 +200,8 @@ table.t tr:last-child td{border-bottom:0}
 .cols div:hover{background:var(--accent-2)}
 .cols-x{display:flex;gap:4px;font-size:10.5px;color:var(--muted)} .cols-x span{flex:1;text-align:center}
 
-.copybox{display:flex;gap:6px;align-items:center;background:var(--soft2);border:1px dashed var(--line);border-radius:10px;padding:6px 6px 6px 10px}
-.copybox code{flex:1;font-size:12.5px;direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Consolas,monospace}
+.copybox{min-width:0;display:flex;gap:6px;align-items:center;background:var(--soft2);border:1px dashed var(--line);border-radius:10px;padding:6px 6px 6px 10px}
+.copybox code{flex:1;min-width:0;font-size:12.5px;direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Consolas,monospace}
 pre.code{background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;direction:ltr;text-align:left;overflow:auto;max-height:260px;margin:0;font-family:ui-monospace,Consolas,monospace}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--muted)} .dot.ok{background:var(--accent)} .dot.bad{background:var(--bad)} .dot.warn{background:var(--gold)}
 hr.s{border:0;border-top:1px solid var(--line);margin:4px 0}

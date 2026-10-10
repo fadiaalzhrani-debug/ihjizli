@@ -3,48 +3,48 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow">
-<title>محاكي واتساب</title>
+<title>جرّبه بنفسك · احجزلي</title>
+<meta name="description" content="جرّب الرد والحجز والدفع على الواتساب لأي نشاط: صيانة، صالون، عيادة، استشارة أونلاين، مغسلة، مطعم.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%2325D366'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-/* محاكي واتساب احجزلي: نفس منطق البوت الحقيقي، بدون إرسال لأي رقم */
+/* محاكي واتساب احجزلي: نفس منطق البوت الحقيقي، بدون إرسال لأي رقم. قائمة مجالات + تخصيص + اقتراحات أسئلة */
 :root{
-  --page:#EEF1EC; --page-fg:#16201B; --muted:#5E6B64;
+  --page:#EEF1EC; --page-fg:#16201B; --muted:#5E6B64; --accent:#0B7A55;
   --wa-head:#008069; --wa-head-fg:#fff; --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-fg:#111B21; --wa-meta:#667781; --wa-link:#027EB5;
-  --wa-bar:#F0F2F5; --wa-input:#FFFFFF; --wa-green:#00A884; --wa-sheet:#FFFFFF; --wa-line:#E9EDEF; --wa-chip:#E1F2FB; --wa-tick:#53BDEB;
+  --wa-input:#FFFFFF; --wa-green:#00A884; --wa-sheet:#FFFFFF; --wa-line:#E9EDEF; --wa-chip:#E1F2FB; --wa-tick:#53BDEB; --wa-list:#FFFFFF; --wa-hover:#F5F6F6;
   --doodle:rgba(0,0,0,.035);
   --display:"Tajawal",system-ui,"Segoe UI",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --page:#0B0F0D; --page-fg:#E9EFEB; --muted:#9FADA5;
+  --page:#0B0F0D; --page-fg:#E9EFEB; --muted:#9FADA5; --accent:#3CCB93;
   --wa-head:#1F2C34; --wa-head-fg:#E9EDEF; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB;
-  --wa-bar:#1F2C34; --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --doodle:rgba(255,255,255,.025); color-scheme:dark } }
+  --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --wa-list:#111B21; --wa-hover:#202C33; --doodle:rgba(255,255,255,.025); color-scheme:dark } }
 :root[data-theme="dark"]{
-  --page:#0B0F0D; --page-fg:#E9EFEB; --muted:#9FADA5;
+  --page:#0B0F0D; --page-fg:#E9EFEB; --muted:#9FADA5; --accent:#3CCB93;
   --wa-head:#1F2C34; --wa-head-fg:#E9EDEF; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB;
-  --wa-bar:#1F2C34; --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --doodle:rgba(255,255,255,.025); color-scheme:dark }
+  --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --wa-list:#111B21; --wa-hover:#202C33; --doodle:rgba(255,255,255,.025); color-scheme:dark }
 *{box-sizing:border-box} html,body{margin:0;height:100%}
 body{background:var(--page);color:var(--page-fg);font-family:var(--body);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;min-height:100vh}
 button{font:inherit;color:inherit;cursor:pointer}
 [hidden]{display:none!important}
+svg{flex:none}
 
 /* اللوحة الجانبية (كمبيوتر) */
-.aside{grid-column:1;justify-self:end;max-width:340px;padding:28px;display:grid;gap:16px}
-.aside .bz{display:flex;gap:12px;align-items:center}
-.aside .bz .av{width:54px;height:54px;border-radius:16px;overflow:hidden;background:var(--wa-head);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:22px;flex:none}
-.aside .bz .av img{width:100%;height:100%;object-fit:cover;background:#fff}
-.aside h1{font-family:var(--display);font-size:24px;margin:0;line-height:1.25}
-.aside p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.7}
-.aside .steps{display:grid;gap:8px;margin:0;padding:0;list-style:none;font-size:14px}
-.aside .steps li{display:flex;gap:10px;align-items:center}
-.aside .steps b{width:24px;height:24px;border-radius:50%;background:var(--wa-green);color:#fff;display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display)}
+.aside{grid-column:1;justify-self:end;max-width:360px;padding:28px;display:grid;gap:16px}
+.aside h1{font-family:var(--display);font-size:26px;margin:0;line-height:1.25}
+.aside p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.75}
+.aside .try{display:grid;gap:7px;margin:0;padding:0;list-style:none;font-size:14px}
+.aside .try li{display:flex;gap:9px;align-items:flex-start;line-height:1.6}
+.aside .try b{width:22px;height:22px;border-radius:50%;background:var(--wa-green);color:#fff;display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display);margin-top:2px}
 .aside .acts{display:flex;gap:8px;flex-wrap:wrap}
-.pill{border:1.5px solid color-mix(in srgb,var(--page-fg) 18%,transparent);background:transparent;border-radius:99px;padding:8px 14px;font-weight:600;font-size:14px;display:inline-flex;gap:7px;align-items:center}
+.pill{border:1.5px solid color-mix(in srgb,var(--page-fg) 18%,transparent);background:transparent;border-radius:99px;padding:8px 14px;font-weight:600;font-size:14px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;color:inherit}
 .pill.main{background:var(--wa-green);color:#fff;border-color:var(--wa-green)}
 .pill svg{width:17px;height:17px}
+.cur{display:flex;flex-wrap:wrap;gap:6px}
+.cur span{font-size:12.5px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);border-radius:99px;padding:3px 10px;font-weight:600}
 
 /* الجوال */
 .phone{grid-column:2;width:390px;height:min(844px,calc(100vh - 32px));border-radius:46px;background:#0f1412;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.28),inset 0 0 0 2px #2a312d;position:relative}
@@ -53,16 +53,33 @@ button{font:inherit;color:inherit;cursor:pointer}
 .status i{display:inline-block;width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;vertical-align:middle}
 .status i::after{content:"";position:absolute;inset:1.5px;right:5px;background:currentColor;border-radius:1px}
 .head{background:var(--wa-head);color:var(--wa-head-fg);display:flex;align-items:center;gap:10px;padding:8px 10px 10px;flex:none}
-.head .back{width:26px;height:26px;display:grid;place-items:center;opacity:.95;background:none;border:0;padding:0}
+.head .back{width:26px;height:26px;display:grid;place-items:center;background:none;border:0;padding:0}
 .head .back svg{width:22px;height:22px}
-.head .av{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#dfe5e7;color:#54656f;display:grid;place-items:center;font-family:var(--display);font-weight:800;flex:none}
-.head .av img{width:100%;height:100%;object-fit:cover;background:#fff}
+.av{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#dfe5e7;color:#54656f;display:grid;place-items:center;font-family:var(--display);font-weight:800;flex:none;font-size:19px}
+.av img{width:100%;height:100%;object-fit:cover;background:#fff}
 .head .who{flex:1;min-width:0;line-height:1.25}
 .head .who b{display:flex;align-items:center;gap:5px;font-size:16.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.head .who b svg{width:16px;height:16px;flex:none;color:#25D366}
+.head .who b svg{width:16px;height:16px;color:#25D366}
 .head .who span{font-size:12.5px;opacity:.85;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.head .ic{background:none;border:0;padding:6px;display:grid;place-items:center;opacity:.95}
+.head .ic{background:none;border:0;padding:6px;display:grid;place-items:center}
 .head .ic svg{width:21px;height:21px}
+
+/* قائمة المحادثات (المجالات) */
+.home{flex:1;overflow:auto;background:var(--wa-list);display:flex;flex-direction:column}
+.home .hd{background:var(--wa-head);color:var(--wa-head-fg);padding:10px 16px 14px;flex:none}
+.home .hd b{font-family:var(--display);font-size:21px;display:block}
+.home .hd span{font-size:13px;opacity:.9}
+.chatrow{display:flex;gap:12px;align-items:center;width:100%;border:0;background:none;padding:11px 14px;text-align:start;color:var(--wa-fg);border-bottom:1px solid var(--wa-line)}
+.chatrow:hover{background:var(--wa-hover)}
+.chatrow .av{width:50px;height:50px;font-size:24px}
+.chatrow .t{flex:1;min-width:0}
+.chatrow .t b{display:flex;justify-content:space-between;gap:8px;font-size:16px;font-weight:600}
+.chatrow .t b small{font-size:12px;color:var(--wa-green);font-weight:600}
+.chatrow .t span{display:block;font-size:13.5px;color:var(--wa-meta);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chatrow .tags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.chatrow .tags i{font-style:normal;font-size:11.5px;border-radius:99px;padding:1px 8px;background:color-mix(in srgb,var(--wa-green) 13%,transparent);color:var(--wa-fg)}
+.home .note{padding:14px 18px 20px;font-size:12.5px;color:var(--wa-meta);text-align:center;line-height:1.7}
+
 .chat{flex:1;overflow-y:auto;padding:10px 12px 14px;display:flex;flex-direction:column;gap:3px;
   background-color:var(--wa-bg);
   background-image:radial-gradient(var(--doodle) 1.2px,transparent 1.3px),radial-gradient(var(--doodle) 1.2px,transparent 1.3px);
@@ -84,12 +101,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .bub .ft{display:block;color:var(--wa-meta);font-size:12.5px;margin-top:2px}
 .bub .tm{float:left;font-size:11px;color:var(--wa-meta);margin:8px 8px -4px 0;display:inline-flex;gap:3px;align-items:center;white-space:nowrap;direction:ltr}
 .bub .tm svg{width:16px;height:11px;color:var(--wa-tick)}
-.bub .inbtn{display:flex;align-items:center;justify-content:center;gap:7px;border-top:1px solid var(--wa-line);margin:7px -9px -7px;padding:9px 6px;color:var(--wa-link);font-weight:600;font-size:14.5px;background:none;border-left:0;border-right:0;border-bottom:0;width:calc(100% + 18px);white-space:normal}
+.bub .inbtn{display:flex;align-items:center;justify-content:center;gap:7px;border-top:1px solid var(--wa-line);margin:7px -9px -7px;padding:9px 6px;color:var(--wa-link);font-weight:600;font-size:14.5px;background:none;border-left:0;border-right:0;border-bottom:0;width:calc(100% + 18px);white-space:normal;text-decoration:none}
 .bub .inbtn svg{width:18px;height:18px}
 .btns{display:grid;gap:3px}
 .btns button{background:var(--wa-in);color:var(--wa-link);border:0;border-radius:9px;padding:10px 8px;font-weight:600;font-size:14.5px;box-shadow:0 1px .5px rgba(11,20,26,.13);display:flex;align-items:center;justify-content:center;gap:6px}
 .btns button svg{width:16px;height:16px}
-.btns button:disabled,.bub .inbtn:disabled{opacity:.55;cursor:default}
 .loc{display:block;border-radius:6px;overflow:hidden;margin:-2px -5px 4px;background:#cfd8dc;height:120px;position:relative}
 .loc .pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-90%);width:26px;height:26px;color:#e53935}
 .loc .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.55) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.55) 2px,transparent 2px);background-size:34px 34px;opacity:.9}
@@ -103,9 +119,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .paused{align-self:center;background:var(--wa-chip);color:var(--wa-meta);font-size:12px;padding:5px 11px;border-radius:8px;margin:8px 0;text-align:center}
 
+/* اقتراحات «جرّب تسأل» */
+.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 10px 2px;flex:none;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid var(--wa-line);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:6px 12px;font-size:13px;box-shadow:0 1px .5px rgba(11,20,26,.1);white-space:nowrap}
+.chips button:hover{border-color:var(--wa-green)}
+.chips em{flex:none;font-style:normal;font-size:12px;color:var(--wa-meta);align-self:center}
+
 /* شريط الكتابة */
-.bar{display:flex;gap:6px;align-items:flex-end;padding:6px 8px 10px;background:transparent;flex:none}
-.field{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:var(--wa-input);border-radius:24px;padding:4px 6px 4px 6px;min-height:46px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.bar{display:flex;gap:6px;align-items:flex-end;padding:6px 8px 10px;flex:none}
+.field{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:var(--wa-input);border-radius:24px;padding:4px 6px;min-height:46px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
 .field input{flex:1;border:0;background:transparent;color:var(--wa-fg);font:inherit;font-size:15.5px;padding:8px 4px;outline:none;min-width:0}
 .field input::placeholder{color:var(--wa-meta)}
 .field button{background:none;border:0;padding:6px;color:var(--wa-meta);display:grid;place-items:center}
@@ -114,9 +137,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .send svg{width:21px;height:21px}
 [dir=rtl] .send svg{transform:scaleX(-1)}
 
-/* الورقة السفلية: القائمة والموقع */
+/* الورقة السفلية: القائمة، الخريطة، التخصيص */
 .sheet-bg{position:absolute;inset:0;background:rgba(11,20,26,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
-.sheet{position:absolute;inset-inline:0;bottom:0;background:var(--wa-sheet);color:var(--wa-fg);border-radius:16px 16px 0 0;z-index:6;transform:translateY(105%);transition:transform .22s ease;max-height:82%;display:flex;flex-direction:column}
+.sheet{position:absolute;inset-inline:0;bottom:0;background:var(--wa-sheet);color:var(--wa-fg);border-radius:16px 16px 0 0;z-index:6;transform:translateY(105%);transition:transform .22s ease;max-height:88%;display:flex;flex-direction:column}
 .sheet.on{transform:none} .sheet-bg.on{opacity:1;pointer-events:auto}
 @media (prefers-reduced-motion:reduce){ .sheet,.sheet-bg{transition:none} }
 .sheet .grab{width:36px;height:4px;border-radius:9px;background:var(--wa-line);margin:8px auto 2px}
@@ -133,10 +156,17 @@ button{font:inherit;color:inherit;cursor:pointer}
 .opt.on .r{border-color:var(--wa-green)} .opt.on .r::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--wa-green)}
 #map{height:290px;background:#d7dfe2}
 .mapfoot{padding:10px 14px 14px;display:grid;gap:8px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chips button{border:1px solid var(--wa-line);background:transparent;border-radius:99px;padding:5px 11px;font-size:13px;color:var(--wa-fg)}
-.go{background:var(--wa-green);color:#fff;border:0;border-radius:24px;padding:12px;font-weight:700;font-size:15.5px;font-family:var(--display);display:flex;align-items:center;justify-content:center;gap:8px}
+.mchips{display:flex;gap:6px;flex-wrap:wrap}
+.mchips button{border:1px solid var(--wa-line);background:transparent;border-radius:99px;padding:5px 11px;font-size:13px;color:var(--wa-fg)}
+.go{background:var(--wa-green);color:#fff;border:0;border-radius:24px;padding:12px;font-weight:700;font-size:15.5px;font-family:var(--display);display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
 .go svg{width:19px;height:19px}
+.cfg{padding:12px 16px 16px;display:grid;gap:14px}
+.cfg label{display:grid;gap:6px;font-size:13px;color:var(--wa-meta);font-weight:600}
+.cfg input,.cfg textarea{width:100%;border:1.5px solid var(--wa-line);border-radius:10px;background:transparent;color:var(--wa-fg);font:inherit;font-size:15px;padding:9px 11px}
+.cfg textarea{min-height:64px;resize:vertical}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:color-mix(in srgb,var(--wa-fg) 6%,transparent);border-radius:11px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:8px;padding:8px 4px;font-size:13px;color:var(--wa-meta);font-weight:600;line-height:1.3}
+.seg button.on{background:var(--wa-sheet);color:var(--wa-fg);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .attach{position:absolute;bottom:70px;inset-inline-end:14px;background:var(--wa-sheet);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25);padding:10px;display:flex;gap:16px;z-index:4}
 .attach button{background:none;border:0;display:grid;justify-items:center;gap:5px;font-size:12px;color:var(--wa-fg)}
 .attach i{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff}
@@ -149,42 +179,59 @@ button{font:inherit;color:inherit;cursor:pointer}
   .phone{width:100%;height:100vh;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:none}
   .screen{border-radius:0}
   .status{display:none}
-  .head{padding-top:calc(8px + env(safe-area-inset-top))}
+  .head,.home .hd{padding-top:calc(8px + env(safe-area-inset-top))}
   .bar{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 }
-@media (min-width:701px) and (max-width:1060px){ body{grid-template-columns:1fr auto 1fr} .aside{display:none} }
+@media (min-width:701px) and (max-width:1060px){ .aside{display:none} }
 .err{margin:auto;max-width:420px;text-align:center;padding:30px;display:grid;gap:10px}
 </style>
 </head>
 <body>
 <aside class="aside" id="aside">
-  <div class="bz"><div class="av" id="aAv"></div><div><h1 id="aName">محاكي واتساب</h1><p id="aSub">جرّب الحجز كأنك عميل</p></div></div>
-  <p>كل اللي يصير هنا هو نفس اللي يصير على رقم الواتساب الحقيقي: الرد، الموقع، المواعيد المتاحة فعلًا، والتأكيد برقم طلب.</p>
-  <ul class="steps"><li><b>1</b>اضغط «احجز من هنا»</li><li><b>2</b>أرسل الموقع من الخريطة</li><li><b>3</b>اختر اليوم والوقت</li><li><b>4</b>يوصلك رقم الطلب، وينزل في لوحة المحل بصوت</li></ul>
-  <div class="acts"><button class="pill main" id="newChat" type="button"></button><button class="pill" id="langBtn" type="button">English</button></div>
+  <h1>جرّبه بنفسك</h1>
+  <p>اختر نشاط من القائمة وكلّمه كأنك عميل. اسأل أي سؤال أو احجز، وشوف كيف يرد لحاله.</p>
+  <ul class="try">
+    <li><b>1</b>اسأل عن السعر أو الموقع أو الدوام أو أي شي</li>
+    <li><b>2</b>احجز: الخدمة، المكان، اليوم، الوقت، ورقم الطلب</li>
+    <li><b>3</b>جرّب الدفع قبل الحجز أو بعد الخدمة، بدون فلوس حقيقية</li>
+    <li><b>4</b>اكتب شي ما يعرفه، يحوّله لصاحب المحل</li>
+  </ul>
+  <div class="cur" id="curTags"></div>
+  <div class="acts"><button class="pill main" id="cfgBtn" type="button" hidden></button><button class="pill" id="newChat" type="button" hidden></button></div>
 </aside>
 
 <div class="phone" id="phone">
   <div class="screen" id="screen">
     <div class="status"><span id="clock">9:41</span><span>5G <i></i></span></div>
-    <header class="head">
-      <button class="back" type="button" aria-label="رجوع" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
-      <div class="av" id="hAv"></div>
-      <div class="who"><b><span id="hName">…</span><svg viewBox="0 0 24 24" aria-label="حساب تجاري"><path fill="currentColor" d="M12 1.5l2.6 1.9 3.2-.2.9 3.1 2.7 1.8-1.1 3 1.1 3-2.7 1.8-.9 3.1-3.2-.2L12 22.5l-2.6-1.9-3.2.2-.9-3.1-2.7-1.8 1.1-3-1.1-3 2.7-1.8.9-3.1 3.2.2z"/><path d="M8 12.2l2.7 2.7L16.2 9" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></b><span id="hSub">حساب تجاري</span></div>
-      <button class="ic" type="button" aria-label="محادثة جديدة" id="resetBtn" title="محادثة جديدة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg></button>
-    </header>
-    <div class="chat" id="chat" aria-live="polite"></div>
-    <div class="attach" id="attach" hidden>
-      <button type="button" id="attLoc"><i style="background:#1FA855"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></i>الموقع</button>
-      <button type="button" id="attImg"><i style="background:#BF59CF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></i>صورة</button>
+    <!-- قائمة المحادثات -->
+    <div class="home" id="home" hidden>
+      <div class="hd"><b>جرّبه بنفسك</b><span>اختر نشاط وكلّمه كأنك عميل</span></div>
+      <div id="homeList"></div>
+      <div class="note">كل محادثة هنا تمشي على النظام الحقيقي نفسه، وما ينرسل شي لأي رقم. وكل شي فيها يتعدّل على كيف صاحب النشاط.</div>
     </div>
-    <form class="bar" id="bar" autocomplete="off">
-      <div class="field">
-        <button type="button" aria-label="إرفاق" id="attBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.6l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg></button>
-        <input id="inp" placeholder="اكتب رسالة" maxlength="1000" aria-label="اكتب رسالة">
+    <!-- المحادثة -->
+    <div id="chatView" style="display:flex;flex-direction:column;flex:1;min-height:0" hidden>
+      <header class="head">
+        <button class="back" type="button" aria-label="رجوع" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+        <div class="av" id="hAv"></div>
+        <div class="who"><b><span id="hName">…</span><svg viewBox="0 0 24 24" aria-label="حساب تجاري"><path fill="currentColor" d="M12 1.5l2.6 1.9 3.2-.2.9 3.1 2.7 1.8-1.1 3 1.1 3-2.7 1.8-.9 3.1-3.2-.2L12 22.5l-2.6-1.9-3.2.2-.9-3.1-2.7-1.8 1.1-3-1.1-3 2.7-1.8.9-3.1 3.2.2z"/><path d="M8 12.2l2.7 2.7L16.2 9" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></b><span id="hSub">حساب تجاري</span></div>
+        <button class="ic" type="button" aria-label="خصّص التجربة" id="gearBtn" title="خصّص التجربة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
+        <button class="ic" type="button" aria-label="محادثة جديدة" id="resetBtn" title="محادثة جديدة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg></button>
+      </header>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <div class="attach" id="attach" hidden>
+        <button type="button" id="attLoc"><i style="background:#1FA855"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></i>الموقع</button>
+        <button type="button" id="attImg"><i style="background:#BF59CF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></i>صورة</button>
       </div>
-      <button class="send" type="submit" aria-label="إرسال"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.4-7.5c.8-.4.8-1.5 0-1.8L3.4 3.6c-.7-.3-1.4.3-1.3 1l1 6.1 9.4 1.3-9.4 1.3-1 6.1c-.1.7.6 1.3 1.3 1z"/></svg></button>
-    </form>
+      <form class="bar" id="bar" autocomplete="off">
+        <div class="field">
+          <button type="button" aria-label="إرفاق" id="attBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.6l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg></button>
+          <input id="inp" placeholder="اكتب أي رسالة" maxlength="1000" aria-label="اكتب رسالة">
+        </div>
+        <button class="send" type="submit" aria-label="إرسال"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.4-7.5c.8-.4.8-1.5 0-1.8L3.4 3.6c-.7-.3-1.4.3-1.3 1l1 6.1 9.4 1.3-9.4 1.3-1 6.1c-.1.7.6 1.3 1.3 1z"/></svg></button>
+      </form>
+    </div>
     <div class="sheet-bg" id="sheetBg"></div>
     <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div class="sh"><button type="button" id="sheetX" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button><b id="sheetT"></b><span style="width:30px"></span></div><div class="sb" id="sheetB"></div></div>
   </div>
@@ -195,7 +242,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 (function(){
   const FN = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/wa/sim';
   const q = new URLSearchParams(location.search);
-  const B = (q.get('b') || '').toLowerCase(), K = q.get('k') || '';
+  const SINGLE = !!(q.get('b') && q.get('k'));
+  let B = (q.get('b') || '').toLowerCase(), K = q.get('k') || '';
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const chat = $('chat');
@@ -207,24 +255,24 @@ button{font:inherit;color:inherit;cursor:pointer}
     reply: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>',
     ticks: '<svg viewBox="0 0 16 11" fill="currentColor"><path d="M11.07.65 10.4 0 4.3 6.07 1.65 3.43 1 4.1l3.3 3.3zM15 .65 14.33 0 8.23 6.07l-.97-.97-.67.67 1.64 1.64z"/></svg>',
     send: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.4-7.5c.8-.4.8-1.5 0-1.8L3.4 3.6c-.7-.3-1.4.3-1.3 1l1 6.1 9.4 1.3-9.4 1.3-1 6.1c-.1.7.6 1.3 1.3 1z"/></svg>',
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>',
+    reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg>',
   };
-  let biz = null, cities = [], from = '', lastId = 0, busy = false, lastDir = '', pollT = null, lang = 'ar', paused = false;
+  const PLACE = { visit: 'عند العميل', shop: 'في المحل', online: 'أونلاين' };
+  const PAY = { after: 'الدفع بعد الخدمة', before: 'الدفع قبل الحجز', none: 'الدفع في المحل' };
+  const TONE = { friendly: 'ودّي', formal: 'رسمي', short: 'مختصر' };
+  let demos = [], demo = null, biz = null, info = null, cities = [], from = '', lastId = 0, busy = false, lastDir = '', pollT = null, lang = 'ar', cfg = {};
 
   const clock = () => { const d = new Date(); $('clock').textContent = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
   clock(); setInterval(clock, 30000);
   const tm = (iso) => { const d = iso ? new Date(iso) : new Date(); let h = d.getHours(), m = String(d.getMinutes()).padStart(2, '0'); const ap = h < 12 ? 'ص' : 'م'; h = h % 12 || 12; return `${h}:${m} ${ap}`; };
   const newFrom = () => 'sim-' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 6);
-
-  function avatarHtml() {
-    if (biz && biz.logo_url) return `<img src="${esc(biz.logo_url)}" alt="">`;
-    const n = (biz && biz.name || '؟').trim();
-    return esc(n.slice(0, 1));
+  function avatarHtml(b, d) {
+    if (b && b.logo_url) return `<img src="${esc(b.logo_url)}" alt="">`;
+    if (d && d.icon) return `<span style="font-size:inherit">${esc(d.icon)}</span>`;
+    return esc(((b && b.name) || '؟').trim().slice(0, 1));
   }
-
-  function fail(title, msg) {
-    document.body.innerHTML = `<div class="err"><h2 style="font-family:var(--display);margin:0">${esc(title)}</h2><p style="color:var(--muted);margin:0">${esc(msg)}</p></div>`;
-  }
-
+  function fail(title, msg) { document.body.innerHTML = `<div class="err"><h2 style="font-family:var(--display);margin:0">${esc(title)}</h2><p style="color:var(--muted);margin:0">${esc(msg)}</p></div>`; }
   async function call(method, path, body) {
     const url = method === 'GET' ? `${FN}${path}?${new URLSearchParams(body)}` : `${FN}${path}`;
     const r = await fetch(url, method === 'GET' ? {} : { method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
@@ -234,7 +282,6 @@ button{font:inherit;color:inherit;cursor:pointer}
   }
 
   // ───── رسم الرسائل ─────
-  // صورة خريطة حقيقية للموقع المرسل (مربع OpenStreetMap واحد، والدبوس في نص الفقاعة)
   function tileStyle(lat, lng) {
     lat = +lat; lng = +lng; if (!Number.isFinite(lat) || !Number.isFinite(lng)) return '';
     const z = 15, n = 2 ** z, r = lat * Math.PI / 180;
@@ -247,7 +294,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     if (m.id && m.id <= lastId) return;
     if (m.id) lastId = Math.max(lastId, m.id);
     removeTyping();
-    const dir = m.direction === 'in' ? 'out' : 'in'; // رسالة العميل «صادرة» من جواله
+    const dir = m.direction === 'in' ? 'out' : 'in';
     const first = dir !== lastDir; lastDir = dir;
     const wrap = document.createElement('div');
     wrap.className = `msg ${dir}${first ? ' first' : ''}`;
@@ -257,27 +304,18 @@ button{font:inherit;color:inherit;cursor:pointer}
     if (m.direction === 'in') {
       if (b.type === 'location') html = `<div class="bub"><span class="loc" style="${tileStyle(b.lat, b.lng)}"><span class="grid"${Number.isFinite(+b.lat) ? ' hidden' : ''}></span><svg class="pin" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a8 8 0 0 0-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 0 0-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg></span>📍 ${esc(b.name || 'الموقع')}${time}</div>`;
       else if (b.type === 'reply') html = `<div class="bub">${esc(b.title || '')}${time}</div>`;
-      else if (b.type === 'other') html = `<div class="bub">🖼️ ${esc(b.kindLabel || '')}${time}</div>`;
+      else if (b.type === 'other') html = `<div class="bub">${/صوت/.test(b.kindLabel || '') ? '🎤' : '🖼️'} ${esc(b.kindLabel || '')}${time}</div>`;
       else html = `<div class="bub">${bubbleText(b.text || m.preview || '')}${time}</div>`;
     } else {
       const k = b.t || m.kind;
       const hd = b.header ? `<span class="hd">${esc(b.header)}</span>` : '';
       const ft = b.footer ? `<span class="ft">${esc(b.footer)}</span>` : '';
-      if (k === 'buttons') {
-        html = `<div class="bub">${hd}${bubbleText(b.text)}${ft}${time}</div><div class="btns">${(b.buttons || []).map((x) => `<button type="button" data-id="${esc(x.id)}" data-title="${esc(x.title)}">${ICO.reply}${esc(x.title)}</button>`).join('')}</div>`;
-      } else if (k === 'list') {
-        html = `<div class="bub">${hd}${bubbleText(b.text)}${ft}${time}<button class="inbtn" type="button" data-list>${ICO.list}${esc(b.button || 'القائمة')}</button></div>`;
-      } else if (k === 'location_request') {
-        html = `<div class="bub">${bubbleText(b.text)}${time}<button class="inbtn" type="button" data-loc>${ICO.pin}${lang === 'en' ? 'Send location' : 'إرسال الموقع'}</button></div>`;
-      } else if (k === 'cta') {
-        html = `<div class="bub">${hd}${bubbleText(b.text)}${ft}${time}<a class="inbtn" href="${esc(b.url)}" target="_blank" rel="noopener" style="text-decoration:none">${ICO.ext}${esc(b.label)}</a></div>`;
-      } else if (k === 'document') {
-        html = `<div class="bub"><a class="doc" href="${esc(b.url)}" target="_blank" rel="noopener"><span class="ico">PDF</span><span style="min-width:0"><b>${esc(b.filename || 'file.pdf')}</b><span>PDF · ${lang === 'en' ? 'Invoice' : 'فاتورة'}</span></span></a>${b.caption ? bubbleText(b.caption) : ''}${time}</div>`;
-      } else if (k === 'template') {
-        html = `<div class="bub">${bubbleText(m.preview || '')}${time}</div>`;
-      } else {
-        html = `<div class="bub">${bubbleText(b.text || m.preview || '')}${time}</div>`;
-      }
+      if (k === 'buttons') html = `<div class="bub">${hd}${bubbleText(b.text)}${ft}${time}</div><div class="btns">${(b.buttons || []).map((x) => `<button type="button" data-id="${esc(x.id)}" data-title="${esc(x.title)}">${ICO.reply}${esc(x.title)}</button>`).join('')}</div>`;
+      else if (k === 'list') html = `<div class="bub">${hd}${bubbleText(b.text)}${ft}${time}<button class="inbtn" type="button" data-list>${ICO.list}${esc(b.button || 'القائمة')}</button></div>`;
+      else if (k === 'location_request') html = `<div class="bub">${bubbleText(b.text)}${time}<button class="inbtn" type="button" data-loc>${ICO.pin}${lang === 'en' ? 'Send location' : 'إرسال الموقع'}</button></div>`;
+      else if (k === 'cta') html = `<div class="bub">${hd}${bubbleText(b.text)}${ft}${time}<a class="inbtn" href="${esc(b.url)}" target="_blank" rel="noopener">${ICO.ext}${esc(b.label)}</a></div>`;
+      else if (k === 'document') html = `<div class="bub"><a class="doc" href="${esc(b.url)}" target="_blank" rel="noopener"><span class="ico">PDF</span><span style="min-width:0"><b>${esc(b.filename || 'file.pdf')}</b><span>PDF · ${lang === 'en' ? 'Invoice' : 'فاتورة'}</span></span></a>${b.caption ? bubbleText(b.caption) : ''}${time}</div>`;
+      else html = `<div class="bub">${bubbleText(b.text || m.preview || '')}${time}</div>`;
     }
     wrap.innerHTML = html;
     if (m.direction === 'out') {
@@ -291,9 +329,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   function typing() { if (!$('typing')) { const t = document.createElement('div'); t.className = 'typing'; t.id = 'typing'; t.innerHTML = '<i></i><i></i><i></i>'; chat.appendChild(t); chat.scrollTop = chat.scrollHeight; } $('hSub').textContent = lang === 'en' ? 'typing…' : 'يكتب…'; }
   function removeTyping() { const t = $('typing'); if (t) t.remove(); $('hSub').textContent = lang === 'en' ? 'Business account' : 'حساب تجاري'; }
   function showPaused(on) {
-    paused = on;
     const el = $('pausedNote');
-    if (on && !el) { const d = document.createElement('div'); d.className = 'paused'; d.id = 'pausedNote'; d.textContent = lang === 'en' ? 'The team will reply to you here' : 'فريق المحل بيرد عليك هنا'; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; }
+    if (on && !el) { const d = document.createElement('div'); d.className = 'paused'; d.id = 'pausedNote'; d.textContent = lang === 'en' ? 'The team will reply to you here' : 'وصلت رسالتك لصاحب المحل، وبيرد عليك هنا'; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; }
     if (!on && el) el.remove();
   }
 
@@ -317,32 +354,29 @@ button{font:inherit;color:inherit;cursor:pointer}
     } finally { busy = false; }
   }
 
-  // ───── القائمة والخريطة ─────
+  // ───── الورقة السفلية ─────
   function openSheet(title, html) { $('sheetT').textContent = title; $('sheetB').innerHTML = html; $('sheet').classList.add('on'); $('sheetBg').classList.add('on'); }
   function closeSheet() { $('sheet').classList.remove('on'); $('sheetBg').classList.remove('on'); }
   $('sheetX').onclick = closeSheet; $('sheetBg').onclick = closeSheet;
   function openList(b) {
     const html = (b.sections || []).map((s) => `${s.title ? `<div class="sec">${esc(s.title)}</div>` : ''}${(s.rows || []).map((r) => `<button type="button" class="opt" data-id="${esc(r.id)}" data-title="${esc(r.title)}"><span class="t"><b>${esc(r.title)}</b>${r.desc ? `<span>${esc(r.desc)}</span>` : ''}</span><span class="r"></span></button>`).join('')}`).join('');
     openSheet(b.button || '', html);
-    $('sheetB').querySelectorAll('.opt').forEach((el) => el.addEventListener('click', () => {
-      el.classList.add('on');
-      setTimeout(() => sendMsg({ type: 'reply', id: el.dataset.id, title: el.dataset.title }), 220);
-    }));
+    $('sheetB').querySelectorAll('.opt').forEach((el) => el.addEventListener('click', () => { el.classList.add('on'); setTimeout(() => sendMsg({ type: 'reply', id: el.dataset.id, title: el.dataset.title }), 220); }));
   }
   let map = null, marker = null, picked = null;
   function openMap() {
     const c0 = cities[0] || { lat: 24.7136, lng: 46.6753, name: '' };
-    const chips = cities.map((c, i) => `<button type="button" data-c="${i}">${esc(lang === 'en' ? (c.name_en || c.name) : 'وسط ' + c.name)}</button>`).join('');
-    openSheet(lang === 'en' ? 'Send location' : 'إرسال الموقع', `<div id="map"></div><div class="mapfoot"><div class="chips">${chips}</div><button type="button" class="go" id="sendLoc">${ICO.send}${lang === 'en' ? 'Send this location' : 'أرسل هذا الموقع'}</button></div>`);
+    const chips = cities.map((c, i) => `<button type="button" data-c="${i}">${esc(lang === 'en' ? (c.name_en || c.name) : c.name)}</button>`).join('');
+    openSheet(lang === 'en' ? 'Send location' : 'إرسال الموقع', `<div id="map"></div><div class="mapfoot"><div class="mchips">${chips}</div><button type="button" class="go" id="sendLoc">${ICO.send}${lang === 'en' ? 'Send this location' : 'أرسل هذا الموقع'}</button></div>`);
     picked = { lat: c0.lat + 0.004, lng: c0.lng + 0.003 };
     if (window.L) {
-      map = L.map('map', { zoomControl: false, attributionControl: true }).setView([picked.lat, picked.lng], 13);
+      map = L.map('map', { zoomControl: false }).setView([picked.lat, picked.lng], 13);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
       marker = L.marker([picked.lat, picked.lng], { draggable: true }).addTo(map);
       marker.on('dragend', () => { const p = marker.getLatLng(); picked = { lat: p.lat, lng: p.lng }; });
       map.on('click', (e) => { picked = { lat: e.latlng.lat, lng: e.latlng.lng }; marker.setLatLng(e.latlng); });
       setTimeout(() => map.invalidateSize(), 250);
-    } else { $('map').innerHTML = '<div style="display:grid;place-items:center;height:100%;color:#54656f">اختر من المدن تحت</div>'; }
+    }
     $('sheetB').querySelectorAll('[data-c]').forEach((el) => el.addEventListener('click', () => {
       const c = cities[+el.dataset.c]; picked = { lat: c.lat + 0.003, lng: c.lng + 0.002 };
       if (map) { map.setView([picked.lat, picked.lng], 14); marker.setLatLng([picked.lat, picked.lng]); }
@@ -350,56 +384,121 @@ button{font:inherit;color:inherit;cursor:pointer}
     $('sendLoc').onclick = () => sendMsg({ type: 'location', lat: +picked.lat.toFixed(6), lng: +picked.lng.toFixed(6), name: lang === 'en' ? 'Location' : 'الموقع' });
   }
 
-  // ───── التحديث الدوري (التذكير، في الطريق، الفاتورة، وصلنا دفعك) ─────
+  // ───── التخصيص: اسم نشاطك، المكان، الدفع، أسلوب الردود، الترحيب ─────
+  function curVal(k) { return cfg[k] || (info && info.defaults && info.defaults[k]) || ''; }
+  function paintTags() {
+    $('curTags').innerHTML = biz ? [cfg.name || biz.name, PLACE[curVal('place')], PAY[curVal('pay')], 'أسلوب ' + TONE[curVal('tone')]].filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('') : '';
+  }
+  function openCfg() {
+    const seg = (key, map) => `<div class="seg" data-seg="${key}">${Object.entries(map).map(([v, l]) => `<button type="button" data-v="${v}" class="${curVal(key) === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+    openSheet('خصّص التجربة', `<div class="cfg">
+      <label>اسم نشاطك<input id="cName" maxlength="40" placeholder="${esc(biz ? biz.name : '')}" value="${esc(cfg.name || '')}"></label>
+      <label>مكان الخدمة${seg('place', PLACE)}</label>
+      <label>الدفع${seg('pay', PAY)}</label>
+      <label>أسلوب الردود${seg('tone', TONE)}</label>
+      <label>رسالة الترحيب (اختياري)<textarea id="cWelcome" maxlength="300" placeholder="مثال: يا هلا فيك في ${esc(cfg.name || (biz ? biz.name : ''))} 👋 كيف نخدمك؟">${esc(cfg.welcome || '')}</textarea></label>
+      <button type="button" class="go" id="cGo">${ICO.reset}طبّق وابدأ محادثة جديدة</button></div>`);
+    const pick = {};
+    $('sheetB').querySelectorAll('[data-seg]').forEach((s) => s.querySelectorAll('button').forEach((b) => b.onclick = () => { pick[s.dataset.seg] = b.dataset.v; s.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); }));
+    $('cGo').onclick = async () => {
+      const next = { name: $('cName').value.trim(), place: pick.place || curVal('place'), pay: pick.pay || curVal('pay'), tone: pick.tone || curVal('tone'), welcome: $('cWelcome').value.trim() };
+      try { const j = await call('POST', '/config', { b: B, k: K, from, cfg: next }); cfg = j.cfg || {}; } catch (e) { /* */ }
+      closeSheet();
+      await loadHistory(true);
+      paintTags(); paintHead();
+      setTimeout(() => sendMsg({ type: 'text', text: lang === 'en' ? 'Hello' : 'السلام عليكم' }), 300);
+    };
+  }
+
+  // ───── اقتراحات «جرّب تسأل» ─────
+  function paintChips() {
+    const base = lang === 'en'
+      ? ['How much?', 'Where are you?', 'Opening hours?', 'How do I pay?', 'Book for tomorrow', 'My orders']
+      : ['كم السعر؟', 'وين موقعكم؟', 'متى تفتحون؟', 'كيف الدفع؟', 'ابي احجز بكرة', 'طلباتي'];
+    const extra = (info && info.faq) || [];
+    const list = [...extra, ...base, lang === 'en' ? '🎤 Voice note' : '🎤 رسالة صوتية', lang === 'en' ? 'I have a complaint' : 'عندي شكوى'];
+    $('chips').innerHTML = `<em>${lang === 'en' ? 'Try:' : 'جرّب:'}</em>` + list.map((t) => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join('');
+    $('chips').querySelectorAll('[data-q]').forEach((b) => b.onclick = () => {
+      const t = b.dataset.q;
+      if (t.startsWith('🎤')) sendMsg({ type: 'other', label: lang === 'en' ? '[voice note]' : '[رسالة صوتية]' });
+      else sendMsg({ type: 'text', text: t });
+    });
+  }
+
+  // ───── التحديث الدوري ─────
   async function poll() {
-    if (busy || document.visibilityState !== 'visible') return;
+    if (busy || document.visibilityState !== 'visible' || $('chatView').hidden) return;
     try {
       const j = await call('GET', '', { b: B, k: K, from, after: lastId });
       for (const m of j.messages || []) { if (m.direction === 'out') addMsg(m); else lastId = Math.max(lastId, m.id); }
-      if (j.lang) lang = j.lang;
+      if (j.lang && j.lang !== lang) { lang = j.lang; paintChips(); }
       showPaused(!!j.paused);
     } catch (e) { /* */ }
   }
-
-  async function history() {
-    chat.innerHTML = `<div class="daychip">${lang === 'en' ? 'Today' : 'اليوم'}</div><div class="e2e">🔒 ${lang === 'en' ? 'Simulator: nothing is sent to any real number' : 'محاكي: ما ينرسل شي لأي رقم حقيقي'}</div>`;
+  async function loadHistory(clear) {
+    chat.innerHTML = `<div class="daychip">${lang === 'en' ? 'Today' : 'اليوم'}</div><div class="e2e">🔒 ${lang === 'en' ? 'Simulator: nothing is sent to any real number' : 'تجربة: ما ينرسل شي لأي رقم حقيقي'}</div>`;
     lastId = 0; lastDir = '';
+    if (clear) return [];
     const j = await call('GET', '', { b: B, k: K, from, after: 0 });
     if (j.lang) lang = j.lang;
+    cfg = j.cfg || {};
     for (const m of j.messages || []) addMsg(m);
     showPaused(!!j.paused);
+    return j.messages || [];
+  }
+  function paintHead() {
+    const name = cfg.name || (biz && biz.name) || '';
+    $('hName').textContent = name; $('hAv').innerHTML = avatarHtml(cfg.name ? null : biz, demo);
+    document.title = `${name} · جرّبه بنفسك`;
   }
 
+  async function openChat(slug, key, d) {
+    B = slug; K = key; demo = d || null;
+    $('home').hidden = true; $('chatView').hidden = false; $('chatView').style.display = 'flex';
+    chat.innerHTML = '';
+    try { info = await call('GET', '/info', { b: B, k: K }); } catch (e) { return fail('الرابط غير صالح', 'اطلب رابط التجربة من جديد'); }
+    biz = info.business; cities = info.cities || [];
+    from = store('ihj_sim_' + B) || ''; if (!/^sim-[a-z0-9]{6,24}$/.test(from)) { from = newFrom(); store('ihj_sim_' + B, from); }
+    const msgs = await loadHistory();
+    paintHead(); paintChips(); paintTags();
+    $('cfgBtn').hidden = false; $('newChat').hidden = false;
+    clearInterval(pollT); pollT = setInterval(poll, 2500);
+    if (!msgs.length) setTimeout(() => sendMsg({ type: 'text', text: 'السلام عليكم' }), 450);
+  }
   async function reset() {
-    from = newFrom(); store('ihj_sim_' + B, from);
-    lastId = 0; lastDir = ''; paused = false;
-    await history();
+    from = newFrom(); store('ihj_sim_' + B, from); cfg = {};
+    await loadHistory(true); paintHead(); paintTags();
+    setTimeout(() => sendMsg({ type: 'text', text: lang === 'en' ? 'Hello' : 'السلام عليكم' }), 300);
+  }
+  function showHome() {
+    clearInterval(pollT); closeSheet();
+    $('chatView').hidden = true; $('chatView').style.display = 'none'; $('home').hidden = false;
+    $('cfgBtn').hidden = true; $('newChat').hidden = true; $('curTags').innerHTML = '';
+    document.title = 'جرّبه بنفسك · احجزلي';
+  }
+  function renderHome() {
+    $('homeList').innerHTML = demos.map((d, i) => `<button type="button" class="chatrow" data-i="${i}"><span class="av" style="background:${esc(d.color)}22">${esc(d.icon)}</span><span class="t"><b>${esc(d.name)}<small>${esc(d.label)}</small></b><span>${esc(d.desc)}</span><span class="tags">${d.tags.map((x) => `<i>${esc(x)}</i>`).join('')}</span></span></button>`).join('');
+    $('homeList').querySelectorAll('[data-i]').forEach((el) => el.onclick = () => { const d = demos[+el.dataset.i]; window.history.replaceState(null, '', `?demo=1&open=${d.slug}`); openChat(d.slug, d.k, d); });
   }
 
   $('bar').addEventListener('submit', (e) => { e.preventDefault(); const t = $('inp').value.trim(); if (!t) return; $('inp').value = ''; $('attach').hidden = true; sendMsg({ type: 'text', text: t }); });
   $('attBtn').onclick = () => { $('attach').hidden = !$('attach').hidden; };
   $('attLoc').onclick = () => { $('attach').hidden = true; openMap(); };
   $('attImg').onclick = () => { $('attach').hidden = true; sendMsg({ type: 'other', label: lang === 'en' ? '[photo]' : '[صورة]' }); };
-  $('resetBtn').onclick = reset; $('newChat').onclick = reset; $('backBtn').onclick = reset;
-  $('langBtn').onclick = () => sendMsg({ type: 'text', text: lang === 'en' ? 'عربي' : 'English' }).then(() => { $('langBtn').textContent = lang === 'en' ? 'عربي' : 'English'; });
+  $('resetBtn').onclick = reset;
+  $('gearBtn').onclick = openCfg;
+  $('cfgBtn').innerHTML = ICO.gear + 'خصّص التجربة'; $('cfgBtn').onclick = openCfg;
+  $('newChat').innerHTML = ICO.reset + 'محادثة جديدة'; $('newChat').onclick = reset;
+  $('backBtn').onclick = () => { if (SINGLE) reset(); else { window.history.replaceState(null, '', '?demo=1'); showHome(); } };
 
   (async () => {
-    if (!B || !K) return fail('الرابط ناقص', 'افتح رابط المحاكي من لوحة الإدارة');
-    try {
-      const j = await call('GET', '/info', { b: B, k: K });
-      biz = j.business; cities = j.cities || [];
-      document.title = `${biz.name} · محاكي واتساب`;
-      $('hName').textContent = biz.name; $('aName').textContent = biz.name;
-      $('hAv').innerHTML = avatarHtml(); $('aAv').innerHTML = avatarHtml();
-      $('aSub').textContent = 'محاكي واتساب';
-      $('newChat').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg>محادثة جديدة';
-      from = store('ihj_sim_' + B) || ''; if (!/^sim-[a-z0-9]{6,24}$/.test(from)) { from = newFrom(); store('ihj_sim_' + B, from); }
-      await history();
-      pollT = setInterval(poll, 2500);
-      if (q.get('auto')) setTimeout(() => sendMsg({ type: 'text', text: q.get('auto') }), 400);
-    } catch (e) { fail('الرابط غير صالح', 'اطلب رابط المحاكي من لوحة الإدارة'); }
+    if (SINGLE) return openChat(B, K, null);
+    try { demos = await (await fetch('assets/demos.json', { cache: 'no-store' })).json(); } catch (e) { return fail('ما قدرنا نفتح التجربة', 'حدّث الصفحة'); }
+    renderHome();
+    const want = demos.find((d) => d.slug === q.get('open'));
+    if (want) openChat(want.slug, want.k, want); else showHome();
   })();
-  window.__sim = { sendMsg, reset, get from() { return from; }, get lastId() { return lastId; } };
+  window.__sim = { sendMsg, reset, openChat, get from() { return from; }, get lastId() { return lastId; }, get demos() { return demos; } };
 })();
 </script>
 </body>

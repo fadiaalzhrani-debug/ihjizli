@@ -21,7 +21,7 @@ async function t(name, fn) {
   catch (e) { results.push({ name, ok: false, err: e.message }); console.log(`✗ ${name}\n    ${e.message}`); }
 }
 const q1 = (s) => sql(s)[0] || null;
-const BIZ = Object.fromEntries(sql(`select slug, id, sim_key from businesses where slug in ('mahalak','test-b')`).map((r) => [r.slug, r]));
+const BIZ = Object.fromEntries(sql(`select slug, id, sim_key, client_key from businesses where is_demo`).map((r) => [r.slug, r]));
 const M = BIZ.mahalak, TB = BIZ['test-b'];
 const rid = () => crypto.randomBytes(5).toString('hex');
 
@@ -186,7 +186,7 @@ await t('الشكوى تتحول للمحل ويوقف البوت عن العم�
 await t('رسالة ما يفهمها البوت تتحول للمحل', async () => {
   const c = simCustomer(M);
   await c.text('السلام عليكم');
-  const r = await c.text('عندكم قطع غيار لماركة معينة؟');
+  const r = await c.text('وش رايك بالجو اليوم؟');
   ok(/وصلت رسالتك لفريق/.test(last(r.outs).preview) && r.paused, 'unknown handoff');
 });
 await t('العميل الإنجليزي يوصله كل شي بالإنجليزي', async () => {
@@ -396,6 +396,135 @@ await t('ميسر: مفتاح غير صحيح يُرفض بدون أي عملي�
   ok(!r.ok && r.error === 'sk_rejected', JSON.stringify(r));
   const r2 = await api(OT.jwt, 'biz/payment-keys', { business_id: M.id, sk: 'sk_test_' + 'x'.repeat(24) });
   ok(!r2.ok && r2.error === 'forbidden', 'other owner blocked');
+});
+
+// ── لكل المجالات: في المحل، أونلاين، الدفع قبل الحجز، الأسئلة الخاصة، أسلوب الردود، تخصيص المحاكي ──
+const SAL = BIZ.salon, CLI = BIZ.clinic, CON = BIZ.consult, RES = BIZ.resto;
+await t('تصفير تجارب المجالات', async () => {
+  for (const b of [SAL, CLI, CON, RES]) { const r = await api(A.jwt, 'admin/demo/reset', { business_id: b.id }); ok(r.ok, b.slug); }
+});
+let salOrder, salTok;
+await t('صالون (في المحل + دفع قبل): الموعد ينحجز برابط دفع، والدفع يأكده', async () => {
+  const c = simCustomer(SAL);
+  await c.text('السلام عليكم');
+  let r = await c.reply('m:book');
+  const svc = rowsOf(last(r.outs)); ok(svc.length === 3, 'services');
+  r = await c.reply(svc[0].id, svc[0].title);
+  ok(last(r.outs).kind === 'list' && rowsOf(last(r.outs))[0].id.startsWith('day:'), 'shop mode skips location (1 branch)');
+  const d = rowsOf(last(r.outs))[1]; r = await c.reply(d.id, d.title);
+  const sl = slotRows(last(r.outs))[0]; r = await c.reply(sl.id, sl.title);
+  const cta = last(r.outs);
+  ok(cta.kind === 'cta' && /ادفع 60 ريال لتأكيد حجزك/.test(cta.preview) && /فرع الخبر/.test(cta.preview), 'pay to confirm: ' + cta.preview);
+  salTok = cta.body.url.split('/pay/go/')[1];
+  salOrder = q1(`select * from orders where customer_id='${customerId(SAL, c.from)}' order by created_at desc limit 1`);
+  ok(salOrder.status === 'pending_payment' && salOrder.hold_until, 'pending with hold');
+  // الموعد محجوز: نفس الوقت يقل منه مكان (سعة 3)
+  const pay = await (await fetch(`${FN}/pay/demo`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: salTok, method: 'mada' }) })).json();
+  ok(pay.ok, 'demo pay');
+  const o = q1(`select status, prepaid, paid_at from orders where id='${salOrder.id}'`);
+  ok(o.status === 'confirmed' && o.prepaid && o.paid_at, 'confirmed after pay: ' + JSON.stringify(o));
+  const msgs = (await c.poll()).filter((m) => m.direction === 'out');
+  ok(msgs.some((m) => /وصلنا دفعك وتأكد حجزك/.test(m.preview) && /رقم الطلب: \d+/.test(m.preview)), 'prepaid confirmation');
+});
+await t('مهلة الدفع: الحجز اللي ما انطفع ينفك ويوصل العميل خبر', async () => {
+  const c = simCustomer(SAL);
+  await c.text('هلا');
+  let r = await c.reply('m:book');
+  r = await c.reply(rowsOf(last(r.outs))[1].id);
+  const d = rowsOf(last(r.outs))[2]; r = await c.reply(d.id, d.title);
+  const sl = slotRows(last(r.outs))[1]; r = await c.reply(sl.id, sl.title);
+  ok(last(r.outs).kind === 'cta', 'cta');
+  const o = q1(`select id from orders where customer_id='${customerId(SAL, c.from)}' order by created_at desc limit 1`);
+  sql(`update orders set hold_until = now() - interval '1 minute' where id='${o.id}'`);
+  const cr = await cron();
+  ok(cr.expired >= 1, 'expired ' + JSON.stringify(cr));
+  const x = q1(`select status, cancel_reason from orders where id='${o.id}'`);
+  ok(x.status === 'cancelled' && x.cancel_reason === 'unpaid', 'cancelled unpaid');
+  ok(q1(`select count(*)::int n from invoices where order_id='${o.id}' and status='void'`).n === 1, 'invoice void');
+  const msgs = (await c.poll()).filter((m) => m.direction === 'out');
+  ok(msgs.some((m) => /انتهت مهلة الدفع/.test(m.preview)), 'expiry message');
+});
+await t('عيادة (فرعين + رسمي): يجاوب أي سؤال ويختار الفرع', async () => {
+  const c = simCustomer(CLI);
+  let r = await c.text('السلام عليكم');
+  ok(/مرحبًا بكم في عيادتك/.test(last(r.outs).preview), 'formal welcome');
+  r = await c.text('تقبلون التأمين؟');
+  ok(/شركات التأمين/.test(last(r.outs).preview), 'faq insurance');
+  r = await c.text('وين موقعكم؟');
+  ok(/فرع الملقا/.test(last(r.outs).preview) && /maps\.google\.com/.test(last(r.outs).preview), 'branches with maps');
+  r = await c.text('كيف الدفع؟');
+  ok(/نقدًا أو بالبطاقة/.test(last(r.outs).preview), 'payment info');
+  r = await c.text('متى تفتحون؟');
+  ok(/الأحد/.test(last(r.outs).preview), 'hours');
+  r = await c.text('كم السعر؟');
+  ok(/كشف عام: 150 ريال/.test(last(r.outs).preview), 'prices');
+  r = await c.reply('m:book');
+  r = await c.reply(rowsOf(last(r.outs))[0].id);
+  const br = rowsOf(last(r.outs));
+  ok(br.length === 2 && br[0].id.startsWith('br:'), 'branch list');
+  r = await c.reply(br[1].id, br[1].title);
+  const d = rowsOf(last(r.outs))[0]; r = await c.reply(d.id, d.title);
+  const sl = slotRows(last(r.outs))[0]; r = await c.reply(sl.id, sl.title);
+  ok(/تم تأكيد طلبكم/.test(last(r.outs).preview) && /فرع الحمراء/.test(last(r.outs).preview), 'confirmed at branch');
+});
+await t('استشارة أونلاين: بدون مكان، ورابط الجلسة في التأكيد', async () => {
+  const c = simCustomer(CON);
+  await c.text('هلا');
+  let r = await c.reply('m:book');
+  r = await c.reply(rowsOf(last(r.outs))[0].id);
+  ok(rowsOf(last(r.outs))[0].id.startsWith('day:'), 'online goes straight to days');
+  const d = rowsOf(last(r.outs))[1]; r = await c.reply(d.id, d.title);
+  const sl = slotRows(last(r.outs))[0]; r = await c.reply(sl.id, sl.title);
+  ok(last(r.outs).kind === 'cta' && /قوقل ميت/.test(last(r.outs).preview), 'online prepay');
+});
+await t('مطعم: حجز طاولة بدون دفع وبدون سطر سعر', async () => {
+  const c = simCustomer(RES);
+  await c.text('هلا');
+  let r = await c.text('وين المنيو؟');
+  ok(/المنيو/.test(last(r.outs).preview), 'menu faq');
+  r = await c.reply('m:book');
+  r = await c.reply(rowsOf(last(r.outs))[1].id);
+  const d = rowsOf(last(r.outs))[1]; r = await c.reply(d.id, d.title);
+  const sl = slotRows(last(r.outs))[3]; r = await c.reply(sl.id, sl.title);
+  const conf = last(r.outs).preview;
+  ok(/تم تأكيد طلبك/.test(conf) && !/السعر يتحدد/.test(conf) && /فرع جدة/.test(conf), 'table confirmed: ' + conf);
+});
+await t('تخصيص المحاكي: اسم نشاطك وأسلوب الردود والمكان والدفع', async () => {
+  const c = simCustomer(M);
+  const cfg = await (await fetch(`${FN}/wa/sim/config`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ b: M.slug, k: M.sim_key, from: c.from, cfg: { name: 'مغسلة النور', place: 'online', pay: 'before', tone: 'short', welcome: 'يا هلا في مغسلة النور 🚗' } }) })).json();
+  ok(cfg.ok && cfg.cfg.tone === 'short', 'config saved');
+  let r = await c.text('السلام عليكم');
+  ok(/يا هلا في مغسلة النور/.test(last(r.outs).preview), 'custom welcome');
+  r = await c.reply('m:book');
+  ok(rowsOf(last(r.outs))[0]?.id.startsWith('day:'), 'online override');
+  const d = rowsOf(last(r.outs))[1]; r = await c.reply(d.id, d.title);
+  const sl = slotRows(last(r.outs))[0]; r = await c.reply(sl.id, sl.title);
+  ok(/ادفع 50 ريال لتأكيد حجزك/.test(last(r.outs).preview), 'prepay override with deposit');
+  ok(q1(`select name from businesses where id='${M.id}'`).name === 'محلك', 'real business untouched');
+});
+await t('صفحات العميل: قبول الاتفاقية ونموذج البيانات وتطبيقه على المنشأة بضغطة', async () => {
+  const k = TB.client_key;
+  const info = await (await fetch(`${FN}/api/client/info`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k }) })).json();
+  ok(info.ok && info.business.name === 'منشأة اختبار' && Number(info.fees.setup_fee) === 3500, 'client info');
+  const bad = await (await fetch(`${FN}/api/client/agree`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, name: 'ص', phone: '0500000000', accept: true }) })).json();
+  ok(!bad.ok, 'name validated');
+  const ag = await (await fetch(`${FN}/api/client/agree`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, name: 'صاحب المنشأة', phone: '0500000000', accept: true }) })).json();
+  ok(ag.ok && ag.agreed, 'agreed');
+  const data = { name: 'منشأة اختبار', activity: 'اختبار', place_mode: 'visit', pay_timing: 'after', services: [{ name: 'غسيل', price: 55 }, { name: 'تلميع', price: 120 }, { name: 'تعقيم', price: 70 }],
+    cities: [{ name: 'الرياض', lat: 24.7136, lng: 46.6753, radius_km: 40 }], hours: [0, 1, 2, 3, 4, 6].map((w) => ({ weekday: w, open: '09:00', close: '21:00' })), staff: [{ name: 'فني الفحص', phone: '0500000003', cities: ['الرياض'] }] };
+  const it = await (await fetch(`${FN}/api/client/intake`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, data }) })).json();
+  ok(it.ok && it.saved, 'intake ' + JSON.stringify(it));
+  const ap = await rest(A.jwt, 'rpc/ihj_apply_intake', { method: 'POST', body: JSON.stringify({ p_business: TB.id }) });
+  ok(ap.status === 200, 'apply ' + JSON.stringify(ap.json));
+  ok(Number(q1(`select price from services where business_id='${TB.id}' and name='غسيل'`).price) === 55, 'service price updated');
+  ok(q1(`select count(*)::int n from services where business_id='${TB.id}' and active`).n === 3, 'services count');
+  ok(q1(`select count(*)::int n from staff where business_id='${TB.id}' and name='فني الفحص'`).n === 1, 'staff added');
+  const wrong = await (await fetch(`${FN}/api/client/info`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k: '0'.repeat(24) }) })).json();
+  ok(!wrong.ok, 'wrong key');
+  // رجّع منشأة الاختبار مثل ما كانت
+  sql(`update services set active = (name in ('غسيل','تلميع')), price = case name when 'غسيل' then 50 when 'تلميع' then 120 else price end where business_id='${TB.id}';
+       delete from staff where business_id='${TB.id}' and name='فني الفحص'; delete from client_docs where business_id='${TB.id}';
+       delete from hours where business_id='${TB.id}'; insert into hours (business_id, weekday, open_time, close_time) select '${TB.id}', d, case when d = 5 then time '16:00' else time '09:00' end, time '21:00' from generate_series(0,6) d;`);
 });
 
 // ── الموقع ولوحتي ──

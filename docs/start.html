@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>بيانات نشاطك · احجزلي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/ihj.css">
+<style>
+/* نموذج بيانات النشاط: العميل يعبيه مرة وحدة، وينطبق على منشأته من لوحة احجزلي بضغطة */
+body{padding:22px 16px 60px}
+.doc{max-width:760px;margin:0 auto;display:grid;gap:14px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px}
+.sec h2{font-size:18px;display:flex;gap:10px;align-items:center}
+.sec h2 i{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}
+.line3{display:grid;grid-template-columns:1fr 110px 110px 36px;gap:8px;align-items:center}
+.line2{display:grid;grid-template-columns:1fr 1.3fr 36px;gap:8px;align-items:center}
+.daysg{display:grid;gap:6px}
+.dayr{display:grid;grid-template-columns:100px auto 1fr;gap:10px;align-items:center}
+.dayr input[type=time]{width:auto;padding:6px 8px}
+.chipz{display:flex;flex-wrap:wrap;gap:6px}
+.chipz label{display:inline-flex;gap:6px;align-items:center;border:1.5px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13.5px;cursor:pointer;background:var(--card)}
+.chipz label:has(input:checked){background:var(--soft);border-color:var(--accent);color:var(--accent)}
+.chipz input{display:none}
+.logo{display:flex;gap:12px;align-items:center}
+.logo .pv{width:64px;height:64px;border-radius:16px;background:var(--soft2);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px}
+.logo .pv img{width:100%;height:100%;object-fit:contain;background:#fff}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg3 label{border:1.5px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:2px;cursor:pointer;text-align:center}
+.seg3 label b{font-family:var(--display)} .seg3 label span{font-size:12px;color:var(--muted)}
+.seg3 label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card))}
+.seg3 input{display:none}
+.okbox{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:18px;display:grid;gap:6px}
+@media (max-width:600px){ .line3{grid-template-columns:1fr 80px 36px} .line3 .dur{display:none} .line2{grid-template-columns:1fr 36px} .line2 .mp{grid-column:1/2} .seg3{grid-template-columns:1fr} .dayr{grid-template-columns:84px auto 1fr} }
+</style>
+</head>
+<body>
+<main class="doc" id="doc"><div class="card" style="display:grid;place-items:center;padding:40px"><div class="spin"></div></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/ihj.js"></script>
+<script>
+(async function () {
+  const I = window.IHJ, { $, esc, icon } = I;
+  const k = new URLSearchParams(location.search).get('k') || '';
+  const post = async (path, body) => { const r = await fetch(I.FN + '/api/client/' + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, ...body }) }); const j = await r.json().catch(() => ({})); if (!j.ok) throw Object.assign(new Error(j.error || 'err'), { code: j.error }); return j; };
+  let d;
+  try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط النموذج من احجزلي</p></div>'; return; }
+  const b = d.business, cur = d.current || {}, prev = d.intake || {};
+  const P = [['الرياض', 24.7136, 46.6753, 40], ['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['الطائف', 21.2703, 40.4158, 25], ['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['حائل', 27.5114, 41.7208, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20], ['ينبع', 24.0895, 38.0618, 20], ['الخرج', 24.1556, 47.312, 20], ['حفر الباطن', 28.4328, 45.9708, 20]];
+  const WD = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  const val = (a, bb) => (a !== undefined && a !== null && a !== '') ? a : bb;
+  const st = {
+    place: val(prev.place_mode, cur.place_mode || 'visit'), pay: val(prev.pay_timing, cur.pay_timing || 'after'),
+    services: (prev.services && prev.services.length ? prev.services : (cur.services || [])).map((s) => ({ name: s.name, price: s.price ?? '', duration_min: s.duration_min ?? '' })),
+    cities: (prev.cities && prev.cities.length ? prev.cities : (cur.cities || [])).map((c) => ({ ...c })),
+    hours: prev.hours && prev.hours.length ? prev.hours : (cur.hours || []),
+    staff: (prev.staff && prev.staff.length ? prev.staff : (cur.staff || [])).map((s) => ({ ...s, cities: s.cities || [] })),
+    logo: '', logo_url: prev.logo_url || b.logo_url || '',
+  };
+  if (!st.services.length) st.services.push({ name: '', price: '', duration_min: '' });
+  const branches = () => st.cities.filter((c) => c.branch || st.place === 'shop');
+  document.title = `بيانات ${b.name} · احجزلي`;
+  $('doc').innerHTML = `
+    <div><h1>بيانات ${esc(b.name)}</h1><p class="muted">عبّها مرة وحدة، ونجهّز منها الرد الآلي والمواعيد. تقدر ترجع تعدّلها وترسلها مرة ثانية.</p></div>
+    <div class="sec"><h2><i>1</i>النشاط</h2><div class="g2">
+      <label class="f"><span>اسم النشاط</span><input id="name" maxlength="80" value="${esc(val(prev.name, b.name))}"></label>
+      <label class="f"><span>الاسم بالإنجليزي (اختياري)</span><input id="name_en" maxlength="80" dir="ltr" value="${esc(val(prev.name_en, b.name_en || ''))}"></label>
+      <label class="f"><span>المجال</span><input id="activity" maxlength="60" value="${esc(val(prev.activity, b.activity || ''))}"></label>
+      <label class="f"><span>رقم واتساب النشاط</span><input id="wa" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.wa_number, b.wa_number ? I.phone(b.wa_number) : ''))}"></label>
+      <label class="f"><span>اسم المالك</span><input id="owner" maxlength="60" value="${esc(val(prev.owner_name, b.owner_name || ''))}"></label>
+      <label class="f"><span>جوال المالك</span><input id="ownerp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.owner_phone, b.owner_phone ? I.phone(b.owner_phone) : ''))}"></label>
+      <label class="f"><span>السجل التجاري</span><input id="cr" dir="ltr" maxlength="20" value="${esc(val(prev.cr_number, b.cr_number || ''))}"></label>
+      <label class="f"><span>الرقم الضريبي (لو مسجل)</span><input id="vat" dir="ltr" maxlength="20" value="${esc(val(prev.vat_number, b.vat_number || ''))}"></label>
+      <label class="f" style="grid-column:1/-1"><span>العنوان في الفاتورة</span><input id="addr" maxlength="120" value="${esc(val(prev.address, b.address || ''))}"></label></div>
+      <div class="logo"><span class="pv" id="pv">${st.logo_url ? `<img src="${esc(st.logo_url)}" alt="">` : 'الشعار'}</span><label class="btn ghost sm">${icon('plus')}ارفع الشعار<input type="file" id="logoF" accept="image/*" hidden></label></div></div>
+    <div class="sec"><h2><i>2</i>وين تقدّم خدمتك؟</h2>
+      <div class="seg3">${[['visit', 'عند العميل', 'تروح لموقعه'], ['shop', 'في محلك', 'العميل يجيك'], ['online', 'أونلاين', 'بدون زيارة']].map(([v, l, s]) => `<label><input type="radio" name="place" value="${v}" ${st.place === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
+      <div id="placeBox"></div></div>
+    <div class="sec"><h2><i>3</i>الخدمات والأسعار</h2><p class="tiny">اترك السعر فاضي لو يتحدد بعد المعاينة. المدة اختيارية.</p><div class="stack s" id="svcs"></div><button class="btn ghost sm" type="button" id="addSvc" style="justify-self:start">${icon('plus')}خدمة</button></div>
+    <div class="sec"><h2><i>4</i>أوقات العمل</h2><div class="daysg" id="days"></div></div>
+    <div class="sec"><h2><i>5</i>الموظفون</h2><p class="tiny">كل موظف يوصله طلبه على الواتساب ويكون له رابط بسيط. تقدر تتركها وتضيفهم بعدين.</p><div class="stack s" id="staff"></div><button class="btn ghost sm" type="button" id="addStf" style="justify-self:start">${icon('plus')}موظف</button></div>
+    <div class="sec"><h2><i>6</i>الدفع</h2>
+      <div class="seg3">${[['before', 'قبل الحجز', 'يدفع ويتأكد'], ['after', 'بعد الخدمة', 'فاتورة ورابط'], ['none', 'في المحل', 'كاش أو شبكة']].map(([v, l, s]) => `<label><input type="radio" name="pay" value="${v}" ${st.pay === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
+      <label class="f"><span>عندك حساب في ميسر؟</span><select id="moy"><option value="">اختر</option><option value="yes" ${prev.has_moyasar === 'yes' ? 'selected' : ''}>نعم</option><option value="no" ${prev.has_moyasar === 'no' ? 'selected' : ''}>لا، ساعدوني أسجل</option><option value="later" ${prev.has_moyasar === 'later' ? 'selected' : ''}>بعدين</option></select></label></div>
+    <div class="sec"><h2><i>7</i>أي شي ثاني؟</h2><textarea id="notes" rows="3" maxlength="1000" placeholder="أسئلة يسألونها عملاؤك كثير وأجوبتها، أو أي ملاحظة">${esc(prev.notes || '')}</textarea></div>
+    <div class="sec" id="sendBox"><button class="btn lg" id="go" type="button">${icon('send')}أرسل البيانات</button><span class="tiny" id="msg" role="status"></span></div>`;
+
+  function paintPlace() {
+    st.place = (document.querySelector('input[name=place]:checked') || {}).value || 'visit';
+    const box = $('placeBox');
+    if (st.place === 'online') { box.innerHTML = '<p class="tiny">ما يحتاج مكان، ورابط الجلسة يوصل العميل قبل موعده.</p>'; return; }
+    if (st.place === 'visit') {
+      const chosen = st.cities.map((c) => c.name);
+      box.innerHTML = `<p class="tiny">المدن اللي تغطيها:</p><div class="chipz">${P.map((c) => `<label><input type="checkbox" data-city="${c[0]}" ${chosen.includes(c[0]) ? 'checked' : ''}>${c[0]}</label>`).join('')}</div>`;
+      box.querySelectorAll('[data-city]').forEach((x) => x.onchange = () => {
+        const p = P.find((c) => c[0] === x.dataset.city);
+        if (x.checked) st.cities.push({ name: p[0], lat: p[1], lng: p[2], radius_km: p[3] }); else st.cities = st.cities.filter((c) => c.name !== p[0]);
+        paintStaff();
+      });
+      return;
+    }
+    if (!st.cities.length) st.cities.push({ name: '', maps: '' });
+    box.innerHTML = `<p class="tiny">الفروع: اسم الفرع ورابط موقعه من قوقل ماب.</p><div class="stack s">${st.cities.map((c, i) => `<div class="line2"><input data-bi="${i}" data-k="name" placeholder="مثل: فرع العليا" maxlength="40" value="${esc(c.name || '')}"><input class="mp" data-bi="${i}" data-k="maps" dir="ltr" placeholder="https://maps.app.goo.gl/…" value="${esc(c.maps || (c.lat ? `https://maps.google.com/?q=${c.lat},${c.lng}` : ''))}"><button class="ib" type="button" data-rb="${i}">${icon('x')}</button></div>`).join('')}</div><button class="btn ghost sm" type="button" id="addBr" style="justify-self:start;margin-top:8px">${icon('plus')}فرع</button>`;
+    box.querySelectorAll('[data-bi]').forEach((x) => x.oninput = () => { const c = st.cities[+x.dataset.bi]; c[x.dataset.k] = x.value; if (x.dataset.k === 'maps') { delete c.lat; delete c.lng; } paintStaffCities(); });
+    box.querySelectorAll('[data-rb]').forEach((x) => x.onclick = () => { st.cities.splice(+x.dataset.rb, 1); paintPlace(); paintStaff(); });
+    $('addBr').onclick = () => { st.cities.push({ name: '', maps: '' }); paintPlace(); };
+  }
+  document.querySelectorAll('input[name=place]').forEach((x) => x.onchange = () => { st.cities = []; paintPlace(); paintStaff(); });
+
+  function paintSvcs() {
+    $('svcs').innerHTML = st.services.map((s, i) => `<div class="line3"><input data-si="${i}" data-k="name" placeholder="اسم الخدمة" maxlength="24" value="${esc(s.name)}"><input data-si="${i}" data-k="price" type="number" min="0" placeholder="السعر" value="${esc(s.price)}"><input class="dur" data-si="${i}" data-k="duration_min" type="number" min="10" placeholder="المدة (د)" value="${esc(s.duration_min)}"><button class="ib" type="button" data-rs="${i}">${icon('x')}</button></div>`).join('');
+    $('svcs').querySelectorAll('[data-si]').forEach((x) => x.oninput = () => { st.services[+x.dataset.si][x.dataset.k] = x.value; });
+    $('svcs').querySelectorAll('[data-rs]').forEach((x) => x.onclick = () => { st.services.splice(+x.dataset.rs, 1); if (!st.services.length) st.services.push({ name: '', price: '', duration_min: '' }); paintSvcs(); });
+  }
+  $('addSvc').onclick = () => { st.services.push({ name: '', price: '', duration_min: '' }); paintSvcs(); };
+
+  const hrs = WD.map((_, i) => { const h = st.hours.find((x) => +x.weekday === i); return { on: !!h || (!st.hours.length && i !== 5), open: h ? String(h.open).slice(0, 5) : '09:00', close: h ? String(h.close).slice(0, 5) : '21:00' }; });
+  $('days').innerHTML = WD.map((n, i) => `<div class="dayr"><b>${n}</b><label class="sw"><input type="checkbox" data-d="${i}" ${hrs[i].on ? 'checked' : ''}><i></i></label><span class="row"><input type="time" data-o="${i}" value="${hrs[i].open}"> إلى <input type="time" data-c="${i}" value="${hrs[i].close}"></span></div>`).join('');
+  $('days').querySelectorAll('[data-d]').forEach((x) => x.onchange = () => { hrs[+x.dataset.d].on = x.checked; });
+  $('days').querySelectorAll('[data-o]').forEach((x) => x.onchange = () => { hrs[+x.dataset.o].open = x.value; });
+  $('days').querySelectorAll('[data-c]').forEach((x) => x.onchange = () => { hrs[+x.dataset.c].close = x.value; });
+
+  function placeNames() { return st.cities.map((c) => c.name).filter(Boolean); }
+  function paintStaffCities() { document.querySelectorAll('[data-scbox]').forEach((box) => { const i = +box.dataset.scbox; box.innerHTML = placeNames().map((n) => `<label><input type="checkbox" data-sc="${i}" value="${esc(n)}" ${(st.staff[i].cities || []).includes(n) ? 'checked' : ''}>${esc(n)}</label>`).join(''); box.querySelectorAll('[data-sc]').forEach((x) => x.onchange = () => { const s = st.staff[+x.dataset.sc]; s.cities = x.checked ? [...new Set([...(s.cities || []), x.value])] : (s.cities || []).filter((c) => c !== x.value); }); }); }
+  function paintStaff() {
+    $('staff').innerHTML = st.staff.map((s, i) => `<div class="card flat stack s"><div class="line2"><input data-ti="${i}" data-k="name" placeholder="اسم الموظف" maxlength="40" value="${esc(s.name)}"><input class="mp" data-ti="${i}" data-k="phone" dir="ltr" inputmode="tel" placeholder="جواله 05xxxxxxxx" value="${esc(s.phone ? I.phone(s.phone) : '')}"><button class="ib" type="button" data-rt="${i}">${icon('x')}</button></div><div class="chipz" data-scbox="${i}"></div></div>`).join('');
+    $('staff').querySelectorAll('[data-ti]').forEach((x) => x.oninput = () => { st.staff[+x.dataset.ti][x.dataset.k] = x.value; });
+    $('staff').querySelectorAll('[data-rt]').forEach((x) => x.onclick = () => { st.staff.splice(+x.dataset.rt, 1); paintStaff(); });
+    paintStaffCities();
+  }
+  $('addStf').onclick = () => { st.staff.push({ name: '', phone: '', cities: placeNames() }); paintStaff(); };
+
+  $('logoF').onchange = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const img = new Image();
+    img.onload = () => { const s = Math.min(1, 512 / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * s) || 256; c.height = Math.round(img.height * s) || 256; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); st.logo = c.toDataURL('image/png'); $('pv').innerHTML = `<img src="${st.logo}" alt="">`; };
+    img.src = URL.createObjectURL(file);
+  };
+  paintPlace(); paintSvcs(); paintStaff();
+
+  $('go').onclick = async (e) => {
+    const data = {
+      name: $('name').value, name_en: $('name_en').value, activity: $('activity').value, wa_number: $('wa').value, owner_name: $('owner').value, owner_phone: $('ownerp').value,
+      cr_number: $('cr').value, vat_number: $('vat').value, address: $('addr').value,
+      place_mode: st.place, pay_timing: (document.querySelector('input[name=pay]:checked') || {}).value || 'after', has_moyasar: $('moy').value, notes: $('notes').value,
+      services: st.services.filter((s) => String(s.name).trim()),
+      cities: st.place === 'online' ? [] : st.cities.filter((c) => String(c.name || '').trim()),
+      hours: hrs.map((h, i) => h.on ? { weekday: i, open: h.open, close: h.close } : null).filter(Boolean),
+      staff: st.staff.filter((s) => String(s.name).trim()),
+      logo: st.logo || undefined, logo_url: st.logo ? undefined : st.logo_url,
+    };
+    if (String(data.name).trim().length < 2) { $('msg').textContent = 'اكتب اسم النشاط'; return; }
+    if (!data.services.length) { $('msg').textContent = 'أضف خدمة وحدة على الأقل'; return; }
+    e.target.disabled = true; $('msg').textContent = 'جارٍ الإرسال…';
+    try {
+      const r = await post('intake', { data });
+      if (r.bad_locations && r.bad_locations.length) { $('msg').textContent = `ما قدرنا نقرأ موقع: ${r.bad_locations.join('، ')}. الصق رابط الموقع من قوقل ماب.`; e.target.disabled = false; return; }
+      $('sendBox').innerHTML = '<div class="okbox"><h3>وصلتنا بياناتك ✅</h3><span>بنجهّز الرد الآلي باسمك ونرسل لك تجربة تعدّل عليها. لو تبي تغيّر شي، عدّل هنا وأرسل مرة ثانية.</span></div>';
+    } catch (x) { $('msg').textContent = x.code === 'too_big' ? 'الشعار كبير، اختر صورة أصغر' : 'ما انرسلت، جرّب مرة ثانية'; e.target.disabled = false; }
+  };
+})();
+</script>
+</body>
+</html>

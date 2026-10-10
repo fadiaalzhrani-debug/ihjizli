@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>اتفاقية الخدمة · احجزلي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/ihj.css">
+<style>
+/* اتفاقية خدمة احجزلي لكل عميل (بمفتاح منشأته)، وموافقته تتسجل بالاسم والجوال والوقت */
+body{padding:24px 16px 60px}
+.doc{max-width:760px;margin:0 auto;display:grid;gap:16px}
+.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 28px;display:grid;gap:14px;box-shadow:var(--shadow)}
+.paper h1{font-size:26px}
+.parties{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.parties div{background:var(--soft2);border-radius:12px;padding:12px 14px}
+.parties b{display:block;font-family:var(--display)}
+.fees{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fees div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.fees b{font-family:var(--display);font-size:22px;display:block}
+ol.terms{margin:0;padding-inline-start:22px;display:grid;gap:9px;line-height:1.8}
+ol.terms b{font-family:var(--display)}
+.okbox{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:18px;display:grid;gap:6px}
+@media (max-width:600px){ .parties,.fees{grid-template-columns:1fr} .paper{padding:20px} }
+@media print{ .noprint{display:none!important} body{padding:0} .paper{box-shadow:none;border:0} }
+</style>
+</head>
+<body>
+<main class="doc" id="doc"><div class="card" style="display:grid;place-items:center;padding:40px"><div class="spin"></div></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/ihj.js"></script>
+<script>
+(async function () {
+  const I = window.IHJ, { $, esc, money } = I;
+  const k = new URLSearchParams(location.search).get('k') || '';
+  const post = async (path, body) => { const r = await fetch(I.FN + '/api/client/' + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, ...body }) }); const j = await r.json().catch(() => ({})); if (!j.ok) throw Object.assign(new Error(j.error || 'err'), { code: j.error }); return j; };
+  let d;
+  try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط الاتفاقية من احجزلي</p></div>'; return; }
+  const b = d.business, f = d.fees || {};
+  const plan = b.plan === 'bot_pay' ? 'أتمتة الحجز + الدفع' : 'أتمتة الحجز';
+  const setup = Number(f.setup_fee || 0), monthly = Number(f.monthly_fee || 0), appS = Number(f.app_setup_fee || 0), appM = Number(f.app_monthly_fee || 0);
+  const totalSetup = setup + appS, totalMonthly = monthly + appM;
+  document.title = `اتفاقية الخدمة · ${b.name}`;
+  $('doc').innerHTML = `
+    <div class="paper">
+      <div class="row"><h1 class="grow">اتفاقية خدمة احجزلي</h1><button class="btn ghost sm noprint" type="button" onclick="window.print()">طباعة</button></div>
+      <div class="parties"><div><span class="tiny">مقدّم الخدمة</span><b>احجزلي</b></div><div><span class="tiny">العميل</span><b>${esc(b.name)}</b>${b.cr_number ? `<span class="tiny">سجل تجاري ${esc(b.cr_number)}</span>` : ''}</div></div>
+      <div><span class="tiny">الباقة</span><h3>${plan}${b.wants_app ? ' + تطبيق باسم العميل' : ''}</h3></div>
+      <div class="fees">
+        <div><span class="tiny">التأسيس (مرة وحدة)</span><b>${money(totalSetup)}</b><span class="tiny">ريال</span></div>
+        <div><span class="tiny">الاشتراك الشهري</span><b>${money(totalMonthly)}</b><span class="tiny">ريال</span></div>
+        <div><span class="tiny">الدفعة الأولى</span><b>${money(Math.round(totalSetup / 2))}</b><span class="tiny">ريال</span></div>
+      </div>
+      <ol class="terms">
+        <li><b>الخدمة:</b> أتمتة طلبات الواتساب على رقم العميل حسب الباقة: الرد على الرسائل، الحجز والتعديل والإلغاء، التذكير، تنبيه العميل والموظف${b.plan === 'bot_pay' ? '، الفاتورة ورابط الدفع وتأكيد الدفع' : ''}، مع لوحة الطلبات ولوحة الموظفين.</li>
+        <li><b>الدفع:</b> التأسيس على دفعتين: النص عند الموافقة على هذه الاتفاقية، والنص الثاني عند التسليم. الاشتراك الشهري يبدأ من يوم التشغيل ويُدفع مقدمًا كل شهر. الأسعار قبل الضريبة.</li>
+        <li><b>التجهيز:</b> خلال 7 أيام عمل من اكتمال المتطلبات: السجل التجاري، رقم الواتساب، الشعار والخدمات والأوقات${b.plan === 'bot_pay' ? '، وحساب بوابة الدفع' : ''}. توثيق النشاط عند ميتا ومدته يرجعان لميتا.</li>
+        <li><b>رسوم أطراف أخرى:</b> على العميل: رسوم رسائل ميتا، ومزوّد الربط (نحو 45 ريال شهريًا)${b.plan === 'bot_pay' ? '، ونسبة بوابة الدفع' : ''}${b.wants_app ? '، وحسابات متاجر التطبيقات' : ''}.</li>
+        <li><b>البيانات:</b> بيانات العميل وعملاؤه ملكه، ويستلم نسخة منها متى ما طلب.</li>
+        <li><b>التعديلات:</b> تعديل النصوص والأسئلة والخدمات والأوقات ضمن الاشتراك الشهري، والإضافات الكبيرة بعرض سعر منفصل.</li>
+        <li><b>الإيقاف:</b> يقدر العميل يوقف الاشتراك بإشعار قبل شهر. دفعة التأسيس ما تُسترد بعد بداية التجهيز. ولو تأخر الاشتراك الشهري أكثر من 10 أيام تتوقف الخدمة لين يُسدد.</li>
+      </ol>
+    </div>
+    <div class="paper noprint" id="sign"></div>`;
+  function signed(a) {
+    $('sign').innerHTML = `<div class="okbox"><h3>تمت الموافقة على الاتفاقية ✅</h3><span>${esc(a.name)} · ${esc(new Date(a.at).toLocaleString('ar-SA-u-ca-gregory-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>`;
+  }
+  if (d.agreed) return signed(d.agreed);
+  $('sign').innerHTML = `<h3>الموافقة</h3>
+    <div class="g2"><label class="f"><span>الاسم</span><input id="n" maxlength="60" value="${esc(b.owner_name || '')}" autocomplete="name"></label><label class="f"><span>الجوال</span><input id="p" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(b.owner_phone ? I.phone(b.owner_phone) : '')}"></label></div>
+    <label class="check"><input type="checkbox" id="c">قرأت الاتفاقية وأوافق عليها</label>
+    <button class="btn lg" id="go" type="button">أوافق على الاتفاقية</button><span class="tiny" id="msg" role="status"></span>`;
+  $('go').onclick = async (e) => {
+    if (!$('c').checked) { $('msg').textContent = 'علّم على «قرأت الاتفاقية وأوافق عليها»'; return; }
+    e.target.disabled = true;
+    try { await post('agree', { name: $('n').value, phone: $('p').value, accept: true }); signed({ name: $('n').value, at: new Date().toISOString() }); }
+    catch (x) { $('msg').textContent = x.code === 'name' ? 'اكتب الاسم كامل' : x.code === 'phone' ? 'اكتب جوال صحيح' : 'ما انحفظت، جرّب مرة ثانية'; e.target.disabled = false; }
+  };
+})();
+</script>
+</body>
+</html>

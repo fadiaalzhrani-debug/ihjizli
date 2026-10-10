@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>محاكي البيع · احجزلي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%23F2B705'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/ihj.css">
+<style>
+/* محاكي البيع: المحادثة بين فادية والعميل من أول رسالة لين التسليم، مع الروابط الجاهزة لكل عميل */
+:root{ --wa-head:#008069; --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-fg:#111B21; --wa-meta:#667781; --wa-link:#027EB5; --wa-chip:#E1F2FB; --wa-green:#00A884; --doodle:rgba(0,0,0,.035) }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --wa-head:#1F2C34; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB; --wa-chip:#182229; --doodle:rgba(255,255,255,.025) } }
+:root[data-theme="dark"]{ --wa-head:#1F2C34; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB; --wa-chip:#182229; --doodle:rgba(255,255,255,.025) }
+body{min-height:100vh}
+.wrapd{display:grid;grid-template-columns:340px minmax(0,560px);gap:22px;justify-content:center;padding:20px 16px 40px;align-items:start}
+.side2{position:sticky;top:16px;display:grid;gap:14px}
+.side2 h1{font-size:24px}
+.stg{display:grid;gap:4px}
+.stg button{display:flex;gap:9px;align-items:center;border:0;background:transparent;padding:7px 9px;border-radius:9px;text-align:start;color:var(--fg);font-size:14px}
+.stg button:hover{background:var(--soft2)}
+.stg button i{width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--muted);display:grid;place-items:center;font-style:normal;font-size:11.5px;font-weight:800;flex:none}
+.stg button.done i{background:var(--accent);color:var(--accent-ink)} .stg button.on{background:var(--soft);font-weight:700}
+.phone2{border-radius:28px;overflow:hidden;border:7px solid #151a18;box-shadow:0 24px 60px rgba(0,0,0,.18);background:var(--wa-bg);display:flex;flex-direction:column;height:calc(100vh - 56px);min-height:560px}
+.ph{background:var(--wa-head);color:#fff;display:flex;gap:10px;align-items:center;padding:10px 12px}
+.ph .av{width:40px;height:40px;border-radius:50%;background:#dfe5e7;color:#54656f;display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.ph b{display:block;font-size:16px} .ph span{font-size:12.5px;opacity:.85}
+.cv{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:4px;background-color:var(--wa-bg);background-image:radial-gradient(var(--doodle) 1.2px,transparent 1.3px),radial-gradient(var(--doodle) 1.2px,transparent 1.3px);background-size:26px 26px;background-position:0 0,13px 13px}
+.stage{align-self:center;text-align:center;margin:14px 0 6px;display:grid;gap:4px;justify-items:center;max-width:92%}
+.stage b{background:var(--wa-chip);color:var(--wa-fg);font-size:12.5px;padding:4px 12px;border-radius:8px;font-family:var(--display)}
+.stage span{font-size:12px;color:var(--wa-meta);line-height:1.6;background:color-mix(in srgb,var(--wa-bg) 70%,#fff3c4);border-radius:8px;padding:4px 10px}
+.m{max-width:86%;display:grid;gap:4px;animation:pop .2s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){ .m{animation:none} }
+.m.me{align-self:flex-end} .m.cl{align-self:flex-start}
+.m .bb{background:var(--wa-in);color:var(--wa-fg);border-radius:10px;padding:7px 10px 8px;font-size:14.6px;line-height:1.6;white-space:pre-wrap;box-shadow:0 1px .5px rgba(11,20,26,.13);overflow-wrap:anywhere}
+.m.me .bb{background:var(--wa-out)}
+.m .bb a{color:var(--wa-link)}
+.m .who{font-size:11.5px;color:var(--wa-meta);padding:0 4px}
+.m .acts{display:flex;gap:6px;justify-content:flex-end}
+.m .acts button,.m .acts a{border:1px solid color-mix(in srgb,var(--wa-meta) 35%,transparent);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:3px 10px;font-size:12px;display:inline-flex;gap:5px;align-items:center;text-decoration:none;cursor:pointer}
+.m .acts svg{width:14px;height:14px}
+.m .note{font-size:12px;color:var(--wa-meta);background:var(--wa-chip);border-radius:8px;padding:5px 9px;line-height:1.6}
+.m .note a{color:var(--wa-link)}
+.obj{align-self:flex-start;display:grid;gap:6px;max-width:92%;margin-top:4px}
+.obj span{font-size:12px;color:var(--wa-meta)}
+.obj div{display:flex;flex-wrap:wrap;gap:6px}
+.obj button{border:1px solid var(--wa-green);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:5px 11px;font-size:13px;cursor:pointer}
+.obj button.on{background:var(--wa-green);color:#fff}
+.ctrl{display:flex;gap:8px;padding:10px;background:var(--wa-in);border-top:1px solid color-mix(in srgb,var(--wa-meta) 20%,transparent)}
+.ctrl .btn{flex:1}
+.miss{background:color-mix(in srgb,var(--gold) 22%,var(--card));border-radius:10px;padding:8px 11px;font-size:13px}
+@media (max-width:920px){ .wrapd{grid-template-columns:1fr} .side2{position:static} .stg{display:none} .phone2{height:78vh} }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/ihj.js"></script>
+<script>
+(async function () {
+  const I = window.IHJ, { $, esc, icon, money } = I;
+  I.loading('نفتح محاكي البيع…');
+  let r;
+  try { r = await I.boot('ihj-admin'); } catch (e) { return I.gate('الرابط غير صالح', 'افتح لوحتك من الرابط الخاص أول', 'err'); }
+  if (!r.session || !r.me || !r.me.admin) return I.gate('افتح لوحتك أول', 'محاكي البيع يفتح بعد الدخول للوحتك من الرابط الخاص', 'err');
+  const sb = I.sb;
+  const SITE = new URL('./', location.href).href.replace(/\/$/, '/');
+  const PUBLIC = 'https://fadiaalzhrani-debug.github.io/ihjizli/';
+  const [{ data: leads }, { data: bizs }, { data: subs }] = await Promise.all([
+    sb.from('signup_requests').select('*').is('business_id', null).order('created_at', { ascending: false }).limit(100),
+    sb.from('businesses').select('*').eq('is_demo', false).order('created_at', { ascending: false }),
+    sb.from('subscriptions').select('*'),
+  ]);
+  const subOf = (id) => (subs || []).find((s) => s.business_id === id) || {};
+  let bank = ''; try { bank = localStorage.getItem('ihj_bank') || ''; } catch (e) { /* */ }
+  let sel = { kind: 'none' };
+  let ownerUrl = '';
+
+  // المجال الأقرب لنشاط العميل في «جرّبه بنفسك»
+  function demoFor(act) {
+    const a = String(act || '');
+    const m = /صالون|حلاق|تجميل|سبا/.test(a) ? 'salon' : /عياد|مركز|طب|أسنان/.test(a) ? 'clinic' : /أونلاين|استشار|تدريب|تعليم|دورات/.test(a) ? 'consult' : /مغسل|غسيل سيار/.test(a) ? 'carwash' : /مطعم|كافيه|مقهى/.test(a) ? 'resto' : /صيان|سباك|كهرب|تكييف|تنظيف/.test(a) ? 'mahalak' : '';
+    return PUBLIC + 'sim.html?demo=1' + (m ? '&open=' + m : '');
+  }
+  function ctx() {
+    const c = { name: '', owner: '', phone: '', activity: '', plan: 'bot', app: false, demo: PUBLIC + 'sim.html?demo=1', agree: '', start: '', sim: '', owner_url: '', setup: 3500, monthly: 350 };
+    if (sel.kind === 'lead') { const l = sel.row; Object.assign(c, { name: l.business_name, owner: l.contact_name || '', phone: l.phone, activity: l.activity, plan: l.package, app: l.wants_app }); }
+    if (sel.kind === 'biz') {
+      const b = sel.row, s = subOf(b.id);
+      Object.assign(c, { name: b.name, owner: b.owner_name || '', phone: b.owner_phone || b.wa_number || '', activity: b.activity, plan: b.plan, app: b.wants_app,
+        agree: PUBLIC + 'agree.html?k=' + b.client_key, start: PUBLIC + 'start.html?k=' + b.client_key, sim: PUBLIC + 'sim.html?b=' + b.slug + '&k=' + b.sim_key, owner_url: ownerUrl,
+        setup: Number(s.setup_fee || 0) + Number(s.app_setup_fee || 0) || c.setup, monthly: Number(s.monthly_fee || 0) + Number(s.app_monthly_fee || 0) || c.monthly });
+    } else {
+      c.setup = c.plan === 'bot_pay' ? 5500 : 3500; c.monthly = c.plan === 'bot_pay' ? 600 : 350;
+      if (c.app) { c.setup += 9000; c.monthly += 150; }
+    }
+    c.demo = demoFor(c.activity);
+    c.pkg = (c.plan === 'bot_pay' ? 'أتمتة الحجز + الدفع' : 'أتمتة الحجز') + (c.app ? ' + تطبيق باسمكم' : '');
+    c.half = Math.round(c.setup / 2);
+    c.hi = c.owner ? 'هلا ' + c.owner.split(' ')[0] : 'هلا';
+    return c;
+  }
+
+  // ───── المحادثة: المراحل والرسائل ─────
+  // me = رسالتك (لها نسخ وإرسال)، cl = رد العميل المتوقع، note = تنبيه لك داخل المحادثة، obj = اعتراضات يختار منها
+  function script(c) {
+    const need = (url, what) => url ? url : `«${what}»`;
+    return [
+      { t: 'أول رسالة', tip: 'أرسلها بين 10 الصبح و9 الليل. قصيرة وتنتهي بسؤال سهل.', items: [
+        { me: `السلام عليكم${c.owner ? ' ' + c.owner.split(' ')[0] : ''}، معك احجزلي 👋\nعندنا نظام يخلي واتساب ${c.name || 'نشاطكم'} يرد على العملاء ويحجز لهم ويرسل الفاتورة ورابط الدفع لحاله، 24 ساعة وعلى نفس رقمكم.\nتحب أرسل لك تجربة تشوفها بنفسك؟` },
+        { cl: 'وعليكم السلام، وش هو بالضبط؟' },
+      ] },
+      { t: 'افهم نشاطه', tip: 'اسأل قبل ما تشرح. جوابه يحدد الباقة والإعداد.', items: [
+        { me: 'أبشر 🌷 قبل أشرح، عطني فكرة عن شغلكم:\n1. كم طلب أو حجز يجيكم باليوم تقريبًا؟\n2. الخدمة عند العميل، ولا في محلكم، ولا أونلاين؟\n3. مين يرد على الواتساب الحين؟ ووش يصير بعد الدوام؟\n4. الدفع كيف؟ كاش، تحويل، أو رابط؟' },
+        { cl: 'تقريبًا 15 طلب، وأنا أرد بنفسي، والدفع كاش أو تحويل' },
+      ] },
+      { t: 'التجربة', tip: 'خلّه يجرب بنفسه. الرابط يفتح على أقرب مجال لنشاطه.', items: [
+        { me: `واضح 👍 جرّب هذا كأنك عميل عندكم: اسأله عن السعر أو الموقع، واحجز موعد، وشوف كيف يرد:\n${c.demo}` },
+        { cl: 'حلو! بس أقدر أغيّر الردود والأسعار؟' },
+        { me: 'أكيد، كل شي على كيفك: الردود وأسلوبها، أسئلتكم وأجوبتها، الخدمات والأسعار، الأوقات، والدفع قبل أو بعد. وفي التجربة زر «خصّص» تجرب فيه اسم نشاطك.' },
+      ] },
+      { t: 'العرض', tip: 'اعرض باقة وحدة تناسبه، مو الثنتين.', items: [
+        { me: `اللي يناسبكم: ${c.pkg}\nالتأسيس ${money(c.setup)} ريال مرة وحدة، والاشتراك ${money(c.monthly)} ريال شهريًا.\nيشمل: الرد على أي رسالة، الحجز والتذكير، لوحة الطلبات بتنبيه صوتي، لوحة الموظفين${c.plan === 'bot_pay' ? '، والفاتورة ورابط الدفع' : ''}.\nالتفاصيل كاملة: ${PUBLIC}` },
+        { obj: [
+          ['غالي', `احسبها بالطلب: ${money(c.monthly)} ريال على 450 طلب بالشهر تطلع أقل من ريال للطلب. وكل طلب كان يضيع بعد الدوام أو لأن أحد ما رد، صار حجز مؤكد.`],
+          ['عندي موظف يرد', 'ممتاز، خلّه يشتغل بدل ما يرد. النظام يرد خلال ثانية حتى بعد الدوام وفي الإجازات، والموظف يستلم الطلب جاهز بالموقع والموعد.'],
+          ['أبي أفكر', 'أكيد، خذ راحتك. الرابط فيه كل شي، وأتابع معك بعد يومين.'],
+          ['فيه برامج أرخص', 'هم يعطونك رابط تجهّزه بنفسك والعميل يطلع من الواتساب. احنا نجهّز لك كل شي داخل الواتساب نفسه، ونكمّل بعد الحجز: تذكير وتنبيه وفاتورة ودفع.'],
+          ['لو ما عجبني؟', 'نجهّز لك تجربة على نشاطك قبل التشغيل وتعدّل عليها لين ترضى. والشهري توقفه بإشعار قبل شهر، وبياناتك وعملاؤك ملكك.'],
+        ] },
+        { cl: 'تمام، نبدأ' },
+      ] },
+      { t: 'الاتفاق والدفعة الأولى', tip: 'موافقته على الاتفاقية تتسجل عندك لحاله في التجهيز.', items: [
+        { me: `أبشر 🌷 هذي الاتفاقية، اقرأها ووافق عليها من الرابط:\n${need(c.agree, 'رابط الاتفاقية')}\n\nوالدفعة الأولى نص التأسيس: ${money(c.half)} ريال${bank ? '\n' + bank : ''}`, needs: !c.agree ? 'biz' : '' },
+        { cl: 'وافقت وحوّلت ✅' },
+        { me: 'وصلت، شكرًا لك 🙏 نبدأ التجهيز.' },
+        { note: 'سجّل الدفعة من لوحتك ← الاشتراكات ← «دفعة».', link: 'admin.html#subs' },
+      ] },
+      { t: 'بيانات النشاط', tip: 'النموذج يجمع كل اللي نحتاجه، وينطبق على منشأته بضغطة.', items: [
+        { me: `عشان نجهّزه، عبّ هذا النموذج (5 دقايق): الخدمات والأسعار، الأوقات، المدن أو الفروع، الموظفين، والشعار:\n${need(c.start, 'رابط النموذج')}`, needs: !c.start ? 'biz' : '' },
+        { cl: 'عبّيته' },
+        { note: 'من لوحتك ← دليل التشغيل ← «طبّق بياناته».', link: 'admin.html#onboard' },
+      ] },
+      { t: 'تجربته على بياناته', tip: 'يجرب البوت باسمه، وأي تعديل يطلبه تسوينه من لوحة المنشأة.', items: [
+        { me: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه وقل لي لو تبي تغيّر أي رد أو سعر:\n${need(c.sim, 'رابط المحاكي')}`, needs: !c.sim ? 'biz' : '' },
+        { cl: `أبي الترحيب يكون: هلا بك في ${c.name || 'محلنا'}` },
+        { me: 'تم ✅ عدّلناه، جرّبه مرة ثانية.' },
+      ] },
+      { t: 'ربط الرقم', tip: 'اتصال 15 دقيقة. هو يدخل بحسابه في فيسبوك، وأنت توجّهه.', items: [
+        { me: `باقي نربط رقمكم. نحتاج 15 دقيقة على اتصال، جهّز:\n• الجوال اللي عليه رقم الواتساب\n• حسابك في فيسبوك\nالخطوات هنا: ${PUBLIC}help.html#connect\nمتى يناسبك؟` },
+        { cl: 'بكرة العصر' },
+      ] },
+      { t: 'التوثيق والدفع الإلكتروني', tip: 'يمشون بالتوازي، والنظام يشتغل قبل ما يخلصون.', items: [
+        { me: `خطوتين عليكم:\n1. توثيق النشاط عند ميتا بالسجل التجاري: ${PUBLIC}help.html#meta${c.plan === 'bot_pay' ? `\n2. حساب ميسر للدفع الإلكتروني: ${PUBLIC}help.html#moyasar` : ''}` },
+        { cl: 'تم، رفعتها' },
+      ] },
+      { t: 'التسليم', tip: 'جرّبوا طلب حقيقي من جوال أحدهم قبل ما تسلّم.', items: [
+        { me: `كل شي جاهز 🎉\nهذي لوحتكم، افتحوها مرة وحدة من الجوال والكمبيوتر:\n${need(c.owner_url, 'رابط لوحة المالك')}\nومن «الموظفون» ترسلون لكل موظف رابطه.\n\nوالدفعة الثانية: ${money(c.half)} ريال، والاشتراك الشهري يبدأ من اليوم.`, needs: !c.owner_url ? 'owner' : '' },
+        { cl: 'وصل أول طلب بالصوت 😍' },
+        { note: 'غيّر حالة المنشأة إلى «شغّالة» وسجّل الدفعة الثانية.', link: 'admin.html#biz' },
+      ] },
+      { t: 'بعد التشغيل', tip: 'متابعة بسيطة تخليه يجدّد ويرشّحك.', items: [
+        { me: `${c.hi}، كيف أول أسبوع؟ لو فيه رسائل ما فهمها النظام أو تبي تعدّل شي قل لي ونعدّله 🌷` },
+        { me: `${c.hi}، اشتراك احجزلي الشهري ${money(c.monthly)} ريال يستحق يوم [التاريخ]. ولو تبي تقرير الشهر أرسله لك.` },
+        { me: 'ولو تعرف أحد يستفيد منه، عرّفنا عليه 🌷' },
+      ] },
+    ];
+  }
+
+  // ───── الواجهة ─────
+  const leadOpts = (leads || []).map((l) => `<option value="l:${l.id}">طلب: ${esc(l.business_name)}</option>`).join('');
+  const bizOpts = (bizs || []).map((b) => `<option value="b:${b.id}">منشأة: ${esc(b.name)}</option>`).join('');
+  $('root').innerHTML = `<div class="wrapd">
+    <aside class="side2">
+      <div class="row"><a class="btn ghost sm" href="admin.html">${icon('home')}لوحتي</a></div>
+      <h1>محاكي البيع</h1>
+      <p class="muted small">محادثتك مع العميل من أول رسالة لين التسليم. اختر العميل عشان تطلع رسائله وروابطه، وانسخ أي رسالة أو أرسلها له على الواتساب.</p>
+      <label class="f"><span>العميل</span><select id="who"><option value="">مثال عام</option>${bizOpts}${leadOpts}</select></label>
+      <label class="f"><span>بيانات التحويل (تنحفظ في جهازك فقط)</span><input id="bank" placeholder="مثل: الآيبان أو STC Pay" value="${esc(bank)}"></label>
+      <div class="stg" id="stg"></div>
+    </aside>
+    <div class="phone2">
+      <div class="ph"><span class="av" id="pAv">ع</span><div><b id="pName">العميل</b><span>محادثتك مع العميل</span></div></div>
+      <div class="cv" id="cv"></div>
+      <div class="ctrl"><button class="btn" id="next">التالي</button><button class="btn ghost" id="all">اعرض الكل</button><button class="btn ghost" id="restart">من البداية</button></div>
+    </div>
+  </div>`;
+  let S = [], pos = { st: 0, it: 0 }, shown = 0;
+  const flat = () => { const out = []; S.forEach((st, si) => { out.push({ stage: si }); st.items.forEach((it) => out.push({ si, it })); }); return out; };
+  let FL = [];
+  function waUrl(text) { const p = ctx().phone; const d = String(p || '').replace(/\D/g, ''); return `https://wa.me/${d}?text=${encodeURIComponent(text)}`; }
+  function linkify(t) { return esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+  function render(upto) {
+    const c = ctx(); const cv = $('cv'); cv.innerHTML = '';
+    let lastStage = -1;
+    FL.slice(0, upto).forEach((x) => {
+      if (x.stage !== undefined) {
+        const st = S[x.stage];
+        cv.insertAdjacentHTML('beforeend', `<div class="stage"><b>${x.stage + 1}. ${esc(st.t)}</b><span>${esc(st.tip)}</span></div>`);
+        lastStage = x.stage; return;
+      }
+      const it = x.it;
+      if (it.me) {
+        const missing = it.needs === 'biz' ? `<div class="miss">الرابط يطلع بعد ما تختار منشأة من القائمة. لو العميل لسا طلب اشتراك، حوّله لمنشأة من «طلبات الاشتراك».</div>` : it.needs === 'owner' ? `<div class="miss">ما فيه رابط مالك لهذي المنشأة. <button class="btn sm" type="button" data-mk-owner>أنشئ رابط المالك</button></div>` : '';
+        cv.insertAdjacentHTML('beforeend', `<div class="m me"><span class="who">رسالتك</span><div class="bb">${linkify(it.me)}</div>${missing}<div class="acts"><button type="button" data-copy="${esc(it.me)}">${icon('copy')}نسخ</button>${c.phone ? `<a href="${esc(waUrl(it.me))}" target="_blank" rel="noopener">${icon('wa')}أرسل له</a>` : ''}</div></div>`);
+      } else if (it.cl) {
+        cv.insertAdjacentHTML('beforeend', `<div class="m cl"><span class="who">${esc(c.name || 'العميل')}</span><div class="bb">${esc(it.cl)}</div></div>`);
+      } else if (it.note) {
+        cv.insertAdjacentHTML('beforeend', `<div class="m me"><div class="note">📌 ${esc(it.note)} <a href="${esc(it.link)}" target="_blank" rel="noopener">افتح</a></div></div>`);
+      } else if (it.obj) {
+        cv.insertAdjacentHTML('beforeend', `<div class="obj"><span>لو قال العميل:</span><div>${it.obj.map((o, i) => `<button type="button" data-obj="${i}">«${esc(o[0])}»</button>`).join('')}</div><div class="objAns"></div></div>`);
+        const box = cv.lastElementChild;
+        box.querySelectorAll('[data-obj]').forEach((b) => b.onclick = () => {
+          box.querySelectorAll('[data-obj]').forEach((x) => x.classList.toggle('on', x === b));
+          const o = it.obj[+b.dataset.obj];
+          box.querySelector('.objAns').innerHTML = `<div class="m cl" style="margin-top:6px"><span class="who">${esc(c.name || 'العميل')}</span><div class="bb">${esc(o[0])}</div></div><div class="m me" style="align-self:flex-end;max-width:100%"><span class="who">رسالتك</span><div class="bb">${linkify(o[1])}</div><div class="acts"><button type="button" data-copy="${esc(o[1])}">${icon('copy')}نسخ</button>${c.phone ? `<a href="${esc(waUrl(o[1]))}" target="_blank" rel="noopener">${icon('wa')}أرسل له</a>` : ''}</div></div>`;
+          box.querySelectorAll('[data-copy]').forEach((x) => x.onclick = () => I.copy(x.dataset.copy, 'انسخت الرسالة ✓'));
+        });
+      }
+    });
+    cv.querySelectorAll('[data-copy]').forEach((x) => x.onclick = () => I.copy(x.dataset.copy, 'انسخت الرسالة ✓'));
+    cv.querySelectorAll('[data-mk-owner]').forEach((x) => x.onclick = makeOwner);
+    cv.scrollTop = cv.scrollHeight;
+    // قائمة المراحل
+    $('stg').innerHTML = S.map((st, i) => `<button type="button" data-st="${i}" class="${i < lastStage ? 'done' : ''} ${i === lastStage ? 'on' : ''}"><i>${i + 1}</i>${esc(st.t)}</button>`).join('');
+    $('stg').querySelectorAll('[data-st]').forEach((b) => b.onclick = () => { const idx = FL.findIndex((x) => x.stage === +b.dataset.st); let end = idx + 1; while (end < FL.length && FL[end].stage === undefined) end++; shown = end; render(shown); });
+    $('next').disabled = upto >= FL.length;
+  }
+  function rebuild(keep) { S = script(ctx()); FL = flat(); if (!keep) shown = Math.min(FL.length, 3); render(shown); }
+  async function makeOwner(e) {
+    if (sel.kind !== 'biz') return;
+    e.target.disabled = true;
+    try { const x = await I.api('admin/link/create', { kind: 'owner', business_id: sel.row.id, label: sel.row.owner_name || 'المالك' }); ownerUrl = x.url; I.toast('انشأ رابط المالك ✓'); rebuild(true); }
+    catch (x) { I.fail(x); e.target.disabled = false; }
+  }
+  async function pick(v) {
+    ownerUrl = '';
+    if (!v) sel = { kind: 'none' };
+    else if (v.startsWith('l:')) sel = { kind: 'lead', row: (leads || []).find((l) => l.id === v.slice(2)) };
+    else {
+      sel = { kind: 'biz', row: (bizs || []).find((b) => b.id === v.slice(2)) };
+      try { const l = await I.api('admin/link/list', { business_id: sel.row.id }); const o = (l.links || []).find((x) => x.kind === 'owner' && x.url); ownerUrl = o ? o.url : ''; } catch (e) { /* */ }
+    }
+    const c = ctx();
+    $('pName').textContent = c.name || 'العميل'; $('pAv').textContent = I.initials(c.name || 'ع');
+    rebuild(true);
+  }
+  $('who').onchange = (e) => pick(e.target.value);
+  $('bank').oninput = (e) => { bank = e.target.value.trim(); try { localStorage.setItem('ihj_bank', bank); } catch (x) { /* */ } rebuild(true); };
+  $('next').onclick = () => { if (shown >= FL.length) return; shown++; if (FL[shown - 1].stage !== undefined && shown < FL.length) shown++; render(shown); };
+  $('all').onclick = () => { shown = FL.length; render(shown); };
+  $('restart').onclick = () => { shown = Math.min(FL.length, 3); render(shown); };
+  const pre = new URLSearchParams(location.search).get('b');
+  rebuild(false);
+  if (pre) { $('who').value = 'b:' + pre; pick('b:' + pre); }
+  window.__deal = { pick, rebuild, get shown() { return shown; } };
+})();
+</script>
+</body>
+</html>

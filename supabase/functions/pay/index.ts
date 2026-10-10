@@ -59,11 +59,11 @@ Deno.serve(async (req) => {
       const { data: fresh } = await db().from("invoices").select("*").eq("id", inv.id).single();
       const [{ data: biz }, { data: o }] = await Promise.all([
         db().from("businesses").select("name, logo_url, brand_color, is_demo").eq("id", inv.business_id).single(),
-        db().from("orders").select("number").eq("id", inv.order_id).single(),
+        db().from("orders").select("number, status, cancel_reason").eq("id", inv.order_id).single(),
       ]);
       return json({ ok: true, invoice: {
         number: fresh.number, order: o?.number, items: fresh.items, subtotal: fresh.subtotal, vat_percent: fresh.vat_percent, vat: fresh.vat, total: fresh.total,
-        status: fresh.status, paid_at: fresh.paid_at, paid_method: fresh.paid_method, provider: fresh.pay_provider,
+        status: fresh.status, order_cancelled: o?.status === "cancelled", expired: o?.status === "cancelled" && o?.cancel_reason === "unpaid", paid_at: fresh.paid_at, paid_method: fresh.paid_method, provider: fresh.pay_provider,
         pay_url: fresh.status === "issued" && fresh.pay_provider === "moyasar" ? fresh.pay_url : "",
         pdf_url: fresh.pdf_path ? await signedPdf(fresh.pdf_path, 3600) : "",
       }, business: biz });

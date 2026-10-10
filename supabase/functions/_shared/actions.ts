@@ -7,6 +7,7 @@ import { loadSecrets, type Out, sendToCustomer } from "./wa.ts";
 import { orderEvent } from "./events.ts";
 import { invoicePdf } from "./pdf.ts";
 import { methodLabel, moyasarCreateInvoice, moyasarGetInvoice } from "./pay.ts";
+import { modeOf, placeLine, tailFor } from "./place.ts";
 
 export class AppError extends Error {
   constructor(public code: string, public status = 400) { super(code); }
@@ -23,10 +24,19 @@ export async function orderFull(orderId: string): Promise<Full> {
     db().from("settings").select("*").eq("business_id", o.business_id).single(),
     db().from("channels").select("*").eq("business_id", o.business_id).maybeSingle(),
   ]);
+  // تجربة المحاكي المخصصة (الاسم والأسلوب والمكان والدفع) تمشي على رسائل الموظف كمان
+  const cfg = o.customer?.is_sim ? o.customer?.sim_config : null;
+  if (cfg && typeof cfg === "object") {
+    if (cfg.name) { b.name = cfg.name; b.name_en = cfg.name; }
+    if (["visit", "shop", "online"].includes(cfg.place)) { s.place_mode = cfg.place; if (o.service) o.service.place_mode = null; }
+    if (["after", "before", "none"].includes(cfg.pay)) s.pay_timing = cfg.pay;
+    if (["friendly", "formal", "short"].includes(cfg.tone)) s.tone = cfg.tone;
+  }
   return { o, b, s, ch: ch || {} };
 }
 
-const T = (f: Full) => textsFor(f.o.customer?.lang === "en" ? "en" : "ar", f.s.texts);
+const T = (f: Full) => textsFor(f.o.customer?.lang === "en" ? "en" : "ar", f.s.texts, f.s.tone);
+const modeF = (f: Full) => modeOf(f.s, f.o.service);
 const tz = (f: Full) => f.b.timezone || "Asia/Riyadh";
 const when = (f: Full, iso: string) => {
   const lang = f.o.customer?.lang === "en" ? "en" : "ar";
@@ -58,9 +68,13 @@ export async function actOnTheWay(f: Full, by: string) {
 export async function actArrived(f: Full, by: string) {
   await setOrder(f, { status: "arrived", arrived_at: new Date().toISOString() }, ["confirmed", "on_the_way", "arrived"]);
   await event(f, "arrived", by);
-  const staff = f.o.staff?.name || bizName(f);
-  const r = await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "text", text: T(f)("arrived", { staff, no: f.o.number }) }],
-    { purpose: "arrived", by, template: { name: "ihj_arrived", params: [staff, f.b.name, String(f.o.number)] } });
+  // رسالة «وصل الموظف» للزيارات فقط (في المحل أو أونلاين العميل حاضر أصلًا)
+  let r = null;
+  if (modeF(f) === "visit") {
+    const staff = f.o.staff?.name || bizName(f);
+    r = await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "text", text: T(f)("arrived", { staff, no: f.o.number }) }],
+      { purpose: "arrived", by, template: { name: "ihj_arrived", params: [staff, f.b.name, String(f.o.number)] } });
+  }
   await orderEvent(f.b.id, "order.arrived", { order_id: f.o.id, is_test: f.o.is_test });
   return r;
 }
@@ -159,10 +173,46 @@ export async function actInvoice(f: Full, rawItems: any, by: string) {
 // تأكيد الدفع (من ميسر بعد التحقق، أو التجريبي، أو يدوي من الموظف): مرة وحدة فقط لكل فاتورة
 export async function markInvoicePaid(invoiceId: string, p: { provider: string; ref: string; amount: number; method: string; raw?: unknown; by: string }) {
   const now = new Date().toISOString();
-  const { data: inv } = await db().from("invoices").update({ status: "paid", paid_at: now, paid_method: p.method }).eq("id", invoiceId).eq("status", "issued").select("*").maybeSingle();
-  if (!inv) return { ok: true, already: true };
+  let { data: inv } = await db().from("invoices").update({ status: "paid", paid_at: now, paid_method: p.method }).eq("id", invoiceId).eq("status", "issued").select("*").maybeSingle();
+  let late = false;
+  if (!inv) {
+    // دفع وصل بعد انتهاء مهلة الحجز (الفاتورة انلغت معه): نقبله ونحاول نرجّع الموعد
+    const { data: v } = await db().from("invoices").select("*, order:orders(status, cancel_reason)").eq("id", invoiceId).maybeSingle();
+    if (v?.status === "void" && v.order?.status === "cancelled" && v.order?.cancel_reason === "unpaid") {
+      const { data: v2 } = await db().from("invoices").update({ status: "paid", paid_at: now, paid_method: p.method }).eq("id", invoiceId).eq("status", "void").select("*").maybeSingle();
+      inv = v2; late = !!v2;
+    }
+    if (!inv) return { ok: true, already: true };
+  }
   await db().from("payments").insert({ business_id: inv.business_id, invoice_id: inv.id, provider: p.provider, provider_ref: p.ref || inv.id, amount: p.amount, status: "paid", method: p.method, raw: p.raw ?? {} });
   const f = await orderFull(inv.order_id);
+  if (late) {
+    const { data: back } = await db().rpc("ihj_reinstate", { p_order: f.o.id });
+    if (!back) {
+      // الموعد راح لغيره: يتحوّل للمنشأة تتابع مع العميل
+      await db().from("customers").update({ bot_paused: true, paused_at: now, paused_reason: "order" }).eq("id", f.o.customer.id);
+      await db().from("handoffs").insert({ business_id: f.b.id, customer_id: f.o.customer.id, reason: "order", last_text: `دفع ${money(p.amount)} ريال لطلب رقم ${f.o.number} بعد انتهاء المهلة، والموعد صار محجوز` });
+      await event(f, "paid", p.by, { invoice: inv.number, amount: p.amount, method: p.method, provider: p.provider, late: true });
+      await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "text", text: T(f)("handoff", { biz: bizName(f) }) }], { purpose: "update", by: "system" });
+      return { ok: true, late: true };
+    }
+    f.o.status = "pending_payment";
+  }
+  if (f.o.status === "pending_payment") {
+    // دفع مقدم: يتأكد الحجز وينطلق تنبيه المنشأة والموظف
+    await db().from("orders").update({ status: "confirmed", paid_at: now, prepaid: true, hold_until: null }).eq("id", f.o.id).eq("status", "pending_payment");
+    f.o.status = "confirmed";
+    await event(f, "paid", p.by, { invoice: inv.number, amount: p.amount, method: p.method, provider: p.provider, prepay: true });
+    try { await renderAndStore(f, inv, null); } catch (e) { console.error("prepaid pdf", e); }
+    const mode = modeF(f), lang = f.o.customer?.lang === "en" ? "en" : "ar";
+    const w = when(f, f.o.slot_start);
+    const text = T(f)("prepaid_confirmed", { no: f.o.number, day: w.day, time: w.time, city_line: placeLine(T(f), f.s, mode, f.o.city, lang), tail: tailFor(T(f), f.s, mode, lang) });
+    const r = await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "buttons", text, buttons: [{ id: "m:orders", title: T(f)("btn_orders") }, { id: "m:new", title: T(f)("btn_new_order") }] }],
+      { purpose: "paid", by: "system", template: { name: "ihj_paid", params: [String(f.o.number), f.b.name] } });
+    await orderEvent(f.b.id, "order.created", { order_id: f.o.id, is_test: f.o.is_test });
+    await orderEvent(f.b.id, "order.paid", { order_id: f.o.id, is_test: f.o.is_test });
+    return { ok: true, send: r, prepaid: true };
+  }
   await db().from("orders").update({ paid_at: now, status: "done", done_at: now }).eq("id", f.o.id).neq("status", "cancelled");
   await event(f, "paid", p.by, { invoice: inv.number, amount: p.amount, method: p.method, provider: p.provider });
   try { await renderAndStore(f, inv, null); } catch (e) { console.error("paid pdf", e); }
@@ -203,6 +253,7 @@ export async function actDone(f: Full, by: string) {
 export async function actCancelByBiz(f: Full, reason: string, by: string, notify = true) {
   const { error } = await db().rpc("ihj_cancel", { p_order: f.o.id, p_by: by, p_reason: reason.slice(0, 200) });
   if (error) throw new AppError(/locked/.test(error.message) ? "bad_status" : "cancel", 409);
+  await db().from("invoices").update({ status: "void" }).eq("order_id", f.o.id).eq("status", "issued");
   let r = null;
   if (notify) {
     r = await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "buttons", text: T(f)("cancelled_by_biz", { no: f.o.number, reason: reason ? `\n${reason}` : "" }), buttons: [{ id: "m:book", title: T(f)("btn_book") }] }],
@@ -252,6 +303,23 @@ export async function sendReminders(limit = 50) {
     } catch (e) { console.error("reminder", row.id, e); }
   }
   return n;
+}
+
+// حجوزات انتهت مهلة دفعها: ينفك الموعد وتنلغى فاتورتها ويوصل العميل خبر (يشتغل من cron)
+export async function expireHolds(limit = 50) {
+  const { data: rows, error } = await db().rpc("ihj_expire_holds", { p_limit: limit });
+  if (error) { console.error("expire", error.message); return 0; }
+  for (const o of rows || []) {
+    try {
+      await db().from("invoices").update({ status: "void" }).eq("order_id", o.id).eq("status", "issued");
+      const f = await orderFull(o.id);
+      await event(f, "expired", "system");
+      const w = when(f, f.o.slot_start);
+      await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "buttons", text: T(f)("hold_expired", { day: w.day, time: w.time }), buttons: [{ id: "m:book", title: T(f)("btn_book") }] }],
+        { purpose: "update", by: "system", template: { name: "ihj_update", params: [String(f.o.number), f.b.name, "انتهت مهلة الدفع وانفك الحجز"] } });
+    } catch (e) { console.error("expire", o.id, e); }
+  }
+  return (rows || []).length;
 }
 
 // متابعة فواتير ميسر المعلقة (احتياط لو ما وصل إشعار الدفع)

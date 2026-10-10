@@ -105,7 +105,7 @@
   const phone = (wa) => { const s = String(wa || ''); return s.startsWith('966') ? '0' + s.slice(3) : s; };
   const waLink = (wa) => `https://wa.me/${String(wa || '').replace(/\D/g, '')}`;
 
-  const STATUS = { confirmed: 'مؤكد', on_the_way: 'في الطريق', arrived: 'وصل الموظف', invoiced: 'بانتظار الدفع', done: 'مكتمل', cancelled: 'ملغي' };
+  const STATUS = { pending_payment: 'ينتظر الدفع', confirmed: 'مؤكد', on_the_way: 'في الطريق', arrived: 'وصل الموظف', invoiced: 'بانتظار الدفع', done: 'مكتمل', cancelled: 'ملغي' };
   const badge = (s) => `<span class="badge b-${esc(s)}">${esc(STATUS[s] || s)}</span>`;
 
   // ───── أيقونات (خطوط بسيطة) ─────
