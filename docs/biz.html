@@ -68,6 +68,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="assets/ihj.js"></script>
+<script src="assets/reader.js"></script>
 <script>
 (async function () {
   const I = window.IHJ, { $, esc, icon, money, badge } = I;
@@ -114,7 +115,10 @@
     Object.assign(S, { biz, set, cities, services, staff, hours, holidays, orders, handoffs, ch: chRow || {}, paused: pausedRows || [] });
     orders.forEach((o) => S.seen.add(o.id));
   }
+  // القراءة الذكية مفعّلة؟ زر «عبّيها من صورة أو موقع» يطلع لصاحب المحل بس لو مفعّلة، وللمدير دايم
+  const aiP = fetch(I.FN + '/api/client/ai', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }).then((r) => r.json()).then((j) => !!j.ready).catch(() => false);
   try { await loadAll(); } catch (e) { console.error(e); return I.gate('ما قدرنا نفتح اللوحة', 'جرّب تحدّث الصفحة', 'err'); }
+  S.ai = await aiP;
   I.setTitle(`${S.biz.name} · لوحة المنشأة`);
 
   const staffName = (id) => (S.staff.find((s) => s.id === id) || {}).name || '';
@@ -519,9 +523,10 @@
   const PRESETS = [['الرياض', 24.7136, 46.6753, 40], ['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['الطائف', 21.2703, 40.4158, 25], ['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['حائل', 27.5114, 41.7208, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20], ['ينبع', 24.0895, 38.0618, 20], ['الخرج', 24.1556, 47.312, 20], ['حفر الباطن', 28.4328, 45.9708, 20]];
   function vCatalog(v) {
     v.innerHTML = `
+      ${S.ai || asAdmin ? `<div class="import-cta"><div class="grow"><b>قائمة أسعار أو موقع؟</b><span class="tiny">ارفع صورة قائمة الأسعار أو حط رابط الموقع، ونعبّي الخدمات والأسعار والأوقات والأسئلة. تراجعها قبل ما تنحفظ.</span></div><button class="btn" type="button" id="svImport">${icon('file')}عبّيها من صورة أو موقع</button></div>` : ''}
       <div class="card stack"><div class="sec-h"><h3>الخدمات</h3><span class="tiny">لو أكثر من خدمة، البوت يسأل العميل يختار. بدون سعر = السعر بعد الزيارة</span></div>
-        <div class="tbl"><table class="t"><thead><tr><th>الخدمة</th><th>بالإنجليزي</th><th>السعر</th><th>المدة (دقيقة)</th><th>فعّالة</th><th></th></tr></thead><tbody>
-        ${S.services.map((s) => `<tr data-sv="${s.id}"><td><input data-k="name" value="${esc(s.name)}" maxlength="24"></td><td><input data-k="name_en" value="${esc(s.name_en)}" maxlength="24" dir="ltr"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${s.price ?? ''}" placeholder="بعد الزيارة" style="max-width:120px"></td><td><input data-k="duration_min" type="number" min="10" max="720" value="${s.duration_min ?? ''}" placeholder="${S.set.slot_minutes}" style="max-width:100px"></td><td><input type="checkbox" data-k="active" ${s.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
+        <div class="tbl"><table class="t"><thead><tr><th>الخدمة</th><th>بالإنجليزي</th><th>السعر</th><th>يبدأ من</th><th>المدة (دقيقة)</th><th>فعّالة</th><th></th></tr></thead><tbody>
+        ${S.services.map((s) => `<tr data-sv="${s.id}"><td><input data-k="name" value="${esc(s.name)}" maxlength="24"></td><td><input data-k="name_en" value="${esc(s.name_en)}" maxlength="24" dir="ltr"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${s.price ?? ''}" placeholder="بعد الزيارة" style="max-width:120px"></td><td><input type="checkbox" data-k="price_from" ${s.price_from ? 'checked' : ''} aria-label="السعر يبدأ من"></td><td><input data-k="duration_min" type="number" min="10" max="720" value="${s.duration_min ?? ''}" placeholder="${S.set.slot_minutes}" style="max-width:100px"></td><td><input type="checkbox" data-k="active" ${s.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
         </tbody></table></div>
         <button class="btn sm ghost" id="svAdd" style="justify-self:start">${icon('plus')}خدمة</button></div>
       <div class="card stack"><div class="sec-h"><h3>المدن ونطاق الخدمة</h3><span class="tiny">البوت يعرف مدينة العميل من موقعه، واللي برا النطاق يوصله إنه خارج التغطية</span></div>
@@ -536,6 +541,7 @@
       }));
       tr.querySelector('[data-del]').onclick = async () => { if (!confirm('حذف الخدمة؟')) return; try { await q1(sb.from('services').delete().eq('id', id).select('id')); S.services = S.services.filter((s) => s.id !== id); render(); } catch (e) { I.fail(e); } };
     });
+    if ($('svImport')) $('svImport').onclick = importMaterial;
     $('svAdd').onclick = async () => { try { const row = (await q1(sb.from('services').insert({ business_id: BIZ, name: 'خدمة جديدة', sort: S.services.length }).select('*')))[0]; S.services.push(row); render(); } catch (e) { I.fail(e); } };
     v.querySelectorAll('[data-ct]').forEach((el) => {
       const id = el.dataset.ct;
@@ -544,6 +550,57 @@
       el.querySelector('[data-map]').onclick = () => cityMap(S.cities.find((c) => c.id === id));
     });
     $('ctPreset').onchange = async (e) => { const p = PRESETS[+e.target.value]; if (!p) return; try { const row = (await q1(sb.from('cities').insert({ business_id: BIZ, name: p[0], lat: p[1], lng: p[2], radius_km: p[3], sort: S.cities.length }).select('*')))[0]; S.cities.push(row); I.toast('انضافت ' + p[0] + ' ✓'); render(); } catch (x) { I.fail(x); } };
+  }
+  // ── «عبّيها من صورة أو موقع»: نقرأ قائمة أسعاره أو موقعه، تراجعها، وتنحفظ في الخدمات والأوقات والأسئلة والمدن
+  const nkey = (s) => String(s || '').replace(/[sـ]+/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase();
+  async function importMaterial() {
+    const r = await I.reader({ send: (p) => I.api('biz/extract', { business_id: BIZ, ...p }), adminHint: asAdmin ? 'admin.html#home' : '' });
+    if (!r) return;
+    await I.review(r.data, {
+      current: { services: S.services.filter((s) => s.active), hours: S.hours.filter((h) => !h.city_id).map((h) => ({ weekday: h.weekday, open: String(h.open_time).slice(0, 5), close: String(h.close_time).slice(0, 5) })), faq: S.set.faq || [] },
+      place: S.set.place_mode || 'visit', applyLabel: 'احفظها في البوت',
+      apply: async (sel) => {
+        // الترتيب يمشي على ترتيب القائمة، واللي مو فيها ينزل تحتها
+        let added = 0, updated = 0, places = 0;
+        const ins = [], hit = new Set();
+        for (const [i, s] of sel.services.entries()) {
+          const ex = S.services.find((x) => nkey(x.name) === nkey(s.name));
+          if (ex) hit.add(ex.id);
+          const patch = { price: s.price, price_from: s.price_from, active: true, sort: i };
+          if (s.duration_min) patch.duration_min = s.duration_min;
+          if (s.name_en) patch.name_en = s.name_en;
+          if (ex) { await q1(sb.from('services').update(patch).eq('id', ex.id).select('id')); updated++; }
+          else ins.push({ business_id: BIZ, name: s.name, ...patch });
+        }
+        for (const x of S.services) if (!hit.has(x.id)) await q1(sb.from('services').update({ sort: sel.services.length + (x.sort || 0) }).eq('id', x.id).select('id'));
+        if (ins.length) { await q1(sb.from('services').insert(ins).select('id')); added = ins.length; }
+        if (sel.hours) {
+          await q1(sb.from('hours').delete().eq('business_id', BIZ).is('city_id', null).select('id'));
+          if (sel.hours.length) await q1(sb.from('hours').insert(sel.hours.map((h) => ({ business_id: BIZ, weekday: h.weekday, open_time: h.open, close_time: h.close }))).select('id'));
+        }
+        if (sel.faq.length) {
+          const faq = (Array.isArray(S.set.faq) ? S.set.faq : []).slice();
+          for (const f of sel.faq) { const i = faq.findIndex((x) => nkey(x.chip) === nkey(f.chip)); if (i >= 0) faq[i] = f; else if (faq.length < 12) faq.push(f); }
+          await q1(sb.from('settings').update({ faq }).eq('business_id', BIZ).select('business_id')); S.set.faq = faq; faqDraft = null;
+        }
+        let csort = S.cities.length;
+        for (const c of sel.cities) if (!S.cities.some((x) => x.name === c.name)) { await q1(sb.from('cities').insert({ business_id: BIZ, ...c, sort: csort++ }).select('id')); places++; }
+        for (const b of sel.branches) {
+          if (!b.maps || S.cities.some((x) => nkey(x.name) === nkey(b.name))) continue;
+          try { const p = await I.api('biz/locate', { business_id: BIZ, text: b.maps }); await q1(sb.from('cities').insert({ business_id: BIZ, name: b.name.slice(0, 40), lat: p.lat, lng: p.lng, radius_km: 15, sort: csort++ }).select('id')); places++; } catch (e) { /* الفرع بدون موقع واضح يتحدد من الخريطة */ }
+        }
+        [S.services, S.hours, S.cities] = await Promise.all([
+          q1(sb.from('services').select('*').eq('business_id', BIZ).order('sort').order('created_at')),
+          q1(sb.from('hours').select('*').eq('business_id', BIZ).order('weekday').order('open_time')),
+          q1(sb.from('cities').select('*').eq('business_id', BIZ).order('sort').order('created_at')),
+        ]);
+        render();
+        const shop = (S.set.place_mode || 'visit') === 'shop';
+        const parts = [added ? I.count(added, 'خدمة جديدة', 'خدمتين جديدتين', 'خدمات جديدة', 'خدمة جديدة') : '', updated ? 'تحديث ' + I.count(updated, 'خدمة', 'خدمتين', 'خدمات', 'خدمة') : '', sel.hours ? 'الأوقات' : '',
+          sel.faq.length ? I.count(sel.faq.length, 'سؤال', 'سؤالين', 'أسئلة', 'سؤال') : '', places ? (shop ? I.count(places, 'فرع', 'فرعين', 'فروع', 'فرع') : I.count(places, 'مدينة', 'مدينتين', 'مدن', 'مدينة')) : ''].filter(Boolean);
+        return `انحفظ: ${parts.join('، ')} ✓ والبوت يستخدمها الحين`;
+      },
+    });
   }
   function cityMap(c) {
     const m = I.modal(`<div class="mh"><h3 class="grow">نطاق ${esc(c.name)}</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb"><div class="city-map" id="cmap"></div><label class="f"><span>نصف القطر (كم)</span><input id="crad" type="range" min="2" max="80" value="${Math.min(80, c.radius_km)}"></label><p class="tiny">اضغط على الخريطة لتحديد المركز</p></div><div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="csave">حفظ</button></div>`);

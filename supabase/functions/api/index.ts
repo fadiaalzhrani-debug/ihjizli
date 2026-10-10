@@ -14,6 +14,7 @@ import { dayLabel, local, timeLabel } from "../_shared/dates.ts";
 import { mask, moyasarCheckKey } from "../_shared/pay.ts";
 import { locationFromText } from "../_shared/maps.ts";
 import { channelTest, templatesSync } from "../_shared/channel.ts";
+import { AI_MODEL, aiReady, costUsd, extractMaterial } from "../_shared/extract.ts";
 
 const badLink = limiter(30, 3600_000);
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -129,6 +130,14 @@ async function bizAction(r: Roles, action: string, body: any) {
       const { data: s } = await db().from("settings").select("pay_provider").eq("business_id", bizId).single();
       return { provider: s?.pay_provider, moyasar: mask(sec?.moyasar_sk || ""), test_mode: String(sec?.moyasar_sk || "").startsWith("sk_test_") };
     }
+    // «عبّيها من صورة أو موقع»: يرجّع البيانات للمراجعة بس، والحفظ من اللوحة بعد ما تشوفها
+    case "extract": return await extractMaterial(body, { kind: "biz", business_id: bizId, ip: "" });
+    // رابط قوقل ماب لفرع ← إحداثيات
+    case "locate": {
+      const p = await locationFromText(String(body.text || "").slice(0, 500));
+      need(p, "location", 422);
+      return { lat: p!.lat, lng: p!.lng };
+    }
     case "export-test": return await exportTest(bizId);
     case "export-info": {
       const { data: sec } = await db().from("business_secrets").select("export_secret").eq("business_id", bizId).single();
@@ -207,7 +216,7 @@ async function adminAction(r: Roles, action: string, body: any) {
         lead_id: UUID.test(String(body.lead_id || "")) ? body.lead_id : "",
         cities: (Array.isArray(body.cities) ? body.cities : []).slice(0, 12).filter((c: any) => c && clip(c.name, 40) && Number.isFinite(+c.lat) && Number.isFinite(+c.lng))
           .map((c: any) => ({ name: clip(c.name, 40), name_en: clip(c.name_en, 40), lat: +c.lat, lng: +c.lng, radius_km: Math.min(300, Math.max(1, +c.radius_km || 25)) })),
-        services: (Array.isArray(body.services) ? body.services : []).slice(0, 10).filter((s: any) => s && clip(s.name, 24))
+        services: (Array.isArray(body.services) ? body.services : []).slice(0, 40).filter((s: any) => s && clip(s.name, 24))
           .map((s: any) => ({ name: clip(s.name, 24), name_en: clip(s.name_en, 24), price: s.price === "" || s.price == null ? null : Math.max(0, +s.price), duration_min: s.duration_min ? Math.max(10, Math.min(720, +s.duration_min)) : null })),
         staff: (Array.isArray(body.staff) ? body.staff : []).slice(0, 30).filter((s: any) => s && clip(s.name, 40))
           .map((s: any) => ({ name: clip(s.name, 40), phone: saudi(s.phone) || "", cities: Array.isArray(s.cities) ? s.cities.map((x: any) => clip(x, 40)) : [] })),
@@ -295,6 +304,34 @@ async function adminAction(r: Roles, action: string, body: any) {
       return {};
     }
     case "sim-url": { const b = await bizRow(uuid(body.business_id, "business_id")); return { url: simUrl(b) }; }
+    // القراءة الذكية: مفعّلة؟ وكم قراءة وتكلفتها التقريبية هالشهر
+    case "ai/status": {
+      const since = new Date(); since.setUTCDate(1); since.setUTCHours(0, 0, 0, 0);
+      const { data: rows } = await db().from("ai_usage").select("ok, scope, model, input_tokens, output_tokens").gte("at", since.toISOString()).limit(5000);
+      const all = rows || [];
+      return { ready: aiReady(), model: AI_MODEL, month: { count: all.length, ok: all.filter((x: any) => x.ok).length, public: all.filter((x: any) => x.scope === "public").length,
+        usd: Math.round(all.reduce((a: number, x: any) => a + costUsd(x.model || AI_MODEL, x.input_tokens, x.output_tokens), 0) * 100) / 100 } };
+    }
+    // بيانات مقروءة من صورة أو موقع ← تنضاف لنموذج بيانات المنشأة (فوق اللي عبّاه)، وبعدها «طبّق بياناته»
+    case "intake/merge": {
+      const bizId = uuid(body.business_id, "business_id");
+      const b = await bizRow(bizId);
+      const { data: docs } = await db().from("client_docs").select("intake").eq("business_id", bizId).maybeSingle();
+      const cur = (docs?.intake && typeof docs.intake === "object") ? docs.intake : {};
+      const add = body.data && typeof body.data === "object" ? body.data : {};
+      const merged: any = { ...cur };
+      for (const k of ["name", "name_en", "activity", "place_mode", "wa_number", "address"]) if (add[k] && !merged[k]) merged[k] = add[k];
+      for (const k of ["services", "hours", "cities", "faq"]) if (Array.isArray(add[k]) && add[k].length) merged[k] = add[k];
+      if (add.notes) merged.notes = [cur.notes, add.notes].filter(Boolean).join("\n").slice(0, 1000);
+      if (!merged.name) merged.name = b.name;
+      if (!merged.owner_phone && b.owner_phone) merged.owner_phone = b.owner_phone;
+      const r = await cleanIntake(merged, bizId);
+      if (r.bad) return { saved: false, bad_locations: r.bad };
+      const now = new Date().toISOString();
+      const { error } = await db().from("client_docs").upsert({ business_id: bizId, intake: r.out, intake_at: now, updated_at: now }, { onConflict: "business_id" });
+      if (error) throw new Error(error.message);
+      return { saved: true, intake: r.out };
+    }
   }
   throw new AppError("not_found", 404);
 }
@@ -313,11 +350,14 @@ async function cleanIntake(d: any, logoDir: string): Promise<{ out?: any; bad?: 
     cr_number: clip(d.cr_number, 20), vat_number: clip(d.vat_number, 20), address: clip(d.address, 120),
     place_mode: PLACES.includes(d.place_mode) ? d.place_mode : "", pay_timing: TIMINGS.includes(d.pay_timing) ? d.pay_timing : "",
     has_moyasar: ["yes", "no", "later"].includes(d.has_moyasar) ? d.has_moyasar : "", notes: clipLines(d.notes, 1000),
-    services: (Array.isArray(d.services) ? d.services : []).slice(0, 15).map((x: any) => ({
-      name: clip(x?.name, 24),
-      price: x?.price === "" || x?.price == null || !Number.isFinite(+x.price) ? null : Math.max(0, Math.min(100000, +x.price)),
-      duration_min: x?.duration_min ? Math.max(10, Math.min(720, Math.round(+x.duration_min))) : null,
-    })).filter((x: any) => x.name),
+    services: (Array.isArray(d.services) ? d.services : []).slice(0, 40).map((x: any) => {
+      const price = x?.price === "" || x?.price == null || !Number.isFinite(+x.price) ? null : Math.max(0, Math.min(100000, +x.price));
+      return { name: clip(x?.name, 24), name_en: clip(x?.name_en, 24), price, price_from: price !== null && x?.price_from === true,
+        duration_min: x?.duration_min ? Math.max(10, Math.min(720, Math.round(+x.duration_min))) : null };
+    }).filter((x: any) => x.name),
+    faq: (Array.isArray(d.faq) ? d.faq : []).slice(0, 8)
+      .map((x: any) => ({ chip: clip(x?.chip, 60), q: clip(x?.q, 200) || clip(x?.chip, 60).replace(/[؟?]/g, ""), a: clipLines(x?.a, 600) }))
+      .filter((x: any) => x.q && x.a),
     hours: (Array.isArray(d.hours) ? d.hours : []).slice(0, 14)
       .filter((h: any) => h && /^[0-6]$/.test(String(h.weekday)) && /^\d{2}:\d{2}$/.test(h.open) && /^\d{2}:\d{2}$/.test(h.close))
       .map((h: any) => ({ weekday: +h.weekday, open: h.open, close: h.close })),
@@ -379,6 +419,13 @@ async function clientAction(req: Request, action: string) {
     const x = one.data as any, y = two.data as any;
     return { fees: { bot: { setup_fee: x.setup_fee, monthly_fee: x.monthly_fee }, bot_pay: { setup_fee: y.setup_fee, monthly_fee: y.monthly_fee }, app: { setup_fee: x.app_setup_fee, monthly_fee: x.app_monthly_fee } } };
   }
+  // نموذج البيانات: «عندك قائمة أسعار أو موقع؟ نعبّيها عنك» (يظهر بس لو القراءة مفعّلة، وله حد يومي)
+  if (action === "ai") return { ready: aiReady() };
+  if (action === "extract") {
+    if (clip(body.website, 50)) return { data: null };
+    if (body.k) need(await bizByClientKey(body.k), "invalid_link", 404);
+    return await extractMaterial(body, { kind: "public", ip });
+  }
   if (action === "agree-new" || action === "intake-new") {
     if (clip(body.website, 50)) return { ok: true };
     if (action === "agree-new") {
@@ -429,7 +476,7 @@ async function clientAction(req: Request, action: string) {
       db().from("subscriptions").select("plan, setup_fee, monthly_fee, app_setup_fee, app_monthly_fee").eq("business_id", b.id).maybeSingle(),
       db().from("client_docs").select("agreed_at, agreed_name, intake, intake_at").eq("business_id", b.id).maybeSingle(),
       db().from("settings").select("place_mode, pay_timing").eq("business_id", b.id).maybeSingle(),
-      db().from("services").select("name, price, duration_min").eq("business_id", b.id).eq("active", true).order("sort"),
+      db().from("services").select("name, name_en, price, price_from, duration_min").eq("business_id", b.id).eq("active", true).order("sort"),
       db().from("cities").select("id, name, lat, lng, radius_km").eq("business_id", b.id).eq("active", true).order("sort"),
       db().from("hours").select("weekday, open_time, close_time").eq("business_id", b.id).is("city_id", null).order("weekday"),
       db().from("staff").select("name, phone, city_ids").eq("business_id", b.id).eq("active", true),

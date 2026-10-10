@@ -54,18 +54,27 @@ details.more .g2{padding-bottom:12px}
 .hp{position:absolute;inset-inline-start:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;border:0;padding:0}
 .step{position:relative}
 .saved{font-size:12.5px;color:var(--muted);text-align:center}
+.import-cta.done{border-style:dashed}
+.import-cta .okl{color:var(--accent);font-weight:700;font-size:13.5px}
+.fr{grid-column:1/-1;display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--accent);margin-top:-4px}
+.fr button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;padding:0;text-decoration:underline}
+.linkb{background:none;border:0;color:var(--accent);font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;justify-self:start;display:inline-flex;gap:6px;align-items:center}
+.linkb svg{width:16px;height:16px}
 </style>
 </head>
 <body>
 <main class="doc" id="doc"><div class="card" style="display:grid;place-items:center;padding:40px"><div class="spin"></div></div></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="assets/ihj.js"></script>
+<script src="assets/reader.js"></script>
 <script>
 (async function () {
   const I = window.IHJ, { $, esc, icon } = I;
   const k = new URLSearchParams(location.search).get('k') || '';
   const post = async (path, body) => { const r = await fetch(I.FN + '/api/client/' + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, ...body }) }); const j = await r.json().catch(() => ({})); if (!j.ok) throw Object.assign(new Error(j.error || 'err'), { code: j.error }); return j; };
   let d = { business: { name: '' }, current: {}, intake: null };
+  // القراءة الذكية مفعّلة؟ (زر «عبّيها عني» يطلع بس لو مفعّلة)
+  let aiOn = false; const aiP = post('ai', {}).then((r) => { aiOn = !!r.ready; }).catch(() => {});
   if (k) { try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط النموذج من احجزلي</p></div>'; return; } }
   const b = d.business, cur = d.current || {}, prev = d.intake || {};
   // المدن بالمناطق (الأقرب لبعض مع بعض)
@@ -86,7 +95,8 @@ details.more .g2{padding-bottom:12px}
     name: val(prev.name, b.name || ''), name_en: val(prev.name_en, b.name_en || ''), activity: val(prev.activity, b.activity || ''), wa: val(prev.wa_number, b.wa_number ? I.phone(b.wa_number) : ''),
     owner: val(prev.owner_name, b.owner_name || ''), ownerp: val(prev.owner_phone, b.owner_phone ? I.phone(b.owner_phone) : ''), cr: val(prev.cr_number, b.cr_number || ''), vat: val(prev.vat_number, b.vat_number || ''), addr: val(prev.address, b.address || ''),
     place: val(prev.place_mode, cur.place_mode || ''), pay: val(prev.pay_timing, cur.pay_timing || ''), moy: prev.has_moyasar || '', notes: prev.notes || '',
-    services: (prev.services && prev.services.length ? prev.services : (cur.services || [])).map((s) => ({ name: s.name, price: s.price ?? '' })),
+    services: (prev.services && prev.services.length ? prev.services : (cur.services || [])).map((s) => ({ name: s.name, price: s.price ?? '', from: !!s.price_from, min: s.duration_min || null })),
+    faq: Array.isArray(prev.faq) ? prev.faq : [], imported: '',
     cities: (prev.cities && prev.cities.length ? prev.cities : (cur.cities || [])).map((c) => ({ ...c })),
     hoursPreset: '', hours: (prev.hours && prev.hours.length ? prev.hours : (cur.hours || [])).map((h) => ({ weekday: +h.weekday, open: String(h.open).slice(0, 5), close: String(h.close).slice(0, 5) })),
     staff: (prev.staff && prev.staff.length ? prev.staff : (cur.staff || [])).map((s) => ({ name: s.name, phone: s.phone ? I.phone(s.phone) : '', cities: s.cities || [] })),
@@ -95,6 +105,8 @@ details.more .g2{padding-bottom:12px}
   if (!st.services.length) st.services.push({ name: '', price: '' });
   if (st.hours.length && !st.hoursPreset) st.hoursPreset = 'custom';
   let step = (draft && Number.isInteger(draft.step)) ? Math.min(draft.step, 6) : 0;
+  if (!Array.isArray(st.faq)) st.faq = [];
+  await aiP;
   const save = () => { try { localStorage.setItem(DKEY, JSON.stringify({ st: { ...st, logo: '' }, step, t: Date.now() })); } catch (e) { /* */ } };
   const STEPS = ['biz', 'place', 'services', 'hours', 'pay', 'staff', 'send'];
   document.title = k ? `بيانات ${b.name} · احجزلي` : 'بيانات نشاطك · احجزلي';
@@ -113,7 +125,7 @@ details.more .g2{padding-bottom:12px}
     const titles = { biz: k ? 'بيانات ' + esc(b.name) : 'بيانات نشاطك', place: 'وين الخدمة؟', services: 'الخدمات والأسعار', hours: 'أوقات العمل', pay: 'الدفع', staff: 'الموظفون', send: 'راجع وأرسل' };
     $('ttl').textContent = titles[key];
     let body = '';
-    if (key === 'biz') body = `<h2>عرّفنا على نشاطك</h2><div class="h">دقيقتين، وكل شي تقدر ترجع تعدّله.</div>
+    if (key === 'biz') body = `${aiOn ? importCard() : ''}<h2>عرّفنا على نشاطك</h2><div class="h">دقيقتين، وكل شي تقدر ترجع تعدّله.</div>
       <label class="f"><span>اسم النشاط (مثل ما يظهر لعملائك)</span><input id="name" maxlength="80" value="${esc(st.name)}" autocomplete="organization"></label>
       <label class="f"><span>وش نشاطك؟</span><input id="activity" maxlength="60" value="${esc(st.activity)}" list="acts" placeholder="صالون، صيانة، عيادة، مغسلة…"><datalist id="acts"><option>صالون أو تجميل</option><option>صيانة منزلية</option><option>عيادة أو مركز</option><option>مغسلة سيارات</option><option>تنظيف</option><option>استشارات أو تدريب</option><option>مطعم أو كافيه</option><option>تأجير</option></datalist></label>
       <div class="g2"><label class="f"><span>اسم المالك</span><input id="owner" maxlength="60" value="${esc(st.owner)}" autocomplete="name"></label><label class="f"><span>جوال المالك</span><input id="ownerp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(st.ownerp)}" autocomplete="tel"></label></div>
@@ -123,7 +135,7 @@ details.more .g2{padding-bottom:12px}
     else if (key === 'place') body = `<h2>وين تقدّم خدمتك؟</h2>
       <div class="cards">${[['visit', 'عند العميل', 'تروح لموقعه (صيانة، مغسلة متنقلة، تنظيف)'], ['shop', 'في محلك', 'العميل يجيك (صالون، عيادة، مطعم)'], ['online', 'أونلاين', 'بدون زيارة (استشارات، تدريب)']].map(([v, l, s]) => `<label><input type="radio" name="place" value="${v}" ${st.place === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
       <div id="placeBox"></div>`;
-    else if (key === 'services') body = `<h2>وش خدماتك؟</h2><div class="h">اكتب الأساسية بس، والباقي نضيفه بعدين. اترك السعر فاضي لو يتحدد بعد المعاينة.</div><div class="stack s" id="svcs"></div><button class="btn ghost sm" type="button" id="addSvc" style="justify-self:start">${icon('plus')}خدمة ثانية</button>`;
+    else if (key === 'services') body = `<h2>وش خدماتك؟</h2><div class="h">اكتب الأساسية بس، والباقي نضيفه بعدين. اترك السعر فاضي لو يتحدد بعد المعاينة.</div>${aiOn ? `<button class="linkb" type="button" data-imp>${icon('file')}عندك صورة لقائمة الأسعار؟ نعبّيها عنك</button>` : ''}<div class="stack s" id="svcs"></div><button class="btn ghost sm" type="button" id="addSvc" style="justify-self:start">${icon('plus')}خدمة ثانية</button>`;
     else if (key === 'hours') body = `<h2>متى تستقبلون؟</h2>
       <div class="cards">${HP.map(([v, l]) => `<label><input type="radio" name="hp" value="${v}" ${st.hoursPreset === v ? 'checked' : ''}><b>${l}</b></label>`).join('')}</div>
       <div class="days" id="days" ${st.hoursPreset === 'custom' ? '' : 'hidden'}></div>`;
@@ -138,13 +150,43 @@ details.more .g2{padding-bottom:12px}
     window.scrollTo({ top: 0 });
     $('savedNote').textContent = 'مسودتك محفوظة في جهازك، تقدر ترجع تكمّل في أي وقت';
   }
+  // «عبّيها عني»: صورة قائمة الأسعار أو رابط الموقع ← نعبّي الاسم والخدمات والأوقات والمكان، وهو يراجعها خطوة خطوة
+  function importCard() {
+    return st.imported ? `<div class="import-cta done"><div class="grow"><span class="okl">✓ عبّينا من القائمة: ${esc(st.imported)}</span><span class="tiny">راجعها خطوة خطوة، وعدّل أي شي.</span></div><button class="btn ghost sm" type="button" data-imp>${icon('file')}صورة ثانية</button></div>`
+      : `<div class="import-cta"><div class="grow"><b>عندك قائمة أسعار أو موقع؟</b><span class="tiny">صوّرها أو حط رابط موقعك، ونعبّي أغلب النموذج عنك.</span></div><button class="btn" type="button" data-imp>${icon('file')}عبّيها عني</button></div>`;
+  }
+  const nkey = (s) => String(s || '').replace(/[\s\u0640]+/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase();
+  async function importNow() {
+    const key = STEPS[step]; read[key]();
+    const r = await I.reader({ send: (p) => post('extract', p), intro: 'صورة قائمة أسعارك أو المنيو، أو رابط موقعك، أو الأسعار لو عندك كرسالة. نقرأها ونعبّي النموذج، وأنت تراجعه.' });
+    if (!r || !r.data) return;
+    const x = r.data;
+    if (x.name && !st.name.trim()) st.name = x.name;
+    if (x.name_en && !st.name_en) st.name_en = x.name_en;
+    if (x.activity && !st.activity.trim()) st.activity = x.activity;
+    if (x.place_mode && !st.place) st.place = x.place_mode;
+    if (x.services.length) {
+      const list = st.services.filter((s) => String(s.name).trim());
+      for (const s of x.services) { const row = { name: s.name, price: s.price ?? '', from: !!s.price_from, min: s.duration_min || null }; const i = list.findIndex((y) => nkey(y.name) === nkey(s.name)); if (i >= 0) list[i] = row; else list.push(row); }
+      st.services = list;
+    }
+    if (x.hours.length) { st.hoursPreset = 'custom'; st.hours = x.hours.map((h) => ({ weekday: h.weekday, open: h.open, close: h.close })); }
+    if (st.place === 'visit') for (const n of x.cities) { const p = I.cityPreset(n); if (p && !st.cities.some((c) => c.name === p.name)) st.cities.push(p); }
+    if (st.place === 'shop' && x.branches.length) { const list = st.cities.filter((c) => String(c.name || '').trim()); for (const b of x.branches) if (!list.some((c) => nkey(c.name) === nkey(b.name))) list.push({ name: b.name, maps: b.maps || '' }); st.cities = list; }
+    if (x.faq.length) st.faq = x.faq;
+    if (x.notes && !String(st.notes).includes(x.notes)) st.notes = [st.notes, x.notes].filter(Boolean).join('\n').slice(0, 1000);
+    const wa = x.phones.find((p) => okPhone(p)); if (wa && !st.wa && wa !== st.ownerp) st.wa = wa;
+    st.imported = I.extractSummary(x) || 'بياناتك';
+    I.closeAll(); paint();
+    I.toast('عبّينا ' + st.imported + ' ✓ راجعها خطوة خطوة');
+  }
   function summary() {
     const row = (l, v, i) => `<div><span>${l}</span><span style="text-align:end"><b>${esc(v || 'غير محدد')}</b> <button type="button" data-go="${i}">عدّل</button></span></div>`;
     const place = { visit: 'عند العميل', shop: 'في محلك', online: 'أونلاين' }[st.place];
     const pay = { after: 'بعد الخدمة', before: 'قبل الحجز', none: 'في المحل' }[st.pay];
     const hp = HP.find((x) => x[0] === st.hoursPreset);
     return row('النشاط', `${st.name}${st.activity ? ' · ' + st.activity : ''}`, 0) + row('المكان', place + (st.place === 'visit' && cityNames().length ? ' · ' + cityNames().join('، ') : st.place === 'shop' ? ' · ' + (cityNames().join('، ') || 'فرع واحد') : ''), 1)
-      + row('الخدمات', st.services.filter((s) => s.name.trim()).map((s) => s.name + (s.price !== '' ? ' ' + s.price : '')).join('، '), 2) + row('الدوام', hp ? (hp[0] === 'custom' ? st.hours.length + ' أيام' : hp[1]) : '', 3) + row('الدفع', pay, 4) + row('الموظفون', st.staff.filter((s) => s.name.trim()).map((s) => s.name).join('، ') || 'أنت', 5);
+      + row('الخدمات', st.services.filter((s) => s.name.trim()).map((s) => s.name + (s.price !== '' ? ' ' + (s.from ? 'من ' : '') + s.price : '')).join('، '), 2) + row('الدوام', hp ? (hp[0] === 'custom' ? st.hours.length + ' أيام' : hp[1]) : '', 3) + row('الدفع', pay, 4) + row('الموظفون', st.staff.filter((s) => s.name.trim()).map((s) => s.name).join('، ') || 'أنت', 5);
   }
   const read = {
     biz() { for (const id of ['name', 'activity', 'owner', 'ownerp', 'wa', 'cr', 'vat', 'addr', 'name_en']) if ($(id)) st[id] = $(id).value.trim(); },
@@ -166,6 +208,7 @@ details.more .g2{padding-bottom:12px}
   }
   function bind(key) {
     document.querySelectorAll('[data-go]').forEach((x) => x.onclick = () => { step = +x.dataset.go; paint(); });
+    document.querySelectorAll('[data-imp]').forEach((x) => x.onclick = importNow);
     if ($('back')) $('back').onclick = () => { read[key](); step--; paint(); };
     if ($('next')) $('next').onclick = () => { read[key](); const e = validate(key); if (e) { $('err').textContent = e; $('err').hidden = false; return; } step++; paint(); };
     $('body').querySelectorAll('input,textarea,select').forEach((x) => x.addEventListener('input', () => { x.classList.remove('bad'); $('err').hidden = true; }));
@@ -199,7 +242,8 @@ details.more .g2{padding-bottom:12px}
     $('addBr').onclick = () => { st.cities.push({ name: '', maps: '' }); paintPlace(); };
   }
   function paintSvcs() {
-    $('svcs').innerHTML = st.services.map((s, i) => `<div class="line"><input id="sv${i}" data-si="${i}" data-k="name" placeholder="اسم الخدمة" maxlength="24" value="${esc(s.name)}"><input data-si="${i}" data-k="price" type="number" min="0" inputmode="decimal" placeholder="السعر" value="${esc(s.price)}"><button class="ib" type="button" data-rs="${i}" ${st.services.length > 1 ? '' : 'hidden'}>${icon('x')}</button></div>`).join('');
+    $('svcs').innerHTML = st.services.map((s, i) => `<div class="line"><input id="sv${i}" data-si="${i}" data-k="name" placeholder="اسم الخدمة" maxlength="24" value="${esc(s.name)}"><input data-si="${i}" data-k="price" type="number" min="0" inputmode="decimal" placeholder="السعر" value="${esc(s.price)}"><button class="ib" type="button" data-rs="${i}" ${st.services.length > 1 ? '' : 'hidden'}>${icon('x')}</button>${s.from && s.price !== '' ? `<span class="fr">السعر يبدأ من ${esc(s.price)} <button type="button" data-nf="${i}">خله ثابت</button></span>` : ''}</div>`).join('');
+    $('svcs').querySelectorAll('[data-nf]').forEach((x) => x.onclick = () => { st.services[+x.dataset.nf].from = false; paintSvcs(); });
     $('svcs').querySelectorAll('[data-si]').forEach((x) => x.oninput = () => { st.services[+x.dataset.si][x.dataset.k] = x.value; save(); });
     $('svcs').querySelectorAll('[data-rs]').forEach((x) => x.onclick = () => { st.services.splice(+x.dataset.rs, 1); paintSvcs(); });
   }
@@ -221,7 +265,7 @@ details.more .g2{padding-bottom:12px}
     const data = {
       name: st.name, name_en: st.name_en, activity: st.activity, wa_number: st.wa || st.ownerp, owner_name: st.owner, owner_phone: st.ownerp, cr_number: st.cr, vat_number: st.vat, address: st.addr,
       place_mode: st.place, pay_timing: st.pay, has_moyasar: st.pay === 'none' ? '' : st.moy, notes: st.notes,
-      services: st.services.filter((s) => String(s.name).trim()).map((s) => ({ name: s.name.trim(), price: s.price })),
+      services: st.services.filter((s) => String(s.name).trim()).map((s) => ({ name: s.name.trim(), price: s.price, price_from: !!s.from && s.price !== '', duration_min: s.min || null })), faq: st.faq,
       cities: st.place === 'online' ? [] : st.cities.filter((c) => String(c.name || '').trim()),
       hours: hoursFor(), staff: st.staff.filter((s) => String(s.name).trim()),
       logo: st.logo || undefined, logo_url: st.logo ? undefined : st.logo_url,

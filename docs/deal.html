@@ -74,6 +74,18 @@ body{padding:18px 16px 60px}
 .prog .tab{font-size:12px;color:var(--accent);font-weight:700}
 .now-bar{background:color-mix(in srgb,var(--gold) 16%,var(--card));border:1.5px solid var(--gold);border-radius:16px;padding:14px 16px;display:grid;gap:6px}
 .now-bar b{font-family:var(--display);font-size:17px}
+/* كيف تضبطين البوت (بالصور): كل خطوة بطاقة، الصورة جنب الشرح، وعلى الجوال فوقه */
+.how{display:grid;gap:12px}
+.hw{margin:0;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:stretch}
+.hw .pics{display:flex;gap:8px;background:var(--soft2);padding:12px;align-items:flex-start;justify-content:center}
+.hw .pics img{display:block;min-width:0;flex:0 1 auto;width:auto;height:auto;max-width:100%;max-height:440px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.hw .pics img.side{flex:0 1 34%;max-width:34%}
+.hw .pics img.side+img{max-width:64%}
+.hw figcaption{padding:18px 20px;display:grid;gap:8px;align-content:center}
+.hw figcaption b{font-family:var(--display);font-size:17px;display:flex;gap:10px;align-items:center;line-height:1.5}
+.hw figcaption i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:13.5px;flex:none}
+.hw figcaption span{font-size:14.5px;color:var(--muted);line-height:1.8}
+@media (max-width:860px){ .hw{grid-template-columns:1fr} .hw .pics img{max-height:none} }
 @media (max-width:860px){ .trio,.st .g3,.prog{grid-template-columns:1fr} }
 </style>
 </head>
@@ -106,13 +118,13 @@ body{padding:18px 16px 60px}
       client: ['يوافق من الرابط (دقيقة)', 'يحوّل نص التأسيس'], system: ['موافقته تتسجل بالاسم والجوال والوقت، وتوصلك بتنبيه'],
       where: 'لوحتي ← دليل التشغيل ← الخطوة 1', done: 'وافق + الدفعة مسجلة', risk: 'وافق وما حوّل؟ ذكّريه بلطف، والتجهيز ما يبدأ قبل الدفعة.' },
     { k: 'docs', t: 'بياناته', d: [1, 1], who: ['client', 'you'], c: 'client',
-      what: 'نموذج واحد (5 دقايق): الخدمات والأسعار، الأوقات، المدن أو الفروع، الموظفين، والشعار.',
-      you: ['ترسلين رابط النموذج', 'لو ما يحب النماذج: تتصلين وتعبّينه معه', 'تضغطين «طبّق بياناته» فتنبني المنشأة منها'],
-      client: ['يعبّي النموذج من جواله، والمسودة تنحفظ لو طلع'], system: ['يتعرف عليه بجواله، ويوصلك تنبيه أول ما يرسل'],
-      where: 'دليل التشغيل ← الخطوة 2 ← «طبّق بياناته»', done: 'انطبقت بياناته', risk: 'فرع موقعه ما انقرأ؟ النموذج يطلب منه رابط قوقل ماب، أو تحددينه على الخريطة.' },
+      what: 'أسهل طريقة: يرسل لك صورة قائمة أسعاره أو رابط موقعه، والنظام يقرأ منها الخدمات والأسعار والأوقات والفروع. وإذا ما عنده قائمة، يعبّي نموذج واحد (5 دقايق).',
+      you: ['تطلبين منه صورة قائمة الأسعار أو رابط موقعه', 'ترفعينها في «عبّيها من صورة أو موقع»، تراجعين اللي انقرأ، وتضغطين «طبّقها على منشأته»', 'ما عنده قائمة؟ ترسلين رابط النموذج أو تتصلين وتعبّينه معه، وبعدها «طبّق بياناته»'],
+      client: ['يرسل صورة قائمة الأسعار أو رابط موقعه (دقيقة)', 'أو يعبّي النموذج من جواله، وفيه زر «عبّيها عني» يقرأ من الصورة'], system: ['يقرأ الخدمات والأسعار والأوقات والفروع من الصورة أو الموقع', 'يتعرف عليه بجواله، ويوصلك تنبيه أول ما يرسل'],
+      where: 'دليل التشغيل ← الخطوة 2 ← «عبّيها من صورة أو موقع»', done: 'انطبقت بياناته', risk: 'الصورة ما انقرت زين؟ اطلبي صورة أوضح وأقرب، أو الأسعار كرسالة والصقيها. والفرع بدون رابط موقع تحددينه على الخريطة.' },
     { k: 'build', t: 'برمجة البوت', d: [1, 2], who: ['you'], c: 'you',
-      what: 'تضبطين البوت على نشاطه من لوحة المنشأة. هذي «البرمجة»: بدون كود، كلها إعدادات.',
-      you: ['الخدمات والأسعار والمدة', 'الأوقات والعطل ومدة الموعد', 'المدن أو الفروع على الخريطة', 'الأسئلة والأجوبة اللي تتكرر عنده', 'الأزرار الأولى واللي تحت كل جواب', 'الأسلوب، والدفع، والتذكير'],
+      what: '«بدون كود» يعني: البوت مبرمج مرة وحدة لكل المنشآت، واللي يفرّق نشاط عن ثاني بياناته. تعبّينها في لوحة منشأته مثل ما تعبّين نموذج، وأي شي تحفظينه البوت يستخدمه على طول. الصور تحت توريك كل شاشة.',
+      you: ['الخدمات والأسعار والمدة (تنعبّى من صورة قائمته بضغطة)', 'الأوقات والعطل ومدة الموعد', 'المدن أو الفروع على الخريطة', 'الأسئلة والأجوبة اللي تتكرر عنده', 'الأزرار الأولى واللي تحت كل جواب', 'الأسلوب، والدفع، والتذكير'],
       client: [], system: ['البوت يشتغل بالإعدادات فورًا في المحاكي'],
       where: 'لوحة المنشأة (من دليل التشغيل ← الخطوة 3)', done: 'الخدمات والأوقات والمكان جاهزة', risk: 'نسيتي شي؟ قائمة التحقق في الخطوة 3 تبين وش ناقص.' },
     { k: 'test', t: 'تجربته باسمه', d: [2, 3], who: ['client', 'you'], c: 'client',
@@ -208,6 +220,9 @@ body{padding:18px 16px 60px}
       <div class="trio"><div class="tcol"><h3><span class="who w-you">أنتِ</span></h3><div id="cYou"></div></div><div class="tcol"><h3><span class="who w-client">العميل</span></h3><div id="cClient"></div></div><div class="tcol"><h3><span class="who w-system">يصير لحاله</span></h3><div id="cSys"></div></div></div></section>
     <h2 style="font-size:20px">الخطوات بالتفصيل</h2>
     <div class="steps" id="steps"></div>
+    <h2 style="font-size:20px" id="howto">كيف تضبطين البوت لعميل (بالصور)</h2>
+    <p class="lede">مثال على «صالونك» التجريبية: العميل أرسل لك صورة قائمة أسعاره بالواتساب، وهذي الخطوات من أول ما تفتحين لوحته لين تجربينه.</p>
+    <div class="how" id="how"></div>
     <h2 style="font-size:20px" id="programming">وش نبرمج في البوت ومتى</h2>
     <p class="lede">البرمجة كلها إعدادات من لوحة المنشأة، بدون كود. تصير ثلاث مرات: بعد ما توصل بياناته (اليوم 1 إلى 2)، بعد ملاحظاته على التجربة (اليوم 2 إلى 3)، وبعد التشغيل كل ما ظهر سؤال جديد.</p>
     <div class="prog" id="prog"></div>
@@ -261,7 +276,7 @@ body{padding:18px 16px 60px}
       const when = p.d[0] === p.d[1] ? `اليوم ${p.d[0]}` : `اليوم ${p.d[0]} إلى ${p.d[1]}`;
       const box = (title, arr) => `<div><b>${title}</b>${arr.length ? arr.map((t) => '• ' + esc(t)).join('<br>') : '<span class="tiny">ما عليه شي</span>'}</div>`;
       return `<section class="st ${cls}" id="st-${p.k}"><div class="sthd"><b>${esc(p.t)}</b>${p.who.map((w) => `<span class="who ${WHO[w][1]}">${WHO[w][0]}</span>`).join('')}${p.par ? '<span class="who" style="background:var(--soft2)">بالتوازي</span>' : ''}<span class="when">${when}</span></div>
-        <p>${esc(p.what)}</p>
+        <p>${esc(p.what)}${p.k === 'build' ? ' <a href="#howto">شوفيها بالصور ↓</a>' : ''}</p>
         <div class="g3">${box('أنتِ', p.you)}${box('العميل', p.client)}${box('يصير لحاله', p.system)}</div>
         <div class="meta"><span>وين: <b>${esc(p.where)}</b></span><span>تخلص لما: <b>${esc(p.done)}</b></span></div>
         ${p.risk ? `<div class="risk">${esc(p.risk)}</div>` : ''}
@@ -294,7 +309,21 @@ body{padding:18px 16px 60px}
       T('الإعدادات', 'التذكير والتنبيهات', 'التذكير قبل الموعد، رجوع البوت للعميل المحوّل بعد كم ساعة، وتنبيهات المالك والموظف.', 'قبل التشغيل الحقيقي'),
     ].join('');
   }
+  // كيف تضبطين البوت لعميل: صور حقيقية من لوحة المنشأة (tests/shot-howto.mjs يجددها)
+  const HOW = [
+    ['how-1', 'افتحي لوحة منشأته ← «الخدمات والمدن»', 'من «دليل التشغيل» الخطوة 3 ← «افتح لوحة المنشأة». فوق الخدمات فيه زر «عبّيها من صورة أو موقع».', ''],
+    ['how-2', 'ارفعي صورة قائمة أسعاره', 'الصورة اللي أرسلها لك: احفظيها وارفعيها، أو انسخيها والصقيها مباشرة. ويمديك تحطين رابط موقعه، أو تلصقين الأسعار لو أرسلها كرسالة.', 'how-menu'],
+    ['how-3', 'راجعي اللي انقرأ واحفظيه', 'كل خدمة بسعرها، و«يبدأ من» لو السعر يبدأ من رقم، والأوقات والفروع والأسئلة. شيلي الصح عن أي شي غلط، وعدّلي الاسم أو السعر، واضغطي «احفظها في البوت».', ''],
+    ['how-4', 'تأكدي من الأوقات ومدة الموعد', 'من «الأوقات والعطل»: الدوام لكل يوم، ومدة الموعد (تحدد كم عميل ينحجز باليوم)، وكم يوم قدام يقدر يحجز، والعطل.', ''],
+    ['how-5', 'الأزرار والأسئلة', 'من «نصوص الرد»: وش يطلع للعميل أول ما يكلّمهم، واللي تحت كل جواب، والأسئلة اللي يرد عليها البوت لحاله.', ''],
+    ['how-6', 'جرّبيه كأنك عميل', 'من «افتح المحاكي»: اكتبي «كم الأسعار؟» أو احجزي موعد. أي شي ما عجبك عدّليه من اللوحة وجرّبي مرة ثانية، وبعدها ترسلين له رابط المحاكي يجربه بنفسه.', ''],
+  ];
+  function paintHow() {
+    $('how').innerHTML = HOW.map(([img, t, d, extra], i) => `<figure class="hw"><div class="pics">${extra ? `<img class="side" src="img/${extra}.webp" alt="صورة قائمة الأسعار اللي أرسلها العميل (مثال)" loading="lazy">` : ''}<img src="img/${img}.webp" alt="${esc(t)}" loading="lazy"></div>
+      <figcaption><b><i>${i + 1}</i>${esc(t)}</b><span>${esc(d)}</span></figcaption></figure>`).join('');
+  }
   function paintAll() { paintNow(); paintGantt(); paintDay(); paintSteps(); paintProg(); }
+  paintHow();
   $('who').value = bizId;
   $('who').onchange = (e) => { bizId = e.target.value; const u = new URL(location.href); if (bizId) u.searchParams.set('b', bizId); else u.searchParams.delete('b'); history.replaceState(null, '', u); if (!bizId) day = 0; paintAll(); };
   $('dayR').oninput = (e) => { day = +e.target.value; paintDay(); };

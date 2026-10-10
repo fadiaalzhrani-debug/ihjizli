@@ -215,6 +215,7 @@ class Bot {
         if (v.startsWith("faq:")) { const e = (Array.isArray(this.s.faq) ? this.s.faq : [])[+v.slice(4)]; if (e?.a) return this.reply(String(e.a)); }
         return this.welcome();
       case "svc": return this.onService(v);
+      case "svp": return this.askService(+v || 0);
       case "br": return this.onBranch(v);
       case "loc": return this.askLocation();
       case "day": return this.onDay(v);
@@ -261,14 +262,19 @@ class Bot {
     return this.afterService();
   }
 
-  askService() {
+  // قائمة الواتساب 10 صفوف بالكثير: لو الخدمات أكثر، 9 بكل صفحة وصف أخير «خدمات أكثر»
+  askService(page = 0) {
     this.set("svc");
-    const rows = this.ctx.services.slice(0, 10).map((s: any) => ({
+    const all = this.ctx.services, per = all.length > 10 ? 9 : 10;
+    const pages = Math.max(1, Math.ceil(all.length / per)), p = Math.min(Math.max(0, page | 0), pages - 1);
+    const rows: Row[] = all.slice(p * per, p * per + per).map((s: any) => ({
       id: `svc:${s.id}`, title: this.svcName(s),
-      desc: s.price != null ? this.T("price_fixed", { price: money(s.price) }) : (modeOf(this.s, s) === "visit" ? this.T("price_after") : ""),
+      desc: s.price != null ? this.priceText(s) : (modeOf(this.s, s) === "visit" ? this.T("price_after") : ""),
     }));
+    if (pages > 1) rows.push({ id: `svp:${(p + 1) % pages}`, title: this.T(p + 1 < pages ? "more_services" : "first_services"), desc: `${p + 1}/${pages}` });
     this.list(this.T("ask_service"), this.T("btn_services"), rows);
   }
+  priceText(s: any) { return this.T(s.price_from ? "price_from" : "price_fixed", { price: money(s.price) }); }
 
   onService(id: string) {
     const s = this.ctx.services.find((x: any) => x.id === id);
@@ -432,7 +438,7 @@ class Bot {
       await db().from("orders").update({ status: "confirmed", hold_until: null }).eq("id", order.id);
       order.status = "confirmed";
     }
-    const price = order.price != null ? this.T("price_fixed", { price: money(order.price) }) : this.T("price_after");
+    const price = order.price != null ? this.T(svc?.price_from ? "price_from" : "price_fixed", { price: money(order.price) }) : this.T("price_after");
     const price_line = order.price != null || mode === "visit" ? this.T("price_line", { price }) : "";
     this.say({ t: "buttons", text: this.T("confirmed", { no: order.number, day, time, city_line, price, price_line, tail: tailFor(this.T, this.s, mode, this.lang) }),
       buttons: [{ id: "m:orders", title: this.T("btn_orders") }, { id: "m:new", title: this.T("btn_new_order") }] });
@@ -557,7 +563,7 @@ class Bot {
 
   // ───────── أي سؤال: معلومات ─────────
   servicesLines(withPrice: boolean) {
-    return this.ctx.services.map((s: any) => `• ${this.svcName(s)}${withPrice ? `: ${s.price != null ? this.T("price_fixed", { price: money(s.price) }) : this.T("price_after")}` : (s.price != null ? ` · ${this.T("price_fixed", { price: money(s.price) })}` : "")}`).join("\n");
+    return this.ctx.services.map((s: any) => `• ${this.svcName(s)}${withPrice ? `: ${s.price != null ? this.priceText(s) : this.T("price_after")}` : (s.price != null ? ` · ${this.priceText(s)}` : "")}`).join("\n");
   }
 
   prices() {

@@ -31,7 +31,8 @@ try {
   let last = o.at(-1);
   const day = rows(last).find((x) => x.id.startsWith('day:'));
   o = await send({ type: 'reply', id: day.id }); last = o.at(-1);
-  const slot = rows(last).find((x) => x.id.startsWith('slot:'));
+  // آخر وقت باليوم (مو أقربه) عشان ما يطيح تحت «أقل وقت قبل الموعد» أثناء الفحص
+  const slot = rows(last).filter((x) => x.id.startsWith('slot:')).at(-1);
   const slotIso = slot.id.slice(5);
   o = await send({ type: 'reply', id: slot.id }); last = o.at(-1);
   const ord = sql(`select status, is_test, staff_id from orders where business_id = '${bizId}' order by created_at desc limit 1`)[0];

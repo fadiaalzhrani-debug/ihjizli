@@ -59,6 +59,7 @@
 <div id="root"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="assets/ihj.js"></script>
+<script src="assets/reader.js"></script>
 <script>
 (async function () {
   const I = window.IHJ, { $, esc, icon, money } = I;
@@ -106,7 +107,7 @@
   // [المفتاح، العنوان، مين، الوصف، الشرط]
   const STEPS = [
     ['contract', 'الاتفاقية والدفعة الأولى', 'العميل + أنتِ', 'يوافق من الرابط ويحوّل نص التأسيس، وأنتِ تسجلين الدفعة.', (b) => !!docsOf(b).agreed_at && paidSetup(b) > 0],
-    ['docs', 'بياناته', 'العميل + أنتِ', 'يعبّي النموذج (5 دقايق) أو تعبّينه معه، وتضغطين «طبّق بياناته».', (b) => !!docsOf(b).intake_applied_at],
+    ['docs', 'بياناته', 'العميل + أنتِ', 'يرسل لك صورة قائمة أسعاره أو رابط موقعه وتضغطين «عبّيها من صورة أو موقع»، أو يعبّي النموذج (5 دقايق). بعدها «طبّق بياناته».', (b) => !!docsOf(b).intake_applied_at],
     ['build', 'برمجة البوت', 'أنتِ', 'من لوحة المنشأة: الخدمات والأسعار، الأوقات، المدن أو الفروع، الأسئلة والأجوبة، الأزرار، الأسلوب، الموظفون.', (b, st) => built(b, st)],
     ['test', 'تجربته باسمه', 'العميل + أنتِ', 'يكلّم البوت في المحاكي كأنه عميل، وأي تعديل يطلبه تسوينه من لوحة المنشأة.', (b, st) => st.sim_orders > 0],
     ['connect', 'ربط الرقم', 'أنتِ + العميل (اتصال)', 'تجهّزين حساب المزوّد قبل الاتصال. في الاتصال يدخل فيسبوك ويكتب الرمز، وأنتِ تلصقين البيانات والويبهوك. تخلص لما توصل أول رسالة حقيقية.', (b, st) => (S.ch[b.id] || {}).status === 'connected' && !!st.last_real_in],
@@ -180,12 +181,28 @@
           <div class="row"><span class="grow">عملاء يحتاجون رد (كل المنشآت)</span><b>${Object.values(S.stats).reduce((a, s) => a + (s.open_handoffs || 0), 0)}</b></div>
         </div>
       </div>
+      <div class="card stack" id="aiCard"><div class="sec-h"><h3>القراءة الذكية</h3><span class="spin" style="width:18px;height:18px"></span></div></div>
       <div class="card stack"><div class="sec-h"><h3>المنشآت قيد التجهيز</h3></div>${setup.length ? setup.map((b) => `<div class="biz-row item click" data-b="${b.id}">${logo(b)}<div><b>${esc(b.name)}</b><div class="tiny">${PLAN[b.plan]} · ${progress(b)} من ${STEPS.length} خطوات</div></div><span class="prog"><i style="width:${progress(b) / STEPS.length * 100}%"></i></span></div>`).join('') : '<div class="tiny">ما فيه منشآت قيد التجهيز</div>'}</div>
       <div class="card stack"><div class="sec-h"><h3>آخر طلبات الاشتراك</h3><a class="btn sm ghost" href="#leads" data-go="leads">الكل</a></div>${S.leads.slice(0, 5).map(leadRow).join('') || '<div class="tiny">ما فيه طلبات</div>'}</div>`;
     v.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); });
     v.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
     v.querySelectorAll('[data-b]').forEach((el) => el.onclick = () => openBiz(el.dataset.b));
     v.querySelectorAll('[data-lead]').forEach((el) => el.onclick = () => openLead(el.dataset.lead));
+    paintAi();
+  }
+  // القراءة الذكية (صورة قائمة الأسعار أو الموقع ← الخدمات والأسعار): مفعّلة؟ وكم استهلكت هالشهر؟ وطريقة تفعيلها
+  async function paintAi() {
+    const el = $('aiCard'); if (!el) return;
+    let st = null; try { st = await I.api('admin/ai/status', {}); } catch (e) { /* */ }
+    if (!el.isConnected) return;
+    if (!st) { el.innerHTML = '<div class="sec-h"><h3>القراءة الذكية</h3></div><div class="tiny">ما قدرنا نجيب حالتها، حدّثي الصفحة.</div>'; return; }
+    const SECRETS = 'https://supabase.com/dashboard/project/kvreqxdgjeietzsfamei/functions/secrets';
+    el.innerHTML = `<div class="sec-h"><h3>القراءة الذكية</h3>${st.ready ? '<span class="badge b-ok plain">مفعّلة</span>' : '<span class="badge b-warn plain">غير مفعّلة</span>'}</div>
+      <p class="tiny" style="margin:0">تقرأ صورة قائمة أسعار العميل أو موقعه وتعبّي الخدمات والأسعار والأوقات والأسئلة. تلقينها في «دليل التشغيل» الخطوة 2، وفي لوحة كل منشأة، وفي نموذج العميل.</p>
+      ${st.ready ? `<div class="row small"><span class="grow">هالشهر</span><b>${st.month.count} قراءة</b><span class="tiny">تقريبًا ${st.month.usd} دولار</span></div>`
+        : `<ol class="ai-steps"><li>افتحي <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> وادخلي بحساب قوقل حقك.</li><li>من <b>Billing</b> أضيفي رصيد بسيط (5 أو 10 دولار). كل قراءة تقريبًا ربع ريال إلى ريال حسب حجمها.</li><li>من <b>API Keys</b> اضغطي <b>Create Key</b> وانسخي المفتاح.</li><li>افتحي <a href="${SECRETS}" target="_blank" rel="noopener">أسرار الدوال في Supabase</a>، واضغطي <b>Add new secret</b>: الاسم <code>ANTHROPIC_API_KEY</code> والقيمة المفتاح، واحفظي.</li></ol>
+          <div class="row"><button class="btn sm ghost" type="button" id="aiCheck">${icon('refresh')}تحقق الحين</button><span class="tiny">لو ما تغيّرت، انتظري دقيقة وجرّبي</span></div>`}`;
+    const b = $('aiCheck'); if (b) b.onclick = () => { el.innerHTML = '<div class="sec-h"><h3>القراءة الذكية</h3><span class="spin" style="width:18px;height:18px"></span></div>'; paintAi(); };
   }
 
   // ═════ المنشآت ═════
@@ -275,7 +292,7 @@
     const extra = {
       contract: (d.agreed_at ? ok(`وافق ${esc(d.agreed_name || '')} ${esc(I.ago(d.agreed_at))}`) : wait('ما وافق بعد')) + (paid > 0 ? ok(`استلمت ${money(paid)} من ${money(setup)}`) : `<button class="btn sm ghost" type="button" data-act="pay">${icon('plus')}سجّل الدفعة الأولى</button>`),
       build: `<div class="chks">${tick(st.services > 0, `الخدمات والأسعار (${st.services || 0})`, bz('catalog'))}${tick(st.hours > 0, 'الأوقات والعطل', bz('hours'))}${tick(placeOf(b) === 'online' || st.cities > 0, placeOf(b) === 'shop' ? `الفروع (${st.cities || 0})` : placeOf(b) === 'online' ? 'أونلاين' : `المدن (${st.cities || 0})`, bz('catalog'))}${tick((set.faq || []).length > 0, `الأسئلة والأجوبة (${(set.faq || []).length})`, bz('texts'))}${tick(!!(set.menu && set.menu.main && set.menu.main.length), 'الأزرار الأولى', bz('texts'))}${tick(true, 'الأسلوب: ' + ({ friendly: 'ودّي', formal: 'رسمي', short: 'مختصر' }[set.tone] || 'ودّي'), bz('settings'))}${tick(st.staff > 0, `الموظفون (${st.staff || 0})`, bz('staff'))}${tick(true, 'الدفع: ' + ({ after: 'بعد الخدمة', before: 'قبل الحجز', none: 'في المحل' }[set.pay_timing] || 'بعد الخدمة'), bz('settings'))}</div><a class="btn sm" href="biz.html?b=${b.id}" target="_blank" rel="noopener">${icon('store')}افتح لوحة المنشأة</a>`,
-      docs: (intake.notes || intake.has_moyasar ? `<div class="hint" style="width:100%">${intake.has_moyasar ? '<b>' + MO[intake.has_moyasar] + '</b>' : ''}${intake.notes ? (intake.has_moyasar ? ' · ' : '') + 'ملاحظته: ' + esc(intake.notes) : ''}</div>` : '') + (d.intake_at ? `${d.intake_applied_at ? ok('انطبقت بياناته') : '<span class="badge b-gold plain">عبّى النموذج</span>'}<button class="btn sm${d.intake_applied_at ? ' ghost' : ''}" type="button" data-act="apply">${icon('check')}${d.intake_applied_at ? 'طبّقها مرة ثانية' : 'طبّق بياناته'}</button>` : wait('ما عبّى النموذج بعد')),
+      docs: (intake.notes || intake.has_moyasar ? `<div class="hint" style="width:100%">${intake.has_moyasar ? '<b>' + MO[intake.has_moyasar] + '</b>' : ''}${intake.notes ? (intake.has_moyasar ? ' · ' : '') + 'ملاحظته: ' + esc(intake.notes) : ''}</div>` : '') + (d.intake_at ? `${d.intake_applied_at ? ok('انطبقت بياناته') : '<span class="badge b-gold plain">عبّى النموذج</span>'}<button class="btn sm${d.intake_applied_at ? ' ghost' : ''}" type="button" data-act="apply">${icon('check')}${d.intake_applied_at ? 'طبّقها مرة ثانية' : 'طبّق بياناته'}</button>` : wait('ما عبّى النموذج بعد')) + `<button class="btn sm${d.intake_at ? ' ghost' : ''}" type="button" data-act="import">${icon('file')}عبّيها من صورة أو موقع</button>`,
       test: `${st.sim_orders ? ok(`${st.sim_orders} حجز تجريبي`) : wait('ما جرّب بعد')}<a class="btn sm ghost" href="biz.html?b=${b.id}" target="_blank" rel="noopener">${icon('edit')}عدّل الردود والأسعار</a>`,
       connect: `${ch.status === 'connected' ? ok('المفتاح شغّال') : ch.status === 'error' ? '<span class="badge b-bad plain">خطأ بالربط</span>' : wait('الرقم غير مربوط')}${st.last_real_in ? ok('آخر رسالة حقيقية ' + esc(I.ago(st.last_real_in))) : wait('ما وصلت رسالة حقيقية بعد')}${ch.dry_run ? '<span class="badge b-gold plain">وضع الفحص</span>' : ''}<button class="btn sm ghost" type="button" data-act="connect">${icon('wa')}ربط الرقم</button>`,
       meta: `${ch.meta_verification === 'verified' ? ok('موثّق') : wait({ pending: 'قيد المراجعة', rejected: 'مرفوض' }[ch.meta_verification] || 'ما بدأ')}<button class="btn sm ghost" type="button" data-act="templates">${icon('edit')}حدّث الحالة</button>`,
@@ -308,6 +325,7 @@
       const a = x.dataset.act;
       if (a === 'pay') return payModal(b, refresh, { kind: 'setup', amount: Math.round(setup / 2) });
       if (a === 'connect' || a === 'templates') return openBiz(b.id, a);
+      if (a === 'import') return importFor(b, refresh);
       x.disabled = true;
       try {
         if (a === 'apply') {
@@ -321,6 +339,33 @@
         }
         refresh();
       } catch (e) { I.fail(e); x.disabled = false; }
+    });
+  }
+
+  // صورة قائمة أسعاره أو موقعه ← تراجعينها ← تنضاف لبياناته وتنطبق على منشأته (نفس «طبّق بياناته»)
+  async function importFor(b, refresh) {
+    const r = await I.reader({ send: (p) => I.api('biz/extract', { business_id: b.id, ...p }), adminHint: 'admin.html?ai=1#home', intro: 'صورة قائمة أسعاره أو المنيو، أو رابط موقعه، أو الأسعار اللي أرسلها كرسالة. نقرأها، تراجعينها، وتنطبق على منشأته.' });
+    if (!r) return;
+    const place = (S.set[b.id] || {}).place_mode || r.data.place_mode || 'visit';
+    const [svcs, hrs] = await Promise.all([
+      q1(sb.from('services').select('name, active').eq('business_id', b.id)),
+      q1(sb.from('hours').select('weekday, open_time, close_time').eq('business_id', b.id).is('city_id', null)),
+    ]).catch(() => [[], []]);
+    const current = { services: svcs.filter((s) => s.active), hours: hrs.map((h) => ({ weekday: h.weekday, open: String(h.open_time).slice(0, 5), close: String(h.close_time).slice(0, 5) })) };
+    await I.review(r.data, {
+      current, place, applyLabel: 'طبّقها على منشأته',
+      note: current.services.length ? 'خدماته الحالية اللي مو في القائمة تتوقف (ما تنحذف)، وتقدرين ترجعينها من لوحة المنشأة.' : '',
+      apply: async (sel) => {
+        const data = { services: sel.services, faq: sel.faq, name: sel.name, name_en: sel.name_en, activity: sel.activity, place_mode: sel.place_mode, notes: sel.notes };
+        if (sel.hours) data.hours = sel.hours;
+        const cities = place === 'visit' ? sel.cities : place === 'shop' ? sel.branches.filter((x) => x.maps).map((x) => ({ name: x.name, maps: x.maps })) : [];
+        if (cities.length) data.cities = cities;
+        const m = await I.api('admin/intake/merge', { business_id: b.id, data });
+        if (m.bad_locations && m.bad_locations.length) throw new Error(`ما قدرنا نقرأ موقع «${m.bad_locations.join('، ')}». صححيه من لوحة المنشأة`);
+        await q1(sb.rpc('ihj_apply_intake', { p_business: b.id }));
+        await loadAll(); refresh();
+        return 'انطبقت على منشأته ✓ افتحي لوحة المنشأة وراجعيها';
+      },
     });
   }
 
