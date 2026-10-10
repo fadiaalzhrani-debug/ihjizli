@@ -115,13 +115,15 @@ body{max-width:560px;margin:0 auto}
     if (!o) { if (i >= 0) S.orders.splice(i, 1); return; }
     if (i >= 0) S.orders[i] = o; else { S.orders.push(o); S.orders.sort((a, b) => new Date(a.slot_start) - new Date(b.slot_start)); }
   }
+  // لو العميل ما وصلته الرسالة (الرقم ما تربط أو مر 24 ساعة) نقول بصراحة
+  function sent(r, ok) { const x = r && (r.send || r); if (!x || (x.ok !== false && x.mode !== 'logged')) return I.toast(ok); I.toast('انحفظ، بس العميل ما وصلته رسالة' + (x.mode === 'logged' ? ': الرقم لسا ما تربط' : ''), true); }
   async function act(id, a, btn) {
     const o = S.orders.find((x) => x.id === id);
     if (a === 'invoice') return invoice(o);
     if (a === 'cash') return cash(o);
     if (a === 'pdf') { try { const r = await I.api('order/pdf', { order_id: id }); window.open(r.url, '_blank', 'noopener'); } catch (e) { I.fail(e); } return; }
     btn.disabled = true;
-    try { await I.api('order/' + a, { order_id: id }); I.toast(a === 'on_the_way' ? 'انرسل للعميل إنك في الطريق ✓' : a === 'done' ? 'اكتمل الطلب ✓' : 'تم ✓'); await refresh(id); render(); }
+    try { const r = await I.api('order/' + a, { order_id: id }); sent(r, a === 'on_the_way' ? 'انرسل للعميل إنك في الطريق ✓' : a === 'done' ? 'اكتمل الطلب ✓' : 'تم ✓'); await refresh(id); render(); }
     catch (e) { I.fail(e); btn.disabled = false; }
   }
   function invoice(o) {
@@ -145,7 +147,7 @@ body{max-width:560px;margin:0 auto}
       const clean = items.map((it) => ({ name: String(it.name).trim(), qty: Number(it.qty), price: Number(it.price) })).filter((it) => it.name);
       if (!clean.length || clean.some((it) => !(it.qty >= 1) || !(it.price >= 0))) return I.toast('اكتب البنود والأسعار', true);
       e.target.disabled = true;
-      try { const r = await I.api('order/invoice', { order_id: o.id, items: clean }); I.closeAll(); I.toast(r.pay_link ? 'انرسلت الفاتورة ورابط الدفع ✓' : 'انرسلت الفاتورة ✓'); await refresh(o.id); render(); }
+      try { const r = await I.api('order/invoice', { order_id: o.id, items: clean }); I.closeAll(); sent(r, r.pay_link ? 'انرسلت الفاتورة ورابط الدفع ✓' : 'انرسلت الفاتورة ✓'); await refresh(o.id); render(); }
       catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }

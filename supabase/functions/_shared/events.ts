@@ -11,7 +11,7 @@ export async function orderEvent(businessId: string, kind: OrderEventKind, paylo
   const { data: b } = await db().from("businesses").select("owner_phone, is_demo").eq("id", businessId).maybeSingle();
   const jobs: any[] = [];
   if (s && s.export_kind !== "none" && s.export_url) jobs.push({ business_id: businessId, kind: "export", payload: { event: kind, ...payload } });
-  if (s?.notify_owner && b?.owner_phone && (kind === "order.created" || kind === "handoff") && !payload.is_test) {
+  if (s?.notify_owner && b?.owner_phone && (kind === "order.created" || kind === "handoff") && !payload.is_test && !payload.manual) {
     jobs.push({ business_id: businessId, kind: kind === "handoff" ? "notify_handoff" : "notify_owner", payload });
   }
   if (s?.notify_staff && (kind === "order.created" || kind === "order.assigned") && payload.order_id && !payload.is_test) {
@@ -72,10 +72,13 @@ async function doNotify(job: any) {
     if (!to || !st?.active) return;
     const x = snap.order;
     const text = `طلب جديد لك رقم ${x.number} 🔔\n📅 ${x.day} ⏰ ${x.time}${x.city ? "\n📍 " + x.city : ""}`;
-    const r = await sendToNumber(b, ch, to, { name: "ihj_staff_order", params: [b.name, String(x.number), `${x.day} ${x.time}`, x.city || b.city || ""] }, text);
+    const r = await sendToNumber(b, ch, to, { name: "ihj_staff_order", params: [b.name, String(x.number), `${x.day} ${x.time}`, x.city || b.city || "أونلاين"] }, text);
     if (!r.ok && !soft(r.error)) throw new Error(r.error || "notify_staff");
     return;
   }
+  // المالك على نفس رقم النشاط (واتساب بزنس): الرسائل توصله في التطبيق نفسه، والنظام ما يقدر يرسل من الرقم لنفسه
+  const same = (x: unknown, y: unknown) => { const a = intl(x), c = intl(y); return !!a && !!c && a === c; };
+  if (same(b.owner_phone, b.wa_number) || same(b.owner_phone, ch?.display_phone)) return;
   if (job.kind === "notify_owner") {
     const snap = await orderSnapshot(job.payload.order_id);
     if (!snap) return;

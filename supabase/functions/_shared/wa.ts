@@ -176,8 +176,9 @@ export async function sendToCustomer(business: any, channel: any, customer: any,
   let lastErr = "";
   const secrets = connected ? await loadSecrets(business.id) : {};
   const queue: { payload: any; o: Out | null; kind: string; prev: string }[] = [];
-  if (open) {
-    for (const o of outs) queue.push({ payload: toCloud(o, customer.wa_id), o, kind: o.t, prev: preview(o) });
+  if (open || !connected) {
+    // الرقم غير مربوط: نسجّل الرسالة كما هي (السبب الأساسي «غير مربوط»، مو النافذة أو القالب)
+    for (const o of outs) queue.push({ payload: open ? toCloud(o, customer.wa_id) : null, o, kind: o.t, prev: preview(o) });
   } else if (opts.template && approved(channel, opts.template.name, lang)) {
     mode = "template";
     queue.push({ payload: templateSendPayload(opts.template, lang, customer.wa_id), o: null, kind: "template", prev: `[${opts.template.name}] ${opts.template.params.join(" | ")}` });

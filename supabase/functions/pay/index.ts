@@ -20,7 +20,13 @@ async function invByToken(t: string) {
 const pageUrl = (t: string, extra = "") => `${SITE_URL}pay.html?t=${t}${extra}`;
 
 async function settle(inv: any) {
-  if (inv.status !== "issued" || inv.pay_provider !== "moyasar") return inv.status === "paid";
+  if (inv.pay_provider !== "moyasar") return inv.status === "paid";
+  if (inv.status === "paid") return true;
+  if (inv.status === "void") {
+    // حجز انتهت مهلته وانلغى: لو العميل دفع في آخر لحظة نعتمده ونرجّع موعده لو فاضي
+    const { data: o } = await db().from("orders").select("status, cancel_reason").eq("id", inv.order_id).maybeSingle();
+    if (!(o?.status === "cancelled" && o?.cancel_reason === "unpaid")) return false;
+  } else if (inv.status !== "issued") return false;
   const v = await verifyMoyasar(inv);
   if (v.paid) { await markInvoicePaid(inv.id, { provider: "moyasar", ref: v.ref, amount: v.amount, method: v.method, raw: v.raw, by: "moyasar" }); return true; }
   return false;
@@ -73,7 +79,8 @@ Deno.serve(async (req) => {
       const inv = await invByToken(String(b.t || ""));
       if (!inv) return json({ ok: false, error: "not_found" }, 404);
       const { data: biz } = await db().from("businesses").select("is_demo").eq("id", inv.business_id).single();
-      if (inv.pay_provider !== "demo" || !biz?.is_demo) return json({ ok: false, error: "not_demo" }, 409);
+      const { data: ord } = await db().from("orders").select("is_test").eq("id", inv.order_id).maybeSingle();
+      if (inv.pay_provider !== "demo" || !(biz?.is_demo || ord?.is_test)) return json({ ok: false, error: "not_demo" }, 409);
       const label = b.method === "applepay" ? "أبل باي" : b.method === "card" ? "بطاقة" : "مدى";
       const r = await markInvoicePaid(inv.id, { provider: "demo", ref: `demo-${inv.id}`, amount: Number(inv.total), method: label, by: "demo" });
       return json({ ok: true, already: !!(r as any).already });

@@ -51,9 +51,9 @@ try {
     await b.go(`${BASE}admin.html#k=${adminTok}`, 500);
     await b.waitFor(`window.__admin && document.getElementById('view').children.length > 0`, 25000);
     await b.ev(`__admin.S.obBiz = '${bizId}'; __admin.go('onboard')`);
-    await b.waitFor(`document.querySelectorAll('.ost').length === 8`, 15000); await sleep(1200);
+    await b.waitFor(`document.querySelectorAll('.ost').length === 10`, 15000); await sleep(1200);
     const g = JSON.parse(await b.ev(`JSON.stringify({ n: document.querySelectorAll('.ost').length, urls: [...document.querySelectorAll('.ost .copybox code')].map(x => x.textContent), sel: document.getElementById('obSel').value, txt: document.querySelector('.ost').innerText, apply: !!document.querySelector('[data-act=apply]'), wa: document.querySelectorAll('.ost a[href^="https://wa.me/"]').length, phoneBox: !!document.getElementById('stPhone') })`));
-    ok(g.n === 8 && g.sel === bizId, 'الدليل يعرض 8 خطوات للمنشأة المختارة');
+    ok(g.n === 10 && g.sel === bizId, 'الدليل يعرض 10 خطوات للمنشأة المختارة');
     ok(g.urls.includes(`${PUBLIC}agree.html?k=${k}`) && g.urls.includes(`${PUBLIC}start.html?k=${k}`) && g.urls.some((u) => u.startsWith(`${PUBLIC}sim.html?b=guide-test`)), 'روابط الاتفاقية والنموذج والمحاكي جنب خطواتها', g.urls.join(' | '));
     ok(g.urls.includes(`${PUBLIC}help.html#connect`) && g.urls.includes(`${PUBLIC}help.html#meta`) && g.urls.includes(`${PUBLIC}help.html#moyasar`), 'روابط شرح الربط وميتا وميسر');
     ok(/وافق فحص آلي/.test(g.txt), 'الموافقة تطلع في خطوة الاتفاقية', g.txt.slice(0, 160));

@@ -36,6 +36,17 @@
 .city-map{height:280px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 .txt-row{display:grid;gap:6px}
 .txt-row .lbl{display:flex;gap:8px;align-items:center}
+.chline{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted);line-height:1.4;border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:var(--card);max-width:46vw}
+@media (max-width:700px){ .chline{max-width:40vw;font-size:11.5px;padding:3px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block} .chline .dot{margin-inline-end:4px} }
+.chline .dot{flex:none}
+.mpick{display:flex;flex-wrap:wrap;gap:7px}
+.mpick button{border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:99px;padding:7px 12px;font-size:14px;display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.mpick button.on{border-color:var(--accent);background:var(--soft)}
+.mpick button .n{width:19px;height:19px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:11.5px;font-weight:800;display:none;place-items:center}
+.mpick button.on .n{display:grid}
+.mprev{background:var(--soft2);border-radius:12px;padding:10px;display:grid;gap:5px;font-size:13.5px;max-width:360px}
+.mprev .b{background:var(--card);border-radius:9px;padding:7px 9px;white-space:pre-wrap;border:1px solid var(--line)}
+.mprev .bt{background:var(--card);border-radius:9px;padding:6px;text-align:center;color:var(--info);font-weight:600;border:1px solid var(--line)}
 .more-sheet a{display:flex;gap:12px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--fg);font-weight:600}
 .more-sheet a svg{width:21px;height:21px;color:var(--accent)}
 .inv-items{display:grid;gap:8px}
@@ -87,7 +98,7 @@
   async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
   async function loadAll() {
     const since = new Date(Date.now() - 62 * 86400000).toISOString();
-    const [biz, set, cities, services, staff, hours, holidays, orders, handoffs] = await Promise.all([
+    const [biz, set, cities, services, staff, hours, holidays, orders, handoffs, chRow, pausedRows] = await Promise.all([
       q1(sb.from('businesses').select('*').eq('id', BIZ).single()),
       q1(sb.from('settings').select('*').eq('business_id', BIZ).single()),
       q1(sb.from('cities').select('*').eq('business_id', BIZ).order('sort').order('created_at')),
@@ -97,8 +108,10 @@
       q1(sb.from('holidays').select('*').eq('business_id', BIZ).gte('day', I.today()).order('day')),
       q1(sb.from('orders').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused)').eq('business_id', BIZ).gte('slot_start', since).order('slot_start', { ascending: false }).limit(600)),
       q1(sb.from('handoffs').select('*, customer:customers(id,name,wa_id,is_sim,bot_paused,paused_reason)').eq('business_id', BIZ).is('resolved_at', null).order('created_at', { ascending: false })),
+      sb.from('channels').select('provider,status,display_phone,verified_name,dry_run,last_check_at').eq('business_id', BIZ).maybeSingle().then((r) => r.data || {}),
+      sb.from('customers').select('id,name,wa_id,is_sim,bot_paused,paused_reason,paused_at').eq('business_id', BIZ).eq('bot_paused', true).order('paused_at', { ascending: false }).limit(100).then((r) => r.data || []),
     ]);
-    Object.assign(S, { biz, set, cities, services, staff, hours, holidays, orders, handoffs });
+    Object.assign(S, { biz, set, cities, services, staff, hours, holidays, orders, handoffs, ch: chRow || {}, paused: pausedRows || [] });
     orders.forEach((o) => S.seen.add(o.id));
   }
   try { await loadAll(); } catch (e) { console.error(e); return I.gate('ما قدرنا نفتح اللوحة', 'جرّب تحدّث الصفحة', 'err'); }
@@ -128,6 +141,7 @@
       </aside>
       <div class="main">
         <header class="top"><div class="grow"><h1 id="tTitle"></h1><div class="sub" id="tSub"></div></div>
+          <span class="chline" id="chLine"></span>
           <span class="live" id="live"><i></i><span>مباشر</span></span>
           <button class="ib" id="soundIb" type="button" aria-label="صوت التنبيه"></button>
         </header>
@@ -138,9 +152,17 @@
     document.querySelectorAll('[data-tab]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.tab); }));
     $('botSw').addEventListener('change', toggleBot);
     $('soundBtn').onclick = $('soundIb').onclick = () => { I.toggleAlerts(); paintSound(); };
-    paintSound(); paintBot(); paintCounts();
+    paintSound(); paintBot(); paintCounts(); paintCh();
   }
   function paintSound() { const on = I.alertsState(); $('soundBtn').innerHTML = `${icon(on ? 'bell' : 'belloff')}${on ? 'صوت التنبيه شغّال' : 'صوت التنبيه موقف'}`; $('soundIb').innerHTML = icon(on ? 'bell' : 'belloff'); $('soundIb').classList.toggle('on', on); }
+  function paintCh() {
+    const el = $('chLine'); if (!el) return;
+    const c = S.ch || {};
+    el.innerHTML = c.status === 'connected' && !c.dry_run ? `<span class="dot ok"></span>واتساب مربوط${c.display_phone ? ' <span class="ltr">' + esc(c.display_phone) + '</span>' : ''}`
+      : c.status === 'connected' ? '<span class="dot warn"></span>واتساب: وضع الفحص'
+      : c.status === 'error' ? '<span class="dot bad"></span>واتساب: فيه مشكلة بالربط'
+      : '<span class="dot"></span>واتساب: لسا ما تربط';
+  }
   function paintBot() { $('botLbl').textContent = S.biz.bot_enabled ? 'الرد الآلي شغّال' : 'الرد الآلي موقف'; $('botSw').checked = !!S.biz.bot_enabled; }
   function paintCounts() {
     const n = S.handoffs.length;
@@ -196,9 +218,11 @@
         ${F.map(([k, l]) => `<button class="chip ${S.filter === k ? 'on' : ''}" data-f="${k}" type="button">${l}<span class="n">${count(k)}</span></button>`).join('')}
         <span class="sp"></span>
         <input id="oSearch" placeholder="بحث برقم الطلب أو الاسم أو الجوال" value="${esc(S.search)}" style="max-width:280px">
+        <button class="btn sm" type="button" id="manualBtn">${icon('plus')}حجز يدوي</button>
       </div>
       <div class="list" id="oList">${list.length ? list.map(orderCard).join('') : `<div class="empty">${icon('orders')}<b>ما فيه طلبات هنا</b><span class="tiny">الطلبات توصل من الواتساب لحالها، وتطلع هنا مع صوت التنبيه</span></div>`}</div>`;
     v.querySelectorAll('[data-f]').forEach((b) => b.addEventListener('click', () => { S.filter = b.dataset.f; render(); }));
+    $('manualBtn').onclick = manualBook;
     $('oSearch').addEventListener('input', I.debounce((e) => { S.search = e.target.value.trim(); const l = filtered(); $('oList').innerHTML = l.length ? l.map(orderCard).join('') : `<div class="empty">${icon('search')}<b>ما لقينا شي</b></div>`; bindCards(); }, 200));
     bindCards();
   }
@@ -208,7 +232,7 @@
     switch (k) {
       case 'today': return I.parts(o.slot_start).ymd === t && o.status !== 'cancelled';
       case 'upcoming': return (isOpen(o) || o.status === 'pending_payment') && new Date(o.slot_end).getTime() > Date.now() - 3 * 3600000;
-      case 'action': return (isOpen(o) && !o.staff_id) || o.status === 'invoiced' || (isOpen(o) && new Date(o.slot_end).getTime() < Date.now() - 3 * 3600000);
+      case 'action': return (isOpen(o) && !o.staff_id && !o.is_test) || o.status === 'invoiced' || (isOpen(o) && new Date(o.slot_end).getTime() < Date.now() - 3 * 3600000);
       case 'done': return o.status === 'done';
       case 'cancelled': return o.status === 'cancelled';
       default: return true;
@@ -224,7 +248,7 @@
     const c = o.customer || {};
     const staffSel = isOpen(o) ? `<select data-assign="${o.id}" aria-label="الموظف" style="width:auto;padding:5px 8px;font-size:13.5px"><option value="">بدون موظف</option>${S.staff.filter((s) => s.active || s.id === o.staff_id).map((s) => `<option value="${s.id}" ${s.id === o.staff_id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select>` : (o.staff_id ? `<span>${icon('users')}${esc(staffName(o.staff_id))}</span>` : '');
     return `<div class="item ord click ${o.status} ${S.fresh && S.fresh.has(o.id) ? 'new' : ''}" data-oid="${o.id}">
-      <div class="h"><span class="no">#${o.number}</span>${badge(o.status)}${o.is_test ? '<span class="badge b-test plain">تجربة</span>' : ''}${o.prepaid ? '<span class="badge b-ok plain">مدفوع مقدمًا</span>' : ''}${isOpen(o) && !o.staff_id ? '<span class="badge b-warn plain">بدون موظف</span>' : ''}<span class="sp"></span><span class="when">${I.when(o.slot_start)}</span></div>
+      <div class="h"><span class="no">#${o.number}</span>${badge(o.status)}${o.is_test ? '<span class="badge b-test plain">تجربة</span>' : ''}${o.prepaid ? '<span class="badge b-ok plain">مدفوع مقدمًا</span>' : ''}${isOpen(o) && !o.staff_id && !o.is_test ? '<span class="badge b-warn plain">بدون موظف</span>' : ''}<span class="sp"></span><span class="when">${I.when(o.slot_start)}</span></div>
       <div class="who"><span class="avatar">${esc(I.initials(custName(c)))}</span><div class="grow"><b>${esc(custName(c))}</b><div class="tiny">${c.is_sim ? 'من المحاكي' : `<span class="ltr">${esc(I.phone(c.wa_id))}</span>`}${c.bot_paused ? ' · <span style="color:var(--warn)">البوت موقف معه</span>' : ''}</div></div></div>
       <div class="meta">${o.city_id ? `<span>${icon('pin')}${esc(cityName(o.city_id))}</span>` : ''}${o.service_id ? `<span>${icon('box')}${esc(svcName(o.service_id))}</span>` : ''}${o.price != null ? `<span>${icon('money')}${money(o.price)} ر.س</span>` : ''}${staffSel}</div>
     </div>`;
@@ -279,10 +303,18 @@
     d.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => orderAct(o, b.dataset.act, b)));
   }
 
+  // نتيجة الإرسال للعميل: انرسل، أو انحفظ بدون إرسال (والسبب)
+  function sentToast(r, okMsg) {
+    const sd = r && (r.send || r);
+    if (!sd || sd.ok !== false && sd.mode !== 'logged') return I.toast(okMsg);
+    const e = String(sd.error || '');
+    const why = sd.mode === 'logged' ? 'رقم الواتساب لسا ما تربط' : e.startsWith('template_not_approved') ? 'العميل ما راسلكم آخر 24 ساعة، والرسالة تحتاج قالب معتمد من ميتا' : e === 'window_closed' ? 'العميل ما راسلكم آخر 24 ساعة' : 'تعذّر الإرسال';
+    I.toast('انحفظ، بس العميل ما وصلته رسالة: ' + why, true);
+  }
   async function orderAct(o, act, btn) {
     const run = async (path, body, okMsg) => {
       btn.disabled = true;
-      try { const r = await I.api(path, { order_id: o.id, ...(body || {}) }); I.toast(okMsg); await refreshOrder(o.id); openOrder(o.id); return r; }
+      try { const r = await I.api(path, { order_id: o.id, ...(body || {}) }); sentToast(r, okMsg); await refreshOrder(o.id); openOrder(o.id); return r; }
       catch (e) { I.fail(e); btn.disabled = false; }
     };
     if (act === 'on_the_way') return run('order/on_the_way', {}, 'انرسل للعميل إن الموظف في الطريق ✓');
@@ -298,6 +330,46 @@
       return;
     }
     if (act === 'resched') return reschedule(o);
+  }
+
+  // حجز يدوي: عميل اتصل بالجوال. نفس المواعيد المتاحة للواتساب، وينسند لموظف، ويوصل العميل تأكيد
+  async function manualBook() {
+    const svcs = S.services.filter((x) => x.active), cts = S.cities.filter((x) => x.active);
+    const place = S.set.place_mode || 'visit';
+    const m = I.modal(`<div class="mh"><h3 class="grow">حجز يدوي</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">
+      <div class="g2"><label class="f"><span>اسم العميل</span><input id="mbN" maxlength="60" autocomplete="off"></label><label class="f"><span>جواله (واتساب)</span><input id="mbP" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx"></label>
+      ${svcs.length > 1 ? `<label class="f"><span>الخدمة</span><select id="mbS">${svcs.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>` : ''}
+      ${place !== 'online' && cts.length > 1 ? `<label class="f"><span>${place === 'shop' ? 'الفرع' : 'المدينة'}</span><select id="mbC">${cts.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>` : ''}</div>
+      ${place === 'visit' ? '<label class="f"><span>العنوان أو رابط الموقع (اختياري)</span><input id="mbA" maxlength="200"></label>' : ''}
+      <div id="mbSlots"><div class="spin"></div></div>
+      <label class="check"><input type="checkbox" id="mbW" checked>أرسل للعميل تأكيد بالواتساب</label></div>
+      <div class="mf"><button class="btn ghost" data-close>رجوع</button><button class="btn" id="mbGo" disabled>${icon('check')}احجز</button></div>`);
+    let pick = null, byDay = {}, day = null;
+    const load = async () => {
+      $('mbSlots').innerHTML = '<div class="spin"></div>'; pick = null; $('mbGo').disabled = true;
+      let slots = [];
+      try { slots = (await I.api('slots', { business_id: BIZ, city_id: $('mbC') ? $('mbC').value : (cts[0] || {}).id || null, service_id: $('mbS') ? $('mbS').value : (svcs[0] || {}).id || null, days: 10 })).slots; } catch (e) { I.fail(e); }
+      byDay = {}; slots.forEach((s) => { const d = I.parts(s.slot_start).ymd; (byDay[d] = byDay[d] || []).push(s); });
+      day = Object.keys(byDay)[0]; paint();
+    };
+    const paint = () => {
+      $('mbSlots').innerHTML = Object.keys(byDay).length ? `<div class="slotgrid">${Object.keys(byDay).map((d) => `<button type="button" class="${d === day ? 'on' : ''}" data-d="${d}">${esc(I.relDay(d))}</button>`).join('')}</div><hr class="s"><div class="slotgrid">${(byDay[day] || []).map((s) => `<button type="button" class="${pick === s.slot_start ? 'on' : ''}" data-s="${s.slot_start}">${I.time(s.slot_start)}</button>`).join('')}</div>` : '<div class="empty">ما فيه مواعيد متاحة</div>';
+      $('mbSlots').querySelectorAll('[data-d]').forEach((b) => b.onclick = () => { day = b.dataset.d; pick = null; $('mbGo').disabled = true; paint(); });
+      $('mbSlots').querySelectorAll('[data-s]').forEach((b) => b.onclick = () => { pick = b.dataset.s; $('mbGo').disabled = false; paint(); });
+    };
+    if ($('mbS')) $('mbS').onchange = load; if ($('mbC')) $('mbC').onchange = load;
+    await load();
+    m.querySelector('#mbGo').onclick = async (e) => {
+      const ph = String($('mbP').value).replace(/\D/g, '');
+      if (!/^(9665|05|5)\d{8}$/.test(ph)) return I.toast('اكتب جوال العميل', true);
+      e.target.disabled = true;
+      try {
+        const r = await I.api('biz/book', { business_id: BIZ, name: $('mbN').value, phone: $('mbP').value, service_id: $('mbS') ? $('mbS').value : (svcs[0] || {}).id || null, city_id: $('mbC') ? $('mbC').value : (place === 'online' ? null : (cts[0] || {}).id || null), address: $('mbA') ? $('mbA').value : '', start: pick, notify: $('mbW').checked });
+        I.closeAll();
+        if ($('mbW').checked) sentToast(r, `انحجز رقم ${r.order.number} ✓ ووصل العميل التأكيد`); else I.toast(`انحجز رقم ${r.order.number} ✓`);
+        await refreshOrder(r.order.id); S.seen.add(r.order.id); render();
+      } catch (x) { I.toast(x.code === 'slot_taken' ? 'الموعد انحجز للتو، اختر غيره' : (x.message || 'ما انحجز'), true); e.target.disabled = false; if (x.code === 'slot_taken') load(); }
+    };
   }
 
   async function reschedule(o) {
@@ -336,7 +408,7 @@
       const clean = items.map((it) => ({ name: String(it.name).trim(), qty: Number(it.qty), price: Number(it.price) })).filter((it) => it.name);
       if (!clean.length || clean.some((it) => !(it.qty >= 1) || !(it.price >= 0) || it.price === '')) return I.toast('اكتب البنود والأسعار', true);
       e.target.disabled = true;
-      try { const r = await I.api('order/invoice', { order_id: o.id, items: clean }); I.toast(r.pay_link ? 'انرسلت الفاتورة ورابط الدفع للعميل ✓' : 'انرسلت الفاتورة للعميل ✓'); await refreshOrder(o.id); I.closeAll(); openOrder(o.id); }
+      try { const r = await I.api('order/invoice', { order_id: o.id, items: clean }); sentToast(r, r.pay_link ? 'انرسلت الفاتورة ورابط الدفع للعميل ✓' : 'انرسلت الفاتورة للعميل ✓'); await refreshOrder(o.id); I.closeAll(); openOrder(o.id); }
       catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }
@@ -362,15 +434,20 @@
   const REASON = { complaint: ['شكوى', 'b-bad'], human: ['طلب يكلم موظف', 'b-warn'], unknown: ['رسالة ما فهمها البوت', 'b-gold'], location: ['مشكلة بالموقع', 'b-warn'], order: ['بخصوص طلب', 'b-warn'] };
   function vChats(v) {
     const list = S.handoffs;
-    v.innerHTML = `<div class="hint">هنا العملاء اللي البوت حوّلهم لكم، والبوت متوقف معهم لين ترجعونه. تقدرون تردون من هنا أو من واتساب المحل.</div>
+    v.innerHTML = `<div class="hint">هنا العملاء اللي البوت حوّلهم لكم، والبوت متوقف معهم لين ترجعونه. تقدرون تردون من هنا (خلال 24 ساعة من آخر رسالة منه) أو من واتساب المحل، وترجعون البوت له بزر.</div>
       <div class="list">${list.length ? list.map((h) => { const c = h.customer || {}; const r = REASON[h.reason] || REASON.unknown; return `<div class="item click" data-cid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge ${r[1]} plain">${r[0]}</span><span class="sp"></span><span class="tiny">${I.ago(h.created_at)}</span></div><div class="small" style="white-space:pre-wrap">${esc(h.last_text || '')}</div></div>`; }).join('') : `<div class="empty">${icon('chat')}<b>ما فيه محادثات تنتظر رد</b><span class="tiny">البوت ماسك كل المحادثات الحين</span></div>`}</div>`;
+    // عملاء البوت موقف معهم بدون تحويل (رديتوا عليهم من تطبيق واتساب بزنس): يبانون هنا عشان ترجعونه لهم
+    const hid = new Set(list.map((h) => h.customer && h.customer.id));
+    const quiet = (S.paused || []).filter((c) => !hid.has(c.id) && !c.is_sim);
+    if (quiet.length) v.insertAdjacentHTML('beforeend', `<h3 style="margin-top:14px">البوت موقف معهم</h3><div class="tiny">رديتوا عليهم من التطبيق، فالبوت وقف عشان ما يقاطعكم. يرجع لحاله بعد المدة اللي في الإعدادات، أو ترجعونه الحين.</div><div class="list">${quiet.map((c) => `<div class="item click" data-pcid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge plain">رد عليه صاحب المحل</span><span class="sp"></span><span class="tiny">${c.paused_at ? I.ago(c.paused_at) : ''}</span></div></div>`).join('')}</div>`);
     v.querySelectorAll('[data-cid]').forEach((el) => el.addEventListener('click', () => openChat(el.dataset.cid)));
+    v.querySelectorAll('[data-pcid]').forEach((el) => el.addEventListener('click', () => openChat(el.dataset.pcid)));
   }
   let chatCid = null;
   async function openChat(cid) {
     chatCid = cid;
     const h = S.handoffs.find((x) => x.customer && x.customer.id === cid);
-    const c = (h && h.customer) || {};
+    const c = (h && h.customer) || (S.paused || []).find((x) => x.id === cid) || {};
     const d = I.openDrawer(`<div class="dh"><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button><h2 class="grow">${esc(custName(c))}</h2>${c.is_sim ? '' : `<a class="btn sm ghost" href="${I.waLink(c.wa_id)}" target="_blank" rel="noopener">${icon('wa')}واتساب</a>`}</div>
       <div class="db"><div class="conv" id="conv"><div class="spin"></div></div>
       <form class="row nw" id="replyF"><input id="replyT" placeholder="اكتب ردك للعميل" maxlength="1500" class="grow"><button class="btn" type="submit">${icon('send')}أرسل</button></form>
@@ -384,7 +461,7 @@
     };
     d.querySelector('#resumeB').onclick = async (e) => {
       e.target.disabled = true;
-      try { await I.api('customer/resume', { customer_id: cid }); S.handoffs = S.handoffs.filter((x) => !x.customer || x.customer.id !== cid); paintCounts(); I.closeAll(); I.toast('رجع الرد الآلي لهذا العميل ✓'); if (S.tab === 'chats') render(); }
+      try { await I.api('customer/resume', { customer_id: cid }); S.handoffs = S.handoffs.filter((x) => !x.customer || x.customer.id !== cid); S.paused = (S.paused || []).filter((x) => x.id !== cid); paintCounts(); I.closeAll(); I.toast('رجع الرد الآلي لهذا العميل ✓'); if (S.tab === 'chats') render(); }
       catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }
@@ -537,6 +614,33 @@
   let txLang = 'ar';
   // ── الأسئلة والأجوبة: لو رسالة العميل فيها وحدة من الكلمات يرد البوت بالجواب
   let faqDraft = null;
+  // ── الأزرار: أول ما يكلّمكم العميل وش يطلع له (لو أكثر من 3 تصير قائمة)، واللي يطلع تحت كل جواب
+  const MITEMS = { book: 'احجز من هنا', orders: 'طلباتي', prices: 'الأسعار', location: 'موقعنا', hours: 'الدوام', services: 'الخدمات', pay: 'طريقة الدفع', contact: 'تواصل معنا', lang: 'English' };
+  let menuDraft = null;
+  function menuCard() {
+    if (!menuDraft) { const m = (S.set.menu && typeof S.set.menu === 'object') ? S.set.menu : {}; menuDraft = { main: Array.isArray(m.main) && m.main.length ? m.main.slice() : ['book', 'orders', 'lang'], after: Array.isArray(m.after) && m.after.length ? m.after.slice() : ['book', 'orders'] }; }
+    return `<div class="card stack"><div class="sec-h"><h3>الأزرار</h3><span class="tiny">الرقم على الزر هو ترتيبه، واضغط مرة ثانية عشان تشيله</span></div>
+      <div class="g2"><div class="stack s"><b class="small">أول ما يكلّمكم العميل</b><div class="mpick" id="mMain"></div></div><div id="mPrev"></div></div>
+      <div class="stack s"><b class="small">تحت كل جواب (مثل جواب «كم السعر؟»)، 3 كحد أقصى</b><div class="mpick" id="mAfter"></div></div>
+      <div class="row"><span class="sp"></span><button class="btn sm" type="button" id="mSave">${icon('check')}حفظ الأزرار</button></div></div>`;
+  }
+  function paintMenu() {
+    if (!$('mMain')) return;
+    const faq = Array.isArray(S.set.faq) ? S.set.faq : [];
+    const keys = [...Object.keys(MITEMS), ...faq.map((_, i) => 'faq:' + i)];
+    const label = (k) => { const f = /^faq:(\d+)$/.exec(k); return f ? ((faq[+f[1]] || {}).chip || 'سؤال ' + (+f[1] + 1)) : MITEMS[k]; };
+    const pick = (el, sel, max) => { el.innerHTML = keys.map((k) => { const i = sel.indexOf(k); return `<button type="button" data-k="${esc(k)}" class="${i >= 0 ? 'on' : ''}"><span class="n">${i + 1}</span>${esc(label(k))}</button>`; }).join(''); el.querySelectorAll('[data-k]').forEach((b) => b.onclick = () => { const k = b.dataset.k, i = sel.indexOf(k); if (i >= 0) sel.splice(i, 1); else { if (sel.length >= max) sel.shift(); sel.push(k); } paintMenu(); }); };
+    pick($('mMain'), menuDraft.main, 9); pick($('mAfter'), menuDraft.after, 3);
+    const rows = menuDraft.main.map(label);
+    $('mPrev').innerHTML = `<div class="mprev"><div class="b">هلا وسهلا في ${esc(S.biz.name)} 👋</div>${rows.length <= 3 ? rows.map((t) => `<div class="bt">${esc(t)}</div>`).join('') : '<div class="bt">☰ خيارات أكثر (' + rows.length + ')</div>'}</div>`;
+    $('mSave').onclick = async (e) => {
+      if (!menuDraft.main.length) return I.toast('اختر زر واحد على الأقل', true);
+      e.target.disabled = true;
+      const menu = { main: menuDraft.main, after: menuDraft.after.length ? menuDraft.after : ['book', 'orders'] };
+      try { await q1(sb.from('settings').update({ menu }).eq('business_id', BIZ).select('business_id')); S.set.menu = menu; I.toast('انحفظت الأزرار ✓ والبوت يستخدمها الحين'); } catch (x) { I.fail(x); }
+      e.target.disabled = false;
+    };
+  }
   function faqCard() {
     if (!faqDraft) faqDraft = (Array.isArray(S.set.faq) ? S.set.faq : []).map((x) => ({ chip: x.chip || '', q: x.q || '', a: x.a || '' }));
     return `<div class="card stack"><div class="sec-h"><h3>الأسئلة والأجوبة</h3><span class="tiny">لو رسالة العميل فيها وحدة من الكلمات، البوت يرد بالجواب</span></div><div id="faqList"></div>
@@ -557,10 +661,11 @@
   function vTexts(v) {
     const cur = (S.set.texts && S.set.texts[txLang]) || {};
     v.innerHTML = `<div class="row"><div class="seg" id="txSeg"><button data-l="ar" class="${txLang === 'ar' ? 'on' : ''}">عربي</button><button data-l="en" class="${txLang === 'en' ? 'on' : ''}">English</button></div><span class="sp"></span><button class="btn" id="txSave">${icon('check')}حفظ النصوص</button></div>
+      ${menuCard()}
       ${faqCard()}
       <div class="hint">الكلمات بين القوسين مثل {biz} و{no} تتبدل تلقائيًا باسم المحل ورقم الطلب.</div>
       <div class="card stack">${shownKeys().map((k) => `<div class="txt-row"><div class="lbl"><b>${LBL[k]}</b><span class="sp"></span>${cur[k] ? `<button class="btn sm ghost" data-reset="${k}" type="button">رجّع الأصلي</button>` : '<span class="tiny">النص الأصلي</span>'}</div><textarea data-tx="${k}" rows="2" dir="${txLang === 'en' ? 'ltr' : 'rtl'}" placeholder="${esc(defOf(txLang, k))}">${esc(cur[k] || defOf(txLang, k))}</textarea></div>`).join('')}</div>`;
-    paintFaq();
+    paintFaq(); paintMenu();
     v.querySelectorAll('[data-l]').forEach((b) => b.onclick = () => { txLang = b.dataset.l; render(); });
     v.querySelectorAll('[data-reset]').forEach((b) => b.onclick = () => { v.querySelector(`[data-tx=${b.dataset.reset}]`).value = defOf(txLang, b.dataset.reset); });
     $('txSave').onclick = async (e) => {

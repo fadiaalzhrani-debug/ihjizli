@@ -9,9 +9,11 @@ import { clip, clipLines, CORS, db, errMsg, FN_BASE, intl, ipOf, json, limiter, 
 import { createLink, exchangeLink, isMember, isOwner, revokeLink, rolesFromReq, type Roles, staffIdOf } from "../_shared/auth.ts";
 import { actArrived, actAssign, actCancelByBiz, actCash, actDone, actInvoice, actOnTheWay, actReschedByBiz, AppError, type Full, orderFull, signedPdf } from "../_shared/actions.ts";
 import { loadSecrets, providerFetch, sendToCustomer, TEMPLATES, templateCreatePayload } from "../_shared/wa.ts";
-import { exportTest } from "../_shared/events.ts";
+import { exportTest, orderEvent } from "../_shared/events.ts";
+import { dayLabel, local, timeLabel } from "../_shared/dates.ts";
 import { mask, moyasarCheckKey } from "../_shared/pay.ts";
 import { locationFromText } from "../_shared/maps.ts";
+import { channelTest, templatesSync } from "../_shared/channel.ts";
 
 const badLink = limiter(30, 3600_000);
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -151,6 +153,35 @@ async function bizAction(r: Roles, action: string, body: any) {
       if (error) throw new Error(error.message);
       return { report: data };
     }
+    case "book": {
+      // حجز يدوي (عميل اتصل): العميل بجواله، والموعد لازم يكون فاضي فعلًا، والطلب ينسند لموظف مثل حجز الواتساب
+      const phone = saudi(body.phone) || intl(body.phone);
+      need(phone, "phone", 400);
+      need(!isNaN(Date.parse(body.start)), "start", 400);
+      const name = clip(body.name, 60);
+      let { data: cust } = await db().from("customers").select("*").eq("business_id", bizId).eq("wa_id", phone).maybeSingle();
+      if (!cust) {
+        const ins = await db().from("customers").insert({ business_id: bizId, wa_id: phone, name, is_sim: false }).select("*").single();
+        if (ins.error) throw new Error(ins.error.message);
+        cust = ins.data;
+      } else if (name && !cust.name) {
+        await db().from("customers").update({ name }).eq("id", cust.id); cust.name = name;
+      }
+      const { data: o, error } = await db().rpc("ihj_book", { p_business: bizId, p_customer: cust.id, p_city: body.city_id || null, p_service: body.service_id || null,
+        p_start: new Date(body.start).toISOString(), p_lat: null, p_lng: null, p_maps_url: "", p_address: clip(body.address, 200), p_channel: "dashboard", p_notes: clipLines(body.notes, 500) });
+      if (error) throw new AppError(/slot_taken/.test(error.message) ? "slot_taken" : "book", 409);
+      const order = o as any;
+      await orderEvent(bizId, "order.created", { order_id: order.id, is_test: false, manual: true });
+      let send = null;
+      if (body.notify !== false) {
+        const tz = b.timezone || "Asia/Riyadh", lang = cust.lang === "en" ? "en" : "ar";
+        const day = dayLabel(local(order.slot_start, tz).ymd, lang, tz, false), time = timeLabel(order.slot_start, lang, tz);
+        const text = lang === "en" ? `Your appointment is booked ✅\nOrder #${order.number}\n📅 ${day}\n⏰ ${time}` : `تم حجز موعدك ✅\nرقم الطلب: ${order.number}\n📅 ${day}\n⏰ ${time}`;
+        const { data: chRow } = await db().from("channels").select("*").eq("business_id", bizId).maybeSingle();
+        send = await sendToCustomer(b, chRow, cust, [{ t: "text", text }], { purpose: "update", by: "owner", template: { name: "ihj_update", params: [String(order.number), b.name, lang === "en" ? `Booked for ${day} ${time}` : `تم حجز موعدك ${day} ${time}`] } });
+      }
+      return { order, send };
+    }
     case "slots": {
       const { data, error } = await db().rpc("ihj_free_slots", { p_business: bizId, p_city: body.city_id || null, p_service: body.service_id || null,
         p_from: /^\d{4}-\d{2}-\d{2}$/.test(String(body.from || "")) ? body.from : new Date().toISOString().slice(0, 10), p_days: Math.min(14, Math.max(1, Number(body.days) || 7)), p_exclude: body.exclude || null });
@@ -163,47 +194,6 @@ async function bizAction(r: Roles, action: string, body: any) {
 
 // ───────── المدير ─────────
 const DEFAULT_BASE: Record<string, string> = { meta: "https://graph.facebook.com/v23.0", dualhook: "https://api.dualhook.com/v25.0", d360: "https://waba-v2.360dialog.io" };
-
-async function channelTest(bizId: string) {
-  const { data: ch } = await db().from("channels").select("*").eq("business_id", bizId).single();
-  const sec = await loadSecrets(bizId);
-  const patch: any = { last_check_at: new Date().toISOString() };
-  if (ch.provider === "none" || !sec?.wa_token) {
-    Object.assign(patch, { status: "not_connected", last_error: ch.provider === "none" ? "" : "no_token" });
-  } else if (ch.provider === "d360") {
-    const r = await providerFetch(ch, sec, "/v1/configs/webhook", { method: "GET" });
-    Object.assign(patch, r.ok ? { status: "connected", last_error: "" } : { status: "error", last_error: `${r.status} ${JSON.stringify(r.json).slice(0, 200)}` });
-  } else {
-    if (!ch.phone_number_id) Object.assign(patch, { status: "error", last_error: "no_phone_number_id" });
-    else {
-      const r = await providerFetch(ch, sec, `/${ch.phone_number_id}?fields=display_phone_number,verified_name,name_status,quality_rating,code_verification_status`, { method: "GET" });
-      if (r.ok) Object.assign(patch, { status: "connected", last_error: "", display_phone: r.json.display_phone_number || "", verified_name: r.json.verified_name || "", name_status: r.json.name_status || "", quality: r.json.quality_rating || "" });
-      else Object.assign(patch, { status: "error", last_error: `${r.status} ${r.json?.error?.message || ""}`.slice(0, 300) });
-    }
-  }
-  await db().from("channels").update(patch).eq("business_id", bizId);
-  return { ...ch, ...patch };
-}
-
-async function templatesSync(bizId: string) {
-  const { data: ch } = await db().from("channels").select("*").eq("business_id", bizId).single();
-  const sec = await loadSecrets(bizId);
-  need(ch.provider !== "none" && sec?.wa_token, "not_connected", 409);
-  let list: any[] = [];
-  if (ch.provider === "d360") {
-    const r = await providerFetch(ch, sec, "/v1/configs/templates", { method: "GET" });
-    need(r.ok, "templates_fetch", 502);
-    list = r.json?.waba_templates || r.json?.data || [];
-  } else {
-    need(ch.waba_id, "no_waba", 409);
-    const r = await providerFetch(ch, sec, `/${ch.waba_id}/message_templates?fields=name,status,language,category&limit=200`, { method: "GET" });
-    need(r.ok, "templates_fetch", 502);
-    list = r.json?.data || [];
-  }
-  const mine = list.filter((t: any) => String(t.name || "").startsWith("ihj_")).map((t: any) => ({ name: t.name, language: t.language, status: String(t.status || "").toUpperCase(), category: t.category || "" }));
-  await db().from("channels").update({ templates: mine, templates_checked_at: new Date().toISOString() }).eq("business_id", bizId);
-  return mine;
-}
 
 async function adminAction(r: Roles, action: string, body: any) {
   need(r.admin);
@@ -249,7 +239,8 @@ async function adminAction(r: Roles, action: string, body: any) {
       if (typeof body.token === "string" && body.token.trim()) sp.wa_token = body.token.trim();
       if (typeof body.app_secret === "string" && body.app_secret.trim()) sp.wa_app_secret = body.app_secret.trim();
       if (Object.keys(sp).length) await db().from("business_secrets").update(sp).eq("business_id", bizId);
-      return { channel: provider === "none" ? patch : await channelTest(bizId) };
+      if (provider === "none") { await db().from("channels").update({ status: "not_connected", last_error: "" }).eq("business_id", bizId); return { channel: { ...patch, status: "not_connected", last_error: "" } }; }
+      return { channel: await channelTest(bizId) };
     }
     case "channel/test": return { channel: await channelTest(uuid(body.business_id, "business_id")) };
     case "channel/info": {
@@ -298,7 +289,6 @@ async function adminAction(r: Roles, action: string, body: any) {
     }
     case "demo/reset": {
       const b = await bizRow(uuid(body.business_id, "business_id"));
-      need(b.is_demo, "not_demo", 409);
       const { error } = await db().from("customers").delete().eq("business_id", b.id).eq("is_sim", true);
       if (error) throw new Error(error.message);
       await db().from("hook_sink").delete().eq("business_id", b.id);

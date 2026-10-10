@@ -130,6 +130,7 @@ export async function actInvoice(f: Full, rawItems: any, by: string) {
   const allowPay = f.b.plan === "bot_pay" || f.b.is_demo;
   let provider = allowPay ? f.s.pay_provider : "none";
   if (provider === "demo" && !f.b.is_demo) provider = "none";
+  if (f.o.is_test && provider === "moyasar") provider = "demo";
   const { data: inv, error } = await db().from("invoices").insert({ business_id: f.b.id, order_id: f.o.id, number: no, items, subtotal, vat_percent: vp, vat, total, pay_provider: provider }).select("*").single();
   if (error) throw new Error(error.message);
   let payLink: string | null = null;
@@ -326,8 +327,11 @@ export async function expireHolds(limit = 50) {
 export async function pollMoyasar(limit = 20) {
   const since = new Date(Date.now() - 7 * 86400_000).toISOString();
   const { data: rows } = await db().from("invoices").select("*").eq("status", "issued").eq("pay_provider", "moyasar").neq("pay_ref", "").gte("created_at", since).order("created_at", { ascending: false }).limit(limit);
+  const late = new Date(Date.now() - 2 * 86400_000).toISOString();
+  const { data: voids } = await db().from("invoices").select("*, order:orders!inner(status, cancel_reason)").eq("status", "void").eq("pay_provider", "moyasar").neq("pay_ref", "")
+    .eq("order.status", "cancelled").eq("order.cancel_reason", "unpaid").gte("created_at", late).order("created_at", { ascending: false }).limit(10);
   let n = 0;
-  for (const inv of rows || []) {
+  for (const inv of [...(rows || []), ...(voids || [])]) {
     try {
       const v = await verifyMoyasar(inv);
       if (v.paid) { await markInvoicePaid(inv.id, { provider: "moyasar", ref: v.ref, amount: v.amount, method: v.method, raw: v.raw, by: "moyasar" }); n++; }

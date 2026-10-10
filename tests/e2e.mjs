@@ -437,8 +437,9 @@ await t('مهلة الدفع: الحجز اللي ما انطفع ينفك وي�
   const o = q1(`select id from orders where customer_id='${customerId(SAL, c.from)}' order by created_at desc limit 1`);
   sql(`update orders set hold_until = now() - interval '1 minute' where id='${o.id}'`);
   const cr = await cron();
-  ok(cr.expired >= 1, 'expired ' + JSON.stringify(cr));
   const x = q1(`select status, cancel_reason from orders where id='${o.id}'`);
+  // المهمة المجدولة (كل دقيقة) ممكن تسبق الاستدعاء اليدوي وتلغيه قبله، والنتيجة نفسها
+  ok(cr.expired >= 1 || (x.status === 'cancelled' && x.cancel_reason === 'unpaid'), 'expired ' + JSON.stringify(cr));
   ok(x.status === 'cancelled' && x.cancel_reason === 'unpaid', 'cancelled unpaid');
   ok(q1(`select count(*)::int n from invoices where order_id='${o.id}' and status='void'`).n === 1, 'invoice void');
   const msgs = (await c.poll()).filter((m) => m.direction === 'out');

@@ -11,6 +11,7 @@ export async function createPrepay(business: any, settings: any, order: any, amo
   const allowPay = business.plan === "bot_pay" || business.is_demo;
   let provider = allowPay ? settings.pay_provider : "none";
   if (provider === "demo" && !business.is_demo) provider = "none";
+  if (order.is_test && provider === "moyasar") provider = "demo";
   if (provider !== "demo" && provider !== "moyasar") return null;
   let sk = "";
   if (provider === "moyasar") { sk = (await loadSecrets(business.id))?.moyasar_sk || ""; if (!sk) return null; }

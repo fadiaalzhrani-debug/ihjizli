@@ -3,6 +3,7 @@
 import { db, errMsg, json, sameSecret } from "../_shared/util.ts";
 import { expireHolds, pollMoyasar, sendReminders } from "../_shared/actions.ts";
 import { runJobs } from "../_shared/events.ts";
+import { channelsHousekeeping } from "../_shared/channel.ts";
 
 const KEY = Deno.env.get("IHJ_CRON_KEY") || "";
 
@@ -16,6 +17,10 @@ Deno.serve(async (req) => {
   // تجارب المحاكي في المنشآت التجريبية تنمسح بعد يومين (مرة كل ساعة)
   if (new Date().getUTCMinutes() === 7) {
     try { const { data } = await db().rpc("ihj_cleanup_demo", { p_hours: 48 }); out.demo_cleaned = data ?? 0; } catch (e) { out.cleanup_error = errMsg(e); }
+  }
+  // حالة القوالب تتحدث لحالها لين تنعتمد، والربط ينفحص كل 6 ساعات (عشان المفتاح المنتهي يبان في لوحتها)
+  if (new Date().getUTCMinutes() % 15 === 3 || new Date().getUTCMinutes() === 41) {
+    try { out.channels = await channelsHousekeeping(); } catch (e) { out.channels_error = errMsg(e); }
   }
   if (new Date().getUTCMinutes() % 5 === 0 || new URL(req.url).searchParams.has("poll")) {
     try { out.moyasar = await pollMoyasar(20); } catch (e) { out.moyasar_error = errMsg(e); }
