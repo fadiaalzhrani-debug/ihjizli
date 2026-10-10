@@ -9,32 +9,51 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
-/* نموذج بيانات النشاط: بمفتاح المنشأة (?k=) أو عام لأي عميل (يتعرف عليه بجوال المالك)، وينطبق على منشأته من لوحة احجزلي بضغطة */
-body{padding:22px 16px 60px}
-.doc{max-width:760px;margin:0 auto;display:grid;gap:14px}
-.sec{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px}
-.sec h2{font-size:18px;display:flex;gap:10px;align-items:center}
-.sec h2 i{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}
-.line3{display:grid;grid-template-columns:1fr 110px 110px 36px;gap:8px;align-items:center}
-.line2{display:grid;grid-template-columns:1fr 1.3fr 36px;gap:8px;align-items:center}
-.daysg{display:grid;gap:6px}
-.dayr{display:grid;grid-template-columns:100px auto 1fr;gap:10px;align-items:center}
-.dayr input[type=time]{width:auto;padding:6px 8px}
+/* نموذج بيانات النشاط كخطوات قصيرة (سؤال واحد بالشاشة): النشاط ← المكان ← الخدمات ← الدوام ← الدفع ← الموظفون ← الإرسال.
+   يشتغل بمفتاح المنشأة (?k=) أو عام (يتعرف على العميل بجوال المالك). المسودة تنحفظ في الجهاز لحالها. */
+body{padding:16px 16px 40px}
+.doc{max-width:640px;margin:0 auto;display:grid;gap:12px}
+.top{display:grid;gap:8px}
+.top h1{font-size:22px}
+.prog{display:flex;gap:4px} .prog i{flex:1;height:5px;border-radius:9px;background:var(--line)} .prog i.on{background:var(--accent)}
+.step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px;animation:in .2s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){ .step{animation:none} }
+.step h2{font-size:20px}
+.step .h{color:var(--muted);font-size:14px;margin-top:-6px;line-height:1.7}
+.cards{display:grid;gap:8px}
+.cards label{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;display:grid;gap:2px;cursor:pointer}
+.cards label b{font-family:var(--display);font-size:15.5px} .cards label span{font-size:13px;color:var(--muted)}
+.cards label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card))}
+.cards input{position:absolute;opacity:0;pointer-events:none}
 .chipz{display:flex;flex-wrap:wrap;gap:6px}
-.chipz label{display:inline-flex;gap:6px;align-items:center;border:1.5px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13.5px;cursor:pointer;background:var(--card)}
+.chipz label{display:inline-flex;gap:6px;align-items:center;border:1.5px solid var(--line);border-radius:99px;padding:6px 12px;font-size:14px;cursor:pointer;background:var(--card)}
 .chipz label:has(input:checked){background:var(--soft);border-color:var(--accent);color:var(--accent)}
 .chipz input{display:none}
+.region{display:grid;gap:6px} .region b{font-size:12.5px;color:var(--muted)}
+.line{display:grid;grid-template-columns:1fr 96px 36px;gap:8px;align-items:center}
+.line2{display:grid;grid-template-columns:1fr 36px;gap:8px;align-items:center}
+.line2 .mp{grid-column:1}
+.days{display:grid;gap:6px}
+.dayr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.dayr.off{opacity:.55}
+.dayr .t{display:flex;gap:6px;align-items:center;font-size:13.5px} .dayr input[type=time]{width:auto;padding:5px 7px;font-size:14px}
+.nav{display:flex;gap:8px;align-items:center;margin-top:4px}
+.nav .btn{flex:1}
+.err{color:var(--bad);font-size:13.5px;font-weight:600}
+input.bad,textarea.bad{border-color:var(--bad);outline:3px solid color-mix(in srgb,var(--bad) 25%,transparent)}
 .logo{display:flex;gap:12px;align-items:center}
-.logo .pv{width:64px;height:64px;border-radius:16px;background:var(--soft2);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px}
+.logo .pv{width:64px;height:64px;border-radius:16px;background:var(--soft2);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px;flex:none}
 .logo .pv img{width:100%;height:100%;object-fit:contain;background:#fff}
-.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.seg3 label{border:1.5px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:2px;cursor:pointer;text-align:center}
-.seg3 label b{font-family:var(--display)} .seg3 label span{font-size:12px;color:var(--muted)}
-.seg3 label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card))}
-.seg3 input{display:none}
+details.more{border:1px dashed var(--line);border-radius:12px;padding:0 12px}
+details.more summary{cursor:pointer;font-size:14px;padding:10px 0;font-weight:600;color:var(--muted);list-style:none;display:flex;justify-content:space-between}
+details.more summary::-webkit-details-marker{display:none} details.more summary::after{content:"+"} details.more[open] summary::after{content:"−"}
+details.more .g2{padding-bottom:12px}
+.sum{display:grid;gap:6px;font-size:14.5px} .sum div{display:flex;gap:8px;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0} .sum b{font-family:var(--display)} .sum button{background:none;border:0;color:var(--accent);font:inherit;font-size:13.5px;cursor:pointer;padding:0}
 .okbox{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:18px;display:grid;gap:6px}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-@media (max-width:600px){ .line3{grid-template-columns:1fr 80px 36px} .line3 .dur{display:none} .line2{grid-template-columns:1fr 36px} .line2 .mp{grid-column:1/2} .seg3{grid-template-columns:1fr} .dayr{grid-template-columns:84px auto 1fr} }
+.hp{position:absolute;inset-inline-start:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;border:0;padding:0}
+.step{position:relative}
+.saved{font-size:12.5px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
@@ -49,119 +68,175 @@ body{padding:22px 16px 60px}
   let d = { business: { name: '' }, current: {}, intake: null };
   if (k) { try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط النموذج من احجزلي</p></div>'; return; } }
   const b = d.business, cur = d.current || {}, prev = d.intake || {};
-  const P = [['الرياض', 24.7136, 46.6753, 40], ['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['الطائف', 21.2703, 40.4158, 25], ['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['حائل', 27.5114, 41.7208, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20], ['ينبع', 24.0895, 38.0618, 20], ['الخرج', 24.1556, 47.312, 20], ['حفر الباطن', 28.4328, 45.9708, 20]];
+  // المدن بالمناطق (الأقرب لبعض مع بعض)
+  const REG = [
+    ['الشرقية', [['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['حفر الباطن', 28.4328, 45.9708, 20]]],
+    ['الوسطى', [['الرياض', 24.7136, 46.6753, 40], ['الخرج', 24.1556, 47.312, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['حائل', 27.5114, 41.7208, 20]]],
+    ['الغربية', [['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الطائف', 21.2703, 40.4158, 25], ['ينبع', 24.0895, 38.0618, 20]]],
+    ['الشمال والجنوب', [['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20]]],
+  ];
+  const P = REG.flatMap((r) => r[1]);
   const WD = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  const HP = [['std', 'كل يوم 9 الصبح إلى 9 الليل', (i) => ({ on: true, open: '09:00', close: '21:00' })], ['stdf', 'كل يوم 9 إلى 9، والجمعة من 4 العصر', (i) => ({ on: true, open: i === 5 ? '16:00' : '09:00', close: '21:00' })], ['work', 'الأحد إلى الخميس 8 إلى 5', (i) => ({ on: i <= 4, open: '08:00', close: '17:00' })], ['eve', 'كل يوم 4 العصر إلى 12 الليل', (i) => ({ on: true, open: '16:00', close: '00:00' })], ['custom', 'أحدد كل يوم بنفسي', null]];
   const val = (a, bb) => (a !== undefined && a !== null && a !== '') ? a : bb;
-  const st = {
-    place: val(prev.place_mode, cur.place_mode || 'visit'), pay: val(prev.pay_timing, cur.pay_timing || 'after'),
-    services: (prev.services && prev.services.length ? prev.services : (cur.services || [])).map((s) => ({ name: s.name, price: s.price ?? '', duration_min: s.duration_min ?? '' })),
+  const DKEY = 'ihj_start_' + (k || 'public');
+  let draft = null; try { draft = JSON.parse(localStorage.getItem(DKEY) || 'null'); } catch (e) { /* */ }
+  const src = (draft && draft.st) ? draft.st : null;
+  const st = src || {
+    name: val(prev.name, b.name || ''), name_en: val(prev.name_en, b.name_en || ''), activity: val(prev.activity, b.activity || ''), wa: val(prev.wa_number, b.wa_number ? I.phone(b.wa_number) : ''),
+    owner: val(prev.owner_name, b.owner_name || ''), ownerp: val(prev.owner_phone, b.owner_phone ? I.phone(b.owner_phone) : ''), cr: val(prev.cr_number, b.cr_number || ''), vat: val(prev.vat_number, b.vat_number || ''), addr: val(prev.address, b.address || ''),
+    place: val(prev.place_mode, cur.place_mode || ''), pay: val(prev.pay_timing, cur.pay_timing || ''), moy: prev.has_moyasar || '', notes: prev.notes || '',
+    services: (prev.services && prev.services.length ? prev.services : (cur.services || [])).map((s) => ({ name: s.name, price: s.price ?? '' })),
     cities: (prev.cities && prev.cities.length ? prev.cities : (cur.cities || [])).map((c) => ({ ...c })),
-    hours: prev.hours && prev.hours.length ? prev.hours : (cur.hours || []),
-    staff: (prev.staff && prev.staff.length ? prev.staff : (cur.staff || [])).map((s) => ({ ...s, cities: s.cities || [] })),
+    hoursPreset: '', hours: (prev.hours && prev.hours.length ? prev.hours : (cur.hours || [])).map((h) => ({ weekday: +h.weekday, open: String(h.open).slice(0, 5), close: String(h.close).slice(0, 5) })),
+    staff: (prev.staff && prev.staff.length ? prev.staff : (cur.staff || [])).map((s) => ({ name: s.name, phone: s.phone ? I.phone(s.phone) : '', cities: s.cities || [] })),
     logo: '', logo_url: prev.logo_url || b.logo_url || '',
   };
-  if (!st.services.length) st.services.push({ name: '', price: '', duration_min: '' });
-  const branches = () => st.cities.filter((c) => c.branch || st.place === 'shop');
+  if (!st.services.length) st.services.push({ name: '', price: '' });
+  if (st.hours.length && !st.hoursPreset) st.hoursPreset = 'custom';
+  let step = (draft && Number.isInteger(draft.step)) ? Math.min(draft.step, 6) : 0;
+  const save = () => { try { localStorage.setItem(DKEY, JSON.stringify({ st: { ...st, logo: '' }, step, t: Date.now() })); } catch (e) { /* */ } };
+  const STEPS = ['biz', 'place', 'services', 'hours', 'pay', 'staff', 'send'];
   document.title = k ? `بيانات ${b.name} · احجزلي` : 'بيانات نشاطك · احجزلي';
-  $('doc').innerHTML = `
-    <div><h1>${k ? 'بيانات ' + esc(b.name) : 'بيانات نشاطك'}</h1><p class="muted">عبّها مرة وحدة، ونجهّز منها الرد الآلي والمواعيد. تقدر ترجع تعدّلها وترسلها مرة ثانية.</p></div>
-    <div class="sec"><h2><i>1</i>النشاط</h2><div class="g2">
-      <label class="f"><span>اسم النشاط</span><input id="name" maxlength="80" value="${esc(val(prev.name, b.name))}"></label>
-      <label class="f"><span>الاسم بالإنجليزي (اختياري)</span><input id="name_en" maxlength="80" dir="ltr" value="${esc(val(prev.name_en, b.name_en || ''))}"></label>
-      <label class="f"><span>المجال</span><input id="activity" maxlength="60" value="${esc(val(prev.activity, b.activity || ''))}"></label>
-      <label class="f"><span>رقم واتساب النشاط</span><input id="wa" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.wa_number, b.wa_number ? I.phone(b.wa_number) : ''))}"></label>
-      <label class="f"><span>اسم المالك</span><input id="owner" maxlength="60" value="${esc(val(prev.owner_name, b.owner_name || ''))}"></label>
-      <label class="f"><span>جوال المالك${k ? '' : ' (اللي تواصلتم معنا منه)'}</span><input id="ownerp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.owner_phone, b.owner_phone ? I.phone(b.owner_phone) : ''))}"></label>
-      <label class="f"><span>السجل التجاري</span><input id="cr" dir="ltr" maxlength="20" value="${esc(val(prev.cr_number, b.cr_number || ''))}"></label>
-      <label class="f"><span>الرقم الضريبي (لو مسجل)</span><input id="vat" dir="ltr" maxlength="20" value="${esc(val(prev.vat_number, b.vat_number || ''))}"></label>
-      <label class="f" style="grid-column:1/-1"><span>العنوان في الفاتورة</span><input id="addr" maxlength="120" value="${esc(val(prev.address, b.address || ''))}"></label></div>
-      <div class="logo"><span class="pv" id="pv">${st.logo_url ? `<img src="${esc(st.logo_url)}" alt="">` : 'الشعار'}</span><label class="btn ghost sm">${icon('plus')}ارفع الشعار<input type="file" id="logoF" accept="image/*" hidden></label></div></div>
-    <div class="sec"><h2><i>2</i>وين تقدّم خدمتك؟</h2>
-      <div class="seg3">${[['visit', 'عند العميل', 'تروح لموقعه'], ['shop', 'في محلك', 'العميل يجيك'], ['online', 'أونلاين', 'بدون زيارة']].map(([v, l, s]) => `<label><input type="radio" name="place" value="${v}" ${st.place === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
-      <div id="placeBox"></div></div>
-    <div class="sec"><h2><i>3</i>الخدمات والأسعار</h2><p class="tiny">اترك السعر فاضي لو يتحدد بعد المعاينة. المدة اختيارية.</p><div class="stack s" id="svcs"></div><button class="btn ghost sm" type="button" id="addSvc" style="justify-self:start">${icon('plus')}خدمة</button></div>
-    <div class="sec"><h2><i>4</i>أوقات العمل</h2><div class="daysg" id="days"></div></div>
-    <div class="sec"><h2><i>5</i>الموظفون</h2><p class="tiny">كل موظف يوصله طلبه على الواتساب ويكون له رابط بسيط. تقدر تتركها وتضيفهم بعدين.</p><div class="stack s" id="staff"></div><button class="btn ghost sm" type="button" id="addStf" style="justify-self:start">${icon('plus')}موظف</button></div>
-    <div class="sec"><h2><i>6</i>الدفع</h2>
-      <div class="seg3">${[['before', 'قبل الحجز', 'يدفع ويتأكد'], ['after', 'بعد الخدمة', 'فاتورة ورابط'], ['none', 'في المحل', 'كاش أو شبكة']].map(([v, l, s]) => `<label><input type="radio" name="pay" value="${v}" ${st.pay === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
-      <label class="f"><span>عندك حساب في ميسر؟</span><select id="moy"><option value="">اختر</option><option value="yes" ${prev.has_moyasar === 'yes' ? 'selected' : ''}>نعم</option><option value="no" ${prev.has_moyasar === 'no' ? 'selected' : ''}>لا، ساعدوني أسجل</option><option value="later" ${prev.has_moyasar === 'later' ? 'selected' : ''}>بعدين</option></select></label></div>
-    <div class="sec"><h2><i>7</i>أي شي ثاني؟</h2><textarea id="notes" rows="3" maxlength="1000" placeholder="أسئلة يسألونها عملاؤك كثير وأجوبتها، أو أي ملاحظة">${esc(prev.notes || '')}</textarea></div>
-    <div class="sec" id="sendBox"><input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="btn lg" id="go" type="button">${icon('send')}أرسل البيانات</button><span class="tiny" id="msg" role="status"></span></div>`;
+  $('doc').innerHTML = `<div class="top"><h1 id="ttl"></h1><div class="prog" id="prog"></div></div><div id="body"></div><div class="saved" id="savedNote"></div>`;
 
+  function hoursFor() {
+    const p = HP.find((x) => x[0] === st.hoursPreset);
+    if (p && p[2]) return WD.map((_, i) => ({ weekday: i, ...p[2](i) })).filter((h) => h.on).map((h) => ({ weekday: h.weekday, open: h.open, close: h.close }));
+    return st.hours;
+  }
+  const cityNames = () => st.cities.map((c) => c.name).filter(Boolean);
+  function paint() {
+    save();
+    const key = STEPS[step];
+    $('prog').innerHTML = STEPS.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('');
+    const titles = { biz: k ? 'بيانات ' + esc(b.name) : 'بيانات نشاطك', place: 'وين الخدمة؟', services: 'الخدمات والأسعار', hours: 'أوقات العمل', pay: 'الدفع', staff: 'الموظفون', send: 'راجع وأرسل' };
+    $('ttl').textContent = titles[key];
+    let body = '';
+    if (key === 'biz') body = `<h2>عرّفنا على نشاطك</h2><div class="h">دقيقتين، وكل شي تقدر ترجع تعدّله.</div>
+      <label class="f"><span>اسم النشاط (مثل ما يظهر لعملائك)</span><input id="name" maxlength="80" value="${esc(st.name)}" autocomplete="organization"></label>
+      <label class="f"><span>وش نشاطك؟</span><input id="activity" maxlength="60" value="${esc(st.activity)}" list="acts" placeholder="صالون، صيانة، عيادة، مغسلة…"><datalist id="acts"><option>صالون أو تجميل</option><option>صيانة منزلية</option><option>عيادة أو مركز</option><option>مغسلة سيارات</option><option>تنظيف</option><option>استشارات أو تدريب</option><option>مطعم أو كافيه</option><option>تأجير</option></datalist></label>
+      <div class="g2"><label class="f"><span>اسم المالك</span><input id="owner" maxlength="60" value="${esc(st.owner)}" autocomplete="name"></label><label class="f"><span>جوال المالك</span><input id="ownerp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(st.ownerp)}" autocomplete="tel"></label></div>
+      <label class="f"><span>رقم واتساب النشاط (لو غير جوال المالك)</span><input id="wa" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(st.wa)}"></label>
+      <div class="logo"><span class="pv" id="pv">${st.logo_url ? `<img src="${esc(st.logo_url)}" alt="">` : 'الشعار'}</span><div class="stack s"><label class="btn ghost sm">${icon('plus')}ارفع الشعار<input type="file" id="logoF" accept="image/*" hidden></label><span class="tiny">اختياري، ولو ما عندك نأخذه من صورة حسابك</span></div></div>
+      <details class="more"><summary>تفاصيل الفاتورة (اختياري)</summary><div class="g2"><label class="f"><span>السجل التجاري</span><input id="cr" dir="ltr" maxlength="20" value="${esc(st.cr)}"></label><label class="f"><span>الرقم الضريبي</span><input id="vat" dir="ltr" maxlength="20" value="${esc(st.vat)}"></label><label class="f" style="grid-column:1/-1"><span>العنوان في الفاتورة</span><input id="addr" maxlength="120" value="${esc(st.addr)}"></label><label class="f" style="grid-column:1/-1"><span>الاسم بالإنجليزي</span><input id="name_en" maxlength="80" dir="ltr" value="${esc(st.name_en)}"></label></div></details>`;
+    else if (key === 'place') body = `<h2>وين تقدّم خدمتك؟</h2>
+      <div class="cards">${[['visit', 'عند العميل', 'تروح لموقعه (صيانة، مغسلة متنقلة، تنظيف)'], ['shop', 'في محلك', 'العميل يجيك (صالون، عيادة، مطعم)'], ['online', 'أونلاين', 'بدون زيارة (استشارات، تدريب)']].map(([v, l, s]) => `<label><input type="radio" name="place" value="${v}" ${st.place === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
+      <div id="placeBox"></div>`;
+    else if (key === 'services') body = `<h2>وش خدماتك؟</h2><div class="h">اكتب الأساسية بس، والباقي نضيفه بعدين. اترك السعر فاضي لو يتحدد بعد المعاينة.</div><div class="stack s" id="svcs"></div><button class="btn ghost sm" type="button" id="addSvc" style="justify-self:start">${icon('plus')}خدمة ثانية</button>`;
+    else if (key === 'hours') body = `<h2>متى تستقبلون؟</h2>
+      <div class="cards">${HP.map(([v, l]) => `<label><input type="radio" name="hp" value="${v}" ${st.hoursPreset === v ? 'checked' : ''}><b>${l}</b></label>`).join('')}</div>
+      <div class="days" id="days" ${st.hoursPreset === 'custom' ? '' : 'hidden'}></div>`;
+    else if (key === 'pay') body = `<h2>متى يدفع العميل؟</h2>
+      <div class="cards">${[['after', 'بعد الخدمة', 'توصله فاتورة ورابط دفع بعد ما تخلص'], ['before', 'قبل الحجز', 'يدفع برابط والموعد يتأكد بعد الدفع'], ['none', 'في المحل', 'كاش أو شبكة، بدون دفع بالواتساب']].map(([v, l, s]) => `<label><input type="radio" name="pay" value="${v}" ${st.pay === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
+      <div id="moyBox" ${st.pay && st.pay !== 'none' ? '' : 'hidden'}><label class="f"><span>عندك حساب في بوابة الدفع (ميسر)؟</span><select id="moy"><option value="">اختر</option><option value="yes" ${st.moy === 'yes' ? 'selected' : ''}>نعم</option><option value="no" ${st.moy === 'no' ? 'selected' : ''}>لا، افتحوه لي</option><option value="later" ${st.moy === 'later' ? 'selected' : ''}>بعدين</option></select></label></div>`;
+    else if (key === 'staff') body = `<h2>مين ينفّذ الطلبات؟</h2><div class="h">${st.place === 'visit' ? 'كل موظف يوصله طلبه بالواتساب، ويكون له رابط بسيط. تقدر تتركها فاضية لو أنت اللي تنفّذ.' : 'اختياري: لو عندك موظفين يستلمون الطلبات. وإلا اتركها.'}</div><div class="stack s" id="staff"></div><button class="btn ghost sm" type="button" id="addStf" style="justify-self:start">${icon('plus')}موظف</button>
+      <label class="f"><span>أي شي ثاني تبينا نعرفه؟ (اختياري)</span><textarea id="notes" rows="3" maxlength="1000" placeholder="أسئلة يسألونها عملاؤك كثير وأجوبتها، أو أي ملاحظة">${esc(st.notes)}</textarea></label>`;
+    else body = `<h2>كل شي تمام؟</h2><div class="sum">${summary()}</div><input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><div id="sendBox"><button class="btn lg block" id="go" type="button">${icon('send')}أرسل البيانات</button></div>`;
+    $('body').innerHTML = `<section class="step">${body}<div class="err" id="err" hidden></div><div class="nav">${step ? `<button class="btn ghost" type="button" id="back">رجوع</button>` : ''}${key === 'send' ? '' : `<button class="btn" type="button" id="next">التالي</button>`}</div></section>`;
+    bind(key);
+    window.scrollTo({ top: 0 });
+    $('savedNote').textContent = 'مسودتك محفوظة في جهازك، تقدر ترجع تكمّل في أي وقت';
+  }
+  function summary() {
+    const row = (l, v, i) => `<div><span>${l}</span><span style="text-align:end"><b>${esc(v || 'غير محدد')}</b> <button type="button" data-go="${i}">عدّل</button></span></div>`;
+    const place = { visit: 'عند العميل', shop: 'في محلك', online: 'أونلاين' }[st.place];
+    const pay = { after: 'بعد الخدمة', before: 'قبل الحجز', none: 'في المحل' }[st.pay];
+    const hp = HP.find((x) => x[0] === st.hoursPreset);
+    return row('النشاط', `${st.name}${st.activity ? ' · ' + st.activity : ''}`, 0) + row('المكان', place + (st.place === 'visit' && cityNames().length ? ' · ' + cityNames().join('، ') : st.place === 'shop' ? ' · ' + (cityNames().join('، ') || 'فرع واحد') : ''), 1)
+      + row('الخدمات', st.services.filter((s) => s.name.trim()).map((s) => s.name + (s.price !== '' ? ' ' + s.price : '')).join('، '), 2) + row('الدوام', hp ? (hp[0] === 'custom' ? st.hours.length + ' أيام' : hp[1]) : '', 3) + row('الدفع', pay, 4) + row('الموظفون', st.staff.filter((s) => s.name.trim()).map((s) => s.name).join('، ') || 'أنت', 5);
+  }
+  const read = {
+    biz() { for (const id of ['name', 'activity', 'owner', 'ownerp', 'wa', 'cr', 'vat', 'addr', 'name_en']) if ($(id)) st[id] = $(id).value.trim(); },
+    place() { st.place = (document.querySelector('input[name=place]:checked') || {}).value || st.place; },
+    hours() { st.hoursPreset = (document.querySelector('input[name=hp]:checked') || {}).value || st.hoursPreset; },
+    pay() { st.pay = (document.querySelector('input[name=pay]:checked') || {}).value || st.pay; if ($('moy')) st.moy = $('moy').value; },
+    staff() { if ($('notes')) st.notes = $('notes').value.trim(); },
+    services() {}, send() {},
+  };
+  const okPhone = (p) => /^(\+?966|0)?5\d{8}$/.test(String(p).replace(/\D/g, '').replace(/^00/, '+'));
+  function validate(key) {
+    const bad = (id, msg) => { const el = $(id); if (el) { el.classList.add('bad'); el.focus(); el.scrollIntoView({ block: 'center' }); } return msg; };
+    if (key === 'biz') { if (st.name.length < 2) return bad('name', 'اكتب اسم النشاط'); if (!k && !okPhone(st.ownerp)) return bad('ownerp', 'اكتب جوال المالك (اللي تواصلنا منه)'); if (st.ownerp && !okPhone(st.ownerp)) return bad('ownerp', 'اكتب جوال صحيح'); }
+    if (key === 'place') { if (!st.place) return 'اختر وين تقدّم خدمتك'; if (st.place === 'shop' && !st.cities.some((c) => String(c.name || '').trim())) return 'اكتب اسم فرع واحد على الأقل'; }
+    if (key === 'services' && !st.services.some((s) => String(s.name).trim())) return bad('sv0', 'اكتب خدمة وحدة على الأقل');
+    if (key === 'hours') { if (!st.hoursPreset) return 'اختر أوقات العمل'; if (st.hoursPreset === 'custom' && !st.hours.length) return 'فعّل يوم واحد على الأقل'; }
+    if (key === 'pay' && !st.pay) return 'اختر متى يدفع العميل';
+    return '';
+  }
+  function bind(key) {
+    document.querySelectorAll('[data-go]').forEach((x) => x.onclick = () => { step = +x.dataset.go; paint(); });
+    if ($('back')) $('back').onclick = () => { read[key](); step--; paint(); };
+    if ($('next')) $('next').onclick = () => { read[key](); const e = validate(key); if (e) { $('err').textContent = e; $('err').hidden = false; return; } step++; paint(); };
+    $('body').querySelectorAll('input,textarea,select').forEach((x) => x.addEventListener('input', () => { x.classList.remove('bad'); $('err').hidden = true; }));
+    if (key === 'biz' && $('logoF')) $('logoF').onchange = (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      const img = new Image();
+      img.onload = () => { const s = Math.min(1, 512 / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * s) || 256; c.height = Math.round(img.height * s) || 256; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); st.logo = c.toDataURL('image/png'); st.logo_url = ''; $('pv').innerHTML = `<img src="${st.logo}" alt="">`; };
+      img.src = URL.createObjectURL(file);
+    };
+    if (key === 'place') { paintPlace(); document.querySelectorAll('input[name=place]').forEach((x) => x.onchange = () => { st.place = x.value; st.cities = []; paintPlace(); }); }
+    if (key === 'services') { paintSvcs(); $('addSvc').onclick = () => { st.services.push({ name: '', price: '' }); paintSvcs(); const last = $('svcs').querySelector('.line:last-child input'); if (last) last.focus(); }; }
+    if (key === 'hours') { paintDays(); document.querySelectorAll('input[name=hp]').forEach((x) => x.onchange = () => { st.hoursPreset = x.value; $('days').hidden = x.value !== 'custom'; if (x.value === 'custom' && !st.hours.length) st.hours = WD.map((_, i) => ({ weekday: i, open: '09:00', close: '21:00' })).filter((h) => h.weekday !== 5); paintDays(); }); }
+    if (key === 'pay') document.querySelectorAll('input[name=pay]').forEach((x) => x.onchange = () => { st.pay = x.value; $('moyBox').hidden = x.value === 'none'; });
+    if (key === 'staff') { paintStaff(); $('addStf').onclick = () => { st.staff.push({ name: '', phone: '', cities: cityNames() }); paintStaff(); }; }
+    if (key === 'send') $('go').onclick = send;
+  }
   function paintPlace() {
-    st.place = (document.querySelector('input[name=place]:checked') || {}).value || 'visit';
-    const box = $('placeBox');
-    if (st.place === 'online') { box.innerHTML = '<p class="tiny">ما يحتاج مكان، ورابط الجلسة يوصل العميل قبل موعده.</p>'; return; }
+    const box = $('placeBox'); if (!box) return;
+    if (!st.place) { box.innerHTML = ''; return; }
+    if (st.place === 'online') { box.innerHTML = '<p class="tiny">ما يحتاج مكان. رابط الجلسة يوصل العميل قبل موعده.</p>'; return; }
     if (st.place === 'visit') {
-      const chosen = st.cities.map((c) => c.name);
-      box.innerHTML = `<p class="tiny">المدن اللي تغطيها:</p><div class="chipz">${P.map((c) => `<label><input type="checkbox" data-city="${c[0]}" ${chosen.includes(c[0]) ? 'checked' : ''}>${c[0]}</label>`).join('')}</div>`;
-      box.querySelectorAll('[data-city]').forEach((x) => x.onchange = () => {
-        const p = P.find((c) => c[0] === x.dataset.city);
-        if (x.checked) st.cities.push({ name: p[0], lat: p[1], lng: p[2], radius_km: p[3] }); else st.cities = st.cities.filter((c) => c.name !== p[0]);
-        paintStaff();
-      });
+      const chosen = cityNames();
+      box.innerHTML = `<div class="h" style="margin-top:4px">المدن اللي تغطيها:</div>${REG.map(([r, cs]) => `<div class="region"><b>${r}</b><div class="chipz">${cs.map((c) => `<label><input type="checkbox" data-city="${c[0]}" ${chosen.includes(c[0]) ? 'checked' : ''}>${c[0]}</label>`).join('')}</div></div>`).join('')}`;
+      box.querySelectorAll('[data-city]').forEach((x) => x.onchange = () => { const p = P.find((c) => c[0] === x.dataset.city); if (x.checked) st.cities.push({ name: p[0], lat: p[1], lng: p[2], radius_km: p[3] }); else st.cities = st.cities.filter((c) => c.name !== p[0]); save(); });
       return;
     }
     if (!st.cities.length) st.cities.push({ name: '', maps: '' });
-    box.innerHTML = `<p class="tiny">الفروع: اسم الفرع ورابط موقعه من قوقل ماب.</p><div class="stack s">${st.cities.map((c, i) => `<div class="line2"><input data-bi="${i}" data-k="name" placeholder="مثل: فرع العليا" maxlength="40" value="${esc(c.name || '')}"><input class="mp" data-bi="${i}" data-k="maps" dir="ltr" placeholder="https://maps.app.goo.gl/…" value="${esc(c.maps || (c.lat ? `https://maps.google.com/?q=${c.lat},${c.lng}` : ''))}"><button class="ib" type="button" data-rb="${i}">${icon('x')}</button></div>`).join('')}</div><button class="btn ghost sm" type="button" id="addBr" style="justify-self:start;margin-top:8px">${icon('plus')}فرع</button>`;
-    box.querySelectorAll('[data-bi]').forEach((x) => x.oninput = () => { const c = st.cities[+x.dataset.bi]; c[x.dataset.k] = x.value; if (x.dataset.k === 'maps') { delete c.lat; delete c.lng; } paintStaffCities(); });
-    box.querySelectorAll('[data-rb]').forEach((x) => x.onclick = () => { st.cities.splice(+x.dataset.rb, 1); paintPlace(); paintStaff(); });
+    box.innerHTML = `<div class="h" style="margin-top:4px">فروعك: الاسم ورابط موقعه من قوقل ماب (شارك ← نسخ الرابط).</div><div class="stack s">${st.cities.map((c, i) => `<div class="line2"><input data-bi="${i}" data-k="name" placeholder="${st.cities.length > 1 ? 'مثل: فرع العليا' : 'اسم الفرع أو الحي'}" maxlength="40" value="${esc(c.name || '')}"><button class="ib" type="button" data-rb="${i}" ${st.cities.length > 1 ? '' : 'hidden'}>${icon('x')}</button><input class="mp" data-bi="${i}" data-k="maps" dir="ltr" placeholder="https://maps.app.goo.gl/…" value="${esc(c.maps || (c.lat ? `https://maps.google.com/?q=${c.lat},${c.lng}` : ''))}"></div>`).join('')}</div><button class="btn ghost sm" type="button" id="addBr" style="justify-self:start;margin-top:8px">${icon('plus')}فرع ثاني</button>`;
+    box.querySelectorAll('[data-bi]').forEach((x) => x.oninput = () => { const c = st.cities[+x.dataset.bi]; c[x.dataset.k] = x.value; if (x.dataset.k === 'maps') { delete c.lat; delete c.lng; } save(); });
+    box.querySelectorAll('[data-rb]').forEach((x) => x.onclick = () => { st.cities.splice(+x.dataset.rb, 1); paintPlace(); });
     $('addBr').onclick = () => { st.cities.push({ name: '', maps: '' }); paintPlace(); };
   }
-  document.querySelectorAll('input[name=place]').forEach((x) => x.onchange = () => { st.cities = []; paintPlace(); paintStaff(); });
-
   function paintSvcs() {
-    $('svcs').innerHTML = st.services.map((s, i) => `<div class="line3"><input data-si="${i}" data-k="name" placeholder="اسم الخدمة" maxlength="24" value="${esc(s.name)}"><input data-si="${i}" data-k="price" type="number" min="0" placeholder="السعر" value="${esc(s.price)}"><input class="dur" data-si="${i}" data-k="duration_min" type="number" min="10" placeholder="المدة (د)" value="${esc(s.duration_min)}"><button class="ib" type="button" data-rs="${i}">${icon('x')}</button></div>`).join('');
-    $('svcs').querySelectorAll('[data-si]').forEach((x) => x.oninput = () => { st.services[+x.dataset.si][x.dataset.k] = x.value; });
-    $('svcs').querySelectorAll('[data-rs]').forEach((x) => x.onclick = () => { st.services.splice(+x.dataset.rs, 1); if (!st.services.length) st.services.push({ name: '', price: '', duration_min: '' }); paintSvcs(); });
+    $('svcs').innerHTML = st.services.map((s, i) => `<div class="line"><input id="sv${i}" data-si="${i}" data-k="name" placeholder="اسم الخدمة" maxlength="24" value="${esc(s.name)}"><input data-si="${i}" data-k="price" type="number" min="0" inputmode="decimal" placeholder="السعر" value="${esc(s.price)}"><button class="ib" type="button" data-rs="${i}" ${st.services.length > 1 ? '' : 'hidden'}>${icon('x')}</button></div>`).join('');
+    $('svcs').querySelectorAll('[data-si]').forEach((x) => x.oninput = () => { st.services[+x.dataset.si][x.dataset.k] = x.value; save(); });
+    $('svcs').querySelectorAll('[data-rs]').forEach((x) => x.onclick = () => { st.services.splice(+x.dataset.rs, 1); paintSvcs(); });
   }
-  $('addSvc').onclick = () => { st.services.push({ name: '', price: '', duration_min: '' }); paintSvcs(); };
-
-  const hrs = WD.map((_, i) => { const h = st.hours.find((x) => +x.weekday === i); return { on: !!h || (!st.hours.length && i !== 5), open: h ? String(h.open).slice(0, 5) : '09:00', close: h ? String(h.close).slice(0, 5) : '21:00' }; });
-  $('days').innerHTML = WD.map((n, i) => `<div class="dayr"><b>${n}</b><label class="sw"><input type="checkbox" data-d="${i}" ${hrs[i].on ? 'checked' : ''}><i></i></label><span class="row"><input type="time" data-o="${i}" value="${hrs[i].open}"> إلى <input type="time" data-c="${i}" value="${hrs[i].close}"></span></div>`).join('');
-  $('days').querySelectorAll('[data-d]').forEach((x) => x.onchange = () => { hrs[+x.dataset.d].on = x.checked; });
-  $('days').querySelectorAll('[data-o]').forEach((x) => x.onchange = () => { hrs[+x.dataset.o].open = x.value; });
-  $('days').querySelectorAll('[data-c]').forEach((x) => x.onchange = () => { hrs[+x.dataset.c].close = x.value; });
-
-  function placeNames() { return st.cities.map((c) => c.name).filter(Boolean); }
-  function paintStaffCities() { document.querySelectorAll('[data-scbox]').forEach((box) => { const i = +box.dataset.scbox; box.innerHTML = placeNames().map((n) => `<label><input type="checkbox" data-sc="${i}" value="${esc(n)}" ${(st.staff[i].cities || []).includes(n) ? 'checked' : ''}>${esc(n)}</label>`).join(''); box.querySelectorAll('[data-sc]').forEach((x) => x.onchange = () => { const s = st.staff[+x.dataset.sc]; s.cities = x.checked ? [...new Set([...(s.cities || []), x.value])] : (s.cities || []).filter((c) => c !== x.value); }); }); }
+  function paintDays() {
+    const el = $('days'); if (!el) return;
+    el.innerHTML = WD.map((n, i) => { const h = st.hours.find((x) => x.weekday === i); return `<div class="dayr ${h ? '' : 'off'}"><label class="sw"><input type="checkbox" data-d="${i}" ${h ? 'checked' : ''}><i></i><span>${n}</span></label><span class="t"><input type="time" data-o="${i}" value="${h ? h.open : '09:00'}" ${h ? '' : 'disabled'}><span>إلى</span><input type="time" data-c="${i}" value="${h ? h.close : '21:00'}" ${h ? '' : 'disabled'}></span></div>`; }).join('');
+    el.querySelectorAll('[data-d]').forEach((x) => x.onchange = () => { const i = +x.dataset.d; if (x.checked) st.hours.push({ weekday: i, open: '09:00', close: '21:00' }); else st.hours = st.hours.filter((h) => h.weekday !== i); st.hours.sort((a, b2) => a.weekday - b2.weekday); paintDays(); });
+    el.querySelectorAll('[data-o]').forEach((x) => x.onchange = () => { const h = st.hours.find((y) => y.weekday === +x.dataset.o); if (h) h.open = x.value; save(); });
+    el.querySelectorAll('[data-c]').forEach((x) => x.onchange = () => { const h = st.hours.find((y) => y.weekday === +x.dataset.c); if (h) h.close = x.value; save(); });
+  }
   function paintStaff() {
-    $('staff').innerHTML = st.staff.map((s, i) => `<div class="card flat stack s"><div class="line2"><input data-ti="${i}" data-k="name" placeholder="اسم الموظف" maxlength="40" value="${esc(s.name)}"><input class="mp" data-ti="${i}" data-k="phone" dir="ltr" inputmode="tel" placeholder="جواله 05xxxxxxxx" value="${esc(s.phone ? I.phone(s.phone) : '')}"><button class="ib" type="button" data-rt="${i}">${icon('x')}</button></div><div class="chipz" data-scbox="${i}"></div></div>`).join('');
-    $('staff').querySelectorAll('[data-ti]').forEach((x) => x.oninput = () => { st.staff[+x.dataset.ti][x.dataset.k] = x.value; });
+    const names = cityNames();
+    $('staff').innerHTML = st.staff.map((s, i) => `<div class="card flat stack s"><div class="line2"><input data-ti="${i}" data-k="name" placeholder="اسم الموظف" maxlength="40" value="${esc(s.name)}"><button class="ib" type="button" data-rt="${i}">${icon('x')}</button><input class="mp" data-ti="${i}" data-k="phone" dir="ltr" inputmode="tel" placeholder="جواله 05xxxxxxxx" value="${esc(s.phone || '')}"></div>${names.length > 1 ? `<div class="chipz">${names.map((n) => `<label><input type="checkbox" data-sc="${i}" value="${esc(n)}" ${(s.cities || []).includes(n) ? 'checked' : ''}>${esc(n)}</label>`).join('')}</div>` : ''}</div>`).join('') || '<p class="tiny">ما فيه موظفين، الطلبات توصلك أنت.</p>';
+    $('staff').querySelectorAll('[data-ti]').forEach((x) => x.oninput = () => { st.staff[+x.dataset.ti][x.dataset.k] = x.value; save(); });
     $('staff').querySelectorAll('[data-rt]').forEach((x) => x.onclick = () => { st.staff.splice(+x.dataset.rt, 1); paintStaff(); });
-    paintStaffCities();
+    $('staff').querySelectorAll('[data-sc]').forEach((x) => x.onchange = () => { const s = st.staff[+x.dataset.sc]; s.cities = x.checked ? [...new Set([...(s.cities || []), x.value])] : (s.cities || []).filter((c) => c !== x.value); save(); });
   }
-  $('addStf').onclick = () => { st.staff.push({ name: '', phone: '', cities: placeNames() }); paintStaff(); };
-
-  $('logoF').onchange = (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    const img = new Image();
-    img.onload = () => { const s = Math.min(1, 512 / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * s) || 256; c.height = Math.round(img.height * s) || 256; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); st.logo = c.toDataURL('image/png'); $('pv').innerHTML = `<img src="${st.logo}" alt="">`; };
-    img.src = URL.createObjectURL(file);
-  };
-  paintPlace(); paintSvcs(); paintStaff();
-
-  $('go').onclick = async (e) => {
+  async function send(e) {
     const data = {
-      name: $('name').value, name_en: $('name_en').value, activity: $('activity').value, wa_number: $('wa').value, owner_name: $('owner').value, owner_phone: $('ownerp').value,
-      cr_number: $('cr').value, vat_number: $('vat').value, address: $('addr').value,
-      place_mode: st.place, pay_timing: (document.querySelector('input[name=pay]:checked') || {}).value || 'after', has_moyasar: $('moy').value, notes: $('notes').value,
-      services: st.services.filter((s) => String(s.name).trim()),
+      name: st.name, name_en: st.name_en, activity: st.activity, wa_number: st.wa || st.ownerp, owner_name: st.owner, owner_phone: st.ownerp, cr_number: st.cr, vat_number: st.vat, address: st.addr,
+      place_mode: st.place, pay_timing: st.pay, has_moyasar: st.pay === 'none' ? '' : st.moy, notes: st.notes,
+      services: st.services.filter((s) => String(s.name).trim()).map((s) => ({ name: s.name.trim(), price: s.price })),
       cities: st.place === 'online' ? [] : st.cities.filter((c) => String(c.name || '').trim()),
-      hours: hrs.map((h, i) => h.on ? { weekday: i, open: h.open, close: h.close } : null).filter(Boolean),
-      staff: st.staff.filter((s) => String(s.name).trim()),
+      hours: hoursFor(), staff: st.staff.filter((s) => String(s.name).trim()),
       logo: st.logo || undefined, logo_url: st.logo ? undefined : st.logo_url,
     };
-    if (String(data.name).trim().length < 2) { $('msg').textContent = 'اكتب اسم النشاط'; return; }
-    if (!k && !/^(\+?966|0)?5\d{8}$/.test(String(data.owner_phone).replace(/\D/g, '').replace(/^00/, '+'))) { $('msg').textContent = 'اكتب جوال المالك'; return; }
-    if (!data.services.length) { $('msg').textContent = 'أضف خدمة وحدة على الأقل'; return; }
-    e.target.disabled = true; $('msg').textContent = 'جارٍ الإرسال…';
+    e.target.disabled = true; $('err').hidden = true;
     try {
       const r = k ? await post('intake', { data }) : await post('intake-new', { data, website: $('hp').value });
-      if (r.bad_locations && r.bad_locations.length) { $('msg').textContent = `ما قدرنا نقرأ موقع: ${r.bad_locations.join('، ')}. الصق رابط الموقع من قوقل ماب.`; e.target.disabled = false; return; }
-      $('sendBox').innerHTML = '<div class="okbox"><h3>وصلتنا بياناتك ✅</h3><span>بنجهّز الرد الآلي باسمك ونرسل لك تجربة تعدّل عليها. لو تبي تغيّر شي، عدّل هنا وأرسل مرة ثانية.</span></div>';
-    } catch (x) { $('msg').textContent = x.code === 'too_big' ? 'الشعار كبير، اختر صورة أصغر' : x.code === 'phone' ? 'اكتب جوال المالك' : 'ما انرسلت، جرّب مرة ثانية'; e.target.disabled = false; }
-  };
+      if (r.bad_locations && r.bad_locations.length) { $('err').textContent = `ما قدرنا نقرأ موقع «${r.bad_locations.join('، ')}». ارجع للمكان والصق رابط الموقع من قوقل ماب (شارك ← نسخ الرابط).`; $('err').hidden = false; e.target.disabled = false; return; }
+      try { localStorage.removeItem(DKEY); } catch (x) { /* */ }
+      $('sendBox').innerHTML = '<div class="okbox"><h3>وصلتنا بياناتك ✅</h3><span>نجهّز الرد الآلي باسمك ونرسل لك تجربة تعدّل عليها. لو تبي تغيّر شي، ارجع للخطوة وأرسل مرة ثانية.</span></div>';
+      $('savedNote').textContent = '';
+    } catch (x) { $('err').textContent = x.code === 'too_big' ? 'الشعار كبير، اختر صورة أصغر' : x.code === 'phone' ? 'اكتب جوال المالك' : 'ما انرسلت، جرّب مرة ثانية'; $('err').hidden = false; e.target.disabled = false; }
+  }
+  paint();
+  window.__start = { st, get step() { return step; }, go: (i) => { step = i; paint(); } };
 })();
 </script>
 </body>
