@@ -17,7 +17,7 @@ const SIM = 'sim.html?demo=1';
 
 // مجالات «جرّبه بنفسك» (المنشآت التجريبية في tools/seed-presets.sql)
 const PRESETS = [
-  { slug: 'mahalak', icon: '🔧', color: '#0B7A55', label: 'صيانة', desc: 'صيانة منزلية: الفني يجيك', tags: ['عند العميل', 'الدفع بعد الخدمة'] },
+  { slug: 'mahalak', icon: '🔧', color: '#4338CA', label: 'صيانة', desc: 'صيانة منزلية: الفني يجيك', tags: ['عند العميل', 'الدفع بعد الخدمة'] },
   { slug: 'salon', icon: '✂️', color: '#C2185B', label: 'صالون', desc: 'صالون وحلاقة: تحجز وتجي', tags: ['في المحل', 'الدفع قبل الحجز'] },
   { slug: 'clinic', icon: '🩺', color: '#1565C0', label: 'عيادة', desc: 'عيادة بفرعين وأسلوب رسمي', tags: ['في المحل بفرعين', 'الدفع في العيادة'] },
   { slug: 'consult', icon: '💻', color: '#6A1B9A', label: 'أونلاين', desc: 'استشارات أونلاين برابط الجلسة', tags: ['أونلاين', 'الدفع قبل الحجز'] },
@@ -33,7 +33,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const fields = demos.map((d) => `<a class="field" href="sim.html?demo=1&amp;open=${d.slug}" target="_blank" rel="noopener"><div class="h"><span class="em">${d.icon}</span><div><b>${esc(d.label)}</b><div class="tiny">${esc(d.desc)}</div></div></div><div class="tags">${d.tags.map((t) => `<i>${esc(t)}</i>`).join('')}</div><span class="go">جرّبه ←</span></a>`).join('\n    ');
 
 const meta = `<meta name="description" content="احجزلي: الواتساب يرد على أي سؤال ويحجز ويرسل الفاتورة ورابط الدفع لحاله، لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم. تأسيس مرة وحدة واشتراك شهري ثابت.">
-<meta name="theme-color" content="#0B7A55">
+<meta name="theme-color" content="#4338CA">
 <link rel="canonical" href="${SITE_URL}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">

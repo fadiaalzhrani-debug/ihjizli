@@ -170,24 +170,38 @@ async function sim(req: Request, sub: string): Promise<Response> {
   if (sub === "info") {
     const [{ data: cities }, { data: st }, { data: svcs }] = await Promise.all([
       db().from("cities").select("name, lat, lng, radius_km").eq("business_id", biz.id).eq("active", true).order("sort"),
-      db().from("settings").select("place_mode, pay_timing, tone, faq").eq("business_id", biz.id).maybeSingle(),
+      db().from("settings").select("place_mode, pay_timing, tone, faq, menu").eq("business_id", biz.id).maybeSingle(),
       db().from("services").select("name, price").eq("business_id", biz.id).eq("active", true).order("sort"),
     ]);
-    const faqQ = (Array.isArray(st?.faq) ? st.faq : []).map((e: any) => String(e?.chip || String(e?.q || "").split(/[,،]/)[0] || "").trim()).filter(Boolean).slice(0, 4);
+    const faqQ = (Array.isArray(st?.faq) ? st.faq : []).map((e: any) => String(e?.chip || String(e?.q || "").split(/[,،]/)[0] || "").trim()).filter(Boolean).slice(0, 6);
     return json({ ok: true, business: { name: biz.name, name_en: biz.name_en, logo_url: biz.logo_url, brand_color: biz.brand_color, city: biz.city, bot_enabled: biz.bot_enabled, status: biz.status, activity: biz.activity },
-      cities: cities || [], defaults: { place: st?.place_mode || "visit", pay: st?.pay_timing || "after", tone: st?.tone || "friendly" }, faq: faqQ, services: svcs || [] });
+      cities: cities || [], defaults: { place: st?.place_mode || "visit", pay: st?.pay_timing || "after", tone: st?.tone || "friendly", menu: st?.menu || {} }, faq: faqQ, services: svcs || [] });
   }
   const from = String(q.from || "");
   if (!SIM_FROM.test(from)) return json({ ok: false, error: "from" }, 400);
 
   if (sub === "config") {
     const c = q.cfg || {};
-    const cfg: Record<string, string> = {};
+    const cfg: Record<string, unknown> = {};
     const name = clip(c.name, 40); if (name.length >= 2) cfg.name = name;
     if (["visit", "shop", "online"].includes(c.place)) cfg.place = c.place;
     if (["after", "before", "none"].includes(c.pay)) cfg.pay = c.pay;
     if (["friendly", "formal", "short"].includes(c.tone)) cfg.tone = c.tone;
     const welcome = clipLines(c.welcome, 300); if (welcome.length >= 2) cfg.welcome = welcome;
+    const okKey = (x: unknown) => typeof x === "string" && /^(book|orders|prices|location|hours|services|pay|contact|lang|faq:\d{1,2})$/.test(x);
+    if (c.menu && typeof c.menu === "object") {
+      const main = Array.isArray(c.menu.main) ? c.menu.main.filter(okKey).slice(0, 9) : [], after = Array.isArray(c.menu.after) ? c.menu.after.filter(okKey).slice(0, 3) : [];
+      if (main.length || after.length) (cfg as any).menu = { main, after };
+    }
+    if (Array.isArray(c.faq)) {
+      const faq = c.faq.slice(0, 6).map((e: any) => ({ chip: clip(e?.chip, 20), q: clip(e?.q, 120) || clip(e?.chip, 20).replace(/[؟?]/g, ""), a: clipLines(e?.a, 500) })).filter((e: any) => e.chip && e.a);
+      if (faq.length) (cfg as any).faq = faq;
+    }
+    if (c.answers && typeof c.answers === "object") {
+      const answers: Record<string, string> = {};
+      for (const k of ["prices", "location_text", "hours_text", "pay_text"]) { const v = clipLines(c.answers[k], 500); if (v) answers[k] = v; }
+      if (Object.keys(answers).length) (cfg as any).answers = answers;
+    }
     const ctx = await loadCtx(biz.id, from, true, "");
     await db().from("customers").update({ sim_config: cfg, state: "idle", state_data: {}, misses: 0, bot_paused: false, paused_at: null, paused_reason: "", last_inbound_at: null, last_outbound_at: null }).eq("id", ctx.customer.id);
     await db().from("handoffs").update({ resolved_at: new Date().toISOString(), resolved_by: "sim_config" }).eq("customer_id", ctx.customer.id).is("resolved_at", null);

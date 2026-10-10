@@ -1,7 +1,7 @@
 /* احجزلي · نظام التصميم المشترك للوحات (أخضر غامق + ذهبي على بيج فاتح، وسمة داكنة) */
 :root{
-  --bg:#F7F6F1; --fg:#161D19; --muted:#5E6B64; --card:#FFFFFF; --line:#E1E5DF; --soft:#EAF4EE; --soft2:#F1F3EE;
-  --accent:#0B7A55; --accent-ink:#FFFFFF; --accent-2:#086245; --gold:#F2B705; --gold-ink:#2A1F05;
+  --bg:#F6F6FA; --fg:#17182B; --muted:#5F6178; --card:#FFFFFF; --line:#E2E3EC; --soft:#ECEBFB; --soft2:#F1F1F5;
+  --accent:#4338CA; --accent-ink:#FFFFFF; --accent-2:#3730A3; --gold:#F2B705; --gold-ink:#2A1F05;
   --warn:#B4541A; --bad:#B42318; --info:#1F6FB2; --teal:#0E7C86; --violet:#6B4FBB;
   --shadow:0 1px 2px rgba(16,24,20,.06),0 6px 22px rgba(16,24,20,.06);
   --r:14px; --r-sm:10px;
@@ -9,12 +9,12 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0E1411; --fg:#E9EFEB; --muted:#9FADA5; --card:#161F1A; --line:#283329; --soft:#17261F; --soft2:#131B17;
-  --accent:#3CCB93; --accent-ink:#06211A; --accent-2:#2FB07E; --gold:#F5C542; --gold-ink:#2A1F05;
+  --bg:#0F0F1A; --fg:#ECECF6; --muted:#A2A3BD; --card:#181829; --line:#2A2A42; --soft:#1B1A33; --soft2:#14142A;
+  --accent:#8B85F6; --accent-ink:#0F0D2E; --accent-2:#7A73F0; --gold:#F5C542; --gold-ink:#2A1F05;
   --warn:#F2A35B; --bad:#F08A80; --info:#7DB7EA; --teal:#5CC6CF; --violet:#B7A4F2; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25); color-scheme:dark } }
 :root[data-theme="dark"]{
-  --bg:#0E1411; --fg:#E9EFEB; --muted:#9FADA5; --card:#161F1A; --line:#283329; --soft:#17261F; --soft2:#131B17;
-  --accent:#3CCB93; --accent-ink:#06211A; --accent-2:#2FB07E; --gold:#F5C542; --gold-ink:#2A1F05;
+  --bg:#0F0F1A; --fg:#ECECF6; --muted:#A2A3BD; --card:#181829; --line:#2A2A42; --soft:#1B1A33; --soft2:#14142A;
+  --accent:#8B85F6; --accent-ink:#0F0D2E; --accent-2:#7A73F0; --gold:#F5C542; --gold-ink:#2A1F05;
   --warn:#F2A35B; --bad:#F08A80; --info:#7DB7EA; --teal:#5CC6CF; --violet:#B7A4F2; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25); color-scheme:dark }
 
 *{box-sizing:border-box}

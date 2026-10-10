@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0B7A55">
+<meta name="theme-color" content="#4338CA">
 <title>لوحة المنشأة</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -475,7 +475,7 @@
       if (!window.L) return;
       const map = L.map('cmap').setView([lat, lng], 10);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap' }).addTo(map);
-      const circ = L.circle([lat, lng], { radius: rad * 1000, color: '#0B7A55' }).addTo(map);
+      const circ = L.circle([lat, lng], { radius: rad * 1000, color: '#4338CA' }).addTo(map);
       map.fitBounds(circ.getBounds());
       map.on('click', (e) => { lat = e.latlng.lat; lng = e.latlng.lng; circ.setLatLng(e.latlng); });
       $('crad').oninput = (e) => { rad = +e.target.value; circ.setRadius(rad * 1000); };

@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>بيانات نشاطك · احجزلي</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
-/* نموذج بيانات النشاط: العميل يعبيه مرة وحدة، وينطبق على منشأته من لوحة احجزلي بضغطة */
+/* نموذج بيانات النشاط: بمفتاح المنشأة (?k=) أو عام لأي عميل (يتعرف عليه بجوال المالك)، وينطبق على منشأته من لوحة احجزلي بضغطة */
 body{padding:22px 16px 60px}
 .doc{max-width:760px;margin:0 auto;display:grid;gap:14px}
 .sec{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px}
@@ -33,6 +33,7 @@ body{padding:22px 16px 60px}
 .seg3 label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card))}
 .seg3 input{display:none}
 .okbox{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:18px;display:grid;gap:6px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 @media (max-width:600px){ .line3{grid-template-columns:1fr 80px 36px} .line3 .dur{display:none} .line2{grid-template-columns:1fr 36px} .line2 .mp{grid-column:1/2} .seg3{grid-template-columns:1fr} .dayr{grid-template-columns:84px auto 1fr} }
 </style>
 </head>
@@ -45,8 +46,8 @@ body{padding:22px 16px 60px}
   const I = window.IHJ, { $, esc, icon } = I;
   const k = new URLSearchParams(location.search).get('k') || '';
   const post = async (path, body) => { const r = await fetch(I.FN + '/api/client/' + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, ...body }) }); const j = await r.json().catch(() => ({})); if (!j.ok) throw Object.assign(new Error(j.error || 'err'), { code: j.error }); return j; };
-  let d;
-  try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط النموذج من احجزلي</p></div>'; return; }
+  let d = { business: { name: '' }, current: {}, intake: null };
+  if (k) { try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط النموذج من احجزلي</p></div>'; return; } }
   const b = d.business, cur = d.current || {}, prev = d.intake || {};
   const P = [['الرياض', 24.7136, 46.6753, 40], ['جدة', 21.4858, 39.1925, 35], ['مكة المكرمة', 21.3891, 39.8579, 25], ['المدينة المنورة', 24.5247, 39.5692, 25], ['الدمام', 26.4207, 50.0888, 20], ['الخبر', 26.2794, 50.2083, 18], ['الظهران', 26.2886, 50.114, 9], ['القطيف', 26.5196, 50.0115, 12], ['الجبيل', 27.0174, 49.6225, 20], ['الأحساء', 25.3833, 49.5867, 30], ['الطائف', 21.2703, 40.4158, 25], ['تبوك', 28.3835, 36.5662, 20], ['أبها', 18.2164, 42.5053, 20], ['خميس مشيط', 18.3, 42.7333, 20], ['حائل', 27.5114, 41.7208, 20], ['بريدة', 26.326, 43.975, 20], ['عنيزة', 26.0842, 43.9937, 15], ['نجران', 17.4924, 44.1277, 20], ['جازان', 16.8892, 42.5511, 20], ['ينبع', 24.0895, 38.0618, 20], ['الخرج', 24.1556, 47.312, 20], ['حفر الباطن', 28.4328, 45.9708, 20]];
   const WD = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
@@ -61,16 +62,16 @@ body{padding:22px 16px 60px}
   };
   if (!st.services.length) st.services.push({ name: '', price: '', duration_min: '' });
   const branches = () => st.cities.filter((c) => c.branch || st.place === 'shop');
-  document.title = `بيانات ${b.name} · احجزلي`;
+  document.title = k ? `بيانات ${b.name} · احجزلي` : 'بيانات نشاطك · احجزلي';
   $('doc').innerHTML = `
-    <div><h1>بيانات ${esc(b.name)}</h1><p class="muted">عبّها مرة وحدة، ونجهّز منها الرد الآلي والمواعيد. تقدر ترجع تعدّلها وترسلها مرة ثانية.</p></div>
+    <div><h1>${k ? 'بيانات ' + esc(b.name) : 'بيانات نشاطك'}</h1><p class="muted">عبّها مرة وحدة، ونجهّز منها الرد الآلي والمواعيد. تقدر ترجع تعدّلها وترسلها مرة ثانية.</p></div>
     <div class="sec"><h2><i>1</i>النشاط</h2><div class="g2">
       <label class="f"><span>اسم النشاط</span><input id="name" maxlength="80" value="${esc(val(prev.name, b.name))}"></label>
       <label class="f"><span>الاسم بالإنجليزي (اختياري)</span><input id="name_en" maxlength="80" dir="ltr" value="${esc(val(prev.name_en, b.name_en || ''))}"></label>
       <label class="f"><span>المجال</span><input id="activity" maxlength="60" value="${esc(val(prev.activity, b.activity || ''))}"></label>
       <label class="f"><span>رقم واتساب النشاط</span><input id="wa" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.wa_number, b.wa_number ? I.phone(b.wa_number) : ''))}"></label>
       <label class="f"><span>اسم المالك</span><input id="owner" maxlength="60" value="${esc(val(prev.owner_name, b.owner_name || ''))}"></label>
-      <label class="f"><span>جوال المالك</span><input id="ownerp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.owner_phone, b.owner_phone ? I.phone(b.owner_phone) : ''))}"></label>
+      <label class="f"><span>جوال المالك${k ? '' : ' (اللي تواصلتم معنا منه)'}</span><input id="ownerp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(val(prev.owner_phone, b.owner_phone ? I.phone(b.owner_phone) : ''))}"></label>
       <label class="f"><span>السجل التجاري</span><input id="cr" dir="ltr" maxlength="20" value="${esc(val(prev.cr_number, b.cr_number || ''))}"></label>
       <label class="f"><span>الرقم الضريبي (لو مسجل)</span><input id="vat" dir="ltr" maxlength="20" value="${esc(val(prev.vat_number, b.vat_number || ''))}"></label>
       <label class="f" style="grid-column:1/-1"><span>العنوان في الفاتورة</span><input id="addr" maxlength="120" value="${esc(val(prev.address, b.address || ''))}"></label></div>
@@ -85,7 +86,7 @@ body{padding:22px 16px 60px}
       <div class="seg3">${[['before', 'قبل الحجز', 'يدفع ويتأكد'], ['after', 'بعد الخدمة', 'فاتورة ورابط'], ['none', 'في المحل', 'كاش أو شبكة']].map(([v, l, s]) => `<label><input type="radio" name="pay" value="${v}" ${st.pay === v ? 'checked' : ''}><b>${l}</b><span>${s}</span></label>`).join('')}</div>
       <label class="f"><span>عندك حساب في ميسر؟</span><select id="moy"><option value="">اختر</option><option value="yes" ${prev.has_moyasar === 'yes' ? 'selected' : ''}>نعم</option><option value="no" ${prev.has_moyasar === 'no' ? 'selected' : ''}>لا، ساعدوني أسجل</option><option value="later" ${prev.has_moyasar === 'later' ? 'selected' : ''}>بعدين</option></select></label></div>
     <div class="sec"><h2><i>7</i>أي شي ثاني؟</h2><textarea id="notes" rows="3" maxlength="1000" placeholder="أسئلة يسألونها عملاؤك كثير وأجوبتها، أو أي ملاحظة">${esc(prev.notes || '')}</textarea></div>
-    <div class="sec" id="sendBox"><button class="btn lg" id="go" type="button">${icon('send')}أرسل البيانات</button><span class="tiny" id="msg" role="status"></span></div>`;
+    <div class="sec" id="sendBox"><input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="btn lg" id="go" type="button">${icon('send')}أرسل البيانات</button><span class="tiny" id="msg" role="status"></span></div>`;
 
   function paintPlace() {
     st.place = (document.querySelector('input[name=place]:checked') || {}).value || 'visit';
@@ -152,13 +153,14 @@ body{padding:22px 16px 60px}
       logo: st.logo || undefined, logo_url: st.logo ? undefined : st.logo_url,
     };
     if (String(data.name).trim().length < 2) { $('msg').textContent = 'اكتب اسم النشاط'; return; }
+    if (!k && !/^(\+?966|0)?5\d{8}$/.test(String(data.owner_phone).replace(/\D/g, '').replace(/^00/, '+'))) { $('msg').textContent = 'اكتب جوال المالك'; return; }
     if (!data.services.length) { $('msg').textContent = 'أضف خدمة وحدة على الأقل'; return; }
     e.target.disabled = true; $('msg').textContent = 'جارٍ الإرسال…';
     try {
-      const r = await post('intake', { data });
+      const r = k ? await post('intake', { data }) : await post('intake-new', { data, website: $('hp').value });
       if (r.bad_locations && r.bad_locations.length) { $('msg').textContent = `ما قدرنا نقرأ موقع: ${r.bad_locations.join('، ')}. الصق رابط الموقع من قوقل ماب.`; e.target.disabled = false; return; }
       $('sendBox').innerHTML = '<div class="okbox"><h3>وصلتنا بياناتك ✅</h3><span>بنجهّز الرد الآلي باسمك ونرسل لك تجربة تعدّل عليها. لو تبي تغيّر شي، عدّل هنا وأرسل مرة ثانية.</span></div>';
-    } catch (x) { $('msg').textContent = x.code === 'too_big' ? 'الشعار كبير، اختر صورة أصغر' : 'ما انرسلت، جرّب مرة ثانية'; e.target.disabled = false; }
+    } catch (x) { $('msg').textContent = x.code === 'too_big' ? 'الشعار كبير، اختر صورة أصغر' : x.code === 'phone' ? 'اكتب جوال المالك' : 'ما انرسلت، جرّب مرة ثانية'; e.target.disabled = false; }
   };
 })();
 </script>

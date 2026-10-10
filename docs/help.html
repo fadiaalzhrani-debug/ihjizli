@@ -3,77 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>خطوات التشغيل · احجزلي</title>
-<meta name="description" content="خطوات ربط رقم الواتساب وتوثيق النشاط عند ميتا وفتح حساب ميسر، ولوحة الطلبات ولوحة الموظف.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3C/svg%3E">
+<title>كيف نشتغل معك · احجزلي</title>
+<meta name="description" content="احجزلي يجهّز كل شي لك: نأخذ بياناتك، نربط رقمك معك في اتصال واحد، ونسلّمك لوحتك. أنت ما تسوي شي تقني.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
-/* خطوات العميل: ربط الرقم، توثيق ميتا، ميسر، اللوحة، الموظفون */
+/* كيف نشتغل معك: كل شي علينا، والعميل بس يوافق ويعطينا اللي نحتاجه. الأقسام تنفتح بالرابط (#connect, #meta, #moyasar, #dashboard) */
 body{padding:22px 16px 60px}
 .doc{max-width:720px;margin:0 auto;display:grid;gap:14px}
-.toc{display:flex;flex-wrap:wrap;gap:6px}
-.toc a{border:1.5px solid var(--line);border-radius:99px;padding:5px 12px;font-size:13.5px;text-decoration:none;color:var(--fg);background:var(--card)}
-.sec{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;display:grid;gap:10px;scroll-margin-top:16px}
-.sec h2{font-size:19px}
-.sec ol,.sec ul{margin:0;padding-inline-start:22px;display:grid;gap:6px;line-height:1.8}
-.need{background:var(--soft2);border-radius:12px;padding:10px 14px;font-size:14.5px}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:8px}
+.lead h1{font-size:26px}
+.path{display:grid;gap:10px;counter-reset:p}
+.st{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:grid;gap:8px;counter-increment:p;scroll-margin-top:16px}
+.st:target{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}
+.st h2{display:flex;align-items:center;gap:10px;font-size:18px}
+.st h2::before{content:counter(p);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:13px;flex:none;font-family:var(--display)}
+.who{display:flex;gap:6px;flex-wrap:wrap}
+.who span{font-size:12.5px;border-radius:99px;padding:3px 10px;font-weight:600;background:var(--soft);color:var(--accent)}
+.who span.you{background:var(--soft2);color:var(--fg)}
+.st p{margin:0;font-size:15px;line-height:1.8}
+.st ul{margin:0;padding-inline-start:20px;display:grid;gap:4px;font-size:14.5px;line-height:1.7}
+.need{background:var(--soft2);border-radius:12px;padding:9px 13px;font-size:14px}
+.ok{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:16px 18px;display:grid;gap:6px}
 </style>
 </head>
 <body>
 <main class="doc">
-  <div><h1>خطوات التشغيل</h1><p class="muted">كل خطوة قصيرة، وإذا وقفت في أي شي كلّمنا ونسويها معك.</p></div>
-  <nav class="toc"><a href="#connect">ربط رقم الواتساب</a><a href="#meta">توثيق النشاط عند ميتا</a><a href="#moyasar">الدفع الإلكتروني (ميسر)</a><a href="#dashboard">لوحتك</a><a href="#staff">لوحة الموظف</a></nav>
-
-  <section class="sec" id="connect"><h2>ربط رقم الواتساب</h2>
-    <div class="need">جهّز: الجوال اللي عليه رقم الواتساب، وحسابك في فيسبوك، و15 دقيقة على اتصال معنا.</div>
-    <ol>
-      <li>نرسل لك رابط التسجيل عند مزوّد الربط، وتدخل بحسابك في فيسبوك.</li>
-      <li>تختار نشاطك واسمه الظاهر للعملاء، وتكتب رقم الواتساب.</li>
-      <li>يوصلك رمز تحقق على نفس الرقم وتكتبه.</li>
-      <li>نكمّل الباقي من عندنا، ونجرب معك رسالة.</li>
-    </ol>
-    <p class="muted small">لو رقمك على تطبيق واتساب بزنس، يبقى التطبيق شغّال معك على نفس الرقم. افتحه مرة كل أسبوعين على الأقل عشان يبقى الربط.</p>
-  </section>
-
-  <section class="sec" id="meta"><h2>توثيق النشاط عند ميتا</h2>
-    <div class="need">تحتاج: السجل التجاري، والاسم القانوني مثل ما هو في السجل.</div>
-    <ol>
-      <li>افتح <a href="https://business.facebook.com/settings/security" target="_blank" rel="noopener">مركز الأمان في حساب ميتا للأعمال</a>.</li>
-      <li>اضغط «بدء التحقق»، واكتب الاسم القانوني والعنوان والجوال مثل السجل.</li>
-      <li>ارفع السجل التجاري واختر طريقة التأكيد (رسالة أو اتصال أو إيميل).</li>
-      <li>المراجعة من يومين إلى 14 يوم عمل، والرد الآلي يشتغل معك من أول يوم.</li>
-    </ol>
-  </section>
-
-  <section class="sec" id="moyasar"><h2>الدفع الإلكتروني (ميسر)</h2>
-    <div class="need">تحتاج: السجل التجاري، هوية المالك، وحساب بنكي (آيبان) باسم المنشأة.</div>
-    <ol>
-      <li>سجّل في <a href="https://moyasar.com" target="_blank" rel="noopener">ميسر</a> باسم المنشأة، وكمّل التفعيل.</li>
-      <li>بعد التفعيل: من لوحة ميسر ← الإعدادات ← مفاتيح API.</li>
-      <li>انسخ المفتاح السري والمفتاح العام، والصقهم في لوحتك: الإعدادات ← الدفع الإلكتروني. أو أرسلهم لنا ونربطهم.</li>
-    </ol>
-    <p class="muted small">العميل يدفع بمدى أو أبل باي أو البطاقة، والمبلغ يدخل حسابك في ميسر مباشرة.</p>
-  </section>
-
-  <section class="sec" id="dashboard"><h2>لوحتك</h2>
-    <ul>
-      <li>افتح رابط لوحتك مرة وحدة من الجوال والكمبيوتر، وبعدها تنفتح لحالها.</li>
-      <li><b>الطلبات:</b> كل طلب جديد يوصلك بصوت، وتقدر تغيّر الموعد أو تلغي أو ترسل الفاتورة.</li>
-      <li><b>المحادثات:</b> العملاء اللي يحتاجون رد منك. ترد من هنا أو من الواتساب، وترجّع الرد الآلي بزر.</li>
-      <li><b>الموظفون:</b> تضيفهم وترسل لكل واحد رابطه.</li>
-      <li><b>الأوقات والعطل والنصوص والأسئلة:</b> تعدّلها متى ما تبي.</li>
-      <li><b>الرد الآلي:</b> توقفه أو تشغله بزر.</li>
-    </ul>
-  </section>
-
-  <section class="sec" id="staff"><h2>لوحة الموظف</h2>
-    <ul>
-      <li>يفتح رابطه مرة وحدة من جواله، وتوصله طلباته بصوت.</li>
-      <li>يضغط «في الطريق» ثم «وصلت»، والعميل يوصله تنبيه.</li>
-      <li>«الفاتورة»: يكتب البنود والسعر، والعميل يوصله PDF ورابط الدفع.</li>
-    </ul>
-  </section>
+  <div class="lead"><h1>كيف نشتغل معك</h1><p class="muted">أنت ما تسوي شي تقني. نأخذ منك البيانات، ونجهّز كل شي، ونربط رقمك معك في اتصال واحد، ونسلّمك لوحتك جاهزة.</p></div>
+  <div class="path">
+    <section class="st" id="data"><h2>تعطينا بياناتك</h2><div class="who"><span class="you">منك</span><span>5 دقايق</span></div>
+      <p>نموذج واحد: الخدمات والأسعار، الأوقات، الفروع أو المدن، الموظفين، والشعار. لو تفضّل، نعبّيه معك في مكالمة.</p>
+      <div class="need">جهّز: السجل التجاري (رقمه)، والشعار لو عندك.</div></section>
+    <section class="st" id="build"><h2>نجهّز الرد الآلي باسمك</h2><div class="who"><span>علينا</span><span>خلال 7 أيام عمل</span></div>
+      <p>نبني الردود والأزرار والأسئلة والمواعيد على بياناتك، ونرسل لك رابط تجربة تكلّمه كأنك عميل. أي رد أو سعر تبي تغيّره، نغيّره.</p></section>
+    <section class="st" id="connect"><h2>نربط رقمك</h2><div class="who"><span>معك في اتصال</span><span>15 دقيقة</span></div>
+      <p>نتصل عليك ونكون معك على الشاشة. أنت بس تفتح حسابك في فيسبوك وتدخّل رمز التحقق اللي يوصل على رقم الواتساب. كل الإعدادات الباقية نسويها نحن.</p>
+      <div class="need">جهّز: الجوال اللي عليه رقم الواتساب، وحسابك في فيسبوك.</div>
+      <ul><li>رقمك الحالي يبقى على تطبيق واتساب بزنس عادي، والنظام يشتغل معه على نفس الرقم.</li></ul></section>
+    <section class="st" id="meta"><h2>نوثّق نشاطك عند ميتا</h2><div class="who"><span>علينا</span><span>ميتا تراجع من يومين إلى 14 يوم</span></div>
+      <p>نرفع لك طلب التوثيق باسم نشاطك ونتابعه لين يعتمد. الرد الآلي يشتغل من أول يوم، والتوثيق يرفع حدود الإرسال ويعتمد اسمك الظاهر.</p>
+      <div class="need">منك: صورة السجل التجاري، والاسم القانوني مثل ما هو في السجل.</div></section>
+    <section class="st" id="moyasar"><h2>نربط الدفع الإلكتروني</h2><div class="who"><span>علينا</span><span>لباقة الحجز + الدفع</span></div>
+      <p>نفتح لك حساب في بوابة الدفع (ميسر) باسم منشأتك ونتابع تفعيله ونربطه. العميل يدفع بمدى أو أبل باي أو البطاقة، والمبلغ يدخل حسابك البنكي مباشرة.</p>
+      <div class="need">منك: السجل التجاري، هوية المالك، وآيبان باسم المنشأة.</div></section>
+    <section class="st" id="dashboard"><h2>تستلم لوحتك</h2><div class="who"><span>معك في اتصال</span><span>30 دقيقة</span></div>
+      <p>نرسل لك رابط لوحتك (تنفتح من الجوال والكمبيوتر بدون كلمة مرور)، ونسوي معك أول طلب حقيقي وتشوفه يوصل بالصوت. ونشرح لك:</p>
+      <ul><li><b>الطلبات:</b> كل طلب يوصلك بصوت، وتقدر تغيّر الموعد أو تلغي أو ترسل الفاتورة.</li><li><b>المحادثات:</b> العملاء اللي يحتاجون ردك، والبوت متوقف عنهم لين ترد.</li><li><b>الموظفون:</b> كل موظف له رابط بسيط: في الطريق، وصلت، الفاتورة.</li><li><b>الإيقاف والتشغيل:</b> بزر واحد في أي وقت.</li></ul></section>
+  </div>
+  <div class="ok"><h3>وبعدها؟</h3><span>نتابع معك أول أسبوع، وأي تعديل على الردود أو الأسعار أو الأوقات ضمن اشتراكك الشهري. كلّمنا على نفس الرقم اللي تواصلنا منه.</span></div>
 </main>
 </body>
 </html>

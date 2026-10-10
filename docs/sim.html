@@ -11,7 +11,7 @@
 <style>
 /* محاكي واتساب احجزلي: نفس منطق البوت الحقيقي، بدون إرسال لأي رقم. قائمة مجالات + تخصيص + اقتراحات أسئلة */
 :root{
-  --page:#EEF1EC; --page-fg:#16201B; --muted:#5E6B64; --accent:#0B7A55;
+  --page:#EEEEF6; --page-fg:#17182B; --muted:#5F6178; --accent:#4338CA;
   --wa-head:#008069; --wa-head-fg:#fff; --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-fg:#111B21; --wa-meta:#667781; --wa-link:#027EB5;
   --wa-input:#FFFFFF; --wa-green:#00A884; --wa-sheet:#FFFFFF; --wa-line:#E9EDEF; --wa-chip:#E1F2FB; --wa-tick:#53BDEB; --wa-list:#FFFFFF; --wa-hover:#F5F6F6;
   --doodle:rgba(0,0,0,.035);
@@ -19,11 +19,11 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --page:#0B0F0D; --page-fg:#E9EFEB; --muted:#9FADA5; --accent:#3CCB93;
+  --page:#0C0C16; --page-fg:#ECECF6; --muted:#A2A3BD; --accent:#8B85F6;
   --wa-head:#1F2C34; --wa-head-fg:#E9EDEF; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB;
   --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --wa-list:#111B21; --wa-hover:#202C33; --doodle:rgba(255,255,255,.025); color-scheme:dark } }
 :root[data-theme="dark"]{
-  --page:#0B0F0D; --page-fg:#E9EFEB; --muted:#9FADA5; --accent:#3CCB93;
+  --page:#0C0C16; --page-fg:#ECECF6; --muted:#A2A3BD; --accent:#8B85F6;
   --wa-head:#1F2C34; --wa-head-fg:#E9EDEF; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB;
   --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --wa-list:#111B21; --wa-hover:#202C33; --doodle:rgba(255,255,255,.025); color-scheme:dark }
 *{box-sizing:border-box} html,body{margin:0;height:100%}
@@ -161,6 +161,31 @@ svg{flex:none}
 .go{background:var(--wa-green);color:#fff;border:0;border-radius:24px;padding:12px;font-weight:700;font-size:15.5px;font-family:var(--display);display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
 .go svg{width:19px;height:19px}
 .cfg{padding:12px 16px 16px;display:grid;gap:14px}
+/* معالج التخصيص: سؤال وخيارات، خطوة بخطوة */
+.wiz{padding:10px 16px 16px;display:grid;gap:12px}
+.wiz .prog{display:flex;gap:4px} .wiz .prog i{flex:1;height:4px;border-radius:9px;background:var(--wa-line)} .wiz .prog i.on{background:var(--wa-green)}
+.wiz .q{font-family:var(--display);font-size:18px;font-weight:800;line-height:1.3}
+.wiz .h{font-size:13px;color:var(--wa-meta);line-height:1.6;margin-top:-6px}
+.wiz .pick{display:flex;flex-wrap:wrap;gap:7px}
+.wiz .pick button{border:1.5px solid var(--wa-line);background:transparent;color:var(--wa-fg);border-radius:99px;padding:8px 13px;font-size:14px;display:inline-flex;gap:6px;align-items:center;position:relative}
+.wiz .pick button.on{border-color:var(--wa-green);background:color-mix(in srgb,var(--wa-green) 12%,transparent)}
+.wiz .pick button .n{width:19px;height:19px;border-radius:50%;background:var(--wa-green);color:#fff;font-size:11.5px;font-weight:800;display:none;place-items:center;font-family:var(--display)}
+.wiz .pick button.on .n{display:grid}
+.wiz .cards{display:grid;gap:7px}
+.wiz .cards button{border:1.5px solid var(--wa-line);background:transparent;color:var(--wa-fg);border-radius:12px;padding:10px 12px;text-align:start;display:grid;gap:2px}
+.wiz .cards button b{font-family:var(--display);font-size:15px} .wiz .cards button span{font-size:12.5px;color:var(--wa-meta)}
+.wiz .cards button.on{border-color:var(--wa-green);background:color-mix(in srgb,var(--wa-green) 10%,transparent)}
+.wiz textarea,.wiz input{width:100%;border:1.5px solid var(--wa-line);border-radius:10px;background:transparent;color:var(--wa-fg);font:inherit;font-size:15px;padding:9px 11px}
+.wiz textarea{min-height:60px;resize:vertical}
+.wiz .ans{display:grid;gap:8px;border:1px dashed var(--wa-line);border-radius:12px;padding:10px}
+.wiz .ans b{font-size:13.5px}
+.wiz .nav{display:flex;gap:8px;margin-top:4px}
+.wiz .nav .go{flex:1}
+.wiz .nav .bk{border:1.5px solid var(--wa-line);background:transparent;color:var(--wa-fg);border-radius:24px;padding:12px 16px;font-weight:700;font-family:var(--display)}
+.wiz .prev{background:var(--wa-bg);border-radius:12px;padding:10px;display:grid;gap:4px;font-size:13.5px}
+.wiz .prev .b{background:var(--wa-in);border-radius:9px;padding:7px 9px;white-space:pre-wrap;line-height:1.5;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.wiz .prev .bt{background:var(--wa-in);color:var(--wa-link);border-radius:9px;padding:7px;text-align:center;font-weight:600;font-size:13.5px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.wiz .prev .li{display:flex;justify-content:space-between;background:var(--wa-in);border-radius:9px;padding:7px 9px;font-size:13.5px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
 .cfg label{display:grid;gap:6px;font-size:13px;color:var(--wa-meta);font-weight:600}
 .cfg input,.cfg textarea{width:100%;border:1.5px solid var(--wa-line);border-radius:10px;background:transparent;color:var(--wa-fg);font:inherit;font-size:15px;padding:9px 11px}
 .cfg textarea{min-height:64px;resize:vertical}
@@ -195,6 +220,7 @@ svg{flex:none}
     <li><b>2</b>احجز: الخدمة، المكان، اليوم، الوقت، ورقم الطلب</li>
     <li><b>3</b>جرّب الدفع قبل الحجز أو بعد الخدمة، بدون فلوس حقيقية</li>
     <li><b>4</b>اكتب شي ما يعرفه، يحوّله لصاحب المحل</li>
+    <li><b>5</b>اضغط «خصّص التجربة» وجاوب على الأسئلة: أي أزرار تطلع أول، ووش يرد على كل سؤال</li>
   </ul>
   <div class="cur" id="curTags"></div>
   <div class="acts"><button class="pill main" id="cfgBtn" type="button" hidden></button><button class="pill" id="newChat" type="button" hidden></button></div>
@@ -387,27 +413,68 @@ svg{flex:none}
   // ───── التخصيص: اسم نشاطك، المكان، الدفع، أسلوب الردود، الترحيب ─────
   function curVal(k) { return cfg[k] || (info && info.defaults && info.defaults[k]) || ''; }
   function paintTags() {
-    $('curTags').innerHTML = biz ? [cfg.name || biz.name, PLACE[curVal('place')], PAY[curVal('pay')], 'أسلوب ' + TONE[curVal('tone')]].filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('') : '';
+    const mm = curMenu();
+    $('curTags').innerHTML = biz ? [cfg.name || biz.name, PLACE[curVal('place')], PAY[curVal('pay')], 'أسلوب ' + TONE[curVal('tone')], 'الأزرار: ' + mm.main.map((k) => { const f = /^faq:(\d+)$/.exec(k); return f ? ((cfg.faq || [])[+f[1]] || {}).chip || '' : (ITEMS[k] || k); }).filter(Boolean).join(' · ')].filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('') : '';
+  }
+  // ───── التخصيص: معالج أسئلة، كل خطوة سؤال وخيارات، والنتيجة تنطبق على الجلسة فورًا ─────
+  const ITEMS = { book: 'احجز من هنا', orders: 'طلباتي', prices: 'الأسعار', location: 'موقعنا', hours: 'الدوام', services: 'الخدمات', pay: 'طريقة الدفع', contact: 'تواصل معنا', lang: 'English' };
+  const ITEM_EN = { book: 'Book now', orders: 'My orders', prices: 'Prices', location: 'Location', hours: 'Hours', services: 'Services', pay: 'Payment', contact: 'Contact us', lang: 'عربي' };
+  function curMenu() {
+    const m = (cfg.menu && typeof cfg.menu === 'object') ? cfg.menu : ((info && info.defaults && info.defaults.menu) || {});
+    return { main: Array.isArray(m.main) && m.main.length ? m.main.slice() : ['book', 'orders', 'lang'], after: Array.isArray(m.after) && m.after.length ? m.after.slice() : ['book', 'orders'] };
   }
   function openCfg() {
-    const seg = (key, map) => `<div class="seg" data-seg="${key}">${Object.entries(map).map(([v, l]) => `<button type="button" data-v="${v}" class="${curVal(key) === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
-    openSheet('خصّص التجربة', `<div class="cfg">
-      <label>اسم نشاطك<input id="cName" maxlength="40" placeholder="${esc(biz ? biz.name : '')}" value="${esc(cfg.name || '')}"></label>
-      <label>مكان الخدمة${seg('place', PLACE)}</label>
-      <label>الدفع${seg('pay', PAY)}</label>
-      <label>أسلوب الردود${seg('tone', TONE)}</label>
-      <label>رسالة الترحيب (اختياري)<textarea id="cWelcome" maxlength="300" placeholder="مثال: يا هلا فيك في ${esc(cfg.name || (biz ? biz.name : ''))} 👋 كيف نخدمك؟">${esc(cfg.welcome || '')}</textarea></label>
-      <button type="button" class="go" id="cGo">${ICO.reset}طبّق وابدأ محادثة جديدة</button></div>`);
-    const pick = {};
-    $('sheetB').querySelectorAll('[data-seg]').forEach((s) => s.querySelectorAll('button').forEach((b) => b.onclick = () => { pick[s.dataset.seg] = b.dataset.v; s.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); }));
-    $('cGo').onclick = async () => {
-      const next = { name: $('cName').value.trim(), place: pick.place || curVal('place'), pay: pick.pay || curVal('pay'), tone: pick.tone || curVal('tone'), welcome: $('cWelcome').value.trim() };
-      try { const j = await call('POST', '/config', { b: B, k: K, from, cfg: next }); cfg = j.cfg || {}; } catch (e) { /* */ }
-      closeSheet();
-      await loadHistory(true);
-      paintTags(); paintHead();
-      setTimeout(() => sendMsg({ type: 'text', text: lang === 'en' ? 'Hello' : 'السلام عليكم' }), 300);
+    const m0 = curMenu();
+    const W = {
+      name: cfg.name || '', welcome: cfg.welcome || '', place: curVal('place'), pay: curVal('pay'), tone: curVal('tone'),
+      main: m0.main, after: m0.after,
+      faq: Array.isArray(cfg.faq) ? cfg.faq.map((x) => ({ ...x })) : [],
+      answers: { ...(cfg.answers || {}) },
     };
+    let step = 0;
+    const STEPS = ['name', 'main', 'after', 'place', 'pay', 'tone', 'answers', 'faq', 'done'];
+    const label = (k) => { const f = /^faq:(\d+)$/.exec(k); if (f) return (W.faq[+f[1]] || {}).chip || ('سؤالك ' + (+f[1] + 1)); return ITEMS[k] || k; };
+    const allKeys = () => [...Object.keys(ITEMS), ...W.faq.map((_, i) => 'faq:' + i)];
+    const pickHtml = (sel, max) => `<div class="pick">${allKeys().map((k) => { const i = sel.indexOf(k); return `<button type="button" data-k="${esc(k)}" class="${i >= 0 ? 'on' : ''}"><span class="n">${i + 1}</span>${esc(label(k))}</button>`; }).join('')}</div><div class="h">اضغط بالترتيب اللي تبيه يظهر. ${max === 3 ? 'ثلاثة كحد أقصى.' : 'لو اخترت أكثر من 3 تصير قائمة يفتحها العميل.'}</div>`;
+    const bindPick = (sel, max) => $('sheetB').querySelectorAll('[data-k]').forEach((bt) => bt.onclick = () => { const k = bt.dataset.k, i = sel.indexOf(k); if (i >= 0) sel.splice(i, 1); else { if (sel.length >= max) sel.shift(); sel.push(k); } paint(); });
+    const preview = () => {
+      const name = W.name || (biz && biz.name) || 'نشاطك';
+      const welcome = W.welcome || (W.tone === 'formal' ? `مرحبًا بكم في ${name}.\nكيف يمكننا خدمتكم؟` : W.tone === 'short' ? `أهلًا 👋 ${name}` : `هلا وسهلا في ${name} 👋\nكيف نقدر نخدمك؟`);
+      const rows = W.main.map(label);
+      return `<div class="prev"><div class="b">${esc(welcome)}</div>${rows.length <= 3 ? rows.map((t) => `<div class="bt">${esc(t)}</div>`).join('') : `<div class="bt">☰ خيارات أكثر</div>` + rows.map((t, i) => `<div class="li"><span>${esc(t)}</span><span style="color:var(--wa-meta)">${i + 1}</span></div>`).join('')}</div>`;
+    };
+    function paint() {
+      const k = STEPS[step];
+      let q = '', body = '', hint = '';
+      if (k === 'name') { q = 'وش اسم نشاطك؟'; hint = 'يظهر في الترحيب وفي كل الردود.'; body = `<input id="wName" maxlength="40" placeholder="${esc(biz ? biz.name : '')}" value="${esc(W.name)}"><div class="h" style="margin-top:4px">رسالة الترحيب (اختياري)</div><textarea id="wWelcome" maxlength="300" placeholder="مثال: يا هلا فيك في ${esc(W.name || (biz ? biz.name : ''))} 👋 كيف نخدمك؟">${esc(W.welcome)}</textarea>`; }
+      else if (k === 'main') { q = 'أول ما يكلّمك العميل، وش الخيارات اللي تطلع له؟'; body = pickHtml(W.main, 9) + preview(); }
+      else if (k === 'after') { q = 'بعد ما يرد على سؤال (السعر، الموقع…) وش يظهر تحت الرد؟'; body = pickHtml(W.after, 3); }
+      else if (k === 'place') { q = 'لما يضغط «احجز»، وين الخدمة؟'; body = `<div class="cards">${[['visit', 'عند العميل', 'يطلب موقعه ويرسل الموظف له'], ['shop', 'في محلك', 'يختار الفرع ويوصله موقعه'], ['online', 'أونلاين', 'بدون مكان، رابط الجلسة بعد الحجز']].map(([v, l, d]) => `<button type="button" data-v="${v}" class="${W.place === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div>`; }
+      else if (k === 'pay') { q = 'والدفع متى؟'; body = `<div class="cards">${[['after', 'بعد الخدمة', 'فاتورة ورابط دفع بعد ما يخلص'], ['before', 'قبل الحجز', 'يدفع برابط والموعد يتأكد بعد الدفع'], ['none', 'في المحل', 'بدون دفع بالواتساب']].map(([v, l, d]) => `<button type="button" data-v="${v}" class="${W.pay === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div>`; }
+      else if (k === 'tone') { q = 'أسلوب الردود؟'; body = `<div class="cards">${[['friendly', 'ودّي', 'هلا وسهلا 👋 كيف نقدر نخدمك؟'], ['formal', 'رسمي', 'مرحبًا بكم، كيف يمكننا خدمتكم؟'], ['short', 'مختصر', 'أهلًا 👋 وش تحتاج؟']].map(([v, l, d]) => `<button type="button" data-v="${v}" class="${W.tone === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div>`; }
+      else if (k === 'answers') { q = 'لو سأل عن السعر أو الموقع أو الدوام أو الدفع، وش يرد؟'; hint = 'اتركه فاضي ويرد من بيانات النشاط التجريبية.'; body = `<div class="ans">${[['prices', 'كم السعر؟', 'مثال: القص 60 ريال، والصبغة من 150'], ['location_text', 'وين موقعكم؟', 'مثال: حي العليا، شارع التخصصي، وهذا الرابط…'], ['hours_text', 'متى تفتحون؟', 'مثال: كل يوم من 10 الصبح إلى 11 الليل'], ['pay_text', 'كيف الدفع؟', 'مثال: مدى أو أبل باي عند الحجز']].map(([key, l, ph]) => `<b>${l}</b><textarea data-a="${key}" maxlength="500" placeholder="${esc(ph)}">${esc(W.answers[key] || '')}</textarea>`).join('')}</div>`; }
+      else if (k === 'faq') { q = 'أسئلة يسألونها عملاؤك كثير؟'; hint = 'تضيفها هنا، وتقدر تخليها زر في القائمة الأولى (ترجع خطوة «الخيارات الأولى»).'; body = `<div class="ans" id="wFaq">${W.faq.map((f, i) => `<input data-fc="${i}" maxlength="20" placeholder="السؤال (زر، 20 حرف)" value="${esc(f.chip || '')}"><textarea data-fa="${i}" maxlength="500" placeholder="الجواب">${esc(f.a || '')}</textarea>`).join('')}<button type="button" class="bk" id="wAddFaq" style="justify-self:start">+ سؤال</button></div>`; }
+      else { q = 'جاهز؟ نطبّق ونبدأ محادثة جديدة'; body = preview() + `<div class="h">المكان: ${PLACE[W.place] || ''} · ${PAY[W.pay] || ''} · أسلوب ${TONE[W.tone] || ''}${W.faq.length ? ' · ' + W.faq.length + ' سؤال خاص' : ''}</div>`; }
+      $('sheetB').innerHTML = `<div class="wiz"><div class="prog">${STEPS.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div><div class="q">${q}</div>${hint ? `<div class="h">${hint}</div>` : ''}${body}
+        <div class="nav">${step ? '<button type="button" class="bk" id="wBack">رجوع</button>' : ''}<button type="button" class="go" id="wNext">${k === 'done' ? ICO.reset + 'طبّق وابدأ' : 'التالي'}</button></div></div>`;
+      const read = () => { if ($('wName')) { W.name = $('wName').value.trim(); W.welcome = $('wWelcome').value.trim(); } $('sheetB').querySelectorAll('[data-a]').forEach((t) => { W.answers[t.dataset.a] = t.value.trim(); }); $('sheetB').querySelectorAll('[data-fc]').forEach((t) => { W.faq[+t.dataset.fc].chip = t.value.trim(); }); $('sheetB').querySelectorAll('[data-fa]').forEach((t) => { W.faq[+t.dataset.fa].a = t.value.trim(); }); };
+      if (k === 'main') bindPick(W.main, 9); if (k === 'after') bindPick(W.after, 3);
+      $('sheetB').querySelectorAll('[data-v]').forEach((bt) => bt.onclick = () => { W[k] = bt.dataset.v; paint(); });
+      if ($('wAddFaq')) $('wAddFaq').onclick = () => { read(); W.faq.push({ chip: '', a: '' }); paint(); const last = $('wFaq').querySelector('input:last-of-type'); if (last) last.focus(); };
+      if ($('wBack')) $('wBack').onclick = () => { read(); step--; paint(); };
+      $('wNext').onclick = async () => {
+        read();
+        if (k !== 'done') { if (k === 'faq') { W.faq = W.faq.filter((f) => f.chip && f.a); W.main = W.main.filter((x) => !/^faq:/.test(x) || W.faq[+x.slice(4)]); W.after = W.after.filter((x) => !/^faq:/.test(x) || W.faq[+x.slice(4)]); } step++; paint(); $('sheetB').scrollTop = 0; return; }
+        const next = { name: W.name, place: W.place, pay: W.pay, tone: W.tone, welcome: W.welcome, menu: { main: W.main, after: W.after }, faq: W.faq.filter((f) => f.chip && f.a).map((f) => ({ chip: f.chip, a: f.a })), answers: W.answers };
+        try { const j = await call('POST', '/config', { b: B, k: K, from, cfg: next }); cfg = j.cfg || {}; } catch (e) { /* */ }
+        closeSheet();
+        await loadHistory(true);
+        paintTags(); paintHead(); paintChips();
+        setTimeout(() => sendMsg({ type: 'text', text: lang === 'en' ? 'Hello' : 'السلام عليكم' }), 300);
+      };
+    }
+    openSheet('خصّص التجربة', '');
+    paint();
   }
 
   // ───── اقتراحات «جرّب تسأل» ─────
@@ -415,7 +482,7 @@ svg{flex:none}
     const base = lang === 'en'
       ? ['How much?', 'Where are you?', 'Opening hours?', 'How do I pay?', 'Book for tomorrow', 'My orders']
       : ['كم السعر؟', 'وين موقعكم؟', 'متى تفتحون؟', 'كيف الدفع؟', 'ابي احجز بكرة', 'طلباتي'];
-    const extra = (info && info.faq) || [];
+    const extra = [...(Array.isArray(cfg.faq) ? cfg.faq.map((f) => f.chip).filter(Boolean) : []), ...((info && info.faq) || [])];
     const list = [...extra, ...base, lang === 'en' ? '🎤 Voice note' : '🎤 رسالة صوتية', lang === 'en' ? 'I have a complaint' : 'عندي شكوى'];
     $('chips').innerHTML = `<em>${lang === 'en' ? 'Try:' : 'جرّب:'}</em>` + list.map((t) => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join('');
     $('chips').querySelectorAll('[data-q]').forEach((b) => b.onclick = () => {

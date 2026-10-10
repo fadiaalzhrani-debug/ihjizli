@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0B7A55">
+<meta name="theme-color" content="#4338CA">
 <title>احجزلي · لوحتي</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
@@ -99,10 +99,10 @@
     ['contract', 'الاتفاقية والدفعة الأولى', 'يوافق على الاتفاقية من الرابط، وموافقته تتسجل هنا.', (b) => !!docsOf(b).agreed_at && paidSetup(b) > 0],
     ['docs', 'بيانات النشاط', 'يعبّي النموذج: الخدمات والأسعار والأوقات والمدن والموظفين والشعار.', (b, st) => !!docsOf(b).intake_applied_at || (!!b.logo_url && st.services > 0 && st.cities > 0 && st.hours > 0)],
     ['test', 'يجرّبه باسمه', 'أي رد أو سعر يبي يغيّره يتعدّل من لوحة المنشأة.', (b, st) => st.sim_orders > 0],
-    ['connect', 'ربط الرقم', 'اتصال 15 دقيقة: يدخل بحسابه في فيسبوك عند مزوّد الربط، وبياناته تنلصق في «ربط الرقم».', (b) => (S.ch[b.id] || {}).status === 'connected'],
-    ['meta', 'توثيق النشاط عند ميتا', 'بالسجل التجاري. الرد الآلي يشتغل قبل التوثيق.', (b) => (S.ch[b.id] || {}).meta_verification === 'verified'],
-    ['templates', 'اعتماد القوالب', 'بعد الربط: ترفعها بزر، عشان التذكير والفاتورة توصل بعد 24 ساعة.', (b) => ((S.ch[b.id] || {}).templates || []).filter((t) => t.status === 'APPROVED').length >= 8],
-    ['payment', 'الدفع الإلكتروني (ميسر)', 'حساب ميسر باسم المنشأة، والمفتاحين في إعدادات لوحته.', (b) => b.plan !== 'bot_pay' || (S.set[b.id] || {}).pay_provider === 'moyasar'],
+    ['connect', 'ربط الرقم', 'اتصال 15 دقيقة معه: هو يدخل بحسابه في فيسبوك ويكتب رمز التحقق، وأنتِ تلصقين بيانات المزوّد في «ربط الرقم».', (b) => (S.ch[b.id] || {}).status === 'connected'],
+    ['meta', 'توثيق النشاط عند ميتا', 'عليك: ترفعين الطلب بسجله وتتابعينه. الرد الآلي يشتغل قبل التوثيق.', (b) => (S.ch[b.id] || {}).meta_verification === 'verified'],
+    ['templates', 'اعتماد القوالب', 'عليك بعد الربط: ترفعينها بزر، عشان التذكير والفاتورة توصل بعد 24 ساعة.', (b) => ((S.ch[b.id] || {}).templates || []).filter((t) => t.status === 'APPROVED').length >= 8],
+    ['payment', 'الدفع الإلكتروني (ميسر)', 'عليك: تفتحين حساب ميسر باسم منشأته بأوراقه وتلصقين المفتاحين في إعدادات لوحته.', (b) => b.plan !== 'bot_pay' || (S.set[b.id] || {}).pay_provider === 'moyasar'],
     ['handover', 'التسليم', 'رابط لوحته وطلب حقيقي من جوال أحدهم، وبعدها الحالة «شغّالة».', (b) => b.status === 'live'],
   ];
   function stepState(b) {
@@ -239,9 +239,9 @@
       contract: { url: agree, msg: `${hi}، هذي اتفاقية احجزلي، اقرأها ووافق عليها من الرابط:\n${agree}\n\nوالدفعة الأولى نص التأسيس: ${money(half)} ريال${pay}` },
       docs: { url: start, msg: `عشان نجهّز الرد الآلي باسمكم، عبّ هذا النموذج (5 دقايق):\n${start}` },
       test: { url: sim, msg: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه كأنك عميل، وقل لي لو تبي تغيّر أي رد أو سعر:\n${sim}` },
-      connect: { url: PUBLIC + 'help.html#connect', msg: `باقي نربط رقمكم، نحتاج 15 دقيقة على اتصال. جهّز الجوال اللي عليه رقم الواتساب وحسابك في فيسبوك.\nالخطوات: ${PUBLIC}help.html#connect\nمتى يناسبك؟` },
-      meta: { url: PUBLIC + 'help.html#meta', msg: `توثيق النشاط عند ميتا بالسجل التجاري، الخطوات هنا:\n${PUBLIC}help.html#meta` },
-      payment: b.plan === 'bot_pay' ? { url: PUBLIC + 'help.html#moyasar', msg: `حساب ميسر للدفع الإلكتروني باسم المنشأة، الخطوات هنا:\n${PUBLIC}help.html#moyasar\nوبعد التفعيل نربطه معك.` } : null,
+      connect: { url: PUBLIC + 'help.html#connect', msg: `باقي نربط رقمكم، وهذي أسهل خطوة: أتصل عليك 15 دقيقة، أنت بس تفتح حسابك في فيسبوك وتكتب رمز التحقق اللي يوصل على رقم الواتساب، والباقي كله أسويه أنا.\nمتى يناسبك؟` },
+      meta: { url: PUBLIC + 'help.html#meta', msg: `أرفع لكم طلب توثيق النشاط عند ميتا وأتابعه لين يعتمد. أحتاج منك بس صورة السجل التجاري، والاسم القانوني مثل ما هو في السجل 🙏` },
+      payment: b.plan === 'bot_pay' ? { url: PUBLIC + 'help.html#moyasar', msg: `عشان الدفع الإلكتروني، أفتح لكم حساب في بوابة الدفع (ميسر) باسم المنشأة وأتابع تفعيله وأربطه. أحتاج منك: السجل التجاري، هوية المالك، وآيبان باسم المنشأة.` } : null,
       handover: owner ? { url: owner, msg: `كل شي جاهز 🎉 هذي لوحتكم، افتحوها مرة وحدة من الجوال والكمبيوتر:\n${owner}\nومن «الموظفون» ترسلون لكل موظف رابطه. الشرح: ${PUBLIC}help.html#dashboard\n\nوالدفعة الثانية: ${money(setup - half)} ريال، والاشتراك الشهري يبدأ من اليوم.${pay}` } : null,
     };
   }
@@ -446,7 +446,7 @@
       <div class="card form-sec"><h3><i>5</i><span id="cityT">مدن التغطية</span></h3><p class="tiny" id="cityHint" hidden>موقع الفرع بالضبط يتحدد من لوحة المنشأة ← الخدمات والمدن، أو من نموذج العميل.</p><div class="citychips">${PRESETS.map((c) => `<label><input type="checkbox" name="city" value="${c[0]}" ${pCities.includes(c[0]) ? 'checked' : ''}>${c[0]}</label>`).join('')}</div></div>
       <div class="card form-sec"><h3><i>6</i>أوقات العمل</h3><select name="hours">${Object.entries(HOURS).map(([k, [l]]) => `<option value="${k}">${l}</option>`).join('')}</select><p class="tiny">تتعدل بالتفصيل بعدين من لوحة المنشأة.</p></div>
       <div class="card form-sec"><h3><i>7</i>الموظفون</h3><p class="tiny">الطلبات تتوزع عليهم حسب المدينة. تقدر تتركها وتضيفهم بعدين.</p><div class="stack s" id="stf"></div><button type="button" class="btn sm ghost" id="addStf" style="justify-self:start">${icon('plus')}موظف</button></div>
-      <div class="card form-sec"><h3><i>8</i>الفاتورة (اختياري)</h3><div class="g2"><label class="f"><span>السجل التجاري</span><input name="cr_number" dir="ltr" maxlength="20"></label><label class="f"><span>الرقم الضريبي</span><input name="vat_number" dir="ltr" maxlength="20"></label><label class="f"><span>العنوان</span><input name="address" maxlength="120"></label><label class="f"><span>لون المنشأة</span><input name="brand_color" type="color" value="#0B7A55"></label></div></div>
+      <div class="card form-sec"><h3><i>8</i>الفاتورة (اختياري)</h3><div class="g2"><label class="f"><span>السجل التجاري</span><input name="cr_number" dir="ltr" maxlength="20"></label><label class="f"><span>الرقم الضريبي</span><input name="vat_number" dir="ltr" maxlength="20"></label><label class="f"><span>العنوان</span><input name="address" maxlength="120"></label><label class="f"><span>لون المنشأة</span><input name="brand_color" type="color" value="#4338CA"></label></div></div>
       <button class="btn lg" id="nGo">${icon('check')}أنشئ المنشأة</button>
     </form><div id="nRes"></div>`;
     const svcs = [{ name: 'زيارة فني', price: '' }], staff = [];

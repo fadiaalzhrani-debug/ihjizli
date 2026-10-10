@@ -5,53 +5,59 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>محاكي البيع · احجزلي</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%23F2B705'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
-/* محاكي البيع: المحادثة بين فادية والعميل من أول رسالة لين التسليم، مع الروابط الجاهزة لكل عميل */
+/* محاكي البيع: تدريب حي. العميل (الصفحة) يكلّمك ويعترض، وأنت تختار ردك أو تكتبه، والصفحة تقيّمك وتعطيك الأفضل.
+   وبعد ما تتفق، كل رسالة لها «أرسل له» بروابط العميل الحقيقية. */
 :root{ --wa-head:#008069; --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-fg:#111B21; --wa-meta:#667781; --wa-link:#027EB5; --wa-chip:#E1F2FB; --wa-green:#00A884; --doodle:rgba(0,0,0,.035) }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --wa-head:#1F2C34; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB; --wa-chip:#182229; --doodle:rgba(255,255,255,.025) } }
 :root[data-theme="dark"]{ --wa-head:#1F2C34; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB; --wa-chip:#182229; --doodle:rgba(255,255,255,.025) }
 body{min-height:100vh}
-.wrapd{display:grid;grid-template-columns:340px minmax(0,560px);gap:22px;justify-content:center;padding:20px 16px 40px;align-items:start}
-.side2{position:sticky;top:16px;display:grid;gap:14px}
+.wrapd{display:grid;grid-template-columns:360px minmax(0,560px);gap:22px;justify-content:center;padding:20px 16px 40px;align-items:start}
+.side2{position:sticky;top:16px;display:grid;gap:12px}
 .side2 h1{font-size:24px}
-.stg{display:grid;gap:4px}
-.stg button{display:flex;gap:9px;align-items:center;border:0;background:transparent;padding:7px 9px;border-radius:9px;text-align:start;color:var(--fg);font-size:14px}
-.stg button:hover{background:var(--soft2)}
-.stg button i{width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--muted);display:grid;place-items:center;font-style:normal;font-size:11.5px;font-weight:800;flex:none}
-.stg button.done i{background:var(--accent);color:var(--accent-ink)} .stg button.on{background:var(--soft);font-weight:700}
-.phone2{border-radius:28px;overflow:hidden;border:7px solid #151a18;box-shadow:0 24px 60px rgba(0,0,0,.18);background:var(--wa-bg);display:flex;flex-direction:column;height:calc(100vh - 56px);min-height:560px}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--soft2);border-radius:12px;padding:4px}
+.mode button{border:0;background:transparent;border-radius:9px;padding:9px 6px;font-family:var(--display);font-weight:700;color:var(--muted)}
+.mode button.on{background:var(--card);color:var(--fg);box-shadow:var(--shadow)}
+.score{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:6px}
+.score .bar{height:8px;border-radius:9px;background:var(--soft2);overflow:hidden} .score .bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.score b{font-family:var(--display);font-size:22px}
+.tips{display:grid;gap:6px;font-size:13.5px;color:var(--muted)}
+.tips div{display:flex;gap:7px;align-items:flex-start} .tips div::before{content:"•";color:var(--accent);font-weight:900}
+.links{display:grid;gap:6px}
+.links .copybox{font-size:12px}
+.phone2{border-radius:28px;overflow:hidden;border:7px solid #151a18;box-shadow:0 24px 60px rgba(0,0,0,.18);background:var(--wa-bg);display:flex;flex-direction:column;height:calc(100vh - 56px);min-height:600px}
 .ph{background:var(--wa-head);color:#fff;display:flex;gap:10px;align-items:center;padding:10px 12px}
 .ph .av{width:40px;height:40px;border-radius:50%;background:#dfe5e7;color:#54656f;display:grid;place-items:center;font-family:var(--display);font-weight:800}
 .ph b{display:block;font-size:16px} .ph span{font-size:12.5px;opacity:.85}
-.cv{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:4px;background-color:var(--wa-bg);background-image:radial-gradient(var(--doodle) 1.2px,transparent 1.3px),radial-gradient(var(--doodle) 1.2px,transparent 1.3px);background-size:26px 26px;background-position:0 0,13px 13px}
-.stage{align-self:center;text-align:center;margin:14px 0 6px;display:grid;gap:4px;justify-items:center;max-width:92%}
-.stage b{background:var(--wa-chip);color:var(--wa-fg);font-size:12.5px;padding:4px 12px;border-radius:8px;font-family:var(--display)}
-.stage span{font-size:12px;color:var(--wa-meta);line-height:1.6;background:color-mix(in srgb,var(--wa-bg) 70%,#fff3c4);border-radius:8px;padding:4px 10px}
-.m{max-width:86%;display:grid;gap:4px;animation:pop .2s ease-out}
+.cv{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px;background-color:var(--wa-bg);background-image:radial-gradient(var(--doodle) 1.2px,transparent 1.3px);background-size:24px 24px}
+.stage{align-self:center;background:var(--wa-chip);color:var(--wa-meta);font-size:12px;padding:4px 11px;border-radius:8px;margin:8px 0 2px;text-align:center}
+.m{max-width:88%;display:grid;gap:4px;animation:pop .18s ease-out}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){ .m{animation:none} }
-.m.me{align-self:flex-end} .m.cl{align-self:flex-start}
-.m .bb{background:var(--wa-in);color:var(--wa-fg);border-radius:10px;padding:7px 10px 8px;font-size:14.6px;line-height:1.6;white-space:pre-wrap;box-shadow:0 1px .5px rgba(11,20,26,.13);overflow-wrap:anywhere}
+.m.cl{align-self:flex-start} .m.me{align-self:flex-end}
+.m .bb{background:var(--wa-in);color:var(--wa-fg);border-radius:9px;padding:7px 10px;font-size:14.5px;line-height:1.6;white-space:pre-wrap;box-shadow:0 1px .5px rgba(11,20,26,.13);word-break:break-word}
 .m.me .bb{background:var(--wa-out)}
 .m .bb a{color:var(--wa-link)}
 .m .who{font-size:11.5px;color:var(--wa-meta);padding:0 4px}
-.m .acts{display:flex;gap:6px;justify-content:flex-end}
+.m .acts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .m .acts button,.m .acts a{border:1px solid color-mix(in srgb,var(--wa-meta) 35%,transparent);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:3px 10px;font-size:12px;display:inline-flex;gap:5px;align-items:center;text-decoration:none;cursor:pointer}
 .m .acts svg{width:14px;height:14px}
-.m .note{font-size:12px;color:var(--wa-meta);background:var(--wa-chip);border-radius:8px;padding:5px 9px;line-height:1.6}
-.m .note a{color:var(--wa-link)}
-.obj{align-self:flex-start;display:grid;gap:6px;max-width:92%;margin-top:4px}
-.obj span{font-size:12px;color:var(--wa-meta)}
-.obj div{display:flex;flex-wrap:wrap;gap:6px}
-.obj button{border:1px solid var(--wa-green);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:5px 11px;font-size:13px;cursor:pointer}
-.obj button.on{background:var(--wa-green);color:#fff}
-.ctrl{display:flex;gap:8px;padding:10px;background:var(--wa-in);border-top:1px solid color-mix(in srgb,var(--wa-meta) 20%,transparent)}
-.ctrl .btn{flex:1}
+.m .acts .wa{background:var(--wa-green);color:#fff;border-color:var(--wa-green)}
+.fb{align-self:stretch;background:var(--wa-chip);color:var(--wa-fg);border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.6;display:grid;gap:4px}
+.fb b{font-family:var(--display)} .fb.good{border-inline-start:4px solid var(--wa-green)} .fb.bad{border-inline-start:4px solid #E53935}
+.choices{align-self:stretch;display:grid;gap:6px;margin-top:4px}
+.choices .lbl{font-size:12px;color:var(--wa-meta);text-align:center}
+.choices button{border:1.5px solid var(--wa-green);background:var(--wa-in);color:var(--wa-fg);border-radius:12px;padding:9px 12px;font-size:13.5px;text-align:start;line-height:1.5;white-space:pre-wrap;cursor:pointer}
+.choices button:hover{background:color-mix(in srgb,var(--wa-green) 10%,var(--wa-in))}
+.ctrl{display:flex;gap:8px;padding:10px;background:var(--wa-in);border-top:1px solid color-mix(in srgb,var(--wa-meta) 20%,transparent);align-items:center}
+.ctrl input{flex:1;border:1px solid color-mix(in srgb,var(--wa-meta) 30%,transparent);border-radius:20px;padding:9px 14px;background:var(--wa-bg);color:var(--wa-fg);font:inherit;font-size:14px}
+.ctrl .snd{width:40px;height:40px;border-radius:50%;background:var(--wa-green);color:#fff;border:0;display:grid;place-items:center;cursor:pointer}
+.ctrl .snd svg{width:20px;height:20px}
+.ctrl .ib{width:40px;height:40px;border-radius:50%}
 .miss{background:color-mix(in srgb,var(--gold) 22%,var(--card));border-radius:10px;padding:8px 11px;font-size:13px}
-@media (max-width:920px){ .wrapd{grid-template-columns:1fr} .side2{position:static} .stg{display:none} .phone2{height:78vh} }
+@media (max-width:920px){ .wrapd{grid-template-columns:1fr} .side2{position:static} .phone2{height:78vh;min-height:520px} }
 </style>
 </head>
 <body>
@@ -66,106 +72,108 @@ body{min-height:100vh}
   try { r = await I.boot('ihj-admin'); } catch (e) { return I.gate('الرابط غير صالح', 'افتح لوحتك من الرابط الخاص أول', 'err'); }
   if (!r.session || !r.me || !r.me.admin) return I.gate('افتح لوحتك أول', 'محاكي البيع يفتح بعد الدخول للوحتك من الرابط الخاص', 'err');
   const sb = I.sb;
-  const SITE = new URL('./', location.href).href.replace(/\/$/, '/');
   const PUBLIC = 'https://fadiaalzhrani-debug.github.io/ihjizli/';
   const [{ data: leads }, { data: bizs }, { data: subs }] = await Promise.all([
-    sb.from('signup_requests').select('*').is('business_id', null).order('created_at', { ascending: false }).limit(100),
+    sb.from('signup_requests').select('*').is('business_id', null).neq('status', 'lost').order('created_at', { ascending: false }).limit(100),
     sb.from('businesses').select('*').eq('is_demo', false).order('created_at', { ascending: false }),
     sb.from('subscriptions').select('*'),
   ]);
   const subOf = (id) => (subs || []).find((s) => s.business_id === id) || {};
   let bank = ''; try { bank = localStorage.getItem('ihj_bank') || ''; } catch (e) { /* */ }
-  let sel = { kind: 'none' };
-  let ownerUrl = '';
+  let sel = { kind: 'none' }, ownerUrl = '';
 
-  // المجال الأقرب لنشاط العميل في «جرّبه بنفسك»
   function demoFor(act) {
     const a = String(act || '');
     const m = /صالون|حلاق|تجميل|سبا/.test(a) ? 'salon' : /عياد|مركز|طب|أسنان/.test(a) ? 'clinic' : /أونلاين|استشار|تدريب|تعليم|دورات/.test(a) ? 'consult' : /مغسل|غسيل سيار/.test(a) ? 'carwash' : /مطعم|كافيه|مقهى/.test(a) ? 'resto' : /صيان|سباك|كهرب|تكييف|تنظيف/.test(a) ? 'mahalak' : '';
     return PUBLIC + 'sim.html?demo=1' + (m ? '&open=' + m : '');
   }
   function ctx() {
-    const c = { name: '', owner: '', phone: '', activity: '', plan: 'bot', app: false, demo: PUBLIC + 'sim.html?demo=1', agree: '', start: '', sim: '', owner_url: '', setup: 3500, monthly: 350 };
-    if (sel.kind === 'lead') { const l = sel.row; Object.assign(c, { name: l.business_name, owner: l.contact_name || '', phone: l.phone, activity: l.activity, plan: l.package, app: l.wants_app }); }
+    const c = { name: '', owner: '', phone: '', activity: '', plan: 'bot', app: false, demo: PUBLIC + 'sim.html?demo=1', agree: PUBLIC + 'agree.html', start: PUBLIC + 'start.html', help: PUBLIC + 'help.html', sim: '', owner_url: '', setup: 3500, monthly: 350 };
+    if (sel.kind === 'lead') { const l = sel.row; Object.assign(c, { name: l.business_name, owner: l.contact_name || '', phone: l.phone, activity: l.activity, plan: l.package, app: l.wants_app }); c.agree = PUBLIC + 'agree.html?p=' + (c.plan === 'bot_pay' ? 'bot_pay' : 'bot') + (c.app ? '&app=1' : ''); }
     if (sel.kind === 'biz') {
       const b = sel.row, s = subOf(b.id);
       Object.assign(c, { name: b.name, owner: b.owner_name || '', phone: b.owner_phone || b.wa_number || '', activity: b.activity, plan: b.plan, app: b.wants_app,
         agree: PUBLIC + 'agree.html?k=' + b.client_key, start: PUBLIC + 'start.html?k=' + b.client_key, sim: PUBLIC + 'sim.html?b=' + b.slug + '&k=' + b.sim_key, owner_url: ownerUrl,
         setup: Number(s.setup_fee || 0) + Number(s.app_setup_fee || 0) || c.setup, monthly: Number(s.monthly_fee || 0) + Number(s.app_monthly_fee || 0) || c.monthly });
-    } else {
-      c.setup = c.plan === 'bot_pay' ? 5500 : 3500; c.monthly = c.plan === 'bot_pay' ? 600 : 350;
-      if (c.app) { c.setup += 9000; c.monthly += 150; }
-    }
+    } else { c.setup = c.plan === 'bot_pay' ? 5500 : 3500; c.monthly = c.plan === 'bot_pay' ? 600 : 350; if (c.app) { c.setup += 9000; c.monthly += 150; } }
     c.demo = demoFor(c.activity);
     c.pkg = (c.plan === 'bot_pay' ? 'أتمتة الحجز + الدفع' : 'أتمتة الحجز') + (c.app ? ' + تطبيق باسمكم' : '');
     c.half = Math.round(c.setup / 2);
-    c.hi = c.owner ? 'هلا ' + c.owner.split(' ')[0] : 'هلا';
+    c.first = c.owner ? c.owner.split(' ')[0] : '';
+    c.hi = c.first ? 'هلا ' + c.first : 'هلا';
     return c;
   }
 
-  // ───── المحادثة: المراحل والرسائل ─────
-  // me = رسالتك (لها نسخ وإرسال)، cl = رد العميل المتوقع، note = تنبيه لك داخل المحادثة، obj = اعتراضات يختار منها
+  // ───── السيناريو: كل مرحلة = رسالة من العميل + 3 ردود تختارين منها (واحد منها الأفضل) + تقييم ─────
+  // best: رقم الرد الأفضل. why: ليش. ثم رسالة العميل التالية حسب اختيارك (good/bad)
   function script(c) {
-    const need = (url, what) => url ? url : `«${what}»`;
+    const pay = bank ? '\n' + bank : '';
     return [
-      { t: 'أول رسالة', tip: 'أرسلها بين 10 الصبح و9 الليل. قصيرة وتنتهي بسؤال سهل.', items: [
-        { me: `السلام عليكم${c.owner ? ' ' + c.owner.split(' ')[0] : ''}، معك احجزلي 👋\nعندنا نظام يخلي واتساب ${c.name || 'نشاطكم'} يرد على العملاء ويحجز لهم ويرسل الفاتورة ورابط الدفع لحاله، 24 ساعة وعلى نفس رقمكم.\nتحب أرسل لك تجربة تشوفها بنفسك؟` },
-        { cl: 'وعليكم السلام، وش هو بالضبط؟' },
-      ] },
-      { t: 'افهم نشاطه', tip: 'اسأل قبل ما تشرح. جوابه يحدد الباقة والإعداد.', items: [
-        { me: 'أبشر 🌷 قبل أشرح، عطني فكرة عن شغلكم:\n1. كم طلب أو حجز يجيكم باليوم تقريبًا؟\n2. الخدمة عند العميل، ولا في محلكم، ولا أونلاين؟\n3. مين يرد على الواتساب الحين؟ ووش يصير بعد الدوام؟\n4. الدفع كيف؟ كاش، تحويل، أو رابط؟' },
-        { cl: 'تقريبًا 15 طلب، وأنا أرد بنفسي، والدفع كاش أو تحويل' },
-      ] },
-      { t: 'التجربة', tip: 'خلّه يجرب بنفسه. الرابط يفتح على أقرب مجال لنشاطه.', items: [
-        { me: `واضح 👍 جرّب هذا كأنك عميل عندكم: اسأله عن السعر أو الموقع، واحجز موعد، وشوف كيف يرد:\n${c.demo}` },
-        { cl: 'حلو! بس أقدر أغيّر الردود والأسعار؟' },
-        { me: 'أكيد، كل شي على كيفك: الردود وأسلوبها، أسئلتكم وأجوبتها، الخدمات والأسعار، الأوقات، والدفع قبل أو بعد. وفي التجربة زر «خصّص» تجرب فيه اسم نشاطك.' },
-      ] },
-      { t: 'العرض', tip: 'اعرض باقة وحدة تناسبه، مو الثنتين.', items: [
-        { me: `اللي يناسبكم: ${c.pkg}\nالتأسيس ${money(c.setup)} ريال مرة وحدة، والاشتراك ${money(c.monthly)} ريال شهريًا.\nيشمل: الرد على أي رسالة، الحجز والتذكير، لوحة الطلبات بتنبيه صوتي، لوحة الموظفين${c.plan === 'bot_pay' ? '، والفاتورة ورابط الدفع' : ''}.\nالتفاصيل كاملة: ${PUBLIC}` },
-        { obj: [
-          ['غالي', `احسبها بالطلب: ${money(c.monthly)} ريال على 450 طلب بالشهر تطلع أقل من ريال للطلب. وكل طلب كان يضيع بعد الدوام أو لأن أحد ما رد، صار حجز مؤكد.`],
-          ['عندي موظف يرد', 'ممتاز، خلّه يشتغل بدل ما يرد. النظام يرد خلال ثانية حتى بعد الدوام وفي الإجازات، والموظف يستلم الطلب جاهز بالموقع والموعد.'],
-          ['أبي أفكر', 'أكيد، خذ راحتك. الرابط فيه كل شي، وأتابع معك بعد يومين.'],
-          ['فيه برامج أرخص', 'هم يعطونك رابط تجهّزه بنفسك والعميل يطلع من الواتساب. احنا نجهّز لك كل شي داخل الواتساب نفسه، ونكمّل بعد الحجز: تذكير وتنبيه وفاتورة ودفع.'],
-          ['لو ما عجبني؟', 'نجهّز لك تجربة على نشاطك قبل التشغيل وتعدّل عليها لين ترضى. والشهري توقفه بإشعار قبل شهر، وبياناتك وعملاؤك ملكك.'],
-        ] },
-        { cl: 'تمام، نبدأ' },
-      ] },
-      { t: 'الاتفاق والدفعة الأولى', tip: 'موافقته على الاتفاقية تتسجل عندك لحاله في التجهيز.', items: [
-        { me: `أبشر 🌷 هذي الاتفاقية، اقرأها ووافق عليها من الرابط:\n${need(c.agree, 'رابط الاتفاقية')}\n\nوالدفعة الأولى نص التأسيس: ${money(c.half)} ريال${bank ? '\n' + bank : ''}`, needs: !c.agree ? 'biz' : '' },
-        { cl: 'وافقت وحوّلت ✅' },
-        { me: 'وصلت، شكرًا لك 🙏 نبدأ التجهيز.' },
-        { note: 'سجّل الدفعة من لوحتك ← الاشتراكات ← «دفعة».', link: 'admin.html#subs' },
-      ] },
-      { t: 'بيانات النشاط', tip: 'النموذج يجمع كل اللي نحتاجه، وينطبق على منشأته بضغطة.', items: [
-        { me: `عشان نجهّزه، عبّ هذا النموذج (5 دقايق): الخدمات والأسعار، الأوقات، المدن أو الفروع، الموظفين، والشعار:\n${need(c.start, 'رابط النموذج')}`, needs: !c.start ? 'biz' : '' },
-        { cl: 'عبّيته' },
-        { note: 'من لوحتك ← دليل التشغيل ← «طبّق بياناته».', link: 'admin.html#onboard' },
-      ] },
-      { t: 'تجربته على بياناته', tip: 'يجرب البوت باسمه، وأي تعديل يطلبه تسوينه من لوحة المنشأة.', items: [
-        { me: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه وقل لي لو تبي تغيّر أي رد أو سعر:\n${need(c.sim, 'رابط المحاكي')}`, needs: !c.sim ? 'biz' : '' },
-        { cl: `أبي الترحيب يكون: هلا بك في ${c.name || 'محلنا'}` },
-        { me: 'تم ✅ عدّلناه، جرّبه مرة ثانية.' },
-      ] },
-      { t: 'ربط الرقم', tip: 'اتصال 15 دقيقة. هو يدخل بحسابه في فيسبوك، وأنت توجّهه.', items: [
-        { me: `باقي نربط رقمكم. نحتاج 15 دقيقة على اتصال، جهّز:\n• الجوال اللي عليه رقم الواتساب\n• حسابك في فيسبوك\nالخطوات هنا: ${PUBLIC}help.html#connect\nمتى يناسبك؟` },
-        { cl: 'بكرة العصر' },
-      ] },
-      { t: 'التوثيق والدفع الإلكتروني', tip: 'يمشون بالتوازي، والنظام يشتغل قبل ما يخلصون.', items: [
-        { me: `خطوتين عليكم:\n1. توثيق النشاط عند ميتا بالسجل التجاري: ${PUBLIC}help.html#meta${c.plan === 'bot_pay' ? `\n2. حساب ميسر للدفع الإلكتروني: ${PUBLIC}help.html#moyasar` : ''}` },
-        { cl: 'تم، رفعتها' },
-      ] },
-      { t: 'التسليم', tip: 'جرّبوا طلب حقيقي من جوال أحدهم قبل ما تسلّم.', items: [
-        { me: `كل شي جاهز 🎉\nهذي لوحتكم، افتحوها مرة وحدة من الجوال والكمبيوتر:\n${need(c.owner_url, 'رابط لوحة المالك')}\nومن «الموظفون» ترسلون لكل موظف رابطه.\n\nوالدفعة الثانية: ${money(c.half)} ريال، والاشتراك الشهري يبدأ من اليوم.`, needs: !c.owner_url ? 'owner' : '' },
-        { cl: 'وصل أول طلب بالصوت 😍' },
-        { note: 'غيّر حالة المنشأة إلى «شغّالة» وسجّل الدفعة الثانية.', link: 'admin.html#biz' },
-      ] },
-      { t: 'بعد التشغيل', tip: 'متابعة بسيطة تخليه يجدّد ويرشّحك.', items: [
-        { me: `${c.hi}، كيف أول أسبوع؟ لو فيه رسائل ما فهمها النظام أو تبي تعدّل شي قل لي ونعدّله 🌷` },
-        { me: `${c.hi}، اشتراك احجزلي الشهري ${money(c.monthly)} ريال يستحق يوم [التاريخ]. ولو تبي تقرير الشهر أرسله لك.` },
-        { me: 'ولو تعرف أحد يستفيد منه، عرّفنا عليه 🌷' },
-      ] },
+      { t: 'الرسالة الأولى', cl: null, intro: 'أنت تبدأ. أرسلها بين 10 الصبح و9 الليل.', opts: [
+        { me: `السلام عليكم${c.first ? ' ' + c.first : ''}، معك احجزلي 👋\nعندنا نظام يخلي واتساب ${c.name || 'نشاطكم'} يرد على العملاء ويحجز لهم ويرسل الفاتورة ورابط الدفع لحاله، 24 ساعة وعلى نفس رقمكم.\nتحب أرسل لك تجربة تشوفها بنفسك؟`, best: true, why: 'قصيرة، فيها الفايدة، وتنتهي بسؤال سهل جوابه نعم.' },
+        { me: `السلام عليكم، احجزلي شركة متخصصة في حلول أتمتة قنوات التواصل عبر الذكاء الاصطناعي، نقدم باقات تبدأ من 3,500 ريال…`, why: 'كلام كبير وسعر قبل ما يفهم الفايدة. يطنّش.' },
+        { me: `هلا، شفت نشاطكم وحبيته 👍 بس سؤال: مين يرد على الواتساب عندكم بعد الدوام؟`, why: 'سؤال حلو بس بدون ما يعرف مين أنت ووش تقدم. ممكن يتجاهل.' },
+      ], next: { good: 'وعليكم السلام، وش هو بالضبط؟', bad: 'مين معي؟' } },
+      { t: 'افهم نشاطه قبل ما تشرح', intro: 'جوابه يحدد الباقة وطريقة الشغل.', opts: [
+        { me: 'أبشر 🌷 قبل أشرح، عطني فكرة عن شغلكم:\n1. كم طلب أو حجز يجيكم باليوم تقريبًا؟\n2. الخدمة عند العميل، ولا في محلكم، ولا أونلاين؟\n3. مين يرد على الواتساب الحين؟ ووش يصير بعد الدوام؟', best: true, why: 'ثلاثة أسئلة قصيرة تعطيك كل اللي تحتاجه عشان تعرض الباقة الصح.' },
+        { me: 'هو نظام يرد على العملاء ويحجز لهم ويرسل الفاتورة، ويشتغل على رقمكم. السعر 3,500 تأسيس و350 شهري.', why: 'عرضت السعر قبل ما تعرف وضعه. هو ما يعرف ليش يدفع.' },
+        { me: 'أرسل لك الرابط وتشوف بنفسك 👇', why: 'الرابط حلو، بس لو ما عرفت نشاطه ما تقدر توجّهه لأقرب مثال ولا تردّ على اعتراضه بعدين.' },
+      ], next: { good: 'تقريبًا 15 طلب باليوم، الخدمة عند العميل، وأنا اللي أرد بنفسي. بعد الدوام ما أحد يرد', bad: 'طيب' } },
+      { t: 'خلّه يجرب بنفسه', intro: 'اربط التجربة بوجعه هو: الرد بنفسه، وما أحد يرد بعد الدوام.', opts: [
+        { me: `واضح 👍 يعني 15 طلب كل يوم تردّ عليها بنفسك، وبعد الدوام تضيع.\nجرّب هذا كأنك عميل عندكم: اسأله عن السعر أو الموقع، واحجز موعد، وشوف كيف يرد لحاله:\n${c.demo}`, best: true, why: 'رجّعت له كلامه بأرقامه، ثم أعطيته التجربة. هذا يخليه يحس إنك فاهمه.' },
+        { me: `${c.demo}\nجرّبه`, why: 'رابط بدون سياق. يفتح، ما يفهم وش يسوي، ويطلع.' },
+        { me: 'ممتاز. النظام يناسبك 100%. تبي نبدأ؟', why: 'قفزت للإغلاق قبل ما يشوف شي. يتراجع.' },
+      ], next: { good: 'جربته، حلو! بس أقدر أغيّر الردود والأسعار؟ وعندي أسئلة يسألونها كثير', bad: 'إن شاء الله أشوفه' } },
+      { t: 'كل شي على كيفه', intro: 'هذا السؤال معناه إنه مهتم. جاوب بثقة وأمثلة من عنده.', opts: [
+        { me: 'أكيد، كل شي على كيفك: الأزرار اللي تطلع أول وترتيبها، أسئلتكم وأجوبتها، الخدمات والأسعار، الأوقات، والدفع قبل أو بعد. وفي التجربة زر «خصّص» تجرب فيه اسم نشاطك وأسئلتك بنفسك.', best: true, why: 'جاوبت على سؤاله بالضبط وعطيته طريقة يتأكد بنفسه.' },
+        { me: 'إيه طبعًا، أي شي تبيه نسويه.', why: 'عام وما يقنع. هو يبي يعرف بالضبط.' },
+        { me: 'الردود ثابتة بس الأسعار تتغير.', why: 'غلط، وتخسره. كل شي يتعدّل.' },
+      ], next: { good: 'طيب كم السعر؟', bad: 'طيب كم السعر؟' } },
+      { t: 'العرض', intro: 'باقة وحدة تناسبه، مو الثنتين. والقيمة قبل الرقم.', opts: [
+        { me: `اللي يناسبكم: ${c.pkg}\nالتأسيس ${money(c.setup)} ريال مرة وحدة، والاشتراك ${money(c.monthly)} ريال شهريًا.\nيشمل: الرد على أي رسالة، الحجز والتذكير، لوحة الطلبات بتنبيه صوتي، لوحة الموظفين${c.plan === 'bot_pay' ? '، والفاتورة ورابط الدفع' : ''}.\nوكل شي نجهّزه نحن، أنت بس تعطينا بياناتك.`, best: true, why: 'باقة وحدة، السعر واضح، ووش يشمل، وطمّنته إن الشغل علينا.' },
+        { me: `عندنا باقتين: الأولى ${money(3500)} + 350 شهري، والثانية ${money(5500)} + 600 شهري، وإضافة تطبيق 9,000 + 150. أي وحدة تبي؟`, why: 'ثلاث أرقام مرة وحدة تشتّته ويأجّل.' },
+        { me: `${money(c.setup)} ريال.`, why: 'رقم بدون قيمة. أول شي بيقوله: غالي.' },
+      ], next: { good: 'غالي شوي', bad: 'غالي!' } },
+      { t: 'الاعتراض: «غالي»', intro: 'هنا تنباع الصفقة. اربطه بقصتك ووقته.', opts: [
+        { me: `أفهمك 🙏 خلني أحسبها لك بطريقة ثانية:\n${money(c.monthly)} ريال في الشهر على 450 طلب تطلع أقل من ريال للطلب. وكل طلب يجيك بعد الدوام ولا أحد يرد عليه كان يضيع، الحين يصير حجز مؤكد.\n\nوأقولها لك من تجربة: أنا كان الرد على العملاء ياكل يومي، فقدت الشغف وصرت موظف في مشروعي بدل ما أطوّره. أول ما صار الرد والحجز لحالهم رجع لي وقتي وأفكاري. هذا اللي أبيه لك.`, best: true, why: 'حسبتها بالطلب الواحد، ثم القصة الحقيقية: الرد كان ياكل يومك وصرت موظف في مشروعك. الناس تشتري من اللي عاش مشكلتهم.' },
+        { me: 'ممكن أعطيك خصم 500 ريال لو تبدأ اليوم.', why: 'نزلت السعر من أول اعتراض. يفهم إن سعرك مو حقيقي ويطلب أكثر.' },
+        { me: 'هذا سعر السوق، وفيه أغلى منه.', why: 'دفاعي. ما يجاوب على سؤاله الحقيقي: وش أستفيد؟' },
+      ], next: { good: 'صراحة هذا بالضبط وضعي. طيب وش المطلوب مني؟', bad: 'خلني أفكر' } },
+      { t: 'أبي أفكر', intro: 'لو قالها، لا تضغط. حدّد موعد المتابعة أنت.', opts: [
+        { me: 'أكيد، خذ راحتك 🌷 الرابط عندك تجرّبه متى ما تبي. أرجع لك يوم الخميس العصر، تمام؟', best: true, why: 'احترمت وقته وحجزت موعد المتابعة بنفسك بدل ما تنتظر.' },
+        { me: 'العرض لمدة محدودة، لو ما بدأنا اليوم يرتفع السعر.', why: 'ضغط مكشوف. يقفل.' },
+        { me: 'تمام.', why: 'انتهت المحادثة وما فيه موعد. غالبًا ما يرجع.' },
+      ], next: { good: 'تمام، الخميس', bad: 'تمام' } },
+      { t: 'الاتفاق والدفعة الأولى', intro: 'كل شي عليك. العميل بس يوافق من الرابط ويحوّل.', opts: [
+        { me: `أبشر 🌷 المطلوب منك شيئين بس:\n1. توافق على الاتفاقية من هذا الرابط (دقيقة):\n${c.agree}\n2. الدفعة الأولى نص التأسيس: ${money(c.half)} ريال${pay}\n\nوبعدها كل التجهيز علينا.`, best: true, why: 'خطوتين واضحتين ورابط جاهز. وطمّنته إن الباقي عليك.', link: c.agree },
+        { me: 'أرسل لي السجل التجاري ورقم الواتساب والشعار والخدمات والأسعار والأوقات والمدن والموظفين وحساب ميسر.', why: 'قائمة طويلة قبل ما يلتزم. يتعب ويأجّل.' },
+        { me: 'حوّل المبلغ كامل وأبدأ.', why: 'المبلغ كامل بدون اتفاقية ولا تفصيل. ما يرتاح.' },
+      ], next: { good: 'وافقت وحوّلت ✅', bad: 'طيب أرسل لي التفاصيل' } },
+      { t: 'بياناته', intro: 'نموذج واحد. ولو ما يحب النماذج، عبّيه معه في مكالمة.', opts: [
+        { me: `وصلت، شكرًا لك 🙏 نبدأ التجهيز.\nعبّ هذا النموذج (5 دقايق): الخدمات والأسعار، الأوقات، الفروع أو المدن، الموظفين، والشعار:\n${c.start}\nولو تفضّل، أتصل عليك ونعبّيه سوا.`, best: true, why: 'شكرته، أعطيته الرابط، وعرضت تعبّيه معه. ما تركت له مجال يتعطّل.', link: c.start },
+        { me: 'أرسل لي كل بيانات نشاطك هنا في الواتساب.', why: 'بيانات مبعثرة في رسائل، وبترجع تسأله.' },
+        { me: 'تمام، ننجّزه ونرجع لك.', why: 'ما طلبت البيانات. التجهيز بيتأخر.' },
+      ], next: { good: 'عبّيته', bad: 'عبّيته' } },
+      { t: 'تجربته على بياناته', intro: 'يجرّب باسمه. أي تعديل يطلبه تسوينه من لوحة المنشأة.', opts: [
+        { me: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه كأنك عميل، وقل لي لو تبي تغيّر أي رد أو سعر:\n${c.sim || '«رابط المحاكي» (يطلع بعد ما تختار منشأته)'}`, best: true, why: 'يشوف شغله باسمه قبل الربط. هذا اللي يخليه يثق.', link: c.sim, needs: !c.sim },
+        { me: 'خلصنا، نربط رقمك الحين.', why: 'ربط قبل ما يشوف ويعتمد الردود. أول غلط يصير قدام عملائه.' },
+        { me: 'جاهز، أرسل لي رقم الواتساب.', why: 'نفس الشي: ما شاف شي بعد.' },
+      ], next: { good: `حلو! بس أبي الترحيب يكون: هلا بك في ${c.name || 'محلنا'}`, bad: 'طيب' } },
+      { t: 'ربط الرقم', intro: 'اتصال 15 دقيقة. هو بس يدخل بحسابه ويكتب الرمز، وأنت تسوين الباقي.', opts: [
+        { me: `تم ✅ عدّلناه.\nباقي نربط رقمكم، وهذي أسهل خطوة: أتصل عليك 15 دقيقة، أنت بس تفتح حسابك في فيسبوك وتكتب رمز التحقق اللي يوصل على الرقم، والباقي كله أسويه أنا. متى يناسبك؟`, best: true, why: 'طمّنته إنها 15 دقيقة وإن اللي عليه شيئين فقط. ما أعطيته خطوات.' },
+        { me: `خطوات ربط الرقم هنا: ${c.help}#connect اتبعها وقل لي لو وقفت`, why: 'رميت عليه خطوات تقنية. بيوقف عند أول وحدة ويرجع يسألك: وين الرابط؟' },
+        { me: 'أرسل لي كلمة سر فيسبوك عشان أربطه.', why: 'ممنوع. ما نطلب كلمات مرور أبدًا.' },
+      ], next: { good: 'بكرة العصر', bad: 'بكرة العصر' } },
+      { t: 'التسليم', intro: 'جرّبوا طلب حقيقي من جوال أحدهم قبل ما تسلّم.', opts: [
+        { me: `كل شي جاهز 🎉\nهذي لوحتكم، افتحوها مرة وحدة من الجوال والكمبيوتر (بدون كلمة مرور):\n${c.owner_url || '«رابط لوحة المالك» (أنشئيه من دليل التشغيل)'}\nومن «الموظفون» ترسلون لكل موظف رابطه.\nالتوثيق عند ميتا والدفع الإلكتروني أتابعهم أنا وأبلغك.\n\nوالدفعة الثانية: ${money(c.setup - c.half)} ريال، والاشتراك الشهري يبدأ من اليوم.${pay}`, best: true, why: 'سلّمت اللوحة، ووضّحت إن المتابعات عليك، وطلبت الدفعة الثانية بشكل طبيعي.', link: c.owner_url, needs: !c.owner_url },
+        { me: 'انتهينا. الدفعة الثانية والاشتراك الشهري من فضلك.', why: 'فلوس بدون تسليم ولا شرح. يحس إنك بس تبي تحصّل.' },
+        { me: 'اللوحة جاهزة، تحتاج تضيف الموظفين وتعدّل الأوقات وتربط ميسر وتوثّق النشاط.', why: 'أربع مهام على العميل. المفروض كلها عليك.' },
+      ], next: { good: 'وصل أول طلب بالصوت 😍 شكرًا', bad: 'تمام' } },
+      { t: 'بعد التشغيل', intro: 'متابعة بسيطة تخليه يجدّد ويرشّحك.', opts: [
+        { me: `${c.hi}، كيف أول أسبوع؟ لو فيه رسائل ما فهمها النظام أو تبي تعدّل شي قل لي ونعدّله 🌷\nولو تعرف أحد يستفيد منه، عرّفنا عليه.`, best: true, why: 'اهتمام حقيقي + طلب ترشيح في وقته.' },
+        { me: `${c.hi}، تذكير بالاشتراك الشهري.`, why: 'أول رسالة بعد التسليم مطالبة. بارد.' },
+        { me: 'شكرًا لتعاملكم مع احجزلي.', why: 'رسمي ومقفول، ما يفتح باب للترشيح ولا للتعديل.' },
+      ], next: { good: 'ممتاز، عندي صاحبي عنده صالون 👌', bad: 'تمام' } },
     ];
   }
 
@@ -176,86 +184,95 @@ body{min-height:100vh}
     <aside class="side2">
       <div class="row"><a class="btn ghost sm" href="admin.html">${icon('home')}لوحتي</a></div>
       <h1>محاكي البيع</h1>
-      <p class="muted small">محادثتك مع العميل من أول رسالة لين التسليم. اختر العميل عشان تطلع رسائله وروابطه، وانسخ أي رسالة أو أرسلها له على الواتساب.</p>
+      <p class="muted small">العميل يكلّمك ويعترض، وأنت تختار ردّك. الصفحة تقيّم كل رد وتعطيك الأفضل. اختر عميل حقيقي عشان تطلع روابطه وتقدر ترسل له.</p>
+      <div class="mode"><button type="button" class="on" id="mTrain">تدريب</button><button type="button" id="mShow">اعرض الأفضل</button></div>
       <label class="f"><span>العميل</span><select id="who"><option value="">مثال عام</option>${bizOpts}${leadOpts}</select></label>
       <label class="f"><span>بيانات التحويل (تنحفظ في جهازك فقط)</span><input id="bank" placeholder="مثل: الآيبان أو STC Pay" value="${esc(bank)}"></label>
-      <div class="stg" id="stg"></div>
+      <div class="score"><div class="row"><span class="grow">نتيجتك</span><b id="scTxt">0 / 0</b></div><div class="bar"><i id="scBar" style="width:0%"></i></div><span class="tiny" id="scNote">اختر ردّك على كل رسالة</span></div>
+      <div class="links" id="links"></div>
+      <div class="tips"><div>الرد خلال دقايق، مو ساعات.</div><div>سؤال قبل الشرح، وقيمة قبل السعر.</div><div>كل الشغل عليك، والعميل بس يوافق ويعطيك بياناته.</div><div>لا تنزّل السعر من أول اعتراض.</div></div>
     </aside>
     <div class="phone2">
-      <div class="ph"><span class="av" id="pAv">ع</span><div><b id="pName">العميل</b><span>محادثتك مع العميل</span></div></div>
+      <div class="ph"><span class="av" id="pAv">ع</span><div><b id="pName">العميل</b><span id="pSub">يكتب…</span></div></div>
       <div class="cv" id="cv"></div>
-      <div class="ctrl"><button class="btn" id="next">التالي</button><button class="btn ghost" id="all">اعرض الكل</button><button class="btn ghost" id="restart">من البداية</button></div>
+      <div class="ctrl"><button class="ib" type="button" id="restart" title="من البداية" aria-label="من البداية">${icon('refresh')}</button><input id="free" placeholder="أو اكتب ردّك بنفسك…" maxlength="600"><button class="snd" type="button" id="sendFree" aria-label="إرسال">${icon('send')}</button></div>
     </div>
   </div>`;
-  let S = [], pos = { st: 0, it: 0 }, shown = 0;
-  const flat = () => { const out = []; S.forEach((st, si) => { out.push({ stage: si }); st.items.forEach((it) => out.push({ si, it })); }); return out; };
-  let FL = [];
-  function waUrl(text) { const p = ctx().phone; const d = String(p || '').replace(/\D/g, ''); return `https://wa.me/${d}?text=${encodeURIComponent(text)}`; }
+  let S = [], at = 0, score = 0, answered = 0, mode = 'train', done = false;
+  const cv = $('cv');
+  function waUrl(text) { const d = String(ctx().phone || '').replace(/\D/g, ''); return `https://wa.me/${d}?text=${encodeURIComponent(text)}`; }
   function linkify(t) { return esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
-  function render(upto) {
-    const c = ctx(); const cv = $('cv'); cv.innerHTML = '';
-    let lastStage = -1;
-    FL.slice(0, upto).forEach((x) => {
-      if (x.stage !== undefined) {
-        const st = S[x.stage];
-        cv.insertAdjacentHTML('beforeend', `<div class="stage"><b>${x.stage + 1}. ${esc(st.t)}</b><span>${esc(st.tip)}</span></div>`);
-        lastStage = x.stage; return;
-      }
-      const it = x.it;
-      if (it.me) {
-        const missing = it.needs === 'biz' ? `<div class="miss">الرابط يطلع بعد ما تختار منشأة من القائمة. لو العميل لسا طلب اشتراك، حوّله لمنشأة من «طلبات الاشتراك».</div>` : it.needs === 'owner' ? `<div class="miss">ما فيه رابط مالك لهذي المنشأة. <button class="btn sm" type="button" data-mk-owner>أنشئ رابط المالك</button></div>` : '';
-        cv.insertAdjacentHTML('beforeend', `<div class="m me"><span class="who">رسالتك</span><div class="bb">${linkify(it.me)}</div>${missing}<div class="acts"><button type="button" data-copy="${esc(it.me)}">${icon('copy')}نسخ</button>${c.phone ? `<a href="${esc(waUrl(it.me))}" target="_blank" rel="noopener">${icon('wa')}أرسل له</a>` : ''}</div></div>`);
-      } else if (it.cl) {
-        cv.insertAdjacentHTML('beforeend', `<div class="m cl"><span class="who">${esc(c.name || 'العميل')}</span><div class="bb">${esc(it.cl)}</div></div>`);
-      } else if (it.note) {
-        cv.insertAdjacentHTML('beforeend', `<div class="m me"><div class="note">📌 ${esc(it.note)} <a href="${esc(it.link)}" target="_blank" rel="noopener">افتح</a></div></div>`);
-      } else if (it.obj) {
-        cv.insertAdjacentHTML('beforeend', `<div class="obj"><span>لو قال العميل:</span><div>${it.obj.map((o, i) => `<button type="button" data-obj="${i}">«${esc(o[0])}»</button>`).join('')}</div><div class="objAns"></div></div>`);
-        const box = cv.lastElementChild;
-        box.querySelectorAll('[data-obj]').forEach((b) => b.onclick = () => {
-          box.querySelectorAll('[data-obj]').forEach((x) => x.classList.toggle('on', x === b));
-          const o = it.obj[+b.dataset.obj];
-          box.querySelector('.objAns').innerHTML = `<div class="m cl" style="margin-top:6px"><span class="who">${esc(c.name || 'العميل')}</span><div class="bb">${esc(o[0])}</div></div><div class="m me" style="align-self:flex-end;max-width:100%"><span class="who">رسالتك</span><div class="bb">${linkify(o[1])}</div><div class="acts"><button type="button" data-copy="${esc(o[1])}">${icon('copy')}نسخ</button>${c.phone ? `<a href="${esc(waUrl(o[1]))}" target="_blank" rel="noopener">${icon('wa')}أرسل له</a>` : ''}</div></div>`;
-          box.querySelectorAll('[data-copy]').forEach((x) => x.onclick = () => I.copy(x.dataset.copy, 'انسخت الرسالة ✓'));
-        });
-      }
-    });
-    cv.querySelectorAll('[data-copy]').forEach((x) => x.onclick = () => I.copy(x.dataset.copy, 'انسخت الرسالة ✓'));
-    cv.querySelectorAll('[data-mk-owner]').forEach((x) => x.onclick = makeOwner);
-    cv.scrollTop = cv.scrollHeight;
-    // قائمة المراحل
-    $('stg').innerHTML = S.map((st, i) => `<button type="button" data-st="${i}" class="${i < lastStage ? 'done' : ''} ${i === lastStage ? 'on' : ''}"><i>${i + 1}</i>${esc(st.t)}</button>`).join('');
-    $('stg').querySelectorAll('[data-st]').forEach((b) => b.onclick = () => { const idx = FL.findIndex((x) => x.stage === +b.dataset.st); let end = idx + 1; while (end < FL.length && FL[end].stage === undefined) end++; shown = end; render(shown); });
-    $('next').disabled = upto >= FL.length;
+  const scrollEnd = () => { cv.scrollTop = cv.scrollHeight; };
+  function add(html) { cv.insertAdjacentHTML('beforeend', html); scrollEnd(); return cv.lastElementChild; }
+  function meMsg(text, extra = '') {
+    const c = ctx();
+    const el = add(`<div class="m me"><span class="who">أنت</span><div class="bb">${linkify(text)}</div>${extra}<div class="acts"><button type="button" data-copy="${esc(text)}">${icon('copy')}نسخ</button>${c.phone ? `<a class="wa" href="${esc(waUrl(text))}" target="_blank" rel="noopener">${icon('wa')}أرسل له</a>` : ''}</div></div>`);
+    el.querySelectorAll('[data-copy]').forEach((x) => x.onclick = () => I.copy(x.dataset.copy, 'انسخت الرسالة ✓'));
   }
-  function rebuild(keep) { S = script(ctx()); FL = flat(); if (!keep) shown = Math.min(FL.length, 3); render(shown); }
-  async function makeOwner(e) {
-    if (sel.kind !== 'biz') return;
-    e.target.disabled = true;
-    try { const x = await I.api('admin/link/create', { kind: 'owner', business_id: sel.row.id, label: sel.row.owner_name || 'المالك' }); ownerUrl = x.url; I.toast('انشأ رابط المالك ✓'); rebuild(true); }
-    catch (x) { I.fail(x); e.target.disabled = false; }
+  function clMsg(text) { const c = ctx(); add(`<div class="m cl"><span class="who">${esc(c.name || 'العميل')}</span><div class="bb">${esc(text)}</div></div>`); }
+  function paintScore() { $('scTxt').textContent = `${score} / ${answered}`; $('scBar').style.width = (answered ? Math.round(score / answered * 100) : 0) + '%'; $('scNote').textContent = !answered ? 'اختر ردّك على كل مسألة' : score === answered ? 'ممتاز، كل ردودك الأفضل 🌟' : score / answered >= .6 ? 'جيد، شوف التقييم تحت كل رد' : 'اقرأ ليش الرد الأفضل أفضل، وعيد التدريب'; }
+  function stage(i, cl) {
+    at = i;
+    if (i >= S.length) { done = true; add(`<div class="stage">انتهى التدريب 🎉 نتيجتك ${score} من ${answered}. اضغط ↻ عشان تعيد، أو «اعرض الأفضل» لتشوف المسار كامل</div>`); $('pSub').textContent = 'متصل'; return; }
+    const st = S[i];
+    add(`<div class="stage">${i + 1}. ${esc(st.t)}${st.intro ? ' · ' + esc(st.intro) : ''}</div>`);
+    const clText = cl !== undefined ? cl : st.cl;
+    if (clText) { $('pSub').textContent = 'يكتب…'; setTimeout(() => { clMsg(clText); $('pSub').textContent = 'متصل'; choices(st); }, 650); }
+    else choices(st);
   }
-  async function pick(v) {
+  function choices(st) {
+    if (mode === 'show') { const b = st.opts.find((o) => o.best); meMsg(b.me, missing(b)); add(`<div class="fb good"><b>ليش هذا الأفضل</b>${esc(b.why)}</div>`); setTimeout(() => stage(at + 1, st.next.good), 500); return; }
+    const box = add(`<div class="choices"><div class="lbl">اختر ردّك 👇</div>${st.opts.map((o, i) => `<button type="button" data-o="${i}">${esc(o.me.length > 230 ? o.me.slice(0, 230) + '…' : o.me)}</button>`).join('')}</div>`);
+    box.querySelectorAll('[data-o]').forEach((bt) => bt.onclick = () => { const o = st.opts[+bt.dataset.o]; box.remove(); pick(st, o); });
+  }
+  function missing(o) { return o.needs ? `<div class="miss">${sel.kind === 'biz' ? 'ما فيه رابط لهذي الخطوة بعد. أنشئيه من دليل التشغيل.' : 'الرابط الخاص بهذا العميل يطلع بعد ما يصير منشأة (من طلبات الاشتراك ← «حوّلها لمنشأة»).'}</div>` : ''; }
+  function pick(st, o) {
+    meMsg(o.me, missing(o));
+    answered++; if (o.best) score++; paintScore();
+    const best = st.opts.find((x) => x.best);
+    add(o.best ? `<div class="fb good"><b>ممتاز ✓</b>${esc(o.why)}</div>` : `<div class="fb bad"><b>فيه أفضل</b>${esc(o.why)}<br><b>الأفضل:</b> ${esc(best.me.length > 200 ? best.me.slice(0, 200) + '…' : best.me)}<br><span class="tiny">${esc(best.why)}</span></div>`);
+    setTimeout(() => stage(at + 1, o.best ? st.next.good : st.next.bad), 700);
+  }
+  function freeReply() {
+    const t = $('free').value.trim(); if (!t || done || at >= S.length) return;
+    $('free').value = '';
+    const st = S[at]; const box = cv.querySelector('.choices'); if (box) box.remove();
+    meMsg(t);
+    const best = st.opts.find((x) => x.best);
+    // تقييم بسيط: يحتوي رابط لو المرحلة لها رابط، وطول معقول، وسؤال في النهاية لو المرحلة أولى
+    const hasLink = !best.link || /https?:\/\//.test(t);
+    const okLen = t.length >= 40 && t.length <= 600;
+    const good = hasLink && okLen;
+    answered++; if (good) score++; paintScore();
+    add(`<div class="fb ${good ? 'good' : 'bad'}"><b>${good ? 'تمام ✓' : 'ممكن أحسن'}</b>${!hasLink ? 'ناقص الرابط اللي يحتاجه العميل في هالخطوة. ' : ''}${!okLen ? (t.length < 40 ? 'قصيرة، العميل ما يفهم وش تبي منه. ' : 'طويلة، قسّمها أو اختصرها. ') : ''}<b>الأفضل:</b> ${esc(best.me.length > 200 ? best.me.slice(0, 200) + '…' : best.me)}<br><span class="tiny">${esc(best.why)}</span></div>`);
+    setTimeout(() => stage(at + 1, good ? st.next.good : st.next.bad), 700);
+  }
+  function paintLinks() {
+    const c = ctx();
+    const rows = [['الاتفاقية', c.agree], ['نموذج البيانات', c.start], ['التجربة لمجاله', c.demo], ['تجربته باسمه', c.sim], ['لوحته', c.owner_url], ['كيف نشتغل معك', c.help]].filter(([, u]) => u);
+    $('links').innerHTML = `<span class="tiny">روابط ${c.name ? esc(c.name) : 'جاهزة'}</span>` + rows.map(([l, u]) => `<div class="copybox"><code>${esc(u)}</code><button class="btn sm ghost" type="button" data-cp="${esc(u)}">${icon('copy')}${esc(l)}</button></div>`).join('');
+    $('links').querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+  }
+  function restart() { done = false; score = 0; answered = 0; paintScore(); S = script(ctx()); cv.innerHTML = ''; stage(0); }
+  async function pickWho(v) {
     ownerUrl = '';
     if (!v) sel = { kind: 'none' };
     else if (v.startsWith('l:')) sel = { kind: 'lead', row: (leads || []).find((l) => l.id === v.slice(2)) };
-    else {
-      sel = { kind: 'biz', row: (bizs || []).find((b) => b.id === v.slice(2)) };
-      try { const l = await I.api('admin/link/list', { business_id: sel.row.id }); const o = (l.links || []).find((x) => x.kind === 'owner' && x.url); ownerUrl = o ? o.url : ''; } catch (e) { /* */ }
-    }
+    else { sel = { kind: 'biz', row: (bizs || []).find((b) => b.id === v.slice(2)) }; try { const l = await I.api('admin/link/list', { business_id: sel.row.id }); const o = (l.links || []).find((x) => x.kind === 'owner' && !x.revoked_at && x.url); ownerUrl = o ? o.url : ''; } catch (e) { /* */ } }
     const c = ctx();
     $('pName').textContent = c.name || 'العميل'; $('pAv').textContent = I.initials(c.name || 'ع');
-    rebuild(true);
+    paintLinks(); restart();
   }
-  $('who').onchange = (e) => pick(e.target.value);
-  $('bank').oninput = (e) => { bank = e.target.value.trim(); try { localStorage.setItem('ihj_bank', bank); } catch (x) { /* */ } rebuild(true); };
-  $('next').onclick = () => { if (shown >= FL.length) return; shown++; if (FL[shown - 1].stage !== undefined && shown < FL.length) shown++; render(shown); };
-  $('all').onclick = () => { shown = FL.length; render(shown); };
-  $('restart').onclick = () => { shown = Math.min(FL.length, 3); render(shown); };
+  $('who').onchange = (e) => pickWho(e.target.value);
+  $('bank').oninput = (e) => { bank = e.target.value.trim(); try { localStorage.setItem('ihj_bank', bank); } catch (x) { /* */ } S = script(ctx()); };
+  $('mTrain').onclick = () => { mode = 'train'; $('mTrain').classList.add('on'); $('mShow').classList.remove('on'); restart(); };
+  $('mShow').onclick = () => { mode = 'show'; $('mShow').classList.add('on'); $('mTrain').classList.remove('on'); restart(); };
+  $('restart').onclick = restart;
+  $('sendFree').onclick = freeReply; $('free').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); freeReply(); } };
   const pre = new URLSearchParams(location.search).get('b');
-  rebuild(false);
-  if (pre) { $('who').value = 'b:' + pre; pick('b:' + pre); }
-  window.__deal = { pick, rebuild, get shown() { return shown; } };
+  paintLinks(); restart();
+  if (pre) { $('who').value = 'b:' + pre; pickWho('b:' + pre); }
+  window.__deal = { pickWho, restart, get at() { return at; }, get score() { return score; }, pick: (i) => { const bt = cv.querySelector(`[data-o="${i}"]`); if (bt) bt.click(); } };
 })();
 </script>
 </body>

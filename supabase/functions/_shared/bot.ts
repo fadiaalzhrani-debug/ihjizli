@@ -98,7 +98,34 @@ class Bot {
   bizName() { return (this.lang === "en" && this.b.name_en) ? this.b.name_en : this.b.name; }
   svc(id?: string | null) { return this.ctx.services.find((s: any) => s.id === (id ?? this.data.svc)) || null; }
   mode(): Mode { return modeOf(this.s, this.svc()); }
-  menuButtons() { return [{ id: "m:book", title: this.T("btn_book") }, { id: "m:orders", title: this.T("btn_orders") }]; }
+  // القائمة الذكية: أزرار الترحيب الأولى (وترتيبها) واللي يظهر بعد كل رد معلوماتي، من settings.menu أو تخصيص جلسة المحاكي
+  // كل عنصر: book, orders, prices, location, hours, services, pay, contact, lang, أو faq:<رقم السؤال>
+  menuCfg(): { main: string[]; after: string[] } {
+    const m = (this.s.menu && typeof this.s.menu === "object") ? this.s.menu : {};
+    const ok = (x: unknown) => typeof x === "string" && /^(book|orders|prices|location|hours|services|pay|contact|lang|faq:\d{1,2})$/.test(x);
+    const main = Array.isArray(m.main) ? m.main.filter(ok).slice(0, 9) : [];
+    const after = Array.isArray(m.after) ? m.after.filter(ok).slice(0, 3) : [];
+    return { main: main.length ? main : ["book", "orders"], after: after.length ? after : ["book", "orders"] };
+  }
+  menuItem(k: string): Row | null {
+    if (k === "book") return { id: "m:book", title: this.T("btn_book") };
+    if (k === "orders") return { id: "m:orders", title: this.T("btn_orders") };
+    if (k === "prices") return { id: "m:prices", title: this.T("btn_prices") };
+    if (k === "location") return { id: "m:location", title: this.T("btn_location") };
+    if (k === "hours") return { id: "m:hours", title: this.T("btn_hours") };
+    if (k === "services") return { id: "m:services", title: this.T("btn_services") };
+    if (k === "pay") return { id: "m:pay", title: this.T("btn_payinfo") };
+    if (k === "contact") return { id: "m:contact", title: this.T("btn_contact") };
+    if (k === "lang") return { id: this.lang === "en" ? "m:lang:ar" : "m:lang:en", title: this.T("btn_lang") };
+    const f = /^faq:(\d+)$/.exec(k);
+    if (f) { const e = (Array.isArray(this.s.faq) ? this.s.faq : [])[+f[1]]; const title = String(e?.chip || String(e?.q || "").split(/[,،]/)[0] || "").trim(); if (e?.a && title) return { id: "m:faq:" + f[1], title: title.slice(0, 20) }; }
+    return null;
+  }
+  menuRows(keys: string[]): Row[] { const out: Row[] = []; for (const k of keys) { const r = this.menuItem(k); if (r && !out.some((x) => x.id === r.id)) out.push(r); } return out; }
+  menuButtons() { return this.menuRows(this.menuCfg().after).slice(0, 3); }
+  over(k: string): string { const v = this.s.texts?.[this.lang]?.[k]; return (typeof v === "string" && v.trim()) ? v : ""; }
+  // رد معلوماتي + «وش بعده» حسب التخصيص
+  reply(text: string) { this.say({ t: "buttons", text, buttons: this.menuButtons() }); }
   list(text: string, button: string, rows: Row[], extra: Partial<Out> = {}) {
     this.data.rows = rows.map((r) => r.id);
     this.say({ t: "list", text, button, sections: [{ rows }], ...(extra as any) });
@@ -124,7 +151,7 @@ class Bot {
       }
       // رقم من القائمة الأخيرة (لو كتب 2 بدل ما يضغط)
       const num = text.replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).trim();
-      if (/^\d{1,2}$/.test(num) && STATES_WITH_LIST.has(this.state) && Array.isArray(this.data.rows)) {
+      if (/^\d{1,2}$/.test(num) && (STATES_WITH_LIST.has(this.state) || this.state === "idle") && Array.isArray(this.data.rows)) {
         const id = this.data.rows[+num - 1];
         if (id) return this.onId(id);
       }
@@ -135,7 +162,7 @@ class Bot {
       if (it === "human") return this.handoff("human", text);
       // أسئلة المنشأة الخاصة قبل الأسئلة العامة
       const fa = faqMatch(this.s.faq, text);
-      if (fa) { this.say({ t: "buttons", text: fa.a, buttons: this.menuButtons() }); return; }
+      if (fa) { this.reply(fa.a); return; }
       switch (it) {
         case "orders": return this.listOrders("");
         case "resched": return this.listOrders("resched");
@@ -180,6 +207,12 @@ class Bot {
         if (v === "lang:en") return this.setLang("en");
         if (v === "lang:ar") return this.setLang("ar");
         if (v === "contact") return this.handoff("human", this.lang === "en" ? "Contact us" : "تواصل معنا");
+        if (v === "prices") return this.prices();
+        if (v === "location") return this.locationInfo();
+        if (v === "hours") return this.hoursInfo();
+        if (v === "services") return this.servicesInfo();
+        if (v === "pay") return this.paymentInfo();
+        if (v.startsWith("faq:")) { const e = (Array.isArray(this.s.faq) ? this.s.faq : [])[+v.slice(4)]; if (e?.a) return this.reply(String(e.a)); }
         return this.welcome();
       case "svc": return this.onService(v);
       case "br": return this.onBranch(v);
@@ -200,10 +233,17 @@ class Bot {
   // ───────── الترحيب واللغة ─────────
   welcome() {
     this.set("idle", {});
-    this.say({ t: "buttons", text: this.T("welcome", { biz: this.bizName() }), buttons: [
-      ...this.menuButtons(),
-      { id: this.lang === "en" ? "m:lang:ar" : "m:lang:en", title: this.T("btn_lang") },
-    ] });
+    const cfg = this.menuCfg();
+    const rows = this.menuRows(cfg.main);
+    const text = this.T("welcome", { biz: this.bizName() });
+    if (rows.length <= 3) {
+      // الافتراضي: الحجز وطلباتي وزر اللغة (لو ما اختار المالك قائمته)
+      const btns = (this.s.menu && Array.isArray(this.s.menu.main) && this.s.menu.main.length) ? rows : [...rows, { id: this.lang === "en" ? "m:lang:ar" : "m:lang:en", title: this.T("btn_lang") }];
+      this.say({ t: "buttons", text, buttons: btns.slice(0, 3) });
+      return;
+    }
+    this.data.rows = rows.map((r) => r.id);
+    this.say({ t: "list", text, button: this.T("btn_more"), sections: [{ rows }] });
   }
 
   async setLang(l: Lang) {
@@ -521,42 +561,46 @@ class Bot {
   }
 
   prices() {
+    if (this.over("prices")) return this.reply(this.over("prices"));
     const svcs = this.ctx.services;
     const priced = svcs.filter((s: any) => s.price != null);
     const text = priced.length ? this.T("prices", { list: this.servicesLines(true) })
       : (this.mode() === "visit" || !svcs.length) ? this.T("prices_after") : this.T("services_list", { list: this.servicesLines(false) });
-    this.say({ t: "buttons", text, buttons: this.menuButtons() });
+    this.reply(text);
   }
 
   servicesInfo() {
     const text = this.ctx.services.length ? this.T("services_list", { list: this.servicesLines(false) }) : this.T("prices_after");
-    this.say({ t: "buttons", text, buttons: this.menuButtons() });
+    this.reply(text);
   }
 
   hoursInfo() {
+    if (this.over("hours_text")) return this.reply(this.over("hours_text"));
     const lines: string[] = [];
     for (let d = 0; d < 7; d++) {
       const hs = this.ctx.hours.filter((h: any) => h.weekday === d && !h.city_id);
       lines.push(`${weekdayName(d, this.lang)}: ${hs.length ? hs.map((h: any) => `${hm(h.open_time, this.lang)} ${this.lang === "en" ? "to" : "إلى"} ${hm(h.close_time, this.lang)}`).join("، ") : this.T("closed")}`);
     }
-    this.say({ t: "buttons", text: this.T("hours", { list: lines.join("\n") }), buttons: this.menuButtons() });
+    this.reply(this.T("hours", { list: lines.join("\n") }));
   }
 
   locationInfo() {
+    if (this.over("location_text")) return this.reply(this.over("location_text"));
     const mode = this.mode();
     const names = this.ctx.cities.map((c: any) => this.cityName(c));
     let text: string;
     if (mode === "online") text = this.T("loc_online");
     else if (mode === "shop") text = this.T("loc_shop", { list: this.ctx.cities.map((c: any) => `• ${this.cityName(c)}${mapsOf(c) ? "\n" + mapsOf(c) : ""}`).join("\n") || this.b.address || this.b.city || "" });
     else text = this.T("loc_visit", { cities: names.length ? names.join("، ") : this.b.city || "" });
-    this.say({ t: "buttons", text, buttons: this.menuButtons() });
+    this.reply(text);
   }
 
   paymentInfo() {
+    if (this.over("pay_text")) return this.reply(this.over("pay_text"));
     const pre = this.s.pay_timing === "before" && this.prepayAmount(this.svc() || this.ctx.services[0]) > 0;
     const online = ["demo", "moyasar"].includes(this.s.pay_provider) && (this.b.plan === "bot_pay" || this.b.is_demo);
     const key = pre ? "pay_before" : (this.s.pay_timing === "none" || !online) ? "pay_none" : "pay_after";
-    this.say({ t: "buttons", text: this.T(key), buttons: this.menuButtons() });
+    this.reply(this.T(key));
   }
 
   repeatPrompt() {
@@ -628,6 +672,14 @@ export function applySimConfig(ctx: Ctx) {
   if (["after", "before", "none"].includes(cfg.pay)) s.pay_timing = cfg.pay;
   if (["friendly", "formal", "short"].includes(cfg.tone)) s.tone = cfg.tone;
   if (cfg.welcome) { s.texts.ar = { ...(s.texts.ar || {}), welcome: cfg.welcome }; s.texts.en = { ...(s.texts.en || {}), welcome: cfg.welcome }; }
+  if (cfg.menu && typeof cfg.menu === "object") s.menu = cfg.menu;
+  if (Array.isArray(cfg.faq)) s.faq = [...cfg.faq, ...(Array.isArray(s.faq) ? s.faq : [])];
+  if (cfg.answers && typeof cfg.answers === "object") {
+    // ردود المعلومات المخصصة للجلسة (الأسعار، الموقع، الدوام، الدفع) تحل محل الافتراضي
+    const over: Record<string, string> = {};
+    for (const [k, v] of Object.entries(cfg.answers)) if (typeof v === "string" && v.trim()) over[k] = v.trim();
+    s.texts.ar = { ...(s.texts.ar || {}), ...over }; s.texts.en = { ...(s.texts.en || {}), ...over };
+  }
   // لما المكان متخصص للجلسة، يمشي على كل الخدمات
   const services = cfg.place ? ctx.services.map((x: any) => ({ ...x, place_mode: null })) : ctx.services;
   return { ...ctx, business: b, settings: s, services };

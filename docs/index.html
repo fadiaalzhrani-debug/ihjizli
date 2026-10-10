@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>احجزلي · الواتساب يرد ويحجز ويحصّل لحاله</title>
 <meta name="description" content="احجزلي: الواتساب يرد على أي سؤال ويحجز ويرسل الفاتورة ورابط الدفع لحاله، لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم. تأسيس مرة وحدة واشتراك شهري ثابت.">
-<meta name="theme-color" content="#0B7A55">
+<meta name="theme-color" content="#4338CA">
 <link rel="canonical" href="https://fadiaalzhrani-debug.github.io/ihjizli/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">
@@ -19,36 +19,35 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="احجزلي · الواتساب يرد ويحجز ويحصّل لحاله">
 <meta name="twitter:image" content="https://fadiaalzhrani-debug.github.io/ihjizli/img/og.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%230B7A55'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
-/* احجزلي: صفحة مختصرة لكل المجالات. أخضر غامق وذهبي على بيج فاتح، وسمة داكنة */
+/* احجزلي: صفحة قصيرة لكل المجالات. نيلي وذهبي على فاتح، مع خلفية ثلاثية الأبعاد تتحرك (Three.js) وسمة داكنة */
 :root{
-  --bg:#F7F6F1; --fg:#161D19; --muted:#5E6B64; --card:#FFFFFF; --line:#E1E5DF; --soft:#EAF4EE; --soft2:#FFF4D6;
-  --accent:#0B7A55; --accent-2:#0A5F43; --accent-ink:#FFFFFF; --gold:#F2B705; --gold-ink:#2A1F05;
+  --bg:#F6F6FA; --fg:#17182B; --muted:#5F6178; --card:#FFFFFF; --line:#E2E3EC; --soft:#ECEBFB; --soft2:#FFF4D6;
+  --accent:#4338CA; --accent-2:#3730A3; --accent-ink:#FFFFFF; --gold:#F2B705; --gold-ink:#2A1F05;
   --wa-bg:#0B141A; --wa-in:#1F2C34; --wa-out:#005C4B; --wa-ink:#E9EDEF; --wa-sub:#8696A0; --wa-link:#53BDEB;
   --display:"Tajawal",system-ui,"Segoe UI",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
-  --r:16px; --shadow:0 20px 50px -30px rgba(10,40,30,.35);
+  --r:16px; --shadow:0 20px 50px -30px rgba(30,20,80,.35);
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0E1411; --fg:#E9EFEB; --muted:#9FADA5; --card:#161F1A; --line:#283329; --soft:#17261F; --soft2:#2A2410; --accent:#3CCB93; --accent-2:#2FAE7D; --accent-ink:#06211A; --gold:#F5C542; --shadow:0 20px 50px -30px rgba(0,0,0,.7); color-scheme:dark } }
-:root[data-theme="dark"]{ --bg:#0E1411; --fg:#E9EFEB; --muted:#9FADA5; --card:#161F1A; --line:#283329; --soft:#17261F; --soft2:#2A2410; --accent:#3CCB93; --accent-2:#2FAE7D; --accent-ink:#06211A; --gold:#F5C542; --shadow:0 20px 50px -30px rgba(0,0,0,.7); color-scheme:dark }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0F0F1A; --fg:#ECECF6; --muted:#A2A3BD; --card:#181829; --line:#2A2A42; --soft:#1B1A33; --soft2:#2A2410; --accent:#8B85F6; --accent-2:#7A73F0; --accent-ink:#0F0D2E; --gold:#F5C542; --shadow:0 20px 50px -30px rgba(0,0,0,.7); color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#0F0F1A; --fg:#ECECF6; --muted:#A2A3BD; --card:#181829; --line:#2A2A42; --soft:#1B1A33; --soft2:#2A2410; --accent:#8B85F6; --accent-2:#7A73F0; --accent-ink:#0F0D2E; --gold:#F5C542; --shadow:0 20px 50px -30px rgba(0,0,0,.7); color-scheme:dark }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.8;padding-block:0 96px;padding-inline:16px}
-.wrap{max-width:1040px;margin:0 auto}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.8;padding-block:0 96px;padding-inline:16px;overflow-x:hidden}
+.wrap{max-width:1040px;margin:0 auto;position:relative}
 h1,h2,h3{font-family:var(--display);line-height:1.25;margin:0;text-wrap:balance}
-h1{font-size:clamp(32px,5.6vw,52px);font-weight:900;letter-spacing:-.01em}
+h1{font-size:clamp(34px,6vw,58px);font-weight:900;letter-spacing:-.01em}
 h2{font-size:clamp(25px,3.8vw,34px);font-weight:800}
 h3{font-size:18px;font-weight:700}
 p{margin:0} a{color:var(--accent)}
-img{max-width:100%}
 .eyebrow{font-family:var(--display);font-weight:700;font-size:13.5px;color:var(--accent);display:inline-flex;align-items:center;gap:8px;margin-bottom:8px}
 .eyebrow::before{content:"";width:22px;height:3px;background:var(--accent);border-radius:2px}
 section{padding-block:52px;border-top:1px solid var(--line)}
 section.hero{border-top:0}
-.sub{font-size:17.5px;color:var(--muted);max-width:62ch;margin-top:8px}
+.sub{font-size:17.5px;color:var(--muted);max-width:60ch;margin-top:8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:800;font-size:17px;padding:14px 24px;border-radius:14px;text-decoration:none;border:0;cursor:pointer;transition:transform .12s,background .15s}
 .btn:hover{background:var(--accent-2);transform:translateY(-1px)}
 .btn.ghost{background:transparent;color:var(--fg);border:2px solid var(--line)}
@@ -57,8 +56,12 @@ section.hero{border-top:0}
 .btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .ic{width:22px;height:22px;flex:none}
 .tiny{color:var(--muted);font-size:13px}
+/* الخلفية ثلاثية الأبعاد */
+#bg3d{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.9}
+#bg3d canvas{display:block;width:100%;height:100%}
+.veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 50% at 70% 10%,transparent,var(--bg) 85%),linear-gradient(to bottom,transparent 0,var(--bg) 92vh)}
 /* الشريط العلوي */
-.topbar{position:sticky;top:0;z-index:7;margin-inline:-16px;padding-inline:16px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar{position:sticky;top:0;z-index:7;margin-inline:-16px;padding-inline:16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;gap:22px;min-height:62px}
 .brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:900;font-size:25px;color:var(--fg);text-decoration:none}
 .brand .mark{width:28px;height:28px;color:var(--accent)}
@@ -66,8 +69,8 @@ section.hero{border-top:0}
 .nav a{color:var(--muted);text-decoration:none;font-weight:500;font-size:15px}
 .nav a:hover{color:var(--fg)}
 /* الرأس */
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;padding-block:40px 52px}
-.hero .copy{display:grid;gap:16px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;padding-block:56px 60px;min-height:calc(100vh - 62px)}
+.hero .copy{display:grid;gap:18px}
 .cta{display:flex;flex-wrap:wrap;gap:10px}
 .trust{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:14.5px}
 .trust span{display:inline-flex;align-items:center;gap:7px}
@@ -93,12 +96,13 @@ section.hero{border-top:0}
 @keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
 @media (prefers-reduced-motion:no-preference){ .b{animation:pop .35s ease both} @keyframes pop{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}} }
 .demo-cap{font-size:13.5px;color:var(--muted);text-align:center}
-/* يرد على أي رسالة */
-.qa{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
-.qa div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:6px;min-width:0}
-.qa b{font-family:var(--display);font-size:15.5px;display:inline-block;background:var(--soft);border-radius:10px 10px 10px 2px;padding:4px 10px;width:max-content;max-width:100%}
-.qa span{color:var(--muted);font-size:14.5px;line-height:1.65}
-.qa div.hand{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 9%,var(--card))}
+/* القصة (ليش احجزلي) */
+.story{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.story blockquote{margin:0;background:var(--card);border:1px solid var(--line);border-inline-start:5px solid var(--gold);border-radius:var(--r);padding:20px 22px;font-size:17px;line-height:1.9;font-family:var(--display);font-weight:500}
+.story blockquote b{font-weight:800;color:var(--accent)}
+.story .pts{display:grid;gap:10px}
+.story .pts div{display:flex;gap:10px;align-items:flex-start;font-size:15.5px}
+.story .pts .ic{color:var(--accent);margin-top:4px}
 /* المجالات */
 .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
 .field{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:8px;align-content:start;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s;min-width:0}
@@ -110,16 +114,12 @@ section.hero{border-top:0}
 .field .tags i{font-style:normal;font-size:12.5px;border-radius:99px;padding:2px 9px;background:var(--soft);font-weight:600}
 .field .go{font-family:var(--display);font-weight:700;color:var(--accent);font-size:14.5px}
 .more{margin-top:14px;color:var(--muted);font-size:15px}
-/* على كيفك */
-.yours{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
-.yours div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:grid;gap:4px;min-width:0}
-.yours b{font-family:var(--display);font-size:15.5px}
-.yours span{color:var(--muted);font-size:13.5px;line-height:1.6}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;counter-reset:s}
-.steps div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;counter-increment:s;display:grid;gap:4px}
-.steps div::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:14px;margin-bottom:4px}
-.steps b{font-family:var(--display);font-size:16.5px}
-.steps span{color:var(--muted);font-size:14px}
+/* يرد على أي شي + على كيفك: شريط واحد */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
+.grid4 div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:grid;gap:4px;min-width:0}
+.grid4 b{font-family:var(--display);font-size:15.5px}
+.grid4 span{color:var(--muted);font-size:13.5px;line-height:1.6}
+.grid4 .hand{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 9%,var(--card))}
 /* الباقات */
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;align-items:stretch}
 .plan{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:12px;align-content:start;min-width:0;position:relative}
@@ -135,6 +135,11 @@ section.hero{border-top:0}
 .plan li .ic{width:19px;height:19px;color:var(--accent);margin-top:4px}
 .addon{margin-top:14px;background:var(--card);border:1px dashed var(--line);border-radius:18px;padding:16px 22px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
 .addon .price b{font-size:26px}
+.start{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;counter-reset:s}
+.start div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;counter-increment:s;display:grid;gap:4px}
+.start div::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:14px;margin-bottom:6px}
+.start b{font-family:var(--display);font-size:16.5px}
+.start span{color:var(--muted);font-size:14px}
 /* الأسئلة */
 details{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:0 18px;margin-top:9px}
 summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:16px;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
@@ -160,18 +165,18 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
 .foot{border-top:1px solid var(--line);margin-top:30px;padding-top:24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px}
 .foot .brand{font-size:21px}
 .foot .tiny{margin-inline-start:auto}
-.dock{position:fixed;bottom:0;left:0;right:0;display:none;gap:10px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:8}
+.dock{position:fixed;bottom:0;left:0;right:0;display:none;gap:10px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:8}
 .dock .btn{flex:1;padding:12px 10px;font-size:16px}
-@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px} .qa,.fields{grid-template-columns:1fr 1fr} .yours{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} }
+@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px;min-height:0} .fields{grid-template-columns:1fr 1fr} .grid4{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} .story{grid-template-columns:1fr} }
 @media (max-width:720px){ .nav{display:none} .top .btn{margin-inline-start:auto} .foot .tiny{margin:0;width:100%} .faq{grid-template-columns:1fr} }
-@media (max-width:620px){ .qa,.fields,.steps{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
+@media (max-width:620px){ .fields,.start{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
 </style>
 </head>
 <body>
+<div id="bg3d" aria-hidden="true"></div><div class="veil" aria-hidden="true"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
   <symbol id="i-mark" viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z" fill="currentColor"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" style="stroke:var(--bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -179,7 +184,7 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
 
 <div class="topbar"><div class="wrap top">
   <a class="brand" href="#top" aria-label="احجزلي، أعلى الصفحة"><svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg><span>احجزلي</span></a>
-  <nav class="nav" aria-label="أقسام الصفحة"><a href="#any">يرد على أي رسالة</a><a href="#fields">المجالات</a><a href="#plans">الباقات</a><a href="#faq">أسئلة</a></nav>
+  <nav class="nav" aria-label="أقسام الصفحة"><a href="#why">ليش</a><a href="#fields">المجالات</a><a href="#plans">الباقات</a><a href="#faq">أسئلة</a></nav>
   <a class="btn sm" href="sim.html?demo=1" target="_blank" rel="noopener">جرّبه</a>
 </div></div>
 
@@ -187,8 +192,8 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
 <section class="hero">
   <div class="copy">
     <span class="pillbar">لأي نشاط ياخذ طلبات أو مواعيد على الواتساب</span>
-    <h1>عملاؤك يكتبون لك، والرد والحجز والدفع يصير لحاله</h1>
-    <p class="sub">على رقمك نفسه، 24 ساعة: يجاوب أي سؤال، يحجز من المواعيد الفاضية فعلًا، يرسل الفاتورة ورابط الدفع، ويبلّغك ويبلّغ موظفك. وكل شي فيه على كيفك.</p>
+    <h1>خلّ الواتساب يرد ويحجز ويحصّل، وأنت تطوّر شغلك</h1>
+    <p class="sub">على رقمك نفسه، 24 ساعة: يجاوب أي سؤال، يحجز من المواعيد الفاضية فعلًا، يرسل الفاتورة ورابط الدفع، ويبلّغك ويبلّغ موظفك. وكل زر وكل رد فيه على كيفك.</p>
     <div class="cta"><a class="btn" href="sim.html?demo=1" target="_blank" rel="noopener">جرّبه بنفسك</a><a class="btn ghost" href="#signup">اشترك</a></div>
     <div class="trust">
       <span><svg class="ic"><use href="#i-phone"/></svg>على رقمك الحالي</span>
@@ -205,24 +210,24 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
   </div>
 </section>
 
-<section id="any">
-  <span class="eyebrow">مو بس «أبي أحجز»</span>
-  <h2>يرد على أي رسالة يرسلها العميل</h2>
-  <div class="qa">
-    <div><b>«كم السعر؟»</b><span>يرسل أسعارك، أو يقول إن السعر بعد المعاينة.</span></div>
-    <div><b>«وين موقعكم؟»</b><span>يرسل لوكيشن فرعك، أو المناطق اللي تغطيها.</span></div>
-    <div><b>«متى تفتحون؟»</b><span>يرسل أوقات الدوام والإجازات.</span></div>
-    <div><b>«أبي موعد بكرة»</b><span>يعرض الأوقات الفاضية فعلًا ويأكد برقم طلب.</span></div>
-    <div><b>«أبي أغيّر موعدي»</b><span>يغيّر أو يلغي بنفسه، ويبلّغك.</span></div>
-    <div><b>أسئلتك الخاصة</b><span>تكتب الأسئلة اللي تتكرر عندك وأجوبتها، ويرد بها.</span></div>
-    <div class="hand" style="grid-column:1/-1"><b>شي ما يعرفه؟ شكوى؟ رسالة صوتية؟</b><span>يرد عليه بلطف ويحوّله لك فورًا، ويوقف عن هالعميل لين ترد أنت من الواتساب أو من لوحتك.</span></div>
+<section id="why">
+  <span class="eyebrow">ليش سويناه</span>
+  <h2>الرد على العملاء كان ياكل يومنا</h2>
+  <div class="story" style="margin-top:22px">
+    <blockquote>كان الرد على العملاء يتعبني. مع الوقت فقدت الشغف، وصرت <b>أشتغل بدل ما أطوّر الشغل</b>. صرت موظف في مشروعي، وما أعرف كيف أتوسع. الشغل ثقيل بدون أي شي يساعدني.<br><span class="tiny">صاحب نشاط، قبل احجزلي</span></blockquote>
+    <div class="pts">
+      <div><svg class="ic"><use href="#i-check"/></svg><span>كل رسالة تنرد عليها خلال ثانية، حتى بعد الدوام وفي الإجازة.</span></div>
+      <div><svg class="ic"><use href="#i-check"/></svg><span>الحجز يتأكد من المواعيد الفاضية فعلًا، وبرقم طلب.</span></div>
+      <div><svg class="ic"><use href="#i-check"/></svg><span>الفاتورة ورابط الدفع يوصلون العميل، والمبلغ يدخل حسابك.</span></div>
+      <div><svg class="ic"><use href="#i-check"/></svg><span>وقتك يرجع لك: للتسويق، وللتوسع، ولحياتك.</span></div>
+    </div>
   </div>
 </section>
 
 <section id="fields">
   <span class="eyebrow">لكل المجالات</span>
   <h2>اختر مجالك وجرّبه كأنك عميل</h2>
-  <p class="sub">الخدمة عند العميل أو في محلك أو أونلاين، والدفع قبل الحجز أو بعد الخدمة أو في المحل. كله يمشي لحاله.</p>
+  <p class="sub">عند العميل أو في محلك أو أونلاين، والدفع قبل الحجز أو بعد الخدمة أو في المحل.</p>
   <div class="fields">
     <a class="field" href="sim.html?demo=1&amp;open=mahalak" target="_blank" rel="noopener"><div class="h"><span class="em">🔧</span><div><b>صيانة</b><div class="tiny">صيانة منزلية: الفني يجيك</div></div></div><div class="tags"><i>عند العميل</i><i>الدفع بعد الخدمة</i></div><span class="go">جرّبه ←</span></a>
     <a class="field" href="sim.html?demo=1&amp;open=salon" target="_blank" rel="noopener"><div class="h"><span class="em">✂️</span><div><b>صالون</b><div class="tiny">صالون وحلاقة: تحجز وتجي</div></div></div><div class="tags"><i>في المحل</i><i>الدفع قبل الحجز</i></div><span class="go">جرّبه ←</span></a>
@@ -234,30 +239,20 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
   <p class="more">وأي نشاط ثاني ياخذ طلبات أو مواعيد: تدريب، تصوير، تأجير، فعاليات، تعليم، تنظيف، وغيرها.</p>
 </section>
 
-<section id="yours">
+<section id="any">
   <span class="eyebrow">على كيفك</span>
-  <h2>كل شي فيه يتعدّل</h2>
-  <div class="yours">
-    <div><b>الردود</b><span>ودّي أو رسمي أو مختصر، أو اكتبها بكلامك</span></div>
-    <div><b>أسئلتك وأجوبتها</b><span>اللي يسألونها عملاؤك كل يوم</span></div>
-    <div><b>الخدمات والأسعار</b><span>سعر ثابت، أو بعد المعاينة</span></div>
-    <div><b>الدفع</b><span>قبل الحجز، أو بعد الخدمة، أو في المحل</span></div>
-    <div><b>المكان</b><span>عند العميل، أو في محلك وفروعك، أو أونلاين</span></div>
-    <div><b>المواعيد</b><span>الدوام، الإجازات، مدة الموعد، كم عميل بنفس الوقت</span></div>
-    <div><b>الموظفون</b><span>كل طلب يروح للموظف الفاضي في مدينة العميل</span></div>
-    <div><b>التشغيل</b><span>توقفه وتشغله بزر من لوحتك</span></div>
+  <h2>يرد على أي رسالة، وكل شي فيه يتعدّل</h2>
+  <div class="grid4">
+    <div><b>«كم السعر؟»</b><span>أسعارك، أو «بعد المعاينة»</span></div>
+    <div><b>«وين موقعكم؟»</b><span>لوكيشن فرعك، أو مناطق تغطيتك</span></div>
+    <div><b>«متى تفتحون؟»</b><span>دوامك وإجازاتك</span></div>
+    <div><b>«أبي أغيّر موعدي»</b><span>يغيّر أو يلغي بنفسه ويبلّغك</span></div>
+    <div><b>الأزرار الأولى</b><span>أنت تختار أي أزرار تطلع أول، وبأي ترتيب</span></div>
+    <div><b>أسئلتك الخاصة</b><span>اللي يسألونها عملاؤك كل يوم، وأجوبتها</span></div>
+    <div><b>الردود</b><span>ودّي أو رسمي أو مختصر، أو بكلامك</span></div>
+    <div class="hand"><b>شي ما يعرفه؟</b><span>يحوّله لك ويوقف عن هالعميل لين ترد</span></div>
   </div>
   <div class="cta" style="margin-top:18px"><a class="btn ghost" href="sim.html?demo=1" target="_blank" rel="noopener">جرّب تخصّصه بنفسك</a></div>
-</section>
-
-<section id="how">
-  <span class="eyebrow">كيف نبدأ</span>
-  <h2>ثلاث خطوات</h2>
-  <div class="steps">
-    <div><b>تعبي بياناتك</b><span>الخدمات والأسعار والأوقات والمدن والموظفين، في نموذج واحد.</span></div>
-    <div><b>نجهّزه على رقمك</b><span>خلال 7 أيام عمل، ونرسل لك تجربة باسمك تعدّل عليها.</span></div>
-    <div><b>تستلم لوحتك وتبدأ</b><span>الطلبات توصلك بتنبيه صوتي، وموظفك يوصله طلبه.</span></div>
-  </div>
 </section>
 
 <section id="plans">
@@ -271,7 +266,6 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
         <li><svg class="ic"><use href="#i-check"/></svg>يرد على أي رسالة، ويحوّل لك اللي يحتاجك</li>
         <li><svg class="ic"><use href="#i-check"/></svg>حجز وتعديل وإلغاء وتذكير قبل الموعد</li>
         <li><svg class="ic"><use href="#i-check"/></svg>لوحة الطلبات بتنبيه صوتي، ولوحة للموظفين</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>إشعار الموظف وتوزيع الطلبات حسب المدينة</li>
         <li><svg class="ic"><use href="#i-check"/></svg>نقل الطلبات لجدول قوقل أو نظامك</li>
       </ul>
     </div>
@@ -283,12 +277,16 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
         <li><svg class="ic"><use href="#i-check"/></svg>كل مزايا أتمتة الحجز</li>
         <li><svg class="ic"><use href="#i-check"/></svg>الدفع قبل الحجز أو بعد الخدمة: مدى، أبل باي، بطاقة</li>
         <li><svg class="ic"><use href="#i-check"/></svg>فاتورة PDF بشعارك، والمبلغ يدخل حسابك مباشرة</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>يتأكد الدفع لحاله، ويوصل العميل «وصلنا دفعك»</li>
         <li><svg class="ic"><use href="#i-check"/></svg>تقرير شهري بالطلبات والمبالغ</li>
       </ul>
     </div>
   </div>
   <div class="addon"><div><h3>إضافة: تطبيق باسمك في المتاجر</h3><span class="tiny">iOS وAndroid بشعارك، على نفس الطلبات واللوحة</span></div><div class="price"><b>9,000</b><span>ريال</span><small>ثم 150 ريال شهريًا</small></div></div>
+  <div class="start">
+    <div><b>تعطينا بياناتك</b><span>نموذج واحد: الخدمات والأسعار والأوقات والفروع.</span></div>
+    <div><b>نجهّزه كامل</b><span>على رقمك، ونرسل لك تجربة باسمك تعدّل عليها.</span></div>
+    <div><b>تستلم لوحتك</b><span>الطلبات توصلك بتنبيه صوتي، وموظفك يوصله طلبه.</span></div>
+  </div>
 </section>
 
 <section id="faq">
@@ -296,20 +294,16 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
   <h2>كل اللي يهمك قبل تبدأ</h2>
   <div class="faq">
     <div>
-      <details><summary>يناسب نشاطي؟</summary><p>يناسب أي نشاط ياخذ طلبات أو مواعيد على الواتساب: صيانة، صالونات، عيادات، مغاسل، استشارات، مطاعم (حجز طاولات)، تدريب، تصوير، تأجير.</p></details>
+      <details><summary>يناسب نشاطي؟</summary><p>أي نشاط ياخذ طلبات أو مواعيد على الواتساب: صيانة، صالونات، عيادات، مغاسل، استشارات، مطاعم، تدريب، تأجير، وغيرها.</p></details>
       <details><summary>العميل لازم يحمّل شي أو يفتح رابط؟</summary><p>لا. كل شي داخل محادثة الواتساب نفسها، بالأزرار والقوائم.</p></details>
       <details><summary>أستخدم رقمي الحالي؟</summary><p>نعم، ويبقى تطبيق واتساب بزنس شغّال معك على نفس الرقم.</p></details>
-      <details><summary>وش يصير لو العميل سأل شي ما يعرفه النظام؟</summary><p>يرد عليه إن رسالته وصلت، ويحوّلها لك، ويوقف عن هالعميل لين ترد أنت أو ترجّعه.</p></details>
-      <details><summary>أقدر أعدّل الردود والأسعار والأوقات؟</summary><p>نعم، من لوحتك في أي وقت. أو نعدّلها لك ضمن الاشتراك الشهري.</p></details>
-      <details><summary>عندي أكثر من فرع أو موظف؟</summary><p>العميل يختار الفرع، أو النظام يعرف مدينته من موقعه، والطلب يروح للموظف الفاضي.</p></details>
+      <details><summary>وش يصير لو سأل شي ما يعرفه؟</summary><p>يرد عليه إن رسالته وصلت، ويحوّلها لك، ويوقف عن هالعميل لين ترد أنت أو ترجّعه.</p></details>
     </div>
     <div>
-      <details><summary>كيف يوصلني الدفع؟</summary><p>مباشرة لحسابك في بوابة الدفع (ميسر): مدى، أبل باي، أو البطاقة. وتختار يكون قبل الحجز أو بعد الخدمة، أو في المحل.</p></details>
-      <details><summary>وش أحتاج عشان نبدأ؟</summary><p>سجل تجاري، رقم واتساب، الشعار والخدمات والأوقات، وحساب ميسر لو تبي الدفع الإلكتروني.</p></details>
-      <details><summary>كم ياخذ التجهيز؟</summary><p>7 أيام عمل من اكتمال المتطلبات، والدفع الإلكتروني 3 أيام إضافية.</p></details>
+      <details><summary>كيف يوصلني الدفع؟</summary><p>مباشرة لحسابك في بوابة الدفع (ميسر): مدى، أبل باي، أو البطاقة. قبل الحجز أو بعد الخدمة، أو في المحل بدون دفع.</p></details>
+      <details><summary>وش أحتاج عشان نبدأ؟</summary><p>سجل تجاري، رقم واتساب، الشعار والخدمات والأوقات. والباقي كله علينا.</p></details>
+      <details><summary>كم ياخذ التجهيز؟</summary><p>7 أيام عمل من استلام بياناتك.</p></details>
       <details><summary>فيه رسوم ثانية؟</summary><p>رسوم رسائل ميتا (هللات للرسالة)، ومزوّد الربط نحو 45 ريال شهريًا، ونسبة بوابة الدفع. والأسعار قبل الضريبة.</p></details>
-      <details><summary>أقدر أوقفه؟</summary><p>نعم، بزر من لوحتك. وبياناتك وعملاؤك ملكك.</p></details>
-      <details><summary>يتكلم إنجليزي؟</summary><p>نعم، يرد بلغة العميل، والعميل يقدر يبدّل بزر.</p></details>
     </div>
   </div>
 </section>
@@ -412,6 +406,65 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
   }
   step();
 })();
+</script>
+<script type="module">
+/* خلفية ثلاثية الأبعاد: فقاعات محادثة وجسيمات تطفو ببطء وتميل مع الماوس (تتوقف لمن يفضّل تقليل الحركة) */
+if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+  try {
+    const THREE = await import('https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js');
+    const host = document.getElementById('bg3d');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
+    renderer.setSize(innerWidth, innerHeight);
+    host.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, .1, 100);
+    cam.position.set(0, 0, 16);
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.getAttribute('data-theme') !== 'light';
+    const col = dark ? [0x8B85F6, 0xF5C542, 0x53BDEB] : [0x4338CA, 0xF2B705, 0x0EA5E9];
+    scene.add(new THREE.AmbientLight(0xffffff, dark ? .9 : 1.1));
+    const key = new THREE.DirectionalLight(0xffffff, dark ? .9 : 1.2); key.position.set(4, 6, 8); scene.add(key);
+    // فقاعة محادثة: مستطيل ناعم + ذيل صغير
+    const bubbleGeo = (() => { const s = new THREE.Shape(); const w = 2.2, h = 1.3, r = .45; s.moveTo(-w / 2 + r, -h / 2); s.lineTo(w / 2 - r, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r); s.lineTo(w / 2, h / 2 - r); s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); s.lineTo(-w / 2 + r, h / 2); s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); s.lineTo(-w / 2, -h / 2 + r + .35); s.lineTo(-w / 2 - .3, -h / 2 + .05); s.lineTo(-w / 2 + .25, -h / 2 + .05); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2); return new THREE.ExtrudeGeometry(s, { depth: .28, bevelEnabled: true, bevelSize: .08, bevelThickness: .08, bevelSegments: 3 }); })();
+    const group = new THREE.Group(); scene.add(group);
+    const items = [];
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    for (let i = 0; i < 14; i++) {
+      const isBubble = i % 3 !== 2;
+      const geo = isBubble ? bubbleGeo : new THREE.TorusGeometry(.5, .17, 18, 40);
+      const mat = new THREE.MeshStandardMaterial({ color: col[i % 3], roughness: .45, metalness: .15, transparent: true, opacity: dark ? .55 : .5 });
+      const m = new THREE.Mesh(geo, mat);
+      const sc = rnd(.5, 1.2); m.scale.setScalar(sc);
+      m.position.set(rnd(-11, 11), rnd(-7, 7), rnd(-6, 2));
+      m.rotation.set(rnd(0, 6), rnd(0, 6), rnd(0, 6));
+      group.add(m);
+      items.push({ m, vy: rnd(.003, .008), rx: rnd(-.003, .003), ry: rnd(-.004, .004), x0: m.position.x, ph: rnd(0, 6) });
+    }
+    // جسيمات صغيرة
+    const pts = new THREE.BufferGeometry(); const n = 260, arr = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { arr[i * 3] = rnd(-16, 16); arr[i * 3 + 1] = rnd(-10, 10); arr[i * 3 + 2] = rnd(-10, 2); }
+    pts.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+    const dots = new THREE.Points(pts, new THREE.PointsMaterial({ color: col[0], size: .06, transparent: true, opacity: dark ? .5 : .35 }));
+    scene.add(dots);
+    let mx = 0, my = 0, tx = 0, ty = 0;
+    addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
+    addEventListener('resize', () => { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+    let t = 0, visible = true;
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+    const io = new IntersectionObserver((es) => { visible = es[0].isIntersecting; }); io.observe(document.querySelector('.hero'));
+    function frame() {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+      t += .016;
+      mx += (tx - mx) * .04; my += (ty - my) * .04;
+      group.rotation.y = mx * .18; group.rotation.x = -my * .12;
+      for (const it of items) { it.m.position.y += it.vy; if (it.m.position.y > 8) it.m.position.y = -8; it.m.position.x = it.x0 + Math.sin(t * .5 + it.ph) * .6; it.m.rotation.x += it.rx; it.m.rotation.y += it.ry; }
+      dots.rotation.y = t * .02;
+      renderer.render(scene, cam);
+    }
+    frame();
+  } catch (e) { /* بدون خلفية لو ما توفر WebGL */ }
+}
 </script>
 </body>
 </html>

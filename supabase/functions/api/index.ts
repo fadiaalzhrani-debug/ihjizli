@@ -317,10 +317,121 @@ async function bizByClientKey(k: string) {
   return data;
 }
 const PLACES = ["visit", "shop", "online"], TIMINGS = ["after", "before", "none"];
+async function cleanIntake(d: any, logoDir: string): Promise<{ out?: any; bad?: string[] }> {
+  const out: any = {
+    name: clip(d.name, 80), name_en: clip(d.name_en, 80), activity: clip(d.activity, 60), wa_number: intl(d.wa_number), owner_name: clip(d.owner_name, 60), owner_phone: saudi(d.owner_phone) || intl(d.owner_phone),
+    cr_number: clip(d.cr_number, 20), vat_number: clip(d.vat_number, 20), address: clip(d.address, 120),
+    place_mode: PLACES.includes(d.place_mode) ? d.place_mode : "", pay_timing: TIMINGS.includes(d.pay_timing) ? d.pay_timing : "",
+    has_moyasar: ["yes", "no", "later"].includes(d.has_moyasar) ? d.has_moyasar : "", notes: clipLines(d.notes, 1000),
+    services: (Array.isArray(d.services) ? d.services : []).slice(0, 15).map((x: any) => ({
+      name: clip(x?.name, 24),
+      price: x?.price === "" || x?.price == null || !Number.isFinite(+x.price) ? null : Math.max(0, Math.min(100000, +x.price)),
+      duration_min: x?.duration_min ? Math.max(10, Math.min(720, Math.round(+x.duration_min))) : null,
+    })).filter((x: any) => x.name),
+    hours: (Array.isArray(d.hours) ? d.hours : []).slice(0, 14)
+      .filter((h: any) => h && /^[0-6]$/.test(String(h.weekday)) && /^\d{2}:\d{2}$/.test(h.open) && /^\d{2}:\d{2}$/.test(h.close))
+      .map((h: any) => ({ weekday: +h.weekday, open: h.open, close: h.close })),
+    staff: (Array.isArray(d.staff) ? d.staff : []).slice(0, 30)
+      .map((x: any) => ({ name: clip(x?.name, 40), phone: saudi(x?.phone) || "", cities: Array.isArray(x?.cities) ? x.cities.slice(0, 12).map((c: any) => clip(c, 40)) : [] }))
+      .filter((x: any) => x.name),
+  };
+  need(out.name.length >= 2, "name", 400);
+  // المدن (مراكز جاهزة) والفروع (رابط قوقل ماب يتحوّل لإحداثيات)
+  const cities: any[] = [], bad: string[] = [];
+  for (const c of (Array.isArray(d.cities) ? d.cities : []).slice(0, 12)) {
+    const name = clip(c?.name, 40);
+    if (!name) continue;
+    if (Number.isFinite(+c?.lat) && Number.isFinite(+c?.lng) && c?.lat !== "" && c?.lat !== null) { cities.push({ name, lat: +c.lat, lng: +c.lng, radius_km: Math.max(1, Math.min(300, +c.radius_km || 25)) }); continue; }
+    const p = c?.maps ? await locationFromText(String(c.maps).slice(0, 500)) : null;
+    if (p) cities.push({ name, lat: p.lat, lng: p.lng, radius_km: Math.max(1, Math.min(300, +c.radius_km || 15)), maps: String(c.maps).slice(0, 300) });
+    else bad.push(name);
+  }
+  if (bad.length) return { bad };
+  out.cities = cities;
+  // الشعار
+  const m = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/=]+)$/.exec(String(d.logo || ""));
+  if (m) {
+    const bytes = Uint8Array.from(atob(m[2]), (ch) => ch.charCodeAt(0));
+    need(bytes.length <= 700_000, "too_big", 400);
+    const path = "logos/" + logoDir + "/intake-" + Date.now() + "." + (m[1] === "png" ? "png" : "jpg");
+    const { error } = await db().storage.from("public").upload(path, bytes, { contentType: "image/" + m[1], upsert: true });
+    if (error) throw new Error(error.message);
+    out.logo_url = SUPABASE_URL + "/storage/v1/object/public/public/" + path;
+  } else if (typeof d.logo_url === "string" && d.logo_url.startsWith(SUPABASE_URL)) {
+    out.logo_url = d.logo_url;
+  }
+  return { out };
+}
+
+// الرابط العام: نلقى العميل بجواله (طلب اشتراك مفتوح، أو منشأته لو تحوّل)، وإلا ننشئ له طلب اشتراك جديد
+async function leadByPhone(phone: string, seed: any, ip: string) {
+  const since = new Date(Date.now() - 120 * 86400_000).toISOString();
+  const { data: rows } = await db().from("signup_requests").select("*").eq("phone", phone).gte("created_at", since).neq("status", "lost").order("created_at", { ascending: false }).limit(1);
+  if (rows && rows.length) return rows[0];
+  const { data, error } = await db().from("signup_requests").insert({
+    business_name: clip(seed.business_name, 80) || "بدون اسم", phone, contact_name: clip(seed.contact_name, 60), activity: clip(seed.activity, 60),
+    package: seed.package === "bot_pay" ? "bot_pay" : "bot", wants_app: !!seed.wants_app, source: clip(seed.source, 30) || "link", ip,
+  }).select("*").single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+async function bizForLead(lead: any) {
+  if (!lead?.business_id) return null;
+  const { data } = await db().from("businesses").select("id, plan, wants_app, name").eq("id", lead.business_id).maybeSingle();
+  return data;
+}
 async function clientAction(req: Request, action: string) {
   const ip = ipOf(req);
   if (clientLimit(ip)) throw new AppError("busy", 429);
   const body = await readJson(req) || {};
+  if (action === "terms") {
+    const [one, two] = await Promise.all([db().rpc("ihj_plan_fees", { p_plan: "bot", p_app: true }), db().rpc("ihj_plan_fees", { p_plan: "bot_pay", p_app: false })]);
+    const x = one.data as any, y = two.data as any;
+    return { fees: { bot: { setup_fee: x.setup_fee, monthly_fee: x.monthly_fee }, bot_pay: { setup_fee: y.setup_fee, monthly_fee: y.monthly_fee }, app: { setup_fee: x.app_setup_fee, monthly_fee: x.app_monthly_fee } } };
+  }
+  if (action === "agree-new" || action === "intake-new") {
+    if (clip(body.website, 50)) return { ok: true };
+    if (action === "agree-new") {
+      const bizName = clip(body.business_name, 80), name = clip(body.name, 60), phone = saudi(body.phone);
+      need(bizName.length >= 2, "business", 400);
+      need(name.length >= 3, "name", 400);
+      need(phone, "phone", 400);
+      need(body.accept === true, "accept", 400);
+      const plan = body.package === "bot_pay" ? "bot_pay" : "bot", app = !!body.wants_app;
+      const { data: fees } = await db().rpc("ihj_plan_fees", { p_plan: plan, p_app: app });
+      const terms = { business: bizName, plan, wants_app: app, ...(fees as any || {}), version: "2026-10" };
+      const lead = await leadByPhone(phone, { business_name: bizName, contact_name: name, package: plan, wants_app: app, source: "agree" }, ip);
+      const now = new Date().toISOString();
+      const biz = await bizForLead(lead);
+      const patch: any = { agreed_at: now, agreed_name: name, agreed_terms: terms, updated_at: now, log: [...(lead.log || []), { t: now, what: "وافق على الاتفاقية من الرابط العام" }].slice(-60) };
+      if (!biz) { patch.package = plan; patch.wants_app = app; if (["new", "contacted"].includes(lead.status)) patch.status = "agreed"; if (lead.business_name === "بدون اسم") patch.business_name = bizName; if (!lead.contact_name) patch.contact_name = name; }
+      const { error } = await db().from("signup_requests").update(patch).eq("id", lead.id);
+      if (error) throw new Error(error.message);
+      if (biz) {
+        const { error: e2 } = await db().from("client_docs").upsert({ business_id: biz.id, agreed_at: now, agreed_name: name, agreed_phone: phone, agreed_terms: terms, agreed_ip: ip, updated_at: now }, { onConflict: "business_id" });
+        if (e2) throw new Error(e2.message);
+      }
+      return { agreed: true };
+    }
+    const d = body.data || {};
+    const phone = saudi(d.owner_phone);
+    need(phone, "phone", 400);
+    need(clip(d.name, 80).length >= 2, "name", 400);
+    const lead = await leadByPhone(phone, { business_name: d.name, contact_name: d.owner_name, activity: d.activity, source: "start" }, ip);
+    const biz = await bizForLead(lead);
+    const r = await cleanIntake(d, biz ? biz.id : "lead-" + lead.id);
+    if (r.bad) return { saved: false, bad_locations: r.bad };
+    const now = new Date().toISOString();
+    if (biz) {
+      const { error } = await db().from("client_docs").upsert({ business_id: biz.id, intake: r.out, intake_at: now, updated_at: now }, { onConflict: "business_id" });
+      if (error) throw new Error(error.message);
+    }
+    const patch: any = { intake: r.out, intake_at: now, updated_at: now, log: [...(lead.log || []), { t: now, what: "عبّى نموذج البيانات من الرابط العام" }].slice(-60) };
+    if (!biz) { if (lead.business_name === "بدون اسم" || !lead.business_name) patch.business_name = r.out.name; if (!lead.activity && r.out.activity) patch.activity = r.out.activity; if (!lead.contact_name && r.out.owner_name) patch.contact_name = r.out.owner_name; }
+    const { error } = await db().from("signup_requests").update(patch).eq("id", lead.id);
+    if (error) throw new Error(error.message);
+    return { saved: true };
+  }
   const b = await bizByClientKey(body.k);
   need(b, "invalid_link", 404);
   if (action === "info") {
@@ -358,50 +469,9 @@ async function clientAction(req: Request, action: string) {
     return { agreed: true };
   }
   if (action === "intake") {
-    const d = body.data || {};
-    const out: any = {
-      name: clip(d.name, 80), name_en: clip(d.name_en, 80), activity: clip(d.activity, 60), wa_number: intl(d.wa_number), owner_name: clip(d.owner_name, 60), owner_phone: saudi(d.owner_phone) || intl(d.owner_phone),
-      cr_number: clip(d.cr_number, 20), vat_number: clip(d.vat_number, 20), address: clip(d.address, 120),
-      place_mode: PLACES.includes(d.place_mode) ? d.place_mode : "", pay_timing: TIMINGS.includes(d.pay_timing) ? d.pay_timing : "",
-      has_moyasar: ["yes", "no", "later"].includes(d.has_moyasar) ? d.has_moyasar : "", notes: clipLines(d.notes, 1000),
-      services: (Array.isArray(d.services) ? d.services : []).slice(0, 15).map((x: any) => ({
-        name: clip(x?.name, 24),
-        price: x?.price === "" || x?.price == null || !Number.isFinite(+x.price) ? null : Math.max(0, Math.min(100000, +x.price)),
-        duration_min: x?.duration_min ? Math.max(10, Math.min(720, Math.round(+x.duration_min))) : null,
-      })).filter((x: any) => x.name),
-      hours: (Array.isArray(d.hours) ? d.hours : []).slice(0, 14)
-        .filter((h: any) => h && /^[0-6]$/.test(String(h.weekday)) && /^\d{2}:\d{2}$/.test(h.open) && /^\d{2}:\d{2}$/.test(h.close))
-        .map((h: any) => ({ weekday: +h.weekday, open: h.open, close: h.close })),
-      staff: (Array.isArray(d.staff) ? d.staff : []).slice(0, 30)
-        .map((x: any) => ({ name: clip(x?.name, 40), phone: saudi(x?.phone) || "", cities: Array.isArray(x?.cities) ? x.cities.slice(0, 12).map((c: any) => clip(c, 40)) : [] }))
-        .filter((x: any) => x.name),
-    };
-    need(out.name.length >= 2, "name", 400);
-    // المدن (مراكز جاهزة) والفروع (رابط قوقل ماب يتحوّل لإحداثيات)
-    const cities: any[] = [], bad: string[] = [];
-    for (const c of (Array.isArray(d.cities) ? d.cities : []).slice(0, 12)) {
-      const name = clip(c?.name, 40);
-      if (!name) continue;
-      if (Number.isFinite(+c?.lat) && Number.isFinite(+c?.lng) && c?.lat !== "" && c?.lat !== null) { cities.push({ name, lat: +c.lat, lng: +c.lng, radius_km: Math.max(1, Math.min(300, +c.radius_km || 25)) }); continue; }
-      const p = c?.maps ? await locationFromText(String(c.maps).slice(0, 500)) : null;
-      if (p) cities.push({ name, lat: p.lat, lng: p.lng, radius_km: Math.max(1, Math.min(300, +c.radius_km || 15)), maps: String(c.maps).slice(0, 300) });
-      else bad.push(name);
-    }
-    if (bad.length) return { saved: false, bad_locations: bad };
-    out.cities = cities;
-    // الشعار
-    const m = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/=]+)$/.exec(String(d.logo || ""));
-    if (m) {
-      const bytes = Uint8Array.from(atob(m[2]), (ch) => ch.charCodeAt(0));
-      need(bytes.length <= 700_000, "too_big", 400);
-      const path = "logos/" + b.id + "/intake-" + Date.now() + "." + (m[1] === "png" ? "png" : "jpg");
-      const { error } = await db().storage.from("public").upload(path, bytes, { contentType: "image/" + m[1], upsert: true });
-      if (error) throw new Error(error.message);
-      out.logo_url = SUPABASE_URL + "/storage/v1/object/public/public/" + path;
-    } else if (typeof d.logo_url === "string" && d.logo_url.startsWith(SUPABASE_URL)) {
-      out.logo_url = d.logo_url;
-    }
-    const { error } = await db().from("client_docs").upsert({ business_id: b.id, intake: out, intake_at: new Date().toISOString(), updated_at: new Date().toISOString() }, { onConflict: "business_id" });
+    const r = await cleanIntake(body.data || {}, b.id);
+    if (r.bad) return { saved: false, bad_locations: r.bad };
+    const { error } = await db().from("client_docs").upsert({ business_id: b.id, intake: r.out, intake_at: new Date().toISOString(), updated_at: new Date().toISOString() }, { onConflict: "business_id" });
     if (error) throw new Error(error.message);
     return { saved: true };
   }

@@ -111,7 +111,7 @@ begin
           coalesce(p->>'wa_number', ''), coalesce(p->>'owner_name', ''), coalesce(p->>'owner_phone', ''),
           case when p->>'plan' = 'bot_pay' then 'bot_pay' else 'bot' end, coalesce((p->>'wants_app')::boolean, false),
           coalesce((p->>'is_demo')::boolean, false), coalesce(p->>'cr_number', ''), coalesce(p->>'vat_number', ''), coalesce(p->>'address', ''),
-          coalesce(nullif(p->>'brand_color', ''), '#0B7A55'), nullif(p->>'lead_id', '')::uuid, 'setup')
+          coalesce(nullif(p->>'brand_color', ''), '#4338CA'), nullif(p->>'lead_id', '')::uuid, 'setup')
   returning * into b;
 
   i := 0;
