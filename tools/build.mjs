@@ -50,7 +50,8 @@ const meta = `<meta name="description" content="احجزلي: الواتساب �
 
 let page = fs.readFileSync(path.join(SRC, 'landing.html'), 'utf8');
 let form = fs.readFileSync(path.join(SRC, 'form.html'), 'utf8');
-for (const [k, v] of [['<!--HEAD_META-->', meta], ['<!--FIELDS-->', fields], ['<!--FORM-->', form]]) {
+const sitebot = fs.readFileSync(path.join(SRC, 'sitebot.html'), 'utf8');
+for (const [k, v] of [['<!--HEAD_META-->', meta], ['<!--FIELDS-->', fields], ['<!--FORM-->', form], ['<!--SITEBOT-->', sitebot]]) {
   if (!page.includes(k)) throw new Error('missing placeholder ' + k);
   page = page.replace(k, v);
 }

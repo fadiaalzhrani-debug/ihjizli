@@ -427,7 +427,7 @@ svg{flex:none}
     const m0 = curMenu();
     const W = {
       name: cfg.name || '', welcome: cfg.welcome || '', place: curVal('place'), pay: curVal('pay'), tone: curVal('tone'),
-      main: m0.main, after: m0.after,
+      main: m0.main, after: (cfg.menu && Array.isArray(cfg.menu.after)) ? m0.after : [],
       faq: Array.isArray(cfg.faq) ? cfg.faq.map((x) => ({ ...x })) : [],
       answers: { ...(cfg.answers || {}) },
     };
@@ -435,7 +435,7 @@ svg{flex:none}
     const STEPS = ['name', 'main', 'after', 'place', 'pay', 'tone', 'answers', 'faq', 'done'];
     const label = (k) => { const f = /^faq:(\d+)$/.exec(k); if (f) return (W.faq[+f[1]] || {}).chip || ('سؤالك ' + (+f[1] + 1)); return ITEMS[k] || k; };
     const allKeys = () => [...Object.keys(ITEMS), ...W.faq.map((_, i) => 'faq:' + i)];
-    const pickHtml = (sel, max) => `<div class="pick">${allKeys().map((k) => { const i = sel.indexOf(k); return `<button type="button" data-k="${esc(k)}" class="${i >= 0 ? 'on' : ''}"><span class="n">${i + 1}</span>${esc(label(k))}</button>`; }).join('')}</div><div class="h">اضغط بالترتيب اللي تبيه يظهر. ${max === 3 ? 'ثلاثة كحد أقصى.' : 'لو اخترت أكثر من 3 تصير قائمة يفتحها العميل.'}</div>`;
+    const pickHtml = (sel, max) => `<div class="pick">${allKeys().map((k) => { const i = sel.indexOf(k); return `<button type="button" data-k="${esc(k)}" class="${i >= 0 ? 'on' : ''}"><span class="n">${i + 1}</span>${esc(label(k))}</button>`; }).join('')}</div><div class="h">الرقم على الزر هو ترتيبه. اضغط مرة ثانية عشان تشيله. ${max === 3 ? '' : 'لو اخترت أكثر من 3 تصير قائمة يفتحها العميل.'}</div>`;
     const bindPick = (sel, max) => $('sheetB').querySelectorAll('[data-k]').forEach((bt) => bt.onclick = () => { const k = bt.dataset.k, i = sel.indexOf(k); if (i >= 0) sel.splice(i, 1); else { if (sel.length >= max) sel.shift(); sel.push(k); } paint(); });
     const preview = () => {
       const name = W.name || (biz && biz.name) || 'نشاطك';
@@ -448,7 +448,13 @@ svg{flex:none}
       let q = '', body = '', hint = '';
       if (k === 'name') { q = 'وش اسم نشاطك؟'; hint = 'يظهر في الترحيب وفي كل الردود.'; body = `<input id="wName" maxlength="40" placeholder="${esc(biz ? biz.name : '')}" value="${esc(W.name)}"><div class="h" style="margin-top:4px">رسالة الترحيب (اختياري)</div><textarea id="wWelcome" maxlength="300" placeholder="مثال: يا هلا فيك في ${esc(W.name || (biz ? biz.name : ''))} 👋 كيف نخدمك؟">${esc(W.welcome)}</textarea>`; }
       else if (k === 'main') { q = 'أول ما يكلّمك العميل، وش الخيارات اللي تطلع له؟'; body = pickHtml(W.main, 9) + preview(); }
-      else if (k === 'after') { q = 'بعد ما يرد على سؤال (السعر، الموقع…) وش يظهر تحت الرد؟'; body = pickHtml(W.after, 3); }
+      else if (k === 'after') {
+        q = 'لما يسأل العميل سؤال ويجاوبه البوت، وش الأزرار اللي تطلع تحت الجواب؟';
+        hint = 'مثلًا يسأل «كم السعر؟» ويجاوبه، وتحت الجواب يطلع زر يخليه يكمل بدون ما يكتب. أقصى شي 3 أزرار.';
+        const ex = W.answers.prices || 'القص 60 ريال، والصبغة من 150';
+        const after = W.after.map(label);
+        body = `<div class="prev"><div class="b" style="background:var(--wa-out);justify-self:end">كم السعر؟</div><div class="b">${esc(ex)}</div>${after.length ? after.map((t) => `<div class="bt">${esc(t)}</div>`).join('') : '<div class="h" style="padding:4px 2px">ما فيه أزرار، اختر تحت</div>'}</div>` + pickHtml(W.after, 3);
+      }
       else if (k === 'place') { q = 'لما يضغط «احجز»، وين الخدمة؟'; body = `<div class="cards">${[['visit', 'عند العميل', 'يطلب موقعه ويرسل الموظف له'], ['shop', 'في محلك', 'يختار الفرع ويوصله موقعه'], ['online', 'أونلاين', 'بدون مكان، رابط الجلسة بعد الحجز']].map(([v, l, d]) => `<button type="button" data-v="${v}" class="${W.place === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div>`; }
       else if (k === 'pay') { q = 'والدفع متى؟'; body = `<div class="cards">${[['after', 'بعد الخدمة', 'فاتورة ورابط دفع بعد ما يخلص'], ['before', 'قبل الحجز', 'يدفع برابط والموعد يتأكد بعد الدفع'], ['none', 'في المحل', 'بدون دفع بالواتساب']].map(([v, l, d]) => `<button type="button" data-v="${v}" class="${W.pay === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div>`; }
       else if (k === 'tone') { q = 'أسلوب الردود؟'; body = `<div class="cards">${[['friendly', 'ودّي', 'هلا وسهلا 👋 كيف نقدر نخدمك؟'], ['formal', 'رسمي', 'مرحبًا بكم، كيف يمكننا خدمتكم؟'], ['short', 'مختصر', 'أهلًا 👋 وش تحتاج؟']].map(([v, l, d]) => `<button type="button" data-v="${v}" class="${W.tone === v ? 'on' : ''}"><b>${l}</b><span>${d}</span></button>`).join('')}</div>`; }
@@ -465,7 +471,7 @@ svg{flex:none}
       $('wNext').onclick = async () => {
         read();
         if (k !== 'done') { if (k === 'faq') { W.faq = W.faq.filter((f) => f.chip && f.a); W.main = W.main.filter((x) => !/^faq:/.test(x) || W.faq[+x.slice(4)]); W.after = W.after.filter((x) => !/^faq:/.test(x) || W.faq[+x.slice(4)]); } step++; paint(); $('sheetB').scrollTop = 0; return; }
-        const next = { name: W.name, place: W.place, pay: W.pay, tone: W.tone, welcome: W.welcome, menu: { main: W.main, after: W.after }, faq: W.faq.filter((f) => f.chip && f.a).map((f) => ({ chip: f.chip, a: f.a })), answers: W.answers };
+        const next = { name: W.name, place: W.place, pay: W.pay, tone: W.tone, welcome: W.welcome, menu: { main: W.main, after: W.after.length ? W.after : ['book', 'orders'] }, faq: W.faq.filter((f) => f.chip && f.a).map((f) => ({ chip: f.chip, a: f.a })), answers: W.answers };
         try { const j = await call('POST', '/config', { b: B, k: K, from, cfg: next }); cfg = j.cfg || {}; } catch (e) { /* */ }
         closeSheet();
         await loadHistory(true);

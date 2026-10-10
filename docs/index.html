@@ -364,6 +364,126 @@ details p{padding:0 0 14px;color:var(--muted);font-size:15px}
 </script>
 
 
+<!-- بوت الموقع: يجاوب زوار الموقع على أسئلتهم عن احجزلي (الأسعار، كيف يشتغل، وش المطلوب…) من قاعدة معرفة ثابتة بدون اختلاق.
+     اللي ما يعرفه يعرض إرسال السؤال مع الجوال، ويوصل لوحة فادية كطلب اشتراك بنوع «سؤال من الموقع». -->
+<style>
+.sb-fab{position:fixed;bottom:84px;inset-inline-end:16px;z-index:9;width:58px;height:58px;border-radius:50%;background:var(--accent);color:var(--accent-ink);border:0;box-shadow:0 10px 30px -8px rgba(30,20,80,.6);display:grid;place-items:center;cursor:pointer}
+.sb-fab svg{width:28px;height:28px}
+.sb-fab .dot{position:absolute;top:2px;inset-inline-end:2px;width:14px;height:14px;border-radius:50%;background:var(--gold);border:2px solid var(--bg)}
+@media (min-width:621px){ .sb-fab{bottom:22px} }
+.sb{position:fixed;bottom:0;inset-inline-end:0;z-index:10;width:min(400px,100vw);height:min(600px,100dvh);background:var(--card);border:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -10px 50px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden}
+@media (min-width:621px){ .sb{bottom:22px;inset-inline-end:22px;border-radius:18px} }
+.sb.on{display:flex}
+.sb .hd{background:var(--accent);color:var(--accent-ink);display:flex;gap:10px;align-items:center;padding:12px 14px}
+.sb .hd .av{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center} .sb .hd .av svg{width:22px;height:22px}
+.sb .hd b{display:block;font-family:var(--display);font-size:16px} .sb .hd span{font-size:12.5px;opacity:.9}
+.sb .hd button{margin-inline-start:auto;background:none;border:0;color:inherit;width:34px;height:34px;display:grid;place-items:center;cursor:pointer} .sb .hd button svg{width:20px;height:20px}
+.sb .cv{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.sb .m{max-width:88%;padding:9px 12px;border-radius:14px;font-size:14.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.sb .m.bot{background:var(--card);border:1px solid var(--line);align-self:flex-start;border-start-start-radius:4px}
+.sb .m.me{background:var(--accent);color:var(--accent-ink);align-self:flex-end;border-start-end-radius:4px}
+.sb .m a{color:inherit;font-weight:700}
+.sb .qs{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:100%}
+.sb .qs button{border:1.5px solid var(--accent);background:var(--card);color:var(--accent);border-radius:99px;padding:6px 12px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.sb .qs button:hover{background:var(--soft)}
+.sb .ask{align-self:stretch;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:8px}
+.sb .ask input{width:100%;font:inherit;font-size:14px;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
+.sb .ask .btn{padding:10px;font-size:15px}
+.sb .ft{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:var(--card)}
+.sb .ft input{flex:1;font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg)}
+.sb .ft button{width:44px;height:44px;border-radius:12px;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer} .sb .ft button svg{width:20px;height:20px}
+.sb .typing{align-self:flex-start;display:inline-flex;gap:4px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.sb .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1s infinite} .sb .typing i:nth-child(2){animation-delay:.2s} .sb .typing i:nth-child(3){animation-delay:.4s}
+</style>
+<button class="sb-fab" id="sbFab" type="button" aria-label="اسأل احجزلي"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z"/></svg><span class="dot"></span></button>
+<div class="sb" id="sb" role="dialog" aria-label="اسأل احجزلي">
+  <div class="hd"><span class="av"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z"/></svg></span><div><b>اسأل احجزلي</b><span>يرد فورًا على أسئلتك عن الخدمة</span></div><button type="button" id="sbX" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="cv" id="sbCv"></div>
+  <form class="ft" id="sbForm" autocomplete="off"><input id="sbIn" placeholder="اكتب سؤالك…" maxlength="300" aria-label="سؤالك"><button type="submit" aria-label="إرسال"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></form>
+</div>
+<script>
+(function(){
+  var API = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/lead', SIM = 'sim.html?demo=1';
+  var cv = document.getElementById('sbCv'), box = document.getElementById('sb'), fab = document.getElementById('sbFab');
+  if (!cv) return;
+  // قاعدة المعرفة: [كلمات التعرف (بدون همزات وتاء مربوطة)، الجواب، أزرار المتابعة]
+  var norm = function (t) { return String(t || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ًٌٍَُِّْ]/g, '').replace(/[؟?!.،,]/g, ' ').replace(/\s+/g, ' ').trim(); };
+  var KB = [
+    ['السعر,الاسعار,كم,بكم,تكلف,التكلفه,الباقات,الباقه,price,cost', 'باقتين، تأسيس مرة وحدة واشتراك شهري ثابت:\n• أتمتة الحجز: 3,500 ريال تأسيس + 350 شهريًا\n• أتمتة الحجز + الدفع: 5,500 ريال + 600 شهريًا\nوإضافة تطبيق باسمك: 9,000 + 150 شهريًا.\nالتأسيس على دفعتين: النص عند الاتفاق والنص عند التسليم.', ['وش الفرق بين الباقتين؟', 'فيه رسوم ثانية؟', 'أبي أشترك']],
+    ['الفرق,الفرق بين,ايش الفرق,الدفع والحجز', 'باقة الحجز: يرد على أي رسالة، يحجز ويعدّل ويلغي، يذكّر، ولوحة طلبات بتنبيه صوتي ولوحة للموظفين.\nباقة الحجز + الدفع: كل هذا، وفوقه الفاتورة PDF بشعارك ورابط دفع (مدى، أبل باي، بطاقة)، والدفع قبل الحجز أو بعد الخدمة، وتقرير شهري.', ['كم السعر؟', 'أبي أشترك']],
+    ['رسوم,رسوم ثانيه,مخفي,اضافي,ميتا,ضريبه', 'غير الباقة: رسوم رسائل ميتا (هللات للرسالة)، ومزوّد الربط نحو 45 ريال شهريًا، ونسبة بوابة الدفع لو اخترت الدفع الإلكتروني. والأسعار قبل الضريبة.', ['كم السعر؟', 'أبي أشترك']],
+    ['كيف يشتغل,كيف يشتغل,وش هو,ايش هو,وش احجزلي,يعني ايش,شرح,فكره', 'نظام يشتغل على واتساب نشاطك نفسه: العميل يكتب أي شي، والنظام يرد ويحجز له موعد من الأوقات الفاضية فعلًا، يذكّره، ويرسل الفاتورة ورابط الدفع، ويبلّغك ويبلّغ موظفك. 24 ساعة وبدون ما يحمّل العميل شي.', ['جرّبه بنفسك', 'يناسب نشاطي؟', 'كم السعر؟']],
+    ['يناسب,نشاطي,مجالي,صالون,عياده,مطعم,مغسله,صيانه,استشار,تدريب,تاجير,كافيه,محل', 'يناسب أي نشاط ياخذ طلبات أو مواعيد على الواتساب: صيانة، صالونات، عيادات، مغاسل، استشارات، مطاعم، تدريب، تأجير وغيرها. وفيه تجربة جاهزة لكل مجال تكلّمها كأنك عميل.', ['جرّبه بنفسك', 'كم السعر؟']],
+    ['رقمي,رقم,نفس الرقم,رقم جديد,واتساب بزنس,شريحه', 'نعم، على رقمك الحالي. ويبقى تطبيق واتساب بزنس شغّال معك على نفس الرقم، وأنت ترد متى ما تبي.', ['وش المطلوب مني؟', 'أبي أشترك']],
+    ['المطلوب,وش احتاج,ايش احتاج,متطلبات,اوراق,سجل', 'كل الشغل علينا. منك بس: اسم النشاط والخدمات والأوقات (نموذج 5 دقايق)، وسجل تجاري، ورقم الواتساب. وربط الرقم نسويه معك في اتصال 15 دقيقة.', ['كم ياخذ التجهيز؟', 'أبي أشترك']],
+    ['كم ياخذ,المده,متى يجهز,كم يوم,التجهيز,وقت', 'خلال 7 أيام عمل من استلام بياناتك، ونرسل لك تجربة باسمك تعدّل عليها قبل التشغيل.', ['وش المطلوب مني؟', 'أبي أشترك']],
+    ['ما يعرف,ما يعرفه,مايعرف,ما فهم,ما فهمه,سوال غريب,شكوى,شكوي,صوتيه,يتكلم مع موظف,تحويل,يحول','لو العميل سأل شي ما يعرفه النظام، أو أرسل شكوى أو رسالة صوتية: يرد عليه بلطف إن رسالته وصلت، ويحوّلها لك فورًا، ويوقف عن هالعميل لين ترد أنت.', ['جرّبه بنفسك', 'كم السعر؟']],
+    ['اعدل,تعديل,اغير,الردود,النصوص,الاسعار,الاوقات,على كيفي,تخصيص', 'كل شي فيه يتعدّل: الأزرار الأولى وترتيبها، الردود وأسلوبها، أسئلتك وأجوبتها، الخدمات والأسعار، الأوقات، والدفع. من لوحتك في أي وقت، أو نعدّلها لك ضمن الاشتراك.', ['جرّبه بنفسك', 'أبي أشترك']],
+    ['الدفع,يوصلني,حسابي,مدى,ابل باي,بطاقه,ميسر,فلوس,تحويل', 'الدفع يدخل حسابك مباشرة عبر بوابة الدفع (ميسر): مدى، أبل باي، أو البطاقة. وتختار يكون قبل الحجز أو بعد الخدمة، أو في المحل بدون دفع إلكتروني.', ['كم السعر؟', 'أبي أشترك']],
+    ['اوقف,الغاء,الغي,توقف,اشعار,اترك,عقد,التزام', 'تقدر توقف الاشتراك الشهري بإشعار قبل شهر، وبياناتك وعملاؤك ملكك. وفيه زر في لوحتك يوقف الرد الآلي ويشغله في أي وقت.', ['كم السعر؟', 'أبي أشترك']],
+    ['انجليزي,english,لغه,اللغه,الانجليزيه', 'نعم، يرد بلغة العميل: عربي أو إنجليزي، والعميل يبدّل بزر.', ['جرّبه بنفسك']],
+    ['موظف,الموظفين,فني,فنيين,فروع,فرع,اكثر من', 'لو عندك فروع أو موظفين: العميل يختار الفرع، أو النظام يعرف مدينته من موقعه، والطلب يروح للموظف الفاضي ويوصله على جواله بلوحة بسيطة: في الطريق، وصلت، الفاتورة.', ['جرّبه بنفسك', 'كم السعر؟']],
+    ['تطبيق,ابل ستور,قوقل بلاي,متجر', 'العميل ما يحتاج تطبيق، كل شي داخل الواتساب. ولو تبي تطبيق باسمك في المتاجر لعملائك: إضافة 9,000 ريال + 150 شهريًا على نفس الطلبات واللوحة.', ['كم السعر؟', 'أبي أشترك']],
+    ['جرب,تجربه,اجرب,اشوف,ديمو,demo', 'جرّبه الحين كأنك عميل: اختر مجالك، اسأله عن السعر أو الموقع، واحجز موعد، وشوف كيف يرد لحاله.', ['جرّبه بنفسك']],
+    ['اشترك,اشتراك,ابدا,نبدا,ابي,اسجل,تسجيل,تواصل,كلموني,اتصلوا', 'أبشر. عبّي نموذج الاشتراك (دقيقة) ونكلمك على الواتساب خلال يوم عمل، ونرسل لك تجربة على نشاطك.', ['افتح نموذج الاشتراك']],
+    ['السلام,هلا,مرحبا,اهلا,صباح,مساء,hi,hello', 'هلا وسهلا 👋 اسألني أي شي عن احجزلي: الأسعار، كيف يشتغل، وش المطلوب منك، أو جرّبه بنفسك.', ['كم السعر؟', 'كيف يشتغل؟', 'جرّبه بنفسك']],
+    ['شكرا,مشكور,يعطيك العافيه,تسلم', 'العفو 🌷 لو عندك سؤال ثاني أنا هنا.', ['كم السعر؟', 'أبي أشترك']],
+  ].map(function (r) { return { k: r[0].split(',').map(norm), a: r[1], q: r[2] }; });
+  var hits = function (n, w) { return w.length >= 2 && (n.indexOf(' ' + w + ' ') >= 0 || n === w); };
+  function answer(text) {
+    var n = ' ' + norm(text) + ' ', best = null, len = 0;
+    KB.forEach(function (e) { e.k.forEach(function (w) { if (hits(n, w) && w.length > len) { best = e; len = w.length; } }); });
+    return best;
+  }
+  function add(cls, html) { var d = document.createElement('div'); d.className = 'm ' + cls; d.innerHTML = html; cv.appendChild(d); cv.scrollTop = cv.scrollHeight; return d; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function chips(list) {
+    var d = document.createElement('div'); d.className = 'qs';
+    list.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { act(t); }; d.appendChild(b); });
+    cv.appendChild(d); cv.scrollTop = cv.scrollHeight;
+  }
+  function act(t) {
+    if (t === 'جرّبه بنفسك') { add('me', esc(t)); add('bot', 'افتح التجربة من هنا 👇<br><a href="' + SIM + '" target="_blank" rel="noopener">جرّبه بنفسك ←</a>'); chips(['كم السعر؟', 'أبي أشترك']); return; }
+    if (t === 'افتح نموذج الاشتراك' || t === 'أبي أشترك') { add('me', esc(t)); add('bot', 'عبّي النموذج تحت ونكلمك على الواتساب خلال يوم عمل 👇'); close(); var f = document.getElementById('signup'); if (f) f.scrollIntoView({ behavior: 'smooth' }); var i = document.getElementById('f_business'); if (i) setTimeout(function () { i.focus(); }, 600); return; }
+    ask(t);
+  }
+  function typing(cb) { var t = document.createElement('div'); t.className = 'typing'; t.innerHTML = '<i></i><i></i><i></i>'; cv.appendChild(t); cv.scrollTop = cv.scrollHeight; setTimeout(function () { t.remove(); cb(); }, 550); }
+  function ask(text) {
+    add('me', esc(text));
+    typing(function () {
+      var a = answer(text);
+      if (a) { add('bot', esc(a.a).replace(/\n/g, '<br>')); chips(a.q); return; }
+      // ما يعرفه: يعرض إرسال السؤال، ويوصل لوحتها
+      add('bot', 'سؤال حلو، ما عندي جواب جاهز له. اكتب جوالك ونرد عليك على الواتساب خلال يوم عمل:');
+      var f = document.createElement('div'); f.className = 'ask';
+      f.innerHTML = '<input id="sbPh" inputmode="tel" dir="ltr" placeholder="05xxxxxxxx" maxlength="14"><button class="btn" type="button" id="sbSend">أرسل السؤال</button><span class="tiny" id="sbMsg"></span>';
+      cv.appendChild(f); cv.scrollTop = cv.scrollHeight;
+      f.querySelector('#sbSend').onclick = async function () {
+        var ph = String(f.querySelector('#sbPh').value || '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D/g, '');
+        if (ph.indexOf('00') === 0) ph = ph.slice(2); if (ph.indexOf('966') === 0) ph = ph.slice(3); if (ph.indexOf('0') === 0) ph = ph.slice(1);
+        if (!/^5\d{8}$/.test(ph)) { f.querySelector('#sbMsg').textContent = 'اكتب جوال صحيح مثل 05xxxxxxxx'; return; }
+        this.disabled = true;
+        try {
+          var r = await fetch(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ business_name: 'سؤال من الموقع', phone: '966' + ph, notes: text.slice(0, 500), source: 'sitebot' }) });
+          var j = await r.json().catch(function () { return {}; });
+          if (r.ok && j.ok) { f.remove(); add('bot', 'وصل سؤالك ✅ نرد عليك على الواتساب.'); chips(['كم السعر؟', 'جرّبه بنفسك']); return; }
+          f.querySelector('#sbMsg').textContent = j.error === 'busy' ? 'حاول بعد شوي' : 'ما انرسل، جرّب مرة ثانية';
+        } catch (e) { f.querySelector('#sbMsg').textContent = 'تعذّر الاتصال، جرّب مرة ثانية'; }
+        this.disabled = false;
+      };
+    });
+  }
+  var opened = false;
+  function open() { box.classList.add('on'); fab.style.display = 'none'; if (!opened) { opened = true; add('bot', 'هلا وسهلا 👋 اسألني أي شي عن احجزلي، أو اختر سؤال:'); chips(['كم السعر؟', 'كيف يشتغل؟', 'وش المطلوب مني؟', 'يناسب نشاطي؟', 'جرّبه بنفسك']); } setTimeout(function () { document.getElementById('sbIn').focus(); }, 100); }
+  function close() { box.classList.remove('on'); fab.style.display = ''; }
+  fab.onclick = open; document.getElementById('sbX').onclick = close;
+  document.getElementById('sbForm').addEventListener('submit', function (e) { e.preventDefault(); var i = document.getElementById('sbIn'), t = i.value.trim(); if (!t) return; i.value = ''; ask(t); });
+  // يفتح لحاله من رابط ?ask=1 أو لو ضغط «اسأل»
+  if (/[?&]ask=1/.test(location.search)) open();
+  window.__sitebot = { open: open, ask: ask, answer: answer, kb: KB.length };
+})();
+</script>
+
 <footer class="foot">
   <a class="brand" href="#top"><svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg><span>احجزلي</span></a>
   <a href="sim.html?demo=1" target="_blank" rel="noopener">جرّبه بنفسك</a>
