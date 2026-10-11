@@ -71,7 +71,7 @@ try {
   const cta = o.at(-1);
   ok(cta?.kind === 'cta' && /ادفع 92\.24 ريال/.test(txt(cta)) && /سيارتين/.test(txt(cta)) && /واكس، تكييس دعاستين/.test(txt(cta)) && /أ ب ج 1234/.test(txt(cta)), 'رابط الدفع بالإجمالي 92.24 والملخص', txt(cta));
   const ord = sql(`select id, qty, total, extras, status, is_test from orders where business_id = '${id}' order by created_at desc limit 1`)[0];
-  ok(ord && ord.qty === 2 && Number(ord.total) === 92.24 && ord.extras.addons.length === 2 && ord.extras.answers.length === 2 && ord.status === 'pending_payment' && ord.is_test, 'الطلب محفوظ بالعدد والإضافات والأجوبة', JSON.stringify(ord));
+  ok(ord && ord.qty === 2 && Number(ord.total) === 92.24 && ord.extras.addons.length === 2 && ord.extras.answers.length === 2 && ord.extras.answers[0].q === 'تفاصيل الموقع' && ord.extras.answers[1].q === 'رقم لوحة السيارة' && ord.status === 'pending_payment' && ord.is_test, 'الطلب محفوظ بالعدد والإضافات والأجوبة', JSON.stringify(ord));
   const inv = sql(`select items, total, pay_provider from invoices where order_id = '${ord.id}'`)[0];
   ok(inv && inv.pay_provider === 'demo' && Number(inv.total) === 92.24 && inv.items.length === 3 && inv.items[0].qty === 2, 'الفاتورة بنودها: الخدمة × 2 والإضافتين (دفع تجريبي)', JSON.stringify(inv));
   const pd = await payDemo(tokenOf(cta));

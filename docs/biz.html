@@ -59,6 +59,10 @@
 .modes input{position:absolute;opacity:0;pointer-events:none}
 .modes b{font-family:var(--display);font-size:14.5px} .modes span{font-size:12.5px;color:var(--muted)}
 .faq-row{display:grid;grid-template-columns:1fr 1fr 36px;gap:8px;align-items:start;padding:10px 0;border-bottom:1px dashed var(--line)}
+#pkBody .t input,#pkBody .t select{min-width:72px}
+#pkBody .t input[data-k=name]{min-width:150px}
+#pkBody .t input[data-k=note]{min-width:200px}
+#pkBody .t select{min-width:150px}
 .faq-row:last-child{border-bottom:0}
 @media (max-width:640px){ .modes{grid-template-columns:1fr} .faq-row{grid-template-columns:1fr 36px} .faq-row textarea{grid-column:1} }
 </style>
@@ -535,7 +539,7 @@
         <div class="row"><button class="btn sm ghost" id="askAdd" type="button">${icon('plus')}سؤال</button><button class="btn sm" id="askSave" type="button">${icon('check')}حفظ الأسئلة</button></div></div>
       <div class="card stack" id="pkCard"><div class="sec-h"><h3>البكجات</h3><span class="tiny">العميل يشتريها من الواتساب برابط دفع، وتنخصم من رصيده لما يحجز. بدون دفع إلكتروني: طلبه يوصلك وترسل له الرابط</span></div>
         <div class="row"><span class="tiny">كلمة الرصيد</span><input id="puOne" value="${esc((S.set.pkg_unit || {}).one || '')}" placeholder="غسلة" maxlength="20" style="max-width:110px"><input id="puTwo" value="${esc((S.set.pkg_unit || {}).two || '')}" placeholder="غسلتين" maxlength="20" style="max-width:110px"><input id="puMany" value="${esc((S.set.pkg_unit || {}).many || '')}" placeholder="غسلات" maxlength="20" style="max-width:110px"></div>
-        <div id="pkBody"><div class="spin"></div></div></div>
+        <div id="pkBody" class="stack s" style="min-width:0"><div class="spin"></div></div></div>
       <div class="card stack"><div class="sec-h"><h3>المدن ونطاق الخدمة</h3><span class="tiny">البوت يعرف مدينة العميل من موقعه، واللي برا النطاق يوصله إنه خارج التغطية</span></div>
         <div class="list">${S.cities.map((c) => `<div class="item" data-ct="${c.id}"><div class="h"><b style="font-family:var(--display)">${esc(c.name)}</b><span class="tiny">نصف قطر ${c.radius_km} كم</span><span class="sp"></span><label class="sw"><input type="checkbox" data-k="active" ${c.active ? 'checked' : ''}><i></i></label><button class="btn sm ghost" data-map>${icon('pin')}النطاق على الخريطة</button><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></div></div>`).join('') || '<div class="empty">ما فيه مدن، والبوت يقبل أي موقع</div>'}</div>
         <div class="row"><select id="ctPreset" style="max-width:220px"><option value="">أضف مدينة…</option>${PRESETS.filter((p) => !S.cities.some((c) => c.name === p[0])).map((p, i) => `<option value="${PRESETS.indexOf(p)}">${p[0]}</option>`).join('')}</select></div></div>`;

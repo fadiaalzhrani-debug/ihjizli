@@ -419,7 +419,10 @@ class Bot {
     if (!q) return this.nextStep();
     const a = text.replace(/\s+/g, " ").trim().slice(0, 200);
     if (!a) { this.say({ t: "text", text: this.T("bad_answer") }); return this.askQuestion(q); }
-    ans.push({ q: String((this.lang === "en" && q.q_en) ? q.q_en : q.q).replace(/[؟?]\s*$/, "").slice(0, 60), a });
+    // اسم قصير للسؤال في الملخص: «وش رقم لوحة السيارة؟» ← «رقم لوحة السيارة»
+    const label = String(q.label || ((this.lang === "en" && q.q_en) ? q.q_en : q.q))
+      .replace(/^\s*(وش|ايش|إيش|ما هو|ما هي|كم|what is|what's|your)\s+/i, "").replace(/[؟?]\s*$/, "").trim();
+    ans.push({ q: label.slice(0, 60), a });
     this.data.ans = ans;
     return this.nextStep();
   }
