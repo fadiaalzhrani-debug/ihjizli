@@ -44,9 +44,20 @@ section.hero{border-top:0}
 .ic{width:22px;height:22px;flex:none}
 .tiny{color:var(--muted);font-size:13px}
 /* الخلفية ثلاثية الأبعاد */
-#bg3d{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.9}
+#bg3d{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:opacity .2s linear}
 #bg3d canvas{display:block;width:100%;height:100%}
-.veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 50% at 70% 10%,transparent,var(--bg) 85%),linear-gradient(to bottom,transparent 0,var(--bg) 92vh)}
+.aurora{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;opacity:var(--aur,.55);transition:opacity .2s linear}
+.aurora i{position:absolute;border-radius:50%;will-change:transform}
+.aurora i:nth-child(1){width:52vmax;height:52vmax;left:-14vmax;top:-10vmax;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 34%,transparent) 0,transparent 66%);animation:aur1 24s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:42vmax;height:42vmax;left:22vmax;top:-18vmax;background:radial-gradient(circle,rgba(139,92,246,.26) 0,transparent 66%);animation:aur2 28s ease-in-out infinite alternate}
+.aurora i:nth-child(3){width:38vmax;height:38vmax;left:-6vmax;top:30vmax;background:radial-gradient(circle,color-mix(in srgb,var(--gold) 26%,transparent) 0,transparent 66%);animation:aur3 32s ease-in-out infinite alternate}
+.aurora i:nth-child(4){width:30vmax;height:30vmax;right:-8vmax;top:22vmax;background:radial-gradient(circle,rgba(37,211,102,.16) 0,transparent 66%);animation:aur2 36s ease-in-out infinite alternate-reverse}
+@keyframes aur1{to{transform:translate(9vmax,7vmax) scale(1.12)}}
+@keyframes aur2{to{transform:translate(-7vmax,9vmax) scale(1.08)}}
+@keyframes aur3{to{transform:translate(8vmax,-6vmax) scale(1.15)}}
+@media (prefers-reduced-motion:reduce){ .aurora i{animation:none} }
+.veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(40% 46% at 74% 46%,color-mix(in srgb,var(--bg) 70%,transparent),transparent 72%),linear-gradient(to bottom,transparent 0,transparent 74vh,var(--bg) 100vh)}
+@media (max-width:900px){ .veil{background:radial-gradient(80% 34% at 50% 26%,color-mix(in srgb,var(--bg) 72%,transparent),transparent 74%),linear-gradient(to bottom,transparent 0,transparent 70vh,var(--bg) 100vh)} }
 /* الشريط العلوي */
 .topbar{position:sticky;top:0;z-index:7;margin-inline:-16px;padding-inline:16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;gap:22px;min-height:62px}
@@ -111,13 +122,15 @@ section.hero{border-top:0}
 .notif .k{font-size:12px;font-weight:700;color:var(--accent)}
 .notif b{font-family:var(--display);font-size:15.5px;color:var(--fg)}
 .demo-cap{font-size:13.5px;color:var(--muted);text-align:center}
-/* القصة (ليش احجزلي) */
-.story{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
-.story blockquote{margin:0;background:var(--card);border:1px solid var(--line);border-inline-start:5px solid var(--gold);border-radius:var(--r);padding:20px 22px;font-size:17px;line-height:1.9;font-family:var(--display);font-weight:500}
-.story blockquote b{font-weight:800;color:var(--accent)}
-.story .pts{display:grid;gap:10px}
-.story .pts div{display:flex;gap:10px;align-items:flex-start;font-size:15.5px}
-.story .pts .ic{color:var(--accent);margin-top:4px}
+/* ليش احجزلي: فقاعات بكلام الزائر نفسه، وتحتها وش يسوي احجزلي */
+.voices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 16px;margin-top:24px;padding-bottom:14px}
+.voices .v{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;border-start-start-radius:6px;padding:15px 18px;font-family:var(--display);font-weight:700;font-size:17.5px;line-height:1.6;box-shadow:var(--shadow)}
+.voices .v:nth-child(even){transform:translateY(16px)}
+.fix{margin-top:28px;display:grid;gap:14px;background:color-mix(in srgb,var(--accent) 7%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 26%,var(--line));border-radius:22px;padding:22px 24px}
+.fix h3{font-size:21px;color:var(--accent)}
+.fix .pts{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
+.fix .pts div{display:flex;gap:10px;align-items:flex-start;font-size:15.5px}
+.fix .pts .ic{color:var(--accent);margin-top:4px}
 /* المجالات */
 .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
 .field{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:8px;align-content:start;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s;min-width:0}
@@ -168,13 +181,14 @@ section.hero{border-top:0}
 .foot .tiny{margin-inline-start:auto}
 .dock{position:fixed;bottom:0;left:0;right:0;display:none;gap:10px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:8}
 .dock .btn{flex:1;padding:12px 10px;font-size:16px}
-@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px;min-height:0} .fields{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} .story{grid-template-columns:1fr} }
+@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px;min-height:0} .fields{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} .fix .pts{grid-template-columns:1fr} }
 @media (max-width:720px){ .nav{display:none} .top .btn{margin-inline-start:auto} .foot .tiny{margin:0;width:100%} }
-@media (max-width:620px){ .screen{height:560px} .notif{position:static;width:min(330px,100%);transform:translateY(6px)} .notif.on{transform:none} .fields,.start{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
+@media (max-width:620px){ .voices{grid-template-columns:1fr;padding-bottom:0} .voices .v:nth-child(even){transform:none} .screen{height:560px} .notif{position:static;width:min(330px,100%);transform:translateY(6px)} .notif.on{transform:none} .fields,.start{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
-<div id="bg3d" aria-hidden="true"></div><div class="veil" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div id="bg3d" aria-hidden="true"></div><div class="veil" aria-hidden="true"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
@@ -215,10 +229,16 @@ section.hero{border-top:0}
 </section>
 
 <section id="why">
-  <span class="eyebrow">ليش سويناه</span>
-  <h2>الرد على العملاء كان ياكل يومنا</h2>
-  <div class="story" style="margin-top:22px">
-    <blockquote>كان الرد على العملاء يتعبني. مع الوقت فقدت الشغف، وصرت <b>أشتغل بدل ما أطوّر الشغل</b>. صرت موظف في مشروعي، وما أعرف كيف أتوسع. الشغل ثقيل بدون أي شي يساعدني.<br><span class="tiny">صاحب نشاط، قبل احجزلي</span></blockquote>
+  <span class="eyebrow">ليش احجزلي</span>
+  <h2>تعرف هالكلام؟</h2>
+  <div class="voices">
+    <div class="v">الرد على العملاء صار ياكل يومي 😩</div>
+    <div class="v">كل يوم نفس الأسئلة: كم السعر؟ وين موقعكم؟ متى تفتحون؟</div>
+    <div class="v">يضيع علي عميل لأني ما لحقت أرد عليه</div>
+    <div class="v">صرت موظف في مشروعي، بدل ما أطوّره وأتوسع</div>
+  </div>
+  <div class="fix">
+    <h3>احجزلي يرد عنك ويحجز، وأنت تطوّر شغلك</h3>
     <div class="pts">
       <div><svg class="ic"><use href="#i-check"/></svg><span>كل رسالة تنرد عليها خلال ثانية، حتى بعد الدوام وفي الإجازة.</span></div>
       <div><svg class="ic"><use href="#i-check"/></svg><span>الحجز يتأكد من المواعيد الفاضية فعلًا، وبرقم طلب.</span></div>
@@ -328,63 +348,112 @@ section.hero{border-top:0}
 })();
 </script>
 <script type="module">
-/* خلفية ثلاثية الأبعاد: فقاعات محادثة وجسيمات تطفو ببطء وتميل مع الماوس (تتوقف لمن يفضّل تقليل الحركة) */
-if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-  try {
-    const THREE = await import('https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js');
-    const host = document.getElementById('bg3d');
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
-    renderer.setSize(innerWidth, innerHeight);
-    host.appendChild(renderer.domElement);
-    const scene = new THREE.Scene();
-    const cam = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, .1, 100);
-    cam.position.set(0, 0, 16);
-    const dark = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.getAttribute('data-theme') !== 'light';
-    const col = dark ? [0x8B85F6, 0xF5C542, 0x53BDEB] : [0x4338CA, 0xF2B705, 0x0EA5E9];
-    scene.add(new THREE.AmbientLight(0xffffff, dark ? .9 : 1.1));
-    const key = new THREE.DirectionalLight(0xffffff, dark ? .9 : 1.2); key.position.set(4, 6, 8); scene.add(key);
-    // فقاعة محادثة: مستطيل ناعم + ذيل صغير
-    const bubbleGeo = (() => { const s = new THREE.Shape(); const w = 2.2, h = 1.3, r = .45; s.moveTo(-w / 2 + r, -h / 2); s.lineTo(w / 2 - r, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r); s.lineTo(w / 2, h / 2 - r); s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); s.lineTo(-w / 2 + r, h / 2); s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); s.lineTo(-w / 2, -h / 2 + r + .35); s.lineTo(-w / 2 - .3, -h / 2 + .05); s.lineTo(-w / 2 + .25, -h / 2 + .05); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2); return new THREE.ExtrudeGeometry(s, { depth: .28, bevelEnabled: true, bevelSize: .08, bevelThickness: .08, bevelSegments: 3 }); })();
-    const group = new THREE.Group(); scene.add(group);
-    const items = [];
-    const rnd = (a, b) => a + Math.random() * (b - a);
-    for (let i = 0; i < 14; i++) {
-      const isBubble = i % 3 !== 2;
-      const geo = isBubble ? bubbleGeo : new THREE.TorusGeometry(.5, .17, 18, 40);
-      const mat = new THREE.MeshStandardMaterial({ color: col[i % 3], roughness: .45, metalness: .15, transparent: true, opacity: dark ? .55 : .5 });
-      const m = new THREE.Mesh(geo, mat);
-      const sc = rnd(.5, 1.2); m.scale.setScalar(sc);
-      m.position.set(rnd(-11, 11), rnd(-7, 7), rnd(-6, 2));
-      m.rotation.set(rnd(0, 6), rnd(0, 6), rnd(0, 6));
-      group.add(m);
-      items.push({ m, vy: rnd(.003, .008), rx: rnd(-.003, .003), ry: rnd(-.004, .004), x0: m.position.x, ph: rnd(0, 6) });
+/* خلفية ثلاثية الأبعاد: أيقونات لامعة بانعكاسات (فقاعة واتساب بنقاط الكتابة، علامة صح، تقويم، فقاعة صغيرة، كرات وبريق)
+   تطفو حول الجوال وبعيد عن النص، وتميل مع الماوس، وتختفي بالتدريج مع النزول. لمن يفضّل تقليل الحركة: صورة ثابتة. */
+const still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const host = document.getElementById('bg3d'), aur = document.querySelector('.aurora');
+const fade = () => { const f = Math.max(0, 1 - scrollY / (innerHeight * .8)); host.style.opacity = f; if (aur) aur.style.opacity = f * (dark() ? .7 : .55); return f; };
+const dark = () => document.documentElement.getAttribute('data-theme') === 'dark' || (matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.getAttribute('data-theme') !== 'light');
+fade();
+try {
+  const [THREE, { RoomEnvironment }, { RoundedBoxGeometry }] = await Promise.all([import('three'), import('three/addons/environments/RoomEnvironment.js'), import('three/addons/geometries/RoundedBoxGeometry.js')]);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = dark() ? .95 : 1.08;
+  host.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
+  const cam = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, .1, 100); cam.position.set(0, 0, 18);
+  const sun = new THREE.DirectionalLight(0xffffff, 1.5); sun.position.set(-6, 9, 10); scene.add(sun);
+  const glow = new THREE.PointLight(0x8b5cf6, 40, 40); glow.position.set(6, -5, 7); scene.add(glow);
+  const glossy = (color, o = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: .2, metalness: .04, clearcoat: 1, clearcoatRoughness: .07, ...o });
+  const C = { green: 0x25D366, indigo: 0x4F46E5, violet: 0x8B5CF6, gold: 0xF5B70A, white: 0xFFFFFF };
+  const white = glossy(C.white, { roughness: .32 });
+
+  // فقاعة محادثة بذيل، وفيها نقاط «يكتب…»
+  function bubble(color, dotsColor) {
+    const w = 2.5, h = 1.65, r = .58, sh = new THREE.Shape();
+    sh.moveTo(-w / 2 + .95, -h / 2); sh.lineTo(w / 2 - r, -h / 2); sh.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+    sh.lineTo(w / 2, h / 2 - r); sh.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); sh.lineTo(-w / 2 + r, h / 2);
+    sh.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); sh.lineTo(-w / 2, -h / 2 + .32); sh.lineTo(-w / 2 - .38, -h / 2 - .58); sh.lineTo(-w / 2 + .95, -h / 2);
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: .42, bevelEnabled: true, bevelThickness: .2, bevelSize: .17, bevelSegments: 8, curveSegments: 28 }); geo.center();
+    const g = new THREE.Group(); g.add(new THREE.Mesh(geo, glossy(color)));
+    const dm = glossy(dotsColor, { roughness: .28 });
+    for (const x of [-.55, 0, .55]) { const d = new THREE.Mesh(new THREE.SphereGeometry(.17, 24, 16), dm); d.position.set(x, .05, .43); d.scale.z = .55; g.add(d); }
+    return g;
+  }
+  // علامة صح في دائرة
+  function badge(color) {
+    const g = new THREE.Group();
+    const disk = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, .46, 72), glossy(color)); disk.rotation.x = Math.PI / 2; g.add(disk);
+    const a = new THREE.Vector3(-.42, .02, .3), b = new THREE.Vector3(-.1, -.3, .3), c = new THREE.Vector3(.46, .33, .3);
+    const p = new THREE.CurvePath(); p.add(new THREE.LineCurve3(a, b)); p.add(new THREE.LineCurve3(b, c));
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(p, 48, .12, 16, false), white));
+    for (const v of [a, b, c]) { const cap = new THREE.Mesh(new THREE.SphereGeometry(.12, 20, 14), white); cap.position.copy(v); g.add(cap); }
+    return g;
+  }
+  // تقويم
+  function calendar() {
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(new RoundedBoxGeometry(1.9, 1.9, .5, 6, .26), glossy(C.white, { roughness: .34 })));
+    const top = new THREE.Mesh(new RoundedBoxGeometry(1.9, .62, .56, 6, .24), glossy(C.gold)); top.position.y = .64; g.add(top);
+    for (const x of [-.48, .48]) { const ring = new THREE.Mesh(new THREE.TorusGeometry(.15, .055, 14, 30), glossy(C.indigo)); ring.position.set(x, 1, .05); g.add(ring); }
+    const cell = glossy(C.indigo, { roughness: .3 });
+    for (let r = 0; r < 2; r++) for (let k = 0; k < 3; k++) { const c = new THREE.Mesh(new RoundedBoxGeometry(.34, .26, .12, 3, .06), r === 1 && k === 1 ? glossy(C.green) : cell); c.position.set(-.48 + k * .48, .02 - r * .42, .27); g.add(c); }
+    return g;
+  }
+  const ball = (color, rad) => new THREE.Mesh(new THREE.SphereGeometry(rad, 40, 28), glossy(color));
+  const spark = (color) => new THREE.Mesh(new THREE.OctahedronGeometry(.2, 0), glossy(color, { roughness: .15 }));
+
+  // الأماكن نسبةً لعرض الشاشة (حول الجوال وبعيد عن النص)، وعلى الجوال أصغر وعلى الأطراف
+  const group = new THREE.Group(); scene.add(group);
+  const items = [];
+  const add = (obj, pos, scale, rot, mobilePos, mobileScale) => { group.add(obj); items.push({ obj, pos, scale, rot, mobilePos, mobileScale, ph: Math.random() * 6, sp: .5 + Math.random() * .5 }); };
+  add(bubble(C.green, C.white), [-.8, .52, -1.2], 1.02, [.18, .5, -.12], [-.72, .74, -2], .62);
+  add(badge(C.indigo), [-.1, .8, .2], .6, [.15, -.35, .08], [.74, .62, -1], .5);
+  add(calendar(), [-.9, -.46, -1.6], .82, [.12, .55, .1], null, 0);
+  add(bubble(C.violet, C.white), [.9, .8, -3.2], .55, [.1, -.45, .1], [.8, -.12, -3], .42);
+  add(ball(C.gold, .36), [-.2, -.84, -1.5], 1, [0, 0, 0], [-.8, -.2, -2.5], .8);
+  add(ball(C.violet, .28), [-.46, .92, -2.6], 1, [0, 0, 0], [.1, .9, -3], .8);
+  add(ball(C.green, .3), [1, -.86, -4], 1, [0, 0, 0], null, 0);
+  add(spark(C.gold), [-.3, .62, -1.2], 1, [.4, .4, 0], [-.35, .5, -2], .8);
+  add(spark(C.indigo), [-.62, -.9, -.8], 1, [.2, .8, 0], null, 0);
+  add(spark(C.gold), [.62, .9, -3.5], .8, [.5, .1, 0], [.55, .28, -3], .7);
+  function layout() {
+    cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight);
+    const halfH = Math.tan(THREE.MathUtils.degToRad(20)) * 18, halfW = halfH * cam.aspect, narrow = cam.aspect < .9;
+    for (const it of items) {
+      const p = narrow ? it.mobilePos : it.pos, sc = narrow ? it.mobileScale : it.scale;
+      it.obj.visible = !!p && sc > 0;
+      if (!p) continue;
+      it.base = new THREE.Vector3(p[0] * halfW, p[1] * halfH, p[2]);
+      it.obj.position.copy(it.base); it.obj.scale.setScalar(sc); it.obj.rotation.set(it.rot[0], it.rot[1], it.rot[2]);
     }
-    // جسيمات صغيرة
-    const pts = new THREE.BufferGeometry(); const n = 260, arr = new Float32Array(n * 3);
-    for (let i = 0; i < n; i++) { arr[i * 3] = rnd(-16, 16); arr[i * 3 + 1] = rnd(-10, 10); arr[i * 3 + 2] = rnd(-10, 2); }
-    pts.setAttribute('position', new THREE.BufferAttribute(arr, 3));
-    const dots = new THREE.Points(pts, new THREE.PointsMaterial({ color: col[0], size: .06, transparent: true, opacity: dark ? .5 : .35 }));
-    scene.add(dots);
-    let mx = 0, my = 0, tx = 0, ty = 0;
-    addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
-    addEventListener('resize', () => { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
-    let t = 0, visible = true;
-    document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
-    const io = new IntersectionObserver((es) => { visible = es[0].isIntersecting; }); io.observe(document.querySelector('.hero'));
-    function frame() {
-      requestAnimationFrame(frame);
-      if (!visible) return;
-      t += .016;
-      mx += (tx - mx) * .04; my += (ty - my) * .04;
-      group.rotation.y = mx * .18; group.rotation.x = -my * .12;
-      for (const it of items) { it.m.position.y += it.vy; if (it.m.position.y > 8) it.m.position.y = -8; it.m.position.x = it.x0 + Math.sin(t * .5 + it.ph) * .6; it.m.rotation.x += it.rx; it.m.rotation.y += it.ry; }
-      dots.rotation.y = t * .02;
-      renderer.render(scene, cam);
+  }
+  layout();
+  addEventListener('resize', () => { layout(); if (still) renderer.render(scene, cam); });
+  let mx = 0, my = 0, tx = 0, ty = 0, t = 0, onScreen = true;
+  addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
+  addEventListener('scroll', () => { onScreen = fade() > 0; }, { passive: true });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) onScreen = fade() > 0; });
+  function draw() {
+    mx += (tx - mx) * .05; my += (ty - my) * .05;
+    group.rotation.y = mx * .12; group.rotation.x = -my * .08; group.position.y = scrollY * .006;
+    for (const it of items) {
+      if (!it.base) continue;
+      it.obj.position.y = it.base.y + Math.sin(t * it.sp + it.ph) * .28;
+      it.obj.rotation.y = it.rot[1] + Math.sin(t * .35 * it.sp + it.ph) * .32;
+      it.obj.rotation.x = it.rot[0] + Math.cos(t * .3 * it.sp + it.ph) * .14;
     }
-    frame();
-  } catch (e) { /* بدون خلفية لو ما توفر WebGL */ }
-}
+    renderer.render(scene, cam);
+  }
+  if (still) { draw(); }
+  else {
+    (function frame() { requestAnimationFrame(frame); if (!onScreen || document.hidden) return; t += .016; draw(); })();
+  }
+} catch (e) { console.warn("bg3d", e && e.message); /* بدون مشهد لو ما توفر WebGL، والهالات تبقى */ }
 </script>
 </body>
 </html>
