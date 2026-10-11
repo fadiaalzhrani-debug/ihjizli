@@ -231,6 +231,7 @@ class Bot {
     switch (k) {
       case "m":
         if (v === "book" || v === "new") return this.startBooking();
+        if (v === "bookbal") return this.startBooking(true);
         if (v === "orders") return this.listOrders("");
         if (v === "lang:en") return this.setLang("en");
         if (v === "lang:ar") return this.setLang("ar");
@@ -267,11 +268,18 @@ class Bot {
   }
 
   // ───────── الترحيب واللغة ─────────
-  welcome() {
+  async welcome() {
     this.set("idle", {});
     const cfg = this.menuCfg();
-    const rows = this.menuRows(cfg.main);
-    const text = this.T("welcome", { biz: this.bizName() });
+    let rows = this.menuRows(cfg.main);
+    let text = this.T("welcome", { biz: this.bizName() });
+    // مشترك في بكج: نذكّره برصيده، وزر الحجز يصير «احجز من رصيدي» (ينخصم بدون دفع)
+    const bal = await this.balances();
+    if (bal.length) {
+      text += this.T("welcome_balance", { left: countShort(this.pkgUnits(), bal.reduce((a: number, x: any) => a + x.uses_left, 0), this.lang) });
+      const bk = { id: "m:bookbal", title: this.T("btn_book_balance") };
+      rows = rows.some((r) => r.id === "m:book") ? rows.map((r) => r.id === "m:book" ? bk : r) : [bk, ...rows];
+    }
     if (rows.length <= 3) {
       // الافتراضي: الحجز وطلباتي وزر اللغة (لو ما اختار المالك قائمته)
       const btns = (this.s.menu && Array.isArray(this.s.menu.main) && this.s.menu.main.length) ? rows : [...rows, { id: this.lang === "en" ? "m:lang:ar" : "m:lang:en", title: this.T("btn_lang") }];
@@ -289,8 +297,9 @@ class Bot {
   }
 
   // ───────── الحجز ─────────
-  startBooking() {
-    this.set("idle", {});
+  // fromBalance: ضغط «احجز من رصيدي»، فلو رصيده يغطي الخدمة ينخصم منه على طول بدون سؤال
+  startBooking(fromBalance = false) {
+    this.set("idle", fromBalance ? { prefer: true } : {});
     const svcs = this.ctx.services;
     if (svcs.length > 1) return this.askService();
     this.data.svc = svcs[0]?.id || null;
@@ -305,8 +314,13 @@ class Bot {
     if (q && !this.data.qty) return this.askQty(s, q);
     if (this.data.pkg === undefined) {
       const p = s ? await this.usablePkg(s, this.data.qty || 1) : null;
-      if (p) return this.askUsePkg(p);
-      this.data.pkg = null;
+      if (p && this.data.prefer) this.data.pkg = p.id;
+      else if (p) return this.askUsePkg(p);
+      else {
+        this.data.pkg = null;
+        // ضغط «احجز من رصيدي» بس رصيده ما يغطي هالخدمة أو العدد: نقول له قبل ما نكمل بالدفع
+        if (this.data.prefer) this.say({ t: "text", text: this.T("pkg_not_cover") });
+      }
     }
     if (addonsOf(s).length && !this.data.adDone) return this.askAddons();
     if (!this.data.placed) return this.place();
@@ -316,10 +330,15 @@ class Bot {
   }
 
   // ── العدد (كم سيارة) ──
-  askQty(s: any, q: any) {
+  async askQty(s: any, q: any) {
     this.set("qty");
     const rows: Row[] = [];
-    for (let n = 1; n <= q.max; n++) rows.push({ id: `qty:${n}`, title: countText(q, n, this.lang), desc: s?.price != null ? this.T(s.price_from ? "price_from" : "price_fixed", { price: money(Number(s.price) * n) }) : "" });
+    // حاجز من رصيده: يبين كم ينخصم بدل السعر
+    const bal = this.data.prefer ? (await this.balances()).filter((p: any) => !(p.service_ids || []).length || p.service_ids.includes(s.id)) : [];
+    const left = bal.reduce((a: number, p: any) => Math.max(a, p.uses_left), 0);
+    for (let n = 1; n <= q.max; n++) rows.push({ id: `qty:${n}`, title: countText(q, n, this.lang),
+      desc: left >= n ? this.T("qty_from_balance", { n: countText(this.pkgUnits(), n, this.lang) })
+        : s?.price != null ? this.T(s.price_from ? "price_from" : "price_fixed", { price: money(Number(s.price) * n) }) : "" });
     this.list(this.T("ask_qty", { one: q.one, en_many: q.en_many }), this.T("btn_qty"), rows);
   }
   // «سيارتين»، «ثلاث سيارات»، «وحدة» (الأرقام نفسها تمشي من القائمة)
@@ -341,10 +360,13 @@ class Bot {
   }
 
   // ── رصيد البكج: لو عنده رصيد يغطي الخدمة، يختار يستخدمه أو يدفع عادي ──
-  async usablePkg(s: any, qty: number) {
-    const { data } = await db().from("customer_packages").select("id, name, uses_left, service_ids")
+  async balances(): Promise<any[]> {
+    const { data } = await db().from("customer_packages").select("id, name, uses_left, uses_total, service_ids")
       .eq("customer_id", this.c.id).eq("business_id", this.b.id).eq("status", "active").gt("uses_left", 0).order("created_at");
-    return (data || []).find((p: any) => p.uses_left >= qty && (!(p.service_ids || []).length || p.service_ids.includes(s.id))) || null;
+    return data || [];
+  }
+  async usablePkg(s: any, qty: number) {
+    return (await this.balances()).find((p: any) => p.uses_left >= qty && (!(p.service_ids || []).length || p.service_ids.includes(s.id))) || null;
   }
   pkgUnits() { return unitsOf(this.s.pkg_unit); }
   askUsePkg(p: any) {
@@ -874,8 +896,7 @@ class Bot {
     await orderEvent(this.b.id, "handoff", { customer: this.c.name || this.c.wa_id, text: note, is_test: this.c.is_sim });
   }
   async balanceInfo() {
-    const { data } = await db().from("customer_packages").select("name, uses_left, uses_total").eq("customer_id", this.c.id).eq("business_id", this.b.id)
-      .eq("status", "active").gt("uses_left", 0).order("created_at");
+    const data = await this.balances();
     this.set("idle", {});
     if (!data?.length) {
       this.say({ t: "buttons", text: this.T("balance_none"), buttons: [{ id: "m:packages", title: this.T("btn_packages") }, { id: "m:book", title: this.T("btn_book") }] });
@@ -883,7 +904,7 @@ class Bot {
     }
     const u = this.pkgUnits();
     const list = data.map((x: any) => this.T("balance_row", { name: x.name, left: countShort(u, x.uses_left, this.lang) })).join("\n");
-    this.say({ t: "buttons", text: this.T("balance", { list }), buttons: [{ id: "m:book", title: this.T("btn_book_balance") }, { id: "m:packages", title: this.T("btn_packages") }] });
+    this.say({ t: "buttons", text: this.T("balance", { list }), buttons: [{ id: "m:bookbal", title: this.T("btn_book_balance") }, { id: "m:packages", title: this.T("btn_packages") }] });
   }
 
   repeatPrompt() {

@@ -187,7 +187,7 @@ async function activatePackage(inv: any) {
   const lang = cp.customer?.lang === "en" ? "en" : "ar";
   const t = textsFor(lang, s.texts, s.tone);
   const text = t("pkg_paid", { name: cp.name, uses: countShort(unitsOf(s.pkg_unit), cp.uses_total, lang) });
-  const r = await sendToCustomer(b, ch || {}, cp.customer, [{ t: "buttons", text, buttons: [{ id: "m:book", title: t("btn_book_balance") }, { id: "m:balance", title: t("btn_balance") }] }],
+  const r = await sendToCustomer(b, ch || {}, cp.customer, [{ t: "buttons", text, buttons: [{ id: "m:bookbal", title: t("btn_book_balance") }, { id: "m:balance", title: t("btn_balance") }] }],
     { purpose: "paid", by: "system" });
   return { ok: true, send: r, package: true };
 }

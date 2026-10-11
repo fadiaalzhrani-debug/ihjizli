@@ -96,7 +96,9 @@ try {
   const pm = lastOut();
   ok(/صار عندك 4 غسلات في رصيدك/.test(pm?.text || '') && (pm?.buttons || [])[0]?.title === 'احجز من رصيدي', 'رسالة تفعيل الرصيد بزر «احجز من رصيدي»', JSON.stringify(pm));
   o = await send({ type: 'text', text: 'رصيدي' });
-  ok(/البكج الأول: باقي 4 غسلات/.test(txt(o.at(-1))), '«رصيدي» يعرض الباقي', txt(o.at(-1)));
+  ok(/البكج الأول: باقي 4 غسلات/.test(txt(o.at(-1))) && btns(o.at(-1))[0]?.id === 'm:bookbal', '«رصيدي» يعرض الباقي وزر «احجز من رصيدي»', txt(o.at(-1)));
+  o = await send({ type: 'text', text: 'هلا' });
+  ok(/عندك 4 غسلات في رصيدك، احجز منها بدون دفع/.test(txt(o.at(-1))) && btns(o.at(-1))[0]?.id === 'm:bookbal' && btns(o.at(-1))[0]?.title === 'احجز من رصيدي', 'الترحيب يذكّر المشترك برصيده وأول زر «احجز من رصيدي»', JSON.stringify([txt(o.at(-1)), btns(o.at(-1))]));
 
   // ── حجز من الرصيد: سيارتين = غسلتين، بدون إضافات = بدون دفع ──
   o = await send({ type: 'reply', id: 'm:book' });
@@ -121,6 +123,27 @@ try {
   const cy = (btns(o.at(-1)).find((x) => x.id === `cy:${o2.id}`) || {}).id;
   if (cy) o = await send({ type: 'reply', id: cy });
   ok(sql(`select uses_left from customer_packages where id = '${cp.id}'`)[0].uses_left === 4 && sql(`select status from orders where id = '${o2.id}'`)[0].status === 'cancelled', 'إلغاء الطلب يرجّع الرصيد 4', txt(o.at(-1)));
+
+  // ── «احجز من رصيدي»: ينخصم على طول بدون سؤال، والعدد يبين كم ينخصم ──
+  o = await send({ type: 'reply', id: 'm:bookbal' });
+  o = await send({ type: 'reply', id: `svc:${FULL}` });
+  rs = rows(o.at(-1));
+  ok(rs[0]?.desc === 'تنخصم غسلة وحدة من رصيدك' && rs[1]?.desc === 'تنخصم غسلتين من رصيدك' && rs[4]?.desc === '200 ريال', 'العدد من الرصيد: «تنخصم غسلتين من رصيدك» وبعد الرصيد السعر', JSON.stringify(rs.map((x) => x.desc)));
+  o = await send({ type: 'reply', id: 'qty:1' });
+  ok(/تبي تضيف/.test(txt(o.at(-1))), 'ما يسأل «تستخدم رصيدك؟» (اختاره من الزر)، يروح للإضافات على طول', txt(o.at(-1)));
+  o = await send({ type: 'reply', id: 'ad:done' });
+  o = await send({ type: 'location', lat: 27.03, lng: 49.6 });
+  o = await send({ type: 'text', text: 'عمارة 7' });
+  o = await send({ type: 'text', text: 'ز ح ط 9090' });
+  rs = rows(o.at(-1));
+  o = await send({ type: 'reply', id: rs[0].id });
+  rs = rows(o.at(-1));
+  o = await send({ type: 'reply', id: rs[2]?.id || rs[0].id });
+  ok(/تم تأكيد طلبك/.test(txt(o.at(-1))) && /من رصيد البكج/.test(txt(o.at(-1))) && sql(`select uses_left from customer_packages where id = '${cp.id}'`)[0].uses_left === 3, 'الحجز من الرصيد مجاني وباقي 3', txt(o.at(-1)));
+  // خدمة ما يغطيها البكج: يقول له ويكمل بالدفع العادي
+  o = await send({ type: 'reply', id: 'm:bookbal' });
+  o = await send({ type: 'reply', id: `svc:${svc['غسيل خارجي']}` });
+  ok(o.some((m) => txt(m) === 'رصيدك ما يغطي هالطلب، نكمّل بالدفع العادي 🙏'), 'خدمة برا البكج: يقول له ويكمل بالدفع', JSON.stringify(o.map(txt)));
 
   // ── بدون دفع إلكتروني (منشأة بدون باقة الدفع): شراء البكج يتحوّل للمنشأة ──
   sql(`update businesses set plan = 'bot' where id = '${id}'`);
