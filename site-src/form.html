@@ -1,7 +1,7 @@
 <section id="signup">
-  <span class="eyebrow">اشترك</span>
+  <span class="eyebrow"><!--P-->اشترك<!--/P--><!--NP-->جرّبه على نشاطك<!--/NP--></span>
   <h2>عبّي بياناتك ونتواصل معك خلال يوم عمل</h2>
-  <p class="sub">ما تدفع شي الحين. نكلمك على الواتساب، ونرسل لك تجربة على نشاطك والباقة المناسبة.</p>
+  <p class="sub"><!--P-->ما تدفع شي الحين. نكلمك على الواتساب، ونرسل لك تجربة على نشاطك والباقة المناسبة.<!--/P--><!--NP-->نكلمك على الواتساب، ونجهّز لك تجربة على نشاطك.<!--/NP--></p>
   <form id="leadForm" class="lead-form" novalidate>
     <div class="f"><label for="f_business">اسم النشاط أو المحل</label><input id="f_business" name="business_name" required maxlength="80" placeholder="مثل: صالون لمسة، مغسلة النور"></div>
     <div class="f"><label for="f_activity">المجال</label>
@@ -13,14 +13,14 @@
     <div class="f"><label for="f_phone">جوالك (واتساب)</label><input id="f_phone" name="phone" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></div>
     <div class="f"><label for="f_orders">كم طلب يجيك باليوم تقريبًا؟</label>
       <select id="f_orders" name="orders_per_day"><option value="">اختر</option><option>أقل من 5</option><option>5 إلى 15</option><option>15 إلى 40</option><option>أكثر من 40</option></select></div>
-    <fieldset class="f wide"><legend>الباقة اللي تهمّك</legend>
+    <!--P--><fieldset class="f wide"><legend>الباقة اللي تهمّك</legend>
       <label class="opt"><input type="radio" name="package" value="bot" checked><span><b>أتمتة الحجز</b> · 3,500 تأسيس + 350 شهريًا</span></label>
       <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>أتمتة الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
       <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
-    </fieldset>
+    </fieldset><!--/P-->
     <div class="f wide"><label for="f_notes">ملاحظات (اختياري)</label><textarea id="f_notes" name="notes" rows="2" maxlength="600" placeholder="كيف تجيك الطلبات اليوم؟ وش أكثر شي يتعبك فيها؟"></textarea></div>
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-    <div class="f wide actions"><button type="submit" class="btn" id="leadBtn">أرسل طلب الاشتراك</button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
+    <div class="f wide actions"><button type="submit" class="btn" id="leadBtn"><!--P-->أرسل طلب الاشتراك<!--/P--><!--NP-->أرسل<!--/NP--></button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
   </form>
   <div id="leadDone" class="done" hidden>
     <h3>وصلنا طلبك ✅</h3>

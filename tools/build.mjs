@@ -14,6 +14,9 @@ const SRC = path.join(ROOT, 'site-src'), OUT = path.join(ROOT, 'docs');
 const SITE_URL = 'https://fadiaalzhrani-debug.github.io/ihjizli/';
 const LEAD_API = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/lead';
 const SIM = 'sim.html?demo=1';
+// الأسعار والباقات والاشتراك في الموقع العام. مطفية من 2026-10-11 بطلبها («صديقي يجرب الموقع ولا يدفع أو يعرف حتى إن فيه دفع»).
+// لما تبيها ترجع: خلها true وابنِ. الصفحات الداخلية (لوحتها، الدفعة الأولى) ما تتأثر.
+const SHOW_PRICES = false;
 
 // مجالات «جرّبه بنفسك» (المنشآت التجريبية في tools/seed-presets.sql)
 const PRESETS = [
@@ -32,7 +35,7 @@ fs.writeFileSync(path.join(OUT, 'assets', 'demos.json'), JSON.stringify(demos));
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fields = demos.map((d) => `<a class="field" href="sim.html?demo=1&amp;open=${d.slug}" target="_blank" rel="noopener"><div class="h"><span class="em">${d.icon}</span><div><b>${esc(d.label)}</b><div class="tiny">${esc(d.desc)}</div></div></div><div class="tags">${d.tags.map((t) => `<i>${esc(t)}</i>`).join('')}</div><span class="go">جرّبه ←</span></a>`).join('\n    ');
 
-const meta = `<meta name="description" content="احجزلي: الواتساب يرد على أي سؤال ويحجز ويرسل الفاتورة ورابط الدفع لحاله، لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم. تأسيس مرة وحدة واشتراك شهري ثابت.">
+const meta = `<meta name="description" content="احجزلي: الواتساب يرد على أي سؤال ويحجز ويرسل الفاتورة ورابط الدفع لحاله، لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.${SHOW_PRICES ? " تأسيس مرة وحدة واشتراك شهري ثابت." : ""}">
 <meta name="theme-color" content="#4338CA">
 <link rel="canonical" href="${SITE_URL}">
 <meta property="og:type" content="website">
@@ -56,6 +59,19 @@ for (const [k, v] of [['<!--HEAD_META-->', meta], ['<!--FIELDS-->', fields], ['<
   page = page.replace(k, v);
 }
 page = page.split('SIMLINK').join(SIM).split('LEADAPI').join(LEAD_API);
+// علامات الأسعار: <!--P--> و/*P*/ للي يطلع مع الأسعار بس، و<!--NP--> و/*NP*/ للي يطلع بدونها
+const keep = (re, on) => { page = page.replace(re, on ? '$1' : ''); };
+keep(/<!--P-->([\s\S]*?)<!--\/P-->/g, SHOW_PRICES); keep(/\/\*P\*\/([\s\S]*?)\/\*\/P\*\//g, SHOW_PRICES);
+keep(/<!--NP-->([\s\S]*?)<!--\/NP-->/g, !SHOW_PRICES); keep(/\/\*NP\*\/([\s\S]*?)\/\*\/NP\*\//g, !SHOW_PRICES);
+if (/<!--\/?N?P-->|\/\*\/?N?P\*\//.test(page)) throw new Error('علامة أسعار ما انشالت في index');
+if (!SHOW_PRICES) {
+  // الأرقام وجمل الاشتراك ممنوعة في كل الصفحة (حتى السكربت)، وكلمة اشتراك أو باقة ممنوعة في النص الظاهر
+  const visible = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<!--[\s\S]*?-->/g, '');
+  for (const [text, re] of [[page, /3,500|5,500|9,000|350 ريال|600 ريال|150 شهريًا|45 ريال|قبل الضريبة|تأسيس|الاشتراك الشهري|ضمن الاشتراك|نموذج الاشتراك \(|باقتين/], [visible, /اشتراك|اشترك|الباقات|الباقة/]]) {
+    const m = re.exec(text);
+    if (m) throw new Error('الأسعار مخفية بس باقي في الموقع: «' + m[0] + '» عند: ' + text.slice(Math.max(0, m.index - 80), m.index + 40).replace(/\s+/g, ' '));
+  }
+}
 if (/SIMLINK|LEADAPI|<!--[A-Z_]+-->/.test(page)) throw new Error('unreplaced placeholder in index');
 
 let admin = fs.readFileSync(path.join(SRC, 'admin.html'), 'utf8');
