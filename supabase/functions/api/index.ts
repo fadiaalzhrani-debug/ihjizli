@@ -410,6 +410,14 @@ async function bizForLead(lead: any) {
   const { data } = await db().from("businesses").select("id, plan, wants_app, name").eq("id", lead.business_id).maybeSingle();
   return data;
 }
+// بيانات التحويل (من لوحتها): تطلع للعميل بعد ما يعلّم على الموافقة بس
+async function payInfo() {
+  const { data } = await db().from("ihj_config").select("value").eq("key", "pay").maybeSingle();
+  const v = (data?.value || {}) as any;
+  const iban = String(v.iban || "").replace(/s+/g, "").toUpperCase().slice(0, 34);
+  if (!iban) return null;
+  return { bank: clip(v.bank, 60), holder: clip(v.holder, 80), iban, note: clipLines(v.note, 300) };
+}
 async function clientAction(req: Request, action: string) {
   const ip = ipOf(req);
   if (clientLimit(ip)) throw new AppError("busy", 429);
@@ -448,7 +456,7 @@ async function clientAction(req: Request, action: string) {
         const { error: e2 } = await db().from("client_docs").upsert({ business_id: biz.id, agreed_at: now, agreed_name: name, agreed_phone: phone, agreed_terms: terms, agreed_ip: ip, updated_at: now }, { onConflict: "business_id" });
         if (e2) throw new Error(e2.message);
       }
-      return { agreed: true };
+      return { agreed: true, pay: await payInfo() };
     }
     const d = body.data || {};
     const phone = saudi(d.owner_phone);
@@ -469,12 +477,28 @@ async function clientAction(req: Request, action: string) {
     if (error) throw new Error(error.message);
     return { saved: true };
   }
+  // «حوّلت» من الرابط العام: لطلب اشتراك وافق قبل (ولو صار منشأة، تنتقل لها)
+  if (action === "paid-new") {
+    const phone = saudi(body.phone);
+    need(phone, "phone", 400);
+    const since = new Date(Date.now() - 120 * 86400_000).toISOString();
+    const { data: rows } = await db().from("signup_requests").select("*").eq("phone", phone).gte("created_at", since).neq("status", "lost").not("agreed_at", "is", null).order("created_at", { ascending: false }).limit(1);
+    const lead = rows && rows[0];
+    need(lead, "not_agreed", 409);
+    const now = new Date().toISOString();
+    if (!lead.paid_claim_at) {
+      const { error } = await db().from("signup_requests").update({ paid_claim_at: now, updated_at: now, log: [...(lead.log || []), { t: now, what: "قال إنه حوّل الدفعة الأولى" }].slice(-60) }).eq("id", lead.id);
+      if (error) throw new Error(error.message);
+      if (lead.business_id) await db().from("client_docs").update({ paid_claim_at: now, updated_at: now }).eq("business_id", lead.business_id).is("paid_claim_at", null);
+    }
+    return { claimed: true };
+  }
   const b = await bizByClientKey(body.k);
   need(b, "invalid_link", 404);
   if (action === "info") {
     const [{ data: sub }, { data: docs }, { data: st }, { data: svcs }, { data: cities }, { data: hours }, { data: staff }] = await Promise.all([
       db().from("subscriptions").select("plan, setup_fee, monthly_fee, app_setup_fee, app_monthly_fee").eq("business_id", b.id).maybeSingle(),
-      db().from("client_docs").select("agreed_at, agreed_name, intake, intake_at").eq("business_id", b.id).maybeSingle(),
+      db().from("client_docs").select("agreed_at, agreed_name, intake, intake_at, paid_claim_at").eq("business_id", b.id).maybeSingle(),
       db().from("settings").select("place_mode, pay_timing").eq("business_id", b.id).maybeSingle(),
       db().from("services").select("name, name_en, price, price_from, duration_min").eq("business_id", b.id).eq("active", true).order("sort"),
       db().from("cities").select("id, name, lat, lng, radius_km").eq("business_id", b.id).eq("active", true).order("sort"),
@@ -482,7 +506,9 @@ async function clientAction(req: Request, action: string) {
       db().from("staff").select("name, phone, city_ids").eq("business_id", b.id).eq("active", true),
     ]);
     const cityName = (id: string) => (cities || []).find((c: any) => c.id === id)?.name;
+    const { data: paid } = await db().from("sub_payments").select("amount").eq("business_id", b.id).eq("kind", "setup");
     return {
+      pay: docs?.agreed_at ? await payInfo() : null, paid_claim_at: docs?.paid_claim_at || null, setup_paid: (paid || []).reduce((a: number, x: any) => a + Number(x.amount || 0), 0),
       business: { name: b.name, name_en: b.name_en, activity: b.activity, plan: b.plan, wants_app: b.wants_app, owner_name: b.owner_name, owner_phone: b.owner_phone, wa_number: b.wa_number,
         cr_number: b.cr_number, vat_number: b.vat_number, address: b.address, logo_url: b.logo_url, brand_color: b.brand_color },
       fees: sub || {}, agreed: docs?.agreed_at ? { at: docs.agreed_at, name: docs.agreed_name } : null, intake_at: docs?.intake_at || null, intake: docs?.intake || null,
@@ -503,7 +529,17 @@ async function clientAction(req: Request, action: string) {
     const terms = { business: b.name, plan: b.plan, wants_app: b.wants_app, ...(sub || {}), version: "2026-10" };
     const { error } = await db().from("client_docs").upsert({ business_id: b.id, agreed_at: new Date().toISOString(), agreed_name: name, agreed_phone: phone, agreed_terms: terms, agreed_ip: ip, updated_at: new Date().toISOString() }, { onConflict: "business_id" });
     if (error) throw new Error(error.message);
-    return { agreed: true };
+    return { agreed: true, pay: await payInfo() };
+  }
+  if (action === "paid") {
+    const { data: docs } = await db().from("client_docs").select("agreed_at, paid_claim_at").eq("business_id", b.id).maybeSingle();
+    need(docs?.agreed_at, "not_agreed", 409);
+    if (!docs!.paid_claim_at) {
+      const now = new Date().toISOString();
+      const { error } = await db().from("client_docs").update({ paid_claim_at: now, updated_at: now }).eq("business_id", b.id);
+      if (error) throw new Error(error.message);
+    }
+    return { claimed: true };
   }
   if (action === "intake") {
     const r = await cleanIntake(body.data || {}, b.id);

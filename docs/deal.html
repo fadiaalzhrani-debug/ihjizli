@@ -74,6 +74,14 @@ body{padding:18px 16px 60px}
 .prog .tab{font-size:12px;color:var(--accent);font-weight:700}
 .now-bar{background:color-mix(in srgb,var(--gold) 16%,var(--card));border:1.5px solid var(--gold);border-radius:16px;padding:14px 16px;display:grid;gap:6px}
 .now-bar b{font-family:var(--display);font-size:17px}
+/* الصورة كاملة في أربع نقاط */
+.big4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.big4 div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:6px;align-content:start}
+.big4 i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13.5px}
+.big4 b{font-family:var(--display);font-size:16px}
+.big4 span{font-size:14px;color:var(--muted);line-height:1.75}
+@media (max-width:1000px){ .big4{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ .big4{grid-template-columns:1fr} }
 /* كيف تضبطين البوت (بالصور): كل خطوة بطاقة، الصورة جنب الشرح، وعلى الجوال فوقه */
 .how{display:grid;gap:12px}
 .hw{margin:0;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:stretch}
@@ -112,10 +120,10 @@ body{padding:18px 16px 60px}
       you: ['ترسلين له رابط «جرّبه بنفسك» على أقرب مجال لنشاطه', 'تعرفين منه: كم طلب باليوم، وين الخدمة، مين يرد الحين، والدفع كيف'],
       client: ['يجرّب المحاكي ويسأل أي سؤال'], system: ['طلب الاشتراك من الموقع يوصلك في لوحتك بصوت'],
       where: 'لوحتي ← طلبات الاشتراك', done: 'يقول «نبدأ»', risk: 'ما رد؟ تابعيه بعد يومين برسالة قصيرة، ولا تنزّلين السعر.' },
-    { k: 'contract', t: 'الاتفاق والدفعة الأولى', d: [0, 1], who: ['client', 'you'], c: 'client',
-      what: 'يوافق على الاتفاقية من رابطها ويحوّل نص التأسيس.',
-      you: ['تحوّلين طلبه لمنشأة بضغطة (أو «منشأة جديدة»)', 'ترسلين له رابط الاتفاقية من دليل التشغيل', 'تسجلين الدفعة الأولى لما توصل'],
-      client: ['يوافق من الرابط (دقيقة)', 'يحوّل نص التأسيس'], system: ['موافقته تتسجل بالاسم والجوال والوقت، وتوصلك بتنبيه'],
+    { k: 'contract', t: 'الدفعة الأولى', d: [0, 1], who: ['client', 'you'], c: 'client',
+      what: 'يفتح رابط الدفعة الأولى: يشوف المبلغ، يعلّم صح على «أوافق على الاتفاقية» (والاتفاقية داخلها)، وتطلع له بيانات التحويل ويضغط «حوّلت».',
+      you: ['تحوّلين طلبه لمنشأة بضغطة (أو «منشأة جديدة»)', 'ترسلين له رابط الدفعة الأولى من دليل التشغيل', 'لما يقول «حوّلت» تتأكدين من حسابك وتسجلين الدفعة'],
+      client: ['يعلّم على الموافقة ويحوّل (دقيقتين)'], system: ['موافقته تتسجل بالاسم والجوال والوقت', 'زر «حوّلت» يوصلك بتنبيه'],
       where: 'لوحتي ← دليل التشغيل ← الخطوة 1', done: 'وافق + الدفعة مسجلة', risk: 'وافق وما حوّل؟ ذكّريه بلطف، والتجهيز ما يبدأ قبل الدفعة.' },
     { k: 'docs', t: 'بياناته', d: [1, 1], who: ['client', 'you'], c: 'client',
       what: 'أسهل طريقة: يرسل لك صورة قائمة أسعاره أو رابط موقعه، والنظام يقرأ منها الخدمات والأسعار والأوقات والفروع. وإذا ما عنده قائمة، يعبّي نموذج واحد (5 دقايق).',
@@ -213,6 +221,12 @@ body{padding:18px 16px 60px}
     <div class="hd1"><a class="btn ghost sm" href="admin.html">${icon('home')}لوحتي</a><h1>سير العمل</h1><span class="sp"></span>
       <select id="who" style="max-width:300px"><option value="">المسار كامل</option>${real.length ? `<optgroup label="المنشآت">${real.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join('')}</optgroup>` : ''}${demos.length ? `<optgroup label="تجريبية">${demos.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join('')}</optgroup>` : ''}</select></div>
     <p class="lede">من أول تواصل لين النشاط يشتغل لحاله: وش يصير، مين يسويه، ومتى. الأيام تقريبية، والتوثيق وميسر يمشون بالتوازي.</p>
+    <div class="big4">
+      <div><i>1</i><b>البوت واحد</b><span>برمجناه مرة وحدة لكل المنشآت. اللي يفرّق عميل عن ثاني إعداداته: خدماته وأسعاره وأوقاته وفروعه وأسئلته وأزراره.</span></div>
+      <div><i>2</i><b>مين يضبط الإعدادات؟</b><span>أنتِ، من «لوحة المنشأة» حقته. ترفعين صورة قائمة أسعاره وتتعبّى لحالها، تراجعينها وتحفظين.</span></div>
+      <div><i>3</i><b>مين يتحكم بعدين؟</b><span>أنتِ دايم، من لوحتك. وصاحب المحل عنده لوحته يعدّل منها أسعاره وأوقاته لو حب.</span></div>
+      <div><i>4</i><b>متى نحتاج ميتا؟</b><span>مرة وحدة: لما نبي البوت يرد على رقمه الحقيقي (اتصال 15 دقيقة). قبلها يشتغل في المحاكي، وبعدها أي تعديل يطلع على رقمه على طول.</span></div>
+    </div>
     <div id="nowBox"></div>
     <div class="gwrap"><div class="gantt" id="gantt"></div></div>
     <section class="sim card"><div class="ctrl"><button class="btn sm" type="button" id="play">${icon('send')}شغّل</button><span class="daybig" id="dayT"></span><input type="range" id="dayR" min="0" max="14" value="0" aria-label="اليوم"></div>

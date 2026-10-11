@@ -4,34 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>اتفاقية الخدمة · احجزلي</title>
+<title>الدفعة الأولى · احجزلي</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
-/* اتفاقية خدمة احجزلي: بمفتاح المنشأة (?k=) أو عامة لأي عميل يختار باقته، والموافقة تتسجل بالاسم والجوال والوقت */
-body{padding:24px 16px 60px}
-.doc{max-width:760px;margin:0 auto;display:grid;gap:16px}
-.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 28px;display:grid;gap:14px;box-shadow:var(--shadow)}
-.paper h1{font-size:26px}
-.parties{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.parties div{background:var(--soft2);border-radius:12px;padding:12px 14px}
-.parties b{display:block;font-family:var(--display)}
-.fees{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.fees div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.fees b{font-family:var(--display);font-size:22px;display:block}
+/* الدفعة الأولى: المبلغ، وخانة صح «أوافق على الاتفاقية» (والاتفاقية داخلها)، وبعد الموافقة تطلع بيانات التحويل وزر «حوّلت».
+   بمفتاح المنشأة (?k=) أو عام لأي عميل يختار باقته. الموافقة تتسجل بالاسم والجوال والوقت. */
+body{padding:22px 16px 60px}
+.doc{max-width:620px;margin:0 auto;display:grid;gap:14px}
+.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;display:grid;gap:14px;box-shadow:var(--shadow);position:relative}
+.brand{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--muted)}
+.brand b{color:var(--accent);font-family:var(--display);font-size:16px}
+.paper h1{font-size:25px;margin:0}
+.who{font-size:15px;color:var(--muted)} .who b{color:var(--fg);font-family:var(--display)}
+.amount{display:grid;gap:4px;background:color-mix(in srgb,var(--accent) 7%,var(--card));border:1.5px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:16px;padding:16px 18px}
+.amount .lbl{font-size:13.5px;font-weight:700;color:var(--accent)}
+.amount .big{font-family:var(--display);font-weight:800;font-size:40px;line-height:1.1}
+.amount .big small{font-size:17px;color:var(--muted);font-weight:700}
+.amount .tiny{line-height:1.7}
 .pk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pk label{position:relative;display:grid;gap:2px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;background:var(--card)}
 .pk label:has(input:checked){border-color:var(--accent);background:var(--soft)}
 .pk input{position:absolute;opacity:0;pointer-events:none}
 .pk b{font-family:var(--display);font-size:15px} .pk span{font-size:13px;color:var(--muted)}
-ol.terms{margin:0;padding-inline-start:22px;display:grid;gap:9px;line-height:1.8}
+.agree{border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;display:grid;gap:8px;transition:border-color .15s,background .15s}
+.agree.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,var(--card))}
+.agree .tick{display:flex;gap:10px;align-items:center;font-weight:700;font-size:15.5px;cursor:pointer}
+.agree .tick input{width:22px;height:22px;flex:none;margin:0}
+.agree details summary{cursor:pointer;color:var(--accent);font-size:13.5px;font-weight:700;list-style:none}
+.agree details summary::-webkit-details-marker{display:none}
+.agree details[open] summary{margin-bottom:8px}
+ol.terms{margin:0;padding-inline-start:22px;display:grid;gap:8px;line-height:1.8;font-size:14px}
 ol.terms b{font-family:var(--display)}
-.okbox{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:18px;display:grid;gap:6px}
+.done-line{font-size:13px;color:var(--muted)}
+.bank{display:grid}
+.bank .r{display:flex;align-items:center;gap:10px;border-bottom:1px dashed var(--line);padding:10px 0}
+.bank .r:last-child{border-bottom:0}
+.bank .r span{color:var(--muted);font-size:13px;min-width:92px}
+.bank .r b{flex:1;font-family:var(--display);font-size:16px;word-break:break-all}
+.bank .r b.ltr{direction:ltr;text-align:end;letter-spacing:.5px}
+.okbox{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:16px 18px;display:grid;gap:6px}
+.okbox h3{margin:0}
+.msg{font-size:13.5px;font-weight:600;color:var(--bad)}
 .hp{position:absolute;inset-inline-start:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;border:0;padding:0}
-.paper{position:relative}
-@media (max-width:600px){ .parties,.fees,.pk{grid-template-columns:1fr} .paper{padding:20px} }
-@media print{ .noprint{display:none!important} body{padding:0} .paper{box-shadow:none;border:0} }
+@media (max-width:600px){ .pk{grid-template-columns:1fr} .paper{padding:18px} .amount .big{font-size:34px} }
 </style>
 </head>
 <body>
@@ -40,7 +57,7 @@ ol.terms b{font-family:var(--display)}
 <script src="assets/ihj.js"></script>
 <script>
 (async function () {
-  const I = window.IHJ, { $, esc, money } = I;
+  const I = window.IHJ, { $, esc, money, icon } = I;
   const k = new URLSearchParams(location.search).get('k') || '';
   const post = async (path, body) => { const r = await fetch(I.FN + '/api/client/' + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ k, ...body }) }); const j = await r.json().catch(() => ({})); if (!j.ok) throw Object.assign(new Error(j.error || 'err'), { code: j.error }); return j; };
   const PLAN = { bot: 'أتمتة الحجز', bot_pay: 'أتمتة الحجز + الدفع' };
@@ -53,81 +70,93 @@ ol.terms b{font-family:var(--display)}
     <li><b>التعديلات:</b> تعديل النصوص والأسئلة والخدمات والأوقات ضمن الاشتراك الشهري، والإضافات الكبيرة بعرض سعر منفصل.</li>
     <li><b>الإيقاف:</b> يقدر العميل يوقف الاشتراك بإشعار قبل شهر. دفعة التأسيس ما تُسترد بعد بداية التجهيز. ولو تأخر الاشتراك الشهري أكثر من 10 أيام تتوقف الخدمة لين يُسدد.</li>
   </ol>`;
-  const feesBox = (setup, monthly) => `<div><span class="tiny">التأسيس (مرة وحدة)</span><b>${money(setup)}</b><span class="tiny">ريال</span></div>
-    <div><span class="tiny">الاشتراك الشهري</span><b>${money(monthly)}</b><span class="tiny">ريال</span></div>
-    <div><span class="tiny">الدفعة الأولى</span><b>${money(Math.round(setup / 2))}</b><span class="tiny">ريال</span></div>`;
-  const signed = (a) => { $('sign').innerHTML = `<div class="okbox"><h3>تمت الموافقة على الاتفاقية ✅</h3><span>${esc(a.name)} · ${esc(new Date(a.at).toLocaleString('ar-SA-u-ca-gregory-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>`; };
-  const errMsg = (x) => x.code === 'business' ? 'اكتب اسم النشاط' : x.code === 'name' ? 'اكتب الاسم كامل' : x.code === 'phone' ? 'اكتب جوال صحيح' : 'ما انحفظت، جرّب مرة ثانية';
+  const when = (t) => new Date(t).toLocaleString('ar-SA-u-ca-gregory-nu-latn', { dateStyle: 'medium', timeStyle: 'short' });
+  const errMsg = (x) => ({ business: 'اكتب اسم النشاط', name: 'اكتب الاسم كامل', phone: 'اكتب جوال صحيح', busy: 'محاولات كثيرة، جرّب بعد شوي', not_agreed: 'علّم على الموافقة أول' }[x.code] || 'ما انحفظت، جرّب مرة ثانية');
 
-  // ── رابط منشأة (بمفتاحها) ──
+  // الحالة: المنشأة (بمفتاحها) أو رابط عام يختار فيه الباقة
+  const S = { plan: 'bot', app: false, biz: '', name: '', phone: '', agreed: null, pay: null, claimed: false, paid: false, ok: false };
+  let F = { bot: { setup_fee: 3500, monthly_fee: 350 }, bot_pay: { setup_fee: 5500, monthly_fee: 600 }, app: { setup_fee: 9000, monthly_fee: 150 } };
+  let fixed = null; // رسوم المنشأة لو بمفتاح
   if (k) {
     let d;
-    try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب رابط الاتفاقية من احجزلي</p></div>'; return; }
+    try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب الرابط من احجزلي</p></div>'; return; }
     const b = d.business, f = d.fees || {};
-    const setup = Number(f.setup_fee || 0) + Number(f.app_setup_fee || 0), monthly = Number(f.monthly_fee || 0) + Number(f.app_monthly_fee || 0);
-    document.title = `اتفاقية الخدمة · ${b.name}`;
+    fixed = { setup: Number(f.setup_fee || 0) + Number(f.app_setup_fee || 0), monthly: Number(f.monthly_fee || 0) + Number(f.app_monthly_fee || 0) };
+    Object.assign(S, { plan: b.plan || 'bot', app: !!b.wants_app, biz: b.name, name: b.owner_name || '', phone: b.owner_phone ? I.phone(b.owner_phone) : '', agreed: d.agreed, pay: d.pay, claimed: !!d.paid_claim_at, paid: Number(d.setup_paid || 0) > 0 });
+    document.title = `الدفعة الأولى · ${b.name}`;
+  } else {
+    try { F = (await post('terms', {})).fees || F; } catch (e) { /* الأسعار الافتراضية */ }
+    const pre = new URLSearchParams(location.search);
+    S.plan = pre.get('p') === 'bot_pay' ? 'bot_pay' : 'bot'; S.app = pre.get('app') === '1';
+    // الرابط العام: لو رجع للصفحة يلقى موافقته وبيانات التحويل مثل ما تركها
+    try { const m = JSON.parse(localStorage.getItem('ihj_firstpay') || 'null'); if (m && m.agreed && Date.now() - new Date(m.agreed.at).getTime() < 30 * 86400000) Object.assign(S, m); } catch (e) { /* */ }
+  }
+  const remember = () => { if (k) return; try { localStorage.setItem('ihj_firstpay', JSON.stringify({ plan: S.plan, app: S.app, biz: S.biz, name: S.name, phone: S.phone, agreed: S.agreed, pay: S.pay, claimed: S.claimed })); } catch (e) { /* */ } };
+  const fees = () => fixed || { setup: F[S.plan].setup_fee + (S.app ? F.app.setup_fee : 0), monthly: F[S.plan].monthly_fee + (S.app ? F.app.monthly_fee : 0) };
+
+  function paint() {
+    const fe = fees(), half = Math.round(fe.setup / 2);
     $('doc').innerHTML = `
       <div class="paper">
-        <div class="row"><h1 class="grow">اتفاقية خدمة احجزلي</h1><button class="btn ghost sm noprint" type="button" onclick="window.print()">طباعة</button></div>
-        <div class="parties"><div><span class="tiny">مقدّم الخدمة</span><b>احجزلي</b></div><div><span class="tiny">العميل</span><b>${esc(b.name)}</b>${b.cr_number ? `<span class="tiny">سجل تجاري ${esc(b.cr_number)}</span>` : ''}</div></div>
-        <div><span class="tiny">الباقة</span><h3>${PLAN[b.plan] || PLAN.bot}${b.wants_app ? ' + تطبيق باسم العميل' : ''}</h3></div>
-        <div class="fees">${feesBox(setup, monthly)}</div>
-        ${terms(b.plan, b.wants_app)}
+        <div class="brand"><b>احجزلي</b><span>· الرد الآلي على واتساب</span></div>
+        <h1>الدفعة الأولى</h1>
+        ${k ? `<div class="who"><b>${esc(S.biz)}</b> · ${PLAN[S.plan] || PLAN.bot}${S.app ? ' + تطبيق باسمكم' : ''}</div>`
+          : `<div class="pk">${[['bot', F.bot], ['bot_pay', F.bot_pay]].map(([v, f]) => `<label><input type="radio" name="plan" value="${v}" ${S.plan === v ? 'checked' : ''} ${S.agreed ? 'disabled' : ''}><b>${PLAN[v]}</b><span>${money(f.setup_fee)} تأسيس + ${money(f.monthly_fee)} شهريًا</span></label>`).join('')}</div>
+             <label class="check"><input type="checkbox" id="app" ${S.app ? 'checked' : ''} ${S.agreed ? 'disabled' : ''}>تطبيق باسمكم (${money(F.app.setup_fee)} + ${money(F.app.monthly_fee)} شهريًا)</label>`}
+        <div class="amount"><span class="lbl">المطلوب الحين</span><div class="big">${money(half)} <small>ريال</small></div>
+          <span class="tiny">نص التأسيس (${money(fe.setup)} ريال)، والنص الثاني عند التسليم. والاشتراك الشهري ${money(fe.monthly)} ريال يبدأ من يوم التشغيل.</span></div>
+        ${S.agreed ? '' : `
+          ${k ? '' : '<label class="f"><span>اسم النشاط</span><input id="bn" maxlength="80" autocomplete="organization" value="' + esc(S.biz) + '"></label>'}
+          <div class="g2"><label class="f"><span>الاسم</span><input id="n" maxlength="60" autocomplete="name" value="${esc(S.name)}"></label><label class="f"><span>الجوال</span><input id="p" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" autocomplete="tel" value="${esc(S.phone)}"></label></div>
+          <input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">`}
+        <div class="agree ${S.agreed || S.ok ? 'on' : ''}" id="agreeBox">
+          <label class="tick"><input type="checkbox" id="ok" ${S.agreed || S.ok ? 'checked' : ''} ${S.agreed ? 'disabled' : ''}>أوافق على اتفاقية خدمة احجزلي</label>
+          ${S.agreed ? `<span class="done-line">وافق ${esc(S.agreed.name || '')} · ${esc(when(S.agreed.at))}</span>` : ''}
+          <details><summary>اقرأ الاتفاقية</summary>${terms(S.plan, S.app)}</details>
+        </div>
+        ${S.agreed ? '' : `<button class="btn lg block" id="go" type="button" ${S.ok ? '' : 'disabled'}>${icon('check')}أكمل للدفع</button><span class="msg" id="msg" role="status"></span>`}
       </div>
-      <div class="paper noprint" id="sign"></div>`;
-    if (d.agreed) return signed(d.agreed);
-    $('sign').innerHTML = `<h3>الموافقة</h3>
-      <div class="g2"><label class="f"><span>الاسم</span><input id="n" maxlength="60" value="${esc(b.owner_name || '')}" autocomplete="name"></label><label class="f"><span>الجوال</span><input id="p" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(b.owner_phone ? I.phone(b.owner_phone) : '')}"></label></div>
-      <label class="check"><input type="checkbox" id="c">قرأت الاتفاقية وأوافق عليها</label>
-      <button class="btn lg" id="go" type="button">أوافق على الاتفاقية</button><span class="tiny" id="msg" role="status"></span>`;
-    $('go').onclick = async (e) => {
-      if (!$('c').checked) { $('msg').textContent = 'علّم على «قرأت الاتفاقية وأوافق عليها»'; return; }
-      e.target.disabled = true;
-      try { await post('agree', { name: $('n').value, phone: $('p').value, accept: true }); signed({ name: $('n').value, at: new Date().toISOString() }); }
-      catch (x) { $('msg').textContent = errMsg(x); e.target.disabled = false; }
-    };
-    return;
+      ${S.agreed ? payPaper(half) : ''}`;
+    bind();
   }
-
-  // ── رابط عام: العميل يختار باقته ويوافق باسم نشاطه ──
-  let F = { bot: { setup_fee: 3500, monthly_fee: 350 }, bot_pay: { setup_fee: 5500, monthly_fee: 600 }, app: { setup_fee: 9000, monthly_fee: 150 } };
-  try { F = (await post('terms', {})).fees || F; } catch (e) { /* الأسعار الافتراضية */ }
-  const pre = new URLSearchParams(location.search);
-  let plan = pre.get('p') === 'bot_pay' ? 'bot_pay' : 'bot', app = pre.get('app') === '1';
-  $('doc').innerHTML = `
-    <div class="paper">
-      <div class="row"><h1 class="grow">اتفاقية خدمة احجزلي</h1><button class="btn ghost sm noprint" type="button" onclick="window.print()">طباعة</button></div>
-      <div class="parties"><div><span class="tiny">مقدّم الخدمة</span><b>احجزلي</b></div><div><span class="tiny">العميل</span><b id="who">اسم نشاطك</b></div></div>
-      <div class="stack s"><span class="tiny">الباقة</span>
-        <div class="pk">${[['bot', F.bot], ['bot_pay', F.bot_pay]].map(([v, f]) => `<label><input type="radio" name="plan" value="${v}" ${plan === v ? 'checked' : ''}><b>${PLAN[v]}</b><span>${money(f.setup_fee)} تأسيس + ${money(f.monthly_fee)} شهريًا</span></label>`).join('')}</div>
-        <label class="check"><input type="checkbox" id="app" ${app ? 'checked' : ''}>تطبيق باسمكم (${money(F.app.setup_fee)} + ${money(F.app.monthly_fee)} شهريًا)</label></div>
-      <div class="fees" id="fees"></div>
-      <div id="terms"></div>
-    </div>
-    <div class="paper noprint" id="sign"><h3>الموافقة</h3>
-      <label class="f"><span>اسم النشاط</span><input id="bn" maxlength="80" autocomplete="organization"></label>
-      <div class="g2"><label class="f"><span>الاسم</span><input id="n" maxlength="60" autocomplete="name"></label><label class="f"><span>الجوال</span><input id="p" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" autocomplete="tel"></label></div>
-      <input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label class="check"><input type="checkbox" id="c">قرأت الاتفاقية وأوافق عليها</label>
-      <button class="btn lg" id="go" type="button">أوافق على الاتفاقية</button><span class="tiny" id="msg" role="status"></span></div>`;
-  const paint = () => {
-    const setup = F[plan].setup_fee + (app ? F.app.setup_fee : 0), monthly = F[plan].monthly_fee + (app ? F.app.monthly_fee : 0);
-    $('fees').innerHTML = feesBox(setup, monthly);
-    $('terms').innerHTML = terms(plan, app);
-  };
-  document.querySelectorAll('input[name=plan]').forEach((x) => x.onchange = () => { plan = x.value; paint(); });
-  $('app').onchange = (e) => { app = e.target.checked; paint(); };
-  $('bn').oninput = (e) => { $('who').textContent = e.target.value.trim() || 'اسم نشاطك'; };
+  function payPaper(half) {
+    if (S.paid) return `<div class="paper"><div class="okbox"><h3>استلمنا الدفعة الأولى ✅</h3><span>نشتغل الحين على تجهيز الرد الآلي باسمكم.</span></div></div>`;
+    const done = S.claimed ? `<div class="okbox"><h3>وصلنا خبر التحويل ✅</h3><span>نأكد التحويل ونبدأ التجهيز، ويوصلك رابط البيانات بالواتساب.</span></div>` : '';
+    if (!S.pay) return `<div class="paper" id="payBox"><h2 style="font-size:19px;margin:0">التحويل</h2><p class="muted" style="margin:0">بيانات التحويل توصلك بالواتساب من فريق احجزلي.</p>${done}</div>`;
+    const row = (l, v, cp, ltr) => `<div class="r"><span>${l}</span><b class="${ltr ? 'ltr' : ''}">${esc(v)}</b>${cp ? `<button class="btn sm ghost" type="button" data-cp="${esc(cp)}">${icon('copy')}نسخ</button>` : ''}</div>`;
+    return `<div class="paper" id="payBox"><h2 style="font-size:19px;margin:0">بيانات التحويل</h2>
+      <div class="bank">${row('المبلغ', money(half) + ' ريال', String(half))}${S.pay.bank ? row('البنك', S.pay.bank) : ''}${S.pay.holder ? row('اسم الحساب', S.pay.holder) : ''}${row('الآيبان', S.pay.iban.replace(/(.{4})/g, '$1 ').trim(), S.pay.iban, true)}</div>
+      ${S.pay.note ? `<div class="hint">${esc(S.pay.note)}</div>` : ''}
+      ${done || `<button class="btn lg block" id="sent" type="button">${icon('check')}حوّلت</button><span class="msg" id="msg2" role="status"></span>`}</div>`;
+  }
+  function bind() {
+    document.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+    const keep = () => { if ($('bn')) S.biz = $('bn').value; if ($('n')) S.name = $('n').value; if ($('p')) S.phone = $('p').value; };
+    document.querySelectorAll('input[name=plan]').forEach((x) => x.onchange = () => { keep(); S.plan = x.value; paint(); });
+    if ($('app')) $('app').onchange = (e) => { keep(); S.app = e.target.checked; paint(); };
+    if (!S.agreed) {
+      $('ok').onchange = (e) => { S.ok = e.target.checked; $('agreeBox').classList.toggle('on', S.ok); $('go').disabled = !S.ok; $('msg').textContent = ''; };
+      $('go').onclick = async (e) => {
+        keep(); $('msg').textContent = '';
+        if (!S.ok) { $('msg').textContent = 'علّم على «أوافق على اتفاقية خدمة احجزلي»'; return; }
+        e.target.disabled = true;
+        try {
+          const r = k ? await post('agree', { name: S.name, phone: S.phone, accept: true })
+            : await post('agree-new', { business_name: S.biz, name: S.name, phone: S.phone, package: S.plan, wants_app: S.app, accept: true, website: $('hp') ? $('hp').value : '' });
+          S.agreed = { name: S.name, at: new Date().toISOString() }; S.pay = r.pay || null;
+          remember(); paint();
+          const pb = $('payBox'); if (pb) pb.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (x) { $('msg').textContent = errMsg(x); e.target.disabled = false; }
+      };
+    }
+    if ($('sent')) $('sent').onclick = async (e) => {
+      e.target.disabled = true;
+      try { if (k) await post('paid', {}); else await post('paid-new', { phone: S.phone }); S.claimed = true; remember(); paint(); }
+      catch (x) { $('msg2').textContent = errMsg(x); e.target.disabled = false; }
+    };
+  }
   paint();
-  $('go').onclick = async (e) => {
-    if (!$('c').checked) { $('msg').textContent = 'علّم على «قرأت الاتفاقية وأوافق عليها»'; return; }
-    e.target.disabled = true;
-    try {
-      await post('agree-new', { business_name: $('bn').value, name: $('n').value, phone: $('p').value, package: plan, wants_app: app, accept: true, website: $('hp').value });
-      signed({ name: $('n').value, at: new Date().toISOString() });
-      document.querySelectorAll('input[name=plan],#app').forEach((x) => x.disabled = true);
-    } catch (x) { $('msg').textContent = errMsg(x); e.target.disabled = false; }
-  };
+  window.__firstpay = { S, paint };
 })();
 </script>
 </body>

@@ -71,14 +71,14 @@
   const sb = I.sb;
   async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
 
-  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '' };
+  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '' };
   const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['deal', 'سير العمل', 'guide']];
   const PLAN = { bot: 'أتمتة الحجز', bot_pay: 'أتمتة الحجز + الدفع' };
   const BSTATUS = { setup: ['قيد التجهيز', 'b-warn'], live: ['شغّالة', 'b-ok'], paused: ['موقفة', 'b-cancelled'], ended: ['منتهية', 'b-cancelled'] };
   const LSTATUS = { new: ['جديد', 'b-gold'], contacted: ['تواصلنا', 'b-confirmed'], agreed: ['اتفقنا', 'b-arrived'], setup: ['قيد التجهيز', 'b-warn'], live: ['شغّال', 'b-ok'], lost: ['ما تم', 'b-cancelled'] };
 
   async function loadAll() {
-    const [biz, set, ch, subs, pays, steps, stats, leads, docs] = await Promise.all([
+    const [biz, set, ch, subs, pays, steps, stats, leads, docs, cfg] = await Promise.all([
       q1(sb.from('businesses').select('*').order('created_at', { ascending: false })),
       q1(sb.from('settings').select('business_id,pay_provider,vat_percent,capacity_mode,place_mode,pay_timing,faq,menu,tone,notify_owner,reminder_minutes')),
       q1(sb.from('channels').select('*')),
@@ -87,8 +87,10 @@
       q1(sb.from('setup_steps').select('*')),
       q1(sb.rpc('ihj_admin_stats')),
       q1(sb.from('signup_requests').select('*').order('created_at', { ascending: false }).limit(500)),
-      q1(sb.from('client_docs').select('business_id,agreed_at,agreed_name,intake_at,intake_applied_at,intake')),
+      q1(sb.from('client_docs').select('business_id,agreed_at,agreed_name,intake_at,intake_applied_at,intake,paid_claim_at')),
+      sb.from('ihj_config').select('key,value').then((r) => r.data || []),
     ]);
+    S.cfg = Object.fromEntries(cfg.map((x) => [x.key, x.value]));
     S.biz = biz; S.set = Object.fromEntries(set.map((x) => [x.business_id, x])); S.ch = Object.fromEntries(ch.map((x) => [x.business_id, x]));
     S.subs = Object.fromEntries(subs.map((x) => [x.business_id, x])); S.pays = pays; S.steps = steps; S.stats = Object.fromEntries(stats.map((x) => [x.business_id, x])); S.leads = leads;
     S.docs = Object.fromEntries(docs.map((x) => [x.business_id, x]));
@@ -106,7 +108,7 @@
   const built = (b, st) => st.services > 0 && st.hours > 0 && (placeOf(b) === 'online' || st.cities > 0);
   // [المفتاح، العنوان، مين، الوصف، الشرط]
   const STEPS = [
-    ['contract', 'الاتفاقية والدفعة الأولى', 'العميل + أنتِ', 'يوافق من الرابط ويحوّل نص التأسيس، وأنتِ تسجلين الدفعة.', (b) => !!docsOf(b).agreed_at && paidSetup(b) > 0],
+    ['contract', 'الدفعة الأولى', 'العميل + أنتِ', 'ترسلين له رابط الدفعة الأولى: يشوف المبلغ، يعلّم صح على «أوافق على الاتفاقية» (والاتفاقية داخلها)، وتطلع له بيانات التحويل ويضغط «حوّلت». وأنتِ تسجلين الدفعة لما توصل حسابك.', (b) => !!docsOf(b).agreed_at && paidSetup(b) > 0],
     ['docs', 'بياناته', 'العميل + أنتِ', 'يرسل لك صورة قائمة أسعاره أو رابط موقعه وتضغطين «عبّيها من صورة أو موقع»، أو يعبّي النموذج (5 دقايق). بعدها «طبّق بياناته».', (b) => !!docsOf(b).intake_applied_at],
     ['build', 'برمجة البوت', 'أنتِ', 'من لوحة المنشأة: الخدمات والأسعار، الأوقات، المدن أو الفروع، الأسئلة والأجوبة، الأزرار، الأسلوب، الموظفون.', (b, st) => built(b, st)],
     ['test', 'تجربته باسمه', 'العميل + أنتِ', 'يكلّم البوت في المحاكي كأنه عميل، وأي تعديل يطلبه تسوينه من لوحة المنشأة.', (b, st) => st.sim_orders > 0],
@@ -181,6 +183,7 @@
           <div class="row"><span class="grow">عملاء يحتاجون رد (كل المنشآت)</span><b>${Object.values(S.stats).reduce((a, s) => a + (s.open_handoffs || 0), 0)}</b></div>
         </div>
       </div>
+      <div class="card stack" id="payCard"></div>
       <div class="card stack" id="aiCard"><div class="sec-h"><h3>القراءة الذكية</h3><span class="spin" style="width:18px;height:18px"></span></div></div>
       <div class="card stack"><div class="sec-h"><h3>المنشآت قيد التجهيز</h3></div>${setup.length ? setup.map((b) => `<div class="biz-row item click" data-b="${b.id}">${logo(b)}<div><b>${esc(b.name)}</b><div class="tiny">${PLAN[b.plan]} · ${progress(b)} من ${STEPS.length} خطوات</div></div><span class="prog"><i style="width:${progress(b) / STEPS.length * 100}%"></i></span></div>`).join('') : '<div class="tiny">ما فيه منشآت قيد التجهيز</div>'}</div>
       <div class="card stack"><div class="sec-h"><h3>آخر طلبات الاشتراك</h3><a class="btn sm ghost" href="#leads" data-go="leads">الكل</a></div>${S.leads.slice(0, 5).map(leadRow).join('') || '<div class="tiny">ما فيه طلبات</div>'}</div>`;
@@ -188,7 +191,26 @@
     v.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
     v.querySelectorAll('[data-b]').forEach((el) => el.onclick = () => openBiz(el.dataset.b));
     v.querySelectorAll('[data-lead]').forEach((el) => el.onclick = () => openLead(el.dataset.lead));
-    paintAi();
+    paintAi(); paintPayCard();
+  }
+  // بيانات التحويل: تطلع للعميل في صفحة الدفعة الأولى بعد ما يعلّم على الموافقة
+  function paintPayCard() {
+    const el = $('payCard'); if (!el) return;
+    const p = S.cfg.pay || {};
+    el.innerHTML = `<div class="sec-h"><h3>بيانات التحويل</h3>${p.iban ? '<span class="badge b-ok plain">جاهزة</span>' : '<span class="badge b-warn plain">ناقصة</span>'}</div>
+      <p class="tiny" style="margin:0">تطلع للعميل في صفحة الدفعة الأولى بعد ما يعلّم على الموافقة، ولما يضغط «حوّلت» يوصلك تنبيه.</p>
+      <div class="g2"><label class="f"><span>البنك</span><input id="cfBank" maxlength="60" value="${esc(p.bank || '')}"></label><label class="f"><span>اسم صاحب الحساب</span><input id="cfHolder" maxlength="80" value="${esc(p.holder || '')}"></label></div>
+      <label class="f"><span>الآيبان</span><input id="cfIban" dir="ltr" maxlength="40" placeholder="SA00 0000 0000 0000 0000 0000" value="${esc(p.iban || '')}"></label>
+      <label class="f"><span>ملاحظة للعميل (اختياري)</span><input id="cfNote" maxlength="300" value="${esc(p.note || '')}"></label>
+      <div class="row"><span class="sp"></span><button class="btn sm" type="button" id="cfSave">${icon('check')}حفظ</button></div>`;
+    $('cfSave').onclick = async (e) => {
+      const iban = $('cfIban').value.replace(/\s+/g, '').toUpperCase();
+      if (iban && !/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(iban)) return I.toast('الآيبان غير صحيح', true);
+      const value = { bank: $('cfBank').value.trim(), holder: $('cfHolder').value.trim(), iban, note: $('cfNote').value.trim() };
+      e.target.disabled = true;
+      try { await q1(sb.from('ihj_config').upsert({ key: 'pay', value, updated_at: new Date().toISOString() }).select('key')); S.cfg.pay = value; I.toast('انحفظت بيانات التحويل ✓'); paintPayCard(); }
+      catch (x) { I.fail(x); e.target.disabled = false; }
+    };
   }
   // القراءة الذكية (صورة قائمة الأسعار أو الموقع ← الخدمات والأسعار): مفعّلة؟ وكم استهلكت هالشهر؟ وطريقة تفعيلها
   async function paintAi() {
@@ -255,16 +277,16 @@
 
   // ───── خطوات المنشأة بروابطها (في «دليل التشغيل» وفي درج المنشأة) ─────
   // «أرسل له» يفتح واتساب العميل والرسالة جاهزة، والإرسال نفسه منك
-  let bank = ''; try { bank = localStorage.getItem('ihj_bank') || ''; } catch (e) { /* */ }
   const ownerLinks = {};
   const intlPhone = (p) => { let d = String(p || '').replace(/\D/g, ''); if (d.startsWith('00')) d = d.slice(2); if (/^05\d{8}$/.test(d)) d = '966' + d.slice(1); else if (/^5\d{8}$/.test(d)) d = '966' + d; return d.length >= 9 ? d : ''; };
   function stepMsgs(b) {
     const s = S.subs[b.id] || {}, first = String(b.owner_name || '').trim().split(/\s+/)[0];
     const setup = Number(s.setup_fee || 0) + Number(s.app_setup_fee || 0), half = Math.round(setup / 2);
-    const hi = first ? 'هلا ' + first : 'هلا', pay = bank ? '\n' + bank : '';
+    const p = S.cfg.pay || {}, iban = String(p.iban || '').replace(/\s+/g, '');
+    const hi = first ? 'هلا ' + first : 'هلا', pay = iban ? `\n${[p.bank, p.holder].filter(Boolean).join(' · ')}\nالآيبان: ${iban}` : '';
     const agree = PUBLIC + 'agree.html?k=' + b.client_key, start = PUBLIC + 'start.html?k=' + b.client_key, sim = PUBLIC + simUrl(b), owner = ownerLinks[b.id] || '';
     return {
-      contract: { url: agree, msg: `${hi}، هذي اتفاقية احجزلي، اقرأها ووافق عليها من الرابط:\n${agree}\n\nوالدفعة الأولى نص التأسيس: ${money(half)} ريال${pay}` },
+      contract: { url: agree, msg: `${hi}، هذا رابط الدفعة الأولى لاحجزلي (${money(half)} ريال، نص التأسيس). تعلّم فيه على الموافقة وتطلع لك بيانات التحويل:\n${agree}` },
       docs: { url: start, msg: `عشان نجهّز الرد الآلي باسمكم، عبّ هذا النموذج (5 دقايق):\n${start}` },
       test: { url: sim, msg: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه كأنك عميل، وقل لي لو تبي تغيّر أي رد أو سعر:\n${sim}` },
       live: b.wa_number ? { url: 'https://wa.me/' + intlPhone(b.wa_number), msg: `ربطنا رقمكم ✅ جرّب الحين من جوال ثاني: أرسل «السلام عليكم» لرقمكم واحجز موعد تجريبي، وقل لي إذا وصلك الطلب.` } : null,
@@ -290,7 +312,7 @@
     const bz = (tab) => `biz.html?b=${b.id}#${tab}`;
     const MO = { yes: 'عنده حساب ميسر', no: 'يبينا نفتح له ميسر', later: 'ميسر بعدين' };
     const extra = {
-      contract: (d.agreed_at ? ok(`وافق ${esc(d.agreed_name || '')} ${esc(I.ago(d.agreed_at))}`) : wait('ما وافق بعد')) + (paid > 0 ? ok(`استلمت ${money(paid)} من ${money(setup)}`) : `<button class="btn sm ghost" type="button" data-act="pay">${icon('plus')}سجّل الدفعة الأولى</button>`),
+      contract: (d.agreed_at ? ok(`وافق ${esc(d.agreed_name || '')} ${esc(I.ago(d.agreed_at))}`) : wait('ما فتح الرابط ووافق بعد')) + (paid > 0 ? ok(`استلمت ${money(paid)} من ${money(setup)}`) : (d.paid_claim_at ? `<span class="badge b-gold plain">قال إنه حوّل ${esc(I.ago(d.paid_claim_at))}، تأكدي من حسابك</span>` : '') + `<button class="btn sm${d.paid_claim_at ? '' : ' ghost'}" type="button" data-act="pay">${icon('plus')}سجّل الدفعة الأولى</button>`) + (S.cfg.pay && S.cfg.pay.iban ? '' : `<span class="badge b-warn plain">حطي بيانات التحويل من الرئيسية عشان تطلع له</span>`),
       build: `<div class="chks">${tick(st.services > 0, `الخدمات والأسعار (${st.services || 0})`, bz('catalog'))}${tick(st.hours > 0, 'الأوقات والعطل', bz('hours'))}${tick(placeOf(b) === 'online' || st.cities > 0, placeOf(b) === 'shop' ? `الفروع (${st.cities || 0})` : placeOf(b) === 'online' ? 'أونلاين' : `المدن (${st.cities || 0})`, bz('catalog'))}${tick((set.faq || []).length > 0, `الأسئلة والأجوبة (${(set.faq || []).length})`, bz('texts'))}${tick(!!(set.menu && set.menu.main && set.menu.main.length), 'الأزرار الأولى', bz('texts'))}${tick(true, 'الأسلوب: ' + ({ friendly: 'ودّي', formal: 'رسمي', short: 'مختصر' }[set.tone] || 'ودّي'), bz('settings'))}${tick(st.staff > 0, `الموظفون (${st.staff || 0})`, bz('staff'))}${tick(true, 'الدفع: ' + ({ after: 'بعد الخدمة', before: 'قبل الحجز', none: 'في المحل' }[set.pay_timing] || 'بعد الخدمة'), bz('settings'))}</div><a class="btn sm" href="biz.html?b=${b.id}" target="_blank" rel="noopener">${icon('store')}افتح لوحة المنشأة</a>`,
       docs: (intake.notes || intake.has_moyasar ? `<div class="hint" style="width:100%">${intake.has_moyasar ? '<b>' + MO[intake.has_moyasar] + '</b>' : ''}${intake.notes ? (intake.has_moyasar ? ' · ' : '') + 'ملاحظته: ' + esc(intake.notes) : ''}</div>` : '') + (d.intake_at ? `${d.intake_applied_at ? ok('انطبقت بياناته') : '<span class="badge b-gold plain">عبّى النموذج</span>'}<button class="btn sm${d.intake_applied_at ? ' ghost' : ''}" type="button" data-act="apply">${icon('check')}${d.intake_applied_at ? 'طبّقها مرة ثانية' : 'طبّق بياناته'}</button>` : wait('ما عبّى النموذج بعد')) + `<button class="btn sm${d.intake_at ? ' ghost' : ''}" type="button" data-act="import">${icon('file')}عبّيها من صورة أو موقع</button>`,
       test: `${st.sim_orders ? ok(`${st.sim_orders} حجز تجريبي`) : wait('ما جرّب بعد')}<a class="btn sm ghost" href="biz.html?b=${b.id}" target="_blank" rel="noopener">${icon('edit')}عدّل الردود والأسعار</a>`,
@@ -576,7 +598,7 @@
   // ═════ طلبات الاشتراك ═════
   function leadRow(l) {
     const st = LSTATUS[l.status] || LSTATUS.new;
-    return `<div class="item click" data-lead="${l.id}"><div class="h"><b style="font-family:var(--display);font-size:16px">${esc(l.business_name)}</b><span class="badge ${st[1]}">${st[0]}</span>${l.business_id ? '<span class="badge b-ok plain">صارت منشأة</span>' : ''}${l.agreed_at ? '<span class="badge b-arrived plain">وافق</span>' : ''}${l.intake_at ? '<span class="badge b-confirmed plain">عبّى النموذج</span>' : ''}${l.source === 'sitebot' ? '<span class="badge b-gold plain">سؤال من الموقع</span>' : ''}<span class="sp"></span><span class="tiny">${I.ago(l.created_at)}</span></div>
+    return `<div class="item click" data-lead="${l.id}"><div class="h"><b style="font-family:var(--display);font-size:16px">${esc(l.business_name)}</b><span class="badge ${st[1]}">${st[0]}</span>${l.business_id ? '<span class="badge b-ok plain">صارت منشأة</span>' : ''}${l.agreed_at ? '<span class="badge b-arrived plain">وافق</span>' : ''}${l.paid_claim_at && !l.business_id ? '<span class="badge b-gold plain">قال إنه حوّل</span>' : ''}${l.intake_at ? '<span class="badge b-confirmed plain">عبّى النموذج</span>' : ''}${l.source === 'sitebot' ? '<span class="badge b-gold plain">سؤال من الموقع</span>' : ''}<span class="sp"></span><span class="tiny">${I.ago(l.created_at)}</span></div>
       <div class="meta"><span>${esc(l.activity || 'نشاط غير محدد')}</span><span>${esc(l.city || '')}</span><span>${l.package === 'bot_pay' ? PLAN.bot_pay : PLAN.bot}${l.wants_app ? ' + تطبيق' : ''}</span>${l.orders_per_day ? `<span>${esc(l.orders_per_day)} طلب يوميًا</span>` : ''}${l.follow_up ? `<span>متابعة ${esc(I.relDay(l.follow_up))}</span>` : ''}</div></div>`;
   }
   function vLeads(v) {
@@ -669,7 +691,7 @@
   async function refreshStats() { try { const st = await q1(sb.rpc('ihj_admin_stats')); S.stats = Object.fromEntries(st.map((x) => [x.business_id, x])); } catch (e) { /* */ } }
   sb.channel('admin').on('postgres_changes', { event: '*', schema: 'public', table: 'signup_requests' }, (p) => {
     if (p.eventType === 'INSERT' && p.new && !S.seenLeads.has(p.new.id)) { S.seenLeads.add(p.new.id); S.leads.unshift(p.new); I.alertNew('طلب اشتراك جديد', `${p.new.business_name}${p.new.city ? ' · ' + p.new.city : ''}`); }
-    else if (p.eventType === 'UPDATE' && p.new) { const i = S.leads.findIndex((x) => x.id === p.new.id); if (i >= 0) S.leads[i] = p.new; }
+    else if (p.eventType === 'UPDATE' && p.new) { const i = S.leads.findIndex((x) => x.id === p.new.id); if (i >= 0) { if (p.new.paid_claim_at && !S.leads[i].paid_claim_at && !p.new.business_id) I.alertNew('قال إنه حوّل الدفعة الأولى 💸', p.new.business_name); else if (p.new.agreed_at && !S.leads[i].agreed_at && !p.new.business_id) I.alertNew('وافق على الاتفاقية ✍️', p.new.business_name); S.leads[i] = p.new; } }
     else if (p.eventType === 'DELETE' && p.old) S.leads = S.leads.filter((x) => x.id !== p.old.id);
     paintCounts(); if (S.tab === 'leads' || S.tab === 'home') render();
   }).on('postgres_changes', { event: '*', schema: 'public', table: 'client_docs' }, (p) => {
@@ -677,7 +699,8 @@
     const old = S.docs[n.business_id] || {};
     S.docs[n.business_id] = { ...old, ...n };
     const b = S.biz.find((x) => x.id === n.business_id);
-    if (b && n.agreed_at && !old.agreed_at) I.alertNew('وافق على الاتفاقية ✍️', b.name);
+    if (b && n.paid_claim_at && !old.paid_claim_at) I.alertNew('العميل يقول إنه حوّل الدفعة الأولى 💸', b.name);
+    else if (b && n.agreed_at && !old.agreed_at) I.alertNew('وافق على الاتفاقية ✍️', b.name);
     else if (b && n.intake_at && n.intake_at !== old.intake_at) I.alertNew('عبّى نموذج البيانات 📋', b.name);
     if (S.tab === 'onboard' || S.tab === 'home') render();
   }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => { refreshStats(); })
