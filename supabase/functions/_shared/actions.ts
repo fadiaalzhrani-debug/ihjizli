@@ -8,6 +8,7 @@ import { orderEvent } from "./events.ts";
 import { invoicePdf } from "./pdf.ts";
 import { methodLabel, moyasarCreateInvoice, moyasarGetInvoice } from "./pay.ts";
 import { modeOf, placeLine, tailFor } from "./place.ts";
+import { countShort, orderSummary, unitsOf } from "./extras.ts";
 
 export class AppError extends Error {
   constructor(public code: string, public status = 400) { super(code); }
@@ -172,6 +173,25 @@ export async function actInvoice(f: Full, rawItems: any, by: string) {
 }
 
 // تأكيد الدفع (من ميسر بعد التحقق، أو التجريبي، أو يدوي من الموظف): مرة وحدة فقط لكل فاتورة
+// بكج انشرى من الواتساب: الرصيد يتفعّل ويوصل العميل تأكيد بزر «احجز من رصيدي»
+async function activatePackage(inv: any) {
+  const now = new Date().toISOString();
+  const { data: cp } = await db().from("customer_packages").update({ status: "active", paid_at: now, updated_at: now })
+    .eq("id", inv.customer_package_id).eq("status", "pending").select("*, customer:customers(*)").maybeSingle();
+  if (!cp) return { ok: true, already: true };
+  const [{ data: b }, { data: s }, { data: ch }] = await Promise.all([
+    db().from("businesses").select("*").eq("id", cp.business_id).single(),
+    db().from("settings").select("*").eq("business_id", cp.business_id).single(),
+    db().from("channels").select("*").eq("business_id", cp.business_id).maybeSingle(),
+  ]);
+  const lang = cp.customer?.lang === "en" ? "en" : "ar";
+  const t = textsFor(lang, s.texts, s.tone);
+  const text = t("pkg_paid", { name: cp.name, uses: countShort(unitsOf(s.pkg_unit), cp.uses_total, lang) });
+  const r = await sendToCustomer(b, ch || {}, cp.customer, [{ t: "buttons", text, buttons: [{ id: "m:book", title: t("btn_book_balance") }, { id: "m:balance", title: t("btn_balance") }] }],
+    { purpose: "paid", by: "system" });
+  return { ok: true, send: r, package: true };
+}
+
 export async function markInvoicePaid(invoiceId: string, p: { provider: string; ref: string; amount: number; method: string; raw?: unknown; by: string }) {
   const now = new Date().toISOString();
   let { data: inv } = await db().from("invoices").update({ status: "paid", paid_at: now, paid_method: p.method }).eq("id", invoiceId).eq("status", "issued").select("*").maybeSingle();
@@ -186,6 +206,7 @@ export async function markInvoicePaid(invoiceId: string, p: { provider: string; 
     if (!inv) return { ok: true, already: true };
   }
   await db().from("payments").insert({ business_id: inv.business_id, invoice_id: inv.id, provider: p.provider, provider_ref: p.ref || inv.id, amount: p.amount, status: "paid", method: p.method, raw: p.raw ?? {} });
+  if (inv.customer_package_id) return await activatePackage(inv);
   const f = await orderFull(inv.order_id);
   if (late) {
     const { data: back } = await db().rpc("ihj_reinstate", { p_order: f.o.id });
@@ -207,7 +228,9 @@ export async function markInvoicePaid(invoiceId: string, p: { provider: string; 
     try { await renderAndStore(f, inv, null); } catch (e) { console.error("prepaid pdf", e); }
     const mode = modeF(f), lang = f.o.customer?.lang === "en" ? "en" : "ar";
     const w = when(f, f.o.slot_start);
-    const text = T(f)("prepaid_confirmed", { no: f.o.number, day: w.day, time: w.time, city_line: placeLine(T(f), f.s, mode, f.o.city, lang), tail: tailFor(T(f), f.s, mode, lang) });
+    const svcName = f.o.service ? ((lang === "en" && f.o.service.name_en) ? f.o.service.name_en : f.o.service.name) : "";
+    const summary = orderSummary(T(f), lang, f.o, svcName);
+    const text = T(f)("prepaid_confirmed", { no: f.o.number, day: w.day, time: w.time, city_line: placeLine(T(f), f.s, mode, f.o.city, lang) + summary, tail: tailFor(T(f), f.s, mode, lang) });
     const r = await sendToCustomer(f.b, f.ch, f.o.customer, [{ t: "buttons", text, buttons: [{ id: "m:orders", title: T(f)("btn_orders") }, { id: "m:new", title: T(f)("btn_new_order") }] }],
       { purpose: "paid", by: "system", template: { name: "ihj_paid", params: [String(f.o.number), f.b.name] } });
     await orderEvent(f.b.id, "order.created", { order_id: f.o.id, is_test: f.o.is_test });

@@ -288,6 +288,7 @@
           <div><span class="tiny">الخدمة</span><div>${esc(svcName(o.service_id) || 'غير محدد')}</div></div>
           <div><span class="tiny">السعر</span><div>${o.price != null ? money(o.price) + ' ر.س' : 'بعد الزيارة'}${o.prepaid ? ' · مدفوع مقدمًا' : ''}</div></div>
         </div>
+        ${I.extrasHtml(o)}
         ${maps ? `<a class="btn ghost sm" href="${esc(maps)}" target="_blank" rel="noopener" style="justify-self:start">${icon('pin')}افتح الموقع في الخرائط</a>` : ''}
       </div>
       ${o.status === 'pending_payment' ? `<div class="card flat stack s"><h3>ينتظر دفع الحجز</h3>${o.hold_until ? `<p class="tiny">المهلة لين ${esc(I.time(o.hold_until))}، وبعدها ينلغى ويرجع الموعد متاح</p>` : ''}<div class="row"><button class="btn sm soft" data-act="cash">${icon('money')}وصل الدفع يدويًا</button><button class="btn sm bad ghost" data-act="cancel">${icon('x')}إلغاء الطلب</button></div></div>` : ''}
@@ -393,7 +394,7 @@
 
   function invoiceForm(o) {
     const svc = S.services.find((s) => s.id === o.service_id);
-    const items = [{ name: svc ? svc.name : 'الخدمة', qty: 1, price: o.price != null ? o.price : (svc && svc.price != null ? svc.price : '') }];
+    const items = I.orderItems(o, svc);
     const vp = Number(S.set.vat_percent || 0);
     const m = I.modal(`<div class="mh"><h3 class="grow">فاتورة الطلب رقم ${o.number}</h3><button class="ib" data-close>${icon('x')}</button></div>
       <div class="mb"><div class="inv-items" id="invItems"></div><button class="btn sm ghost" id="invAdd" type="button" style="justify-self:start">${icon('plus')}بند</button>
@@ -435,7 +436,7 @@
   }
 
   // ═════ المحادثات ═════
-  const REASON = { complaint: ['شكوى', 'b-bad'], human: ['طلب يكلم موظف', 'b-warn'], unknown: ['رسالة ما فهمها البوت', 'b-gold'], location: ['مشكلة بالموقع', 'b-warn'], order: ['بخصوص طلب', 'b-warn'] };
+  const REASON = { complaint: ['شكوى', 'b-bad'], human: ['طلب يكلم موظف', 'b-warn'], unknown: ['رسالة ما فهمها البوت', 'b-gold'], location: ['مشكلة بالموقع', 'b-warn'], order: ['بخصوص طلب', 'b-warn'], package: ['يبي يشتري بكج', 'b-gold'] };
   function vChats(v) {
     const list = S.handoffs;
     v.innerHTML = `<div class="hint">هنا العملاء اللي البوت حوّلهم لكم، والبوت متوقف معهم لين ترجعونه. تقدرون تردون من هنا (خلال 24 ساعة من آخر رسالة منه) أو من واتساب المحل، وترجعون البوت له بزر.</div>
@@ -525,10 +526,16 @@
     v.innerHTML = `
       ${S.ai || asAdmin ? `<div class="import-cta"><div class="grow"><b>قائمة أسعار أو موقع؟</b><span class="tiny">ارفع صورة قائمة الأسعار أو حط رابط الموقع، ونعبّي الخدمات والأسعار والأوقات والأسئلة. تراجعها قبل ما تنحفظ.</span></div><button class="btn" type="button" id="svImport">${icon('file')}عبّيها من صورة أو موقع</button></div>` : ''}
       <div class="card stack"><div class="sec-h"><h3>الخدمات</h3><span class="tiny">لو أكثر من خدمة، البوت يسأل العميل يختار. بدون سعر = السعر بعد الزيارة</span></div>
-        <div class="tbl"><table class="t"><thead><tr><th>الخدمة</th><th>بالإنجليزي</th><th>السعر</th><th>يبدأ من</th><th>المدة (دقيقة)</th><th>فعّالة</th><th></th></tr></thead><tbody>
-        ${S.services.map((s) => `<tr data-sv="${s.id}"><td><input data-k="name" value="${esc(s.name)}" maxlength="24"></td><td><input data-k="name_en" value="${esc(s.name_en)}" maxlength="24" dir="ltr"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${s.price ?? ''}" placeholder="بعد الزيارة" style="max-width:120px"></td><td><input type="checkbox" data-k="price_from" ${s.price_from ? 'checked' : ''} aria-label="السعر يبدأ من"></td><td><input data-k="duration_min" type="number" min="10" max="720" value="${s.duration_min ?? ''}" placeholder="${S.set.slot_minutes}" style="max-width:100px"></td><td><input type="checkbox" data-k="active" ${s.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
+        <div class="tbl"><table class="t"><thead><tr><th>الخدمة</th><th>بالإنجليزي</th><th>السعر</th><th>يبدأ من</th><th>المدة (دقيقة)</th><th>الخيارات</th><th>فعّالة</th><th></th></tr></thead><tbody>
+        ${S.services.map((s) => `<tr data-sv="${s.id}"><td><input data-k="name" value="${esc(s.name)}" maxlength="24"></td><td><input data-k="name_en" value="${esc(s.name_en)}" maxlength="24" dir="ltr"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${s.price ?? ''}" placeholder="بعد الزيارة" style="max-width:120px"></td><td><input type="checkbox" data-k="price_from" ${s.price_from ? 'checked' : ''} aria-label="السعر يبدأ من"></td><td><input data-k="duration_min" type="number" min="10" max="720" value="${s.duration_min ?? ''}" placeholder="${S.set.slot_minutes}" style="max-width:100px"></td><td><button class="btn sm ghost" data-opt type="button" style="white-space:nowrap">${esc(optLabel(s))}</button></td><td><input type="checkbox" data-k="active" ${s.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
         </tbody></table></div>
         <button class="btn sm ghost" id="svAdd" style="justify-self:start">${icon('plus')}خدمة</button></div>
+      <div class="card stack"><div class="sec-h"><h3>أسئلة قبل الحجز</h3><span class="tiny">البوت يسألها بعد الموقع وقبل اليوم (مثل رقم اللوحة أو تفاصيل الموقع)، وجوابها يطلع في الطلب وعند الموظف</span></div>
+        <div id="askList" class="stack s"></div>
+        <div class="row"><button class="btn sm ghost" id="askAdd" type="button">${icon('plus')}سؤال</button><button class="btn sm" id="askSave" type="button">${icon('check')}حفظ الأسئلة</button></div></div>
+      <div class="card stack" id="pkCard"><div class="sec-h"><h3>البكجات</h3><span class="tiny">العميل يشتريها من الواتساب برابط دفع، وتنخصم من رصيده لما يحجز. بدون دفع إلكتروني: طلبه يوصلك وترسل له الرابط</span></div>
+        <div class="row"><span class="tiny">كلمة الرصيد</span><input id="puOne" value="${esc((S.set.pkg_unit || {}).one || '')}" placeholder="غسلة" maxlength="20" style="max-width:110px"><input id="puTwo" value="${esc((S.set.pkg_unit || {}).two || '')}" placeholder="غسلتين" maxlength="20" style="max-width:110px"><input id="puMany" value="${esc((S.set.pkg_unit || {}).many || '')}" placeholder="غسلات" maxlength="20" style="max-width:110px"></div>
+        <div id="pkBody"><div class="spin"></div></div></div>
       <div class="card stack"><div class="sec-h"><h3>المدن ونطاق الخدمة</h3><span class="tiny">البوت يعرف مدينة العميل من موقعه، واللي برا النطاق يوصله إنه خارج التغطية</span></div>
         <div class="list">${S.cities.map((c) => `<div class="item" data-ct="${c.id}"><div class="h"><b style="font-family:var(--display)">${esc(c.name)}</b><span class="tiny">نصف قطر ${c.radius_km} كم</span><span class="sp"></span><label class="sw"><input type="checkbox" data-k="active" ${c.active ? 'checked' : ''}><i></i></label><button class="btn sm ghost" data-map>${icon('pin')}النطاق على الخريطة</button><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></div></div>`).join('') || '<div class="empty">ما فيه مدن، والبوت يقبل أي موقع</div>'}</div>
         <div class="row"><select id="ctPreset" style="max-width:220px"><option value="">أضف مدينة…</option>${PRESETS.filter((p) => !S.cities.some((c) => c.name === p[0])).map((p, i) => `<option value="${PRESETS.indexOf(p)}">${p[0]}</option>`).join('')}</select></div></div>`;
@@ -543,6 +550,9 @@
     });
     if ($('svImport')) $('svImport').onclick = importMaterial;
     $('svAdd').onclick = async () => { try { const row = (await q1(sb.from('services').insert({ business_id: BIZ, name: 'خدمة جديدة', sort: S.services.length }).select('*')))[0]; S.services.push(row); render(); } catch (e) { I.fail(e); } };
+    v.querySelectorAll('[data-sv] [data-opt]').forEach((b) => b.onclick = () => svcOptions(S.services.find((s) => s.id === b.closest('[data-sv]').dataset.sv)));
+    askEditor();
+    pkEditor();
     v.querySelectorAll('[data-ct]').forEach((el) => {
       const id = el.dataset.ct;
       el.querySelector('[data-k=active]').onchange = async (e) => { try { await q1(sb.from('cities').update({ active: e.target.checked }).eq('id', id).select('id')); S.cities.find((c) => c.id === id).active = e.target.checked; } catch (x) { I.fail(x); } };
@@ -551,6 +561,135 @@
     });
     $('ctPreset').onchange = async (e) => { const p = PRESETS[+e.target.value]; if (!p) return; try { const row = (await q1(sb.from('cities').insert({ business_id: BIZ, name: p[0], lat: p[1], lng: p[2], radius_km: p[3], sort: S.cities.length }).select('*')))[0]; S.cities.push(row); I.toast('انضافت ' + p[0] + ' ✓'); render(); } catch (x) { I.fail(x); } };
   }
+  // ── خيارات الخدمة: الإضافات بأسعارها والعدد (مثل كم سيارة)، والبوت يسألها وقت الحجز ──
+  function optLabel(s) {
+    const n = (Array.isArray(s.addons) ? s.addons : []).length, m = Number((s.qty || {}).max || 1);
+    const parts = [];
+    if (n) parts.push(I.count(n, 'إضافة وحدة', 'إضافتين', 'إضافات', 'إضافة'));
+    if (m > 1) parts.push(`لين ${m} ${(s.qty || {}).many || ''}`.trim());
+    return parts.join(' · ') || 'أضف';
+  }
+  function svcOptions(s) {
+    if (!s) return;
+    const ad = (Array.isArray(s.addons) ? s.addons : []).map((a) => ({ ...a }));
+    const qt = Object.assign({ max: 1, one: '', two: '', many: '' }, s.qty || {});
+    const m = I.modal(`<div class="mh"><h3 class="grow">خيارات ${esc(s.name)}</h3><button class="ib" data-close>${icon('x')}</button></div>
+      <div class="mb stack">
+        <div class="stack s"><b>الإضافات</b><span class="tiny">تطلع للعميل بعد ما يختار الخدمة وتنضاف على السعر. نفس «المجموعة» يختار منها وحدة بس (مثل تكييس دعاستين أو 4).</span>
+          <div id="adList" class="stack s"></div>
+          <button class="btn sm ghost" id="adAdd" type="button" style="justify-self:start">${icon('plus')}إضافة</button></div>
+        <div class="stack s"><b>العدد</b><span class="tiny">لو العميل يقدر يطلب أكثر من وحدة بنفس الحجز (مثل كم سيارة)، البوت يسأله ويضرب السعر.</span>
+          <label class="f" style="max-width:200px"><span>أقصى عدد</span><select id="qMax">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => `<option value="${n}" ${+qt.max === n ? 'selected' : ''}>${n === 1 ? 'بدون سؤال' : n}</option>`).join('')}</select></label>
+          <div class="row" id="qWords"><label class="f grow"><span>المفرد</span><input id="qOne" value="${esc(qt.one || '')}" placeholder="سيارة" maxlength="20"></label><label class="f grow"><span>المثنى</span><input id="qTwo" value="${esc(qt.two || '')}" placeholder="سيارتين" maxlength="20"></label><label class="f grow"><span>الجمع</span><input id="qMany" value="${esc(qt.many || '')}" placeholder="سيارات" maxlength="20"></label></div></div>
+      </div>
+      <div class="mf"><button class="btn" id="optSave" type="button">${icon('check')}حفظ</button></div>`);
+    const paint = () => {
+      m.querySelector('#adList').innerHTML = ad.map((a, i) => `<div class="row nw" data-i="${i}"><input data-k="name" value="${esc(a.name || '')}" placeholder="مثل: واكس" maxlength="24" style="flex:1;min-width:0"><input data-k="price" type="number" min="0" step="0.01" value="${a.price ?? ''}" placeholder="السعر" inputmode="decimal" style="max-width:90px"><input data-k="group" value="${esc(a.group || '')}" placeholder="المجموعة" maxlength="20" style="max-width:100px"><button class="ib" data-del="${i}" type="button" aria-label="حذف">${icon('trash')}</button></div>`).join('') || '<span class="tiny">ما فيه إضافات</span>';
+      m.querySelectorAll('#adList input').forEach((x) => x.oninput = () => { ad[+x.closest('[data-i]').dataset.i][x.dataset.k] = x.value; });
+      m.querySelectorAll('#adList [data-del]').forEach((b) => b.onclick = () => { ad.splice(+b.dataset.del, 1); paint(); });
+      m.querySelector('#qWords').style.display = +m.querySelector('#qMax').value > 1 ? '' : 'none';
+    };
+    paint();
+    m.querySelector('#qMax').onchange = paint;
+    m.querySelector('#adAdd').onclick = () => { if (ad.length >= 9) return I.toast('9 إضافات بالكثير', true); ad.push({ name: '', price: '', group: '' }); paint(); };
+    m.querySelector('#optSave').onclick = async (e) => {
+      const rows = ad.filter((a) => String(a.name || '').trim());
+      if (rows.some((a) => String(a.price ?? '').trim() === '' || !(Number(a.price) >= 0))) return I.toast('اكتب سعر كل إضافة', true);
+      const addons = rows.map((a) => ({ name: String(a.name).trim().slice(0, 24), name_en: String(a.name_en || '').slice(0, 24), price: Number(a.price), group: String(a.group || '').trim().slice(0, 20) }));
+      const max = +m.querySelector('#qMax').value;
+      const qty = max > 1 ? { max, one: $('qOne').value.trim(), two: $('qTwo').value.trim(), many: $('qMany').value.trim(), en_one: qt.en_one || '', en_many: qt.en_many || '' } : {};
+      if (max > 1 && !qty.one) return I.toast('اكتب المفرد (مثل سيارة)', true);
+      e.target.disabled = true;
+      try { await q1(sb.from('services').update({ addons, qty }).eq('id', s.id).select('id')); Object.assign(s, { addons, qty }); I.closeAll(); I.toast('انحفظ ✓ والبوت يسألها الحين'); render(); }
+      catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+  }
+
+  // ── أسئلة قبل الحجز (settings.ask) ──
+  let askDraft = null;
+  function askEditor() {
+    if (!askDraft) askDraft = (Array.isArray(S.set.ask) ? S.set.ask : []).map((x) => ({ ...x }));
+    const el = $('askList'); if (!el) return;
+    el.innerHTML = askDraft.map((x, i) => `<div class="row nw" data-i="${i}"><input data-k="q" value="${esc(x.q || '')}" placeholder="السؤال، مثل: وش رقم لوحة السيارة؟" maxlength="80" style="flex:1.2;min-width:0"><input data-k="hint" value="${esc(x.hint || '')}" placeholder="مثال يساعده (اختياري)" maxlength="80" style="flex:1;min-width:0"><button class="ib" data-del="${i}" type="button" aria-label="حذف">${icon('trash')}</button></div>`).join('') || '<span class="tiny">ما فيه أسئلة، البوت يروح من الموقع لليوم على طول</span>';
+    el.querySelectorAll('input').forEach((x) => x.oninput = () => { askDraft[+x.closest('[data-i]').dataset.i][x.dataset.k] = x.value; });
+    el.querySelectorAll('[data-del]').forEach((b) => b.onclick = () => { askDraft.splice(+b.dataset.del, 1); askEditor(); });
+    $('askAdd').onclick = () => { if (askDraft.length >= 5) return I.toast('5 أسئلة بالكثير', true); askDraft.push({ q: '', hint: '', svc: [] }); askEditor(); };
+    $('askSave').onclick = async (e) => {
+      const ask = askDraft.filter((x) => String(x.q || '').trim()).map((x) => ({ ...x, q: String(x.q).trim().slice(0, 80), hint: String(x.hint || '').trim().slice(0, 80), svc: Array.isArray(x.svc) ? x.svc : [] }));
+      e.target.disabled = true;
+      try { await q1(sb.from('settings').update({ ask }).eq('business_id', BIZ).select('business_id')); S.set.ask = ask; askDraft = null; I.toast('انحفظت الأسئلة ✓'); askEditor(); }
+      catch (x) { I.fail(x); }
+      e.target.disabled = false;
+    };
+  }
+
+  // ── البكجات ورصيد العملاء ──
+  async function pkEditor() {
+    const body = $('pkBody'); if (!body) return;
+    let pk = [], cpk = [];
+    try {
+      [pk, cpk] = await Promise.all([
+        q1(sb.from('packages').select('*').eq('business_id', BIZ).order('sort').order('created_at')),
+        q1(sb.from('customer_packages').select('*, customer:customers(name,wa_id,is_sim)').eq('business_id', BIZ).in('status', ['active', 'used']).order('created_at', { ascending: false }).limit(200)),
+      ]);
+    } catch (e) { body.innerHTML = `<p class="tiny">${esc(I.errText(e))}</p>`; return; }
+    if (!$('pkBody')) return;
+    const svcOpt = (p) => `<select data-k="svc"><option value="">كل الخدمات</option>${S.services.map((s) => `<option value="${s.id}" ${(p.service_ids || [])[0] === s.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select>`;
+    const src = { wa: 'واتساب', sim: 'المحاكي', manual: 'يدوي' };
+    body.innerHTML = `
+      <div class="tbl"><table class="t"><thead><tr><th>البكج</th><th>وصف قصير</th><th>العدد</th><th>السعر</th><th>بدل</th><th>الخدمة</th><th>فعّال</th><th></th></tr></thead><tbody>
+      ${pk.map((p) => `<tr data-pk="${p.id}"><td><input data-k="name" value="${esc(p.name)}" maxlength="24"></td><td><input data-k="note" value="${esc(p.note || '')}" maxlength="120" placeholder="مثل: بدون تاريخ انتهاء"></td><td><input data-k="uses" type="number" min="1" max="500" value="${p.uses}" style="max-width:80px"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${p.price}" style="max-width:100px"></td><td><input data-k="compare_price" type="number" min="0" step="0.01" value="${p.compare_price ?? ''}" placeholder="اختياري" style="max-width:100px"></td><td>${svcOpt(p)}</td><td><input type="checkbox" data-k="active" ${p.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
+      </tbody></table></div>
+      <button class="btn sm ghost" id="pkAdd" type="button" style="justify-self:start">${icon('plus')}بكج</button>
+      <div class="sec-h" style="margin-top:8px"><h3>رصيد العملاء</h3><button class="btn sm ghost" id="pkGrant" type="button">${icon('plus')}أضف رصيد لعميل</button></div>
+      ${cpk.length ? `<div class="list">${cpk.map((x) => `<div class="item" data-cp="${x.id}"><div class="h"><b>${esc(x.customer ? (x.customer.name || (x.customer.is_sim ? 'عميل المحاكي' : I.phone(x.customer.wa_id))) : '')}</b><span class="tiny">${esc(x.name)} · ${esc(src[x.source] || '')} · ${esc(I.ago(x.paid_at || x.created_at))}</span><span class="sp"></span><span class="badge ${x.uses_left > 0 ? 'b-done' : 'b-cancelled'} plain">باقي ${x.uses_left} من ${x.uses_total}</span><button class="btn sm ghost" data-adj type="button">تعديل</button></div></div>`).join('')}</div>` : '<p class="tiny">ما فيه رصيد لأي عميل للحين</p>'}`;
+    body.querySelectorAll('[data-pk]').forEach((tr) => {
+      const id = tr.dataset.pk;
+      tr.querySelectorAll('[data-k]').forEach((inp) => inp.addEventListener('change', async () => {
+        const k = inp.dataset.k; let patch;
+        if (k === 'active') patch = { active: inp.checked };
+        else if (k === 'svc') patch = { service_ids: inp.value ? [inp.value] : [] };
+        else if (k === 'uses') patch = { uses: Math.max(1, Math.min(500, Math.floor(Number(inp.value) || 1))) };
+        else if (k === 'price') patch = { price: Math.max(0, Number(inp.value) || 0) };
+        else if (k === 'compare_price') patch = { compare_price: inp.value === '' ? null : Math.max(0, Number(inp.value) || 0) };
+        else patch = { [k]: inp.value.trim() };
+        if (k === 'name' && !patch.name) return I.toast('اكتب اسم البكج', true);
+        try { await q1(sb.from('packages').update(patch).eq('id', id).select('id')); I.toast('انحفظ ✓'); } catch (e) { I.fail(e); }
+      }));
+      tr.querySelector('[data-del]').onclick = async () => { if (!confirm('حذف البكج؟ رصيد اللي اشتروه يبقى لهم')) return; try { await q1(sb.from('packages').delete().eq('id', id).select('id')); pkEditor(); } catch (e) { I.fail(e); } };
+    });
+    $('pkAdd').onclick = async () => { try { await q1(sb.from('packages').insert({ business_id: BIZ, name: 'بكج جديد', uses: 4, price: 0, sort: pk.length }).select('id')); pkEditor(); } catch (e) { I.fail(e); } };
+    body.querySelectorAll('[data-cp] [data-adj]').forEach((b) => b.onclick = async () => {
+      const x = cpk.find((c) => c.id === b.closest('[data-cp]').dataset.cp);
+      const v = prompt('كم باقي له؟', String(x.uses_left));
+      if (v === null) return;
+      const n = Math.floor(Number(v));
+      if (!(n >= 0 && n <= 500)) return I.toast('اكتب رقم صحيح', true);
+      try { await I.api('biz/pkg-adjust', { business_id: BIZ, id: x.id, uses_left: n }); I.toast('انحفظ ✓'); pkEditor(); } catch (e) { I.fail(e); }
+    });
+    $('pkGrant').onclick = () => {
+      if (!pk.length) return I.toast('أضف بكج أول', true);
+      const m = I.modal(`<div class="mh"><h3 class="grow">أضف رصيد لعميل</h3><button class="ib" data-close>${icon('x')}</button></div>
+        <div class="mb stack"><p class="tiny">لعميل اشترى بكج من مكان ثاني أو دفع لكم مباشرة. لما يراسل الواتساب ويحجز، البوت يعرض عليه رصيده.</p>
+          <label class="f"><span>جوال العميل</span><input id="gPh" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx"></label>
+          <label class="f"><span>اسمه (اختياري)</span><input id="gNm" maxlength="60"></label>
+          <label class="f"><span>البكج</span><select id="gPk">${pk.map((p) => `<option value="${p.id}">${esc(p.name)} (${p.uses})</option>`).join('')}</select></label>
+          <label class="f"><span>كم باقي له؟</span><input id="gLeft" type="number" min="1" max="500" value="${pk[0].uses}"></label></div>
+        <div class="mf"><button class="btn" id="gSave" type="button">${icon('check')}أضف</button></div>`);
+      m.querySelector('#gPk').onchange = (e) => { const p = pk.find((x) => x.id === e.target.value); if (p) $('gLeft').value = p.uses; };
+      m.querySelector('#gSave').onclick = async (e) => {
+        e.target.disabled = true;
+        try { await I.api('biz/pkg-grant', { business_id: BIZ, phone: $('gPh').value, name: $('gNm').value, package_id: $('gPk').value, uses_left: Number($('gLeft').value) }); I.closeAll(); I.toast('انضاف الرصيد ✓'); pkEditor(); }
+        catch (x) { I.fail(x); e.target.disabled = false; }
+      };
+    };
+    // كلمة الرصيد (غسلة/غسلتين/غسلات)
+    ['puOne', 'puTwo', 'puMany'].forEach((k) => { const el = $(k); if (el) el.onchange = async () => {
+      const pkg_unit = { ...(S.set.pkg_unit || {}), one: $('puOne').value.trim(), two: $('puTwo').value.trim(), many: $('puMany').value.trim() };
+      try { await q1(sb.from('settings').update({ pkg_unit }).eq('business_id', BIZ).select('business_id')); S.set.pkg_unit = pkg_unit; I.toast('انحفظ ✓'); } catch (e) { I.fail(e); }
+    }; });
+  }
+
   // ── «عبّيها من صورة أو موقع»: نقرأ قائمة أسعاره أو موقعه، تراجعها، وتنحفظ في الخدمات والأوقات والأسئلة والمدن
   const nkey = (s) => String(s || '').replace(/[sـ]+/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase();
   async function importMaterial() {

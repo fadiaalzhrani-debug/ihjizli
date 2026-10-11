@@ -139,6 +139,36 @@ async function bizAction(r: Roles, action: string, body: any) {
       return { lat: p!.lat, lng: p!.lng };
     }
     case "export-test": return await exportTest(bizId);
+    // رصيد بكج لعميل يدويًا (اشترى من مكان ثاني أو كاش): جواله + البكج + كم باقي له
+    case "pkg-grant": {
+      const phone = saudi(body.phone) || intl(body.phone);
+      need(phone, "phone", 400);
+      const { data: p } = await db().from("packages").select("*").eq("id", uuid(body.package_id, "package_id")).eq("business_id", bizId).maybeSingle();
+      need(p, "package", 404);
+      const left = Math.floor(Number(body.uses_left ?? p.uses));
+      need(left >= 1 && left <= 500, "uses_left", 400);
+      let { data: c } = await db().from("customers").select("id, name").eq("business_id", bizId).eq("wa_id", phone).maybeSingle();
+      if (!c) {
+        const { data: nc, error: ce } = await db().from("customers").insert({ business_id: bizId, wa_id: phone, is_sim: false, name: clip(body.name, 60) }).select("id, name").single();
+        if (ce) throw new Error(ce.message);
+        c = nc;
+      } else if (!c.name && clip(body.name, 60)) await db().from("customers").update({ name: clip(body.name, 60) }).eq("id", c.id);
+      const { data: cp, error } = await db().from("customer_packages").insert({ business_id: bizId, customer_id: c.id, package_id: p.id, name: p.name, uses_total: Math.max(p.uses, left), uses_left: left,
+        price: 0, service_ids: p.service_ids || [], status: "active", source: "manual", paid_at: new Date().toISOString() }).select("*").single();
+      if (error) throw new Error(error.message);
+      return { package: cp };
+    }
+    // تعديل الباقي من رصيد عميل (صفر = خلص)
+    case "pkg-adjust": {
+      const left = Math.floor(Number(body.uses_left));
+      need(left >= 0 && left <= 500, "uses_left", 400);
+      const { data: cp } = await db().from("customer_packages").select("id, uses_total, status").eq("id", uuid(body.id)).eq("business_id", bizId).maybeSingle();
+      need(cp && ["active", "used"].includes(cp.status), "not_found", 404);
+      const { data, error } = await db().from("customer_packages").update({ uses_left: left, uses_total: Math.max(cp.uses_total, left), status: left > 0 ? "active" : "used", updated_at: new Date().toISOString() })
+        .eq("id", cp.id).select("*").single();
+      if (error) throw new Error(error.message);
+      return { package: data };
+    }
     case "export-info": {
       const { data: sec } = await db().from("business_secrets").select("export_secret").eq("business_id", bizId).single();
       return { secret: sec?.export_secret || "" };

@@ -24,6 +24,7 @@ async function settle(inv: any) {
   if (inv.status === "paid") return true;
   if (inv.status === "void") {
     // حجز انتهت مهلته وانلغى: لو العميل دفع في آخر لحظة نعتمده ونرجّع موعده لو فاضي
+    if (!inv.order_id) return false;
     const { data: o } = await db().from("orders").select("status, cancel_reason").eq("id", inv.order_id).maybeSingle();
     if (!(o?.status === "cancelled" && o?.cancel_reason === "unpaid")) return false;
   } else if (inv.status !== "issued") return false;
@@ -63,12 +64,13 @@ Deno.serve(async (req) => {
       if (!inv) return json({ ok: false, error: "not_found" }, 404);
       if (inv.status === "issued" && inv.pay_provider === "moyasar") await settle(inv).catch(() => false);
       const { data: fresh } = await db().from("invoices").select("*").eq("id", inv.id).single();
-      const [{ data: biz }, { data: o }] = await Promise.all([
+      const [{ data: biz }, { data: o }, { data: cp }] = await Promise.all([
         db().from("businesses").select("name, logo_url, brand_color, is_demo").eq("id", inv.business_id).single(),
-        db().from("orders").select("number, status, cancel_reason").eq("id", inv.order_id).single(),
+        inv.order_id ? db().from("orders").select("number, status, cancel_reason").eq("id", inv.order_id).single() : Promise.resolve({ data: null }),
+        inv.customer_package_id ? db().from("customer_packages").select("name").eq("id", inv.customer_package_id).maybeSingle() : Promise.resolve({ data: null }),
       ]);
       return json({ ok: true, invoice: {
-        number: fresh.number, order: o?.number, items: fresh.items, subtotal: fresh.subtotal, vat_percent: fresh.vat_percent, vat: fresh.vat, total: fresh.total,
+        number: fresh.number, order: o?.number ?? null, package: (cp as any)?.name || "", items: fresh.items, subtotal: fresh.subtotal, vat_percent: fresh.vat_percent, vat: fresh.vat, total: fresh.total,
         status: fresh.status, order_cancelled: o?.status === "cancelled", expired: o?.status === "cancelled" && o?.cancel_reason === "unpaid", paid_at: fresh.paid_at, paid_method: fresh.paid_method, provider: fresh.pay_provider,
         pay_url: fresh.status === "issued" && fresh.pay_provider === "moyasar" ? fresh.pay_url : "",
         pdf_url: fresh.pdf_path ? await signedPdf(fresh.pdf_path, 3600) : "",
@@ -79,8 +81,9 @@ Deno.serve(async (req) => {
       const inv = await invByToken(String(b.t || ""));
       if (!inv) return json({ ok: false, error: "not_found" }, 404);
       const { data: biz } = await db().from("businesses").select("is_demo").eq("id", inv.business_id).single();
-      const { data: ord } = await db().from("orders").select("is_test").eq("id", inv.order_id).maybeSingle();
-      if (inv.pay_provider !== "demo" || !(biz?.is_demo || ord?.is_test)) return json({ ok: false, error: "not_demo" }, 409);
+      const { data: ord } = inv.order_id ? await db().from("orders").select("is_test").eq("id", inv.order_id).maybeSingle() : { data: null };
+      const { data: cpk } = inv.customer_package_id ? await db().from("customer_packages").select("is_test").eq("id", inv.customer_package_id).maybeSingle() : { data: null };
+      if (inv.pay_provider !== "demo" || !(biz?.is_demo || ord?.is_test || cpk?.is_test)) return json({ ok: false, error: "not_demo" }, 409);
       const label = b.method === "applepay" ? "أبل باي" : b.method === "card" ? "بطاقة" : "مدى";
       const r = await markInvoicePaid(inv.id, { provider: "demo", ref: `demo-${inv.id}`, amount: Number(inv.total), method: label, by: "demo" });
       return json({ ok: true, already: !!(r as any).already });

@@ -246,10 +246,41 @@
   const theme = () => { try { const t = localStorage.getItem('ihj_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* */ } };
   theme();
 
+  // ───── خيارات الطلب: العدد والإضافات والأجوبة ورصيد البكج (نفس اللي يسأله البوت) ─────
+  function countText(u, n) {
+    u = u || {}; n = Number(n || 1);
+    if (n === 1) return u.one ? `${u.one} ${String(u.one).endsWith('ة') ? 'وحدة' : 'واحد'}` : '1';
+    if (n === 2) return u.two || '2';
+    if (n <= 10 && u.many) return `${n} ${u.many}`;
+    return `${n} ${u.one || ''}`.trim();
+  }
+  function extrasRows(o) {
+    const ex = (o && o.extras) || {}, out = [];
+    const q = Number(o.qty || 1);
+    if (q > 1) out.push(['العدد', countText(ex.unit, q)]);
+    if (Number(o.pkg_uses || 0) > 0) out.push(['الدفع', `من رصيد البكج (${o.pkg_uses})`]);
+    if ((ex.addons || []).length) out.push(['الإضافات', ex.addons.map((a) => `${a.name} (${money(a.price)})`).join('، ')]);
+    for (const a of (ex.answers || [])) out.push([a.q, a.a]);
+    if (o.total != null && (q > 1 || (ex.addons || []).length || Number(o.pkg_uses || 0) > 0)) out.push(['الإجمالي', money(o.total) + ' ر.س']);
+    return out;
+  }
+  function extrasHtml(o) {
+    const rows = extrasRows(o);
+    return rows.length ? `<div class="g2 small">${rows.map(([k, v]) => `<div><span class="tiny">${esc(k)}</span><div>${esc(v)}</div></div>`).join('')}</div>` : '';
+  }
+  // بنود الفاتورة المبدئية: الخدمة × العدد (أو من الرصيد بصفر) والإضافات
+  function orderItems(o, svc) {
+    const ex = (o && o.extras) || {}, qty = Number(o.qty || 1), name = svc ? svc.name : 'الخدمة';
+    const items = Number(o.pkg_uses || 0) > 0 ? [{ name: `${name} · من رصيد البكج`, qty, price: 0 }]
+      : [{ name, qty, price: o.price != null ? o.price : (svc && svc.price != null ? svc.price : '') }];
+    for (const a of (ex.addons || [])) items.push({ name: a.name, qty: 1, price: a.price });
+    return items;
+  }
+
   window.IHJ = {
     URL: URL_, ANON, FN, TZ, get sb() { return sb; }, client, enter, boot, signOut, api, me,
     $, esc, parts, today, addDays, dayName, relDay, time, day, when, ago, money, phone, waLink, STATUS, badge,
     icon, toast, fail, errText, copy, openDrawer, modal, closeAll, cash, alertNew, toggleAlerts, alertsState, unlock, setTitle, stopFlash,
-    gate, loading, initials, logoHtml, debounce, csv, download,
+    gate, loading, initials, logoHtml, debounce, csv, download, countText, extrasRows, extrasHtml, orderItems,
   };
 })();
