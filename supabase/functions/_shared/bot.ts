@@ -653,7 +653,12 @@ class Bot {
     const city = this.ctx.cities.find((c: any) => c.id === order.city_id);
     const mode = this.mode();
     const day = dayLabel(local(order.slot_start, this.tz).ymd, this.lang, this.tz, false), time = timeLabel(order.slot_start, this.lang, this.tz);
-    const summary = orderSummary(this.T, this.lang, order, svc ? this.svcName(svc) : "");
+    let pkgLeft = "";
+    if (order.pkg_id && order.pkg_uses > 0) {
+      const { data: cp } = await db().from("customer_packages").select("uses_left").eq("id", order.pkg_id).maybeSingle();
+      if (cp) pkgLeft = countShort(this.pkgUnits(), cp.uses_left, this.lang);
+    }
+    const summary = orderSummary(this.T, this.lang, order, svc ? this.svcName(svc) : "", pkgLeft);
     const city_line = placeLine(this.T, this.s, mode, city, this.lang);
     this.set("idle", {});
     if (order.status === "pending_payment") {

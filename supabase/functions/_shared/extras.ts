@@ -63,7 +63,8 @@ export function orderLines(o: { svcName: string; unit: number | null; qty: numbe
 }
 
 // سطور الملخص في رسالة التأكيد (من الطلب نفسه، عشان رسالة ما بعد الدفع تطلع نفس الشي)
-export function orderSummary(T: TextBag, lang: Lang, o: any, svcName: string): string {
+// pkgLeft: كم باقي في رصيده بعد الخصم (يطلع جنب «من رصيد البكج»)
+export function orderSummary(T: TextBag, lang: Lang, o: any, svcName: string, pkgLeft = ""): string {
   const ex = o?.extras && typeof o.extras === "object" ? o.extras : {};
   const out: string[] = [];
   const qty = Number(o?.qty || 1);
@@ -72,7 +73,7 @@ export function orderSummary(T: TextBag, lang: Lang, o: any, svcName: string): s
   const fancy = qty > 1 || addons.length || answers.length || Number(o?.pkg_uses || 0) > 0;
   if (!fancy) return "";
   if (svcName) out.push(`🧾 ${svcName}${qty > 1 ? ` · ${countText(unitsOf(ex.unit), qty, lang)}` : ""}`);
-  if (Number(o?.pkg_uses || 0) > 0) out.push(`🎟️ ${T("from_balance")}`);
+  if (Number(o?.pkg_uses || 0) > 0) out.push(`🎟️ ${T("from_balance")}${pkgLeft ? T("balance_left", { left: pkgLeft }) : ""}`);
   if (addons.length) out.push(`✨ ${addons.map((a: any) => a.name).join("، ")}`);
   for (const a of answers.slice(0, 5)) out.push(`📝 ${a.q}: ${a.a}`);
   if (o?.total != null) out.push(T("total_line", { total: money(Number(o.total)) }).trim());

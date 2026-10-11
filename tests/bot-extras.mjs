@@ -139,7 +139,7 @@ try {
   o = await send({ type: 'reply', id: rs[0].id });
   rs = rows(o.at(-1));
   o = await send({ type: 'reply', id: rs[2]?.id || rs[0].id });
-  ok(/تم تأكيد طلبك/.test(txt(o.at(-1))) && /من رصيد البكج/.test(txt(o.at(-1))) && sql(`select uses_left from customer_packages where id = '${cp.id}'`)[0].uses_left === 3, 'الحجز من الرصيد مجاني وباقي 3', txt(o.at(-1)));
+  ok(/تم تأكيد طلبك/.test(txt(o.at(-1))) && /من رصيد البكج \(باقي 3 غسلات\)/.test(txt(o.at(-1))) && sql(`select uses_left from customer_packages where id = '${cp.id}'`)[0].uses_left === 3, 'الحجز من الرصيد مجاني، والتأكيد يقول «باقي 3 غسلات»', txt(o.at(-1)));
   // خدمة ما يغطيها البكج: يقول له ويكمل بالدفع العادي
   o = await send({ type: 'reply', id: 'm:bookbal' });
   o = await send({ type: 'reply', id: `svc:${svc['غسيل خارجي']}` });
