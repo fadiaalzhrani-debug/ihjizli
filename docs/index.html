@@ -174,6 +174,40 @@ section.hero{border-top:0}
 @media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px;min-height:0} .offer{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} }
 @media (max-width:720px){ .nav{display:none} .top .btn{margin-inline-start:auto} .foot .tiny{margin:0;width:100%} }
 @media (max-width:620px){ .screen{height:560px} .notif{position:static;width:min(330px,100%);transform:translateY(6px)} .notif.on{transform:none} .start{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
+/* ألوان حية على الأبيض (2026-10-14 بطلبها: «ضيف لون جميل مو باهته»): الرأس والنموذج بطاقتين بتدرّج نيلي بنفسجي فوشي، وأيقونات الخدمات كل وحدة بلون */
+:root{ --grad:radial-gradient(55% 75% at 88% 8%,rgba(255,255,255,.2),transparent 62%),radial-gradient(50% 70% at 6% 96%,rgba(244,114,182,.6),transparent 70%),linear-gradient(135deg,#4338CA 0%,#6D28D9 52%,#A21CAF 100%); --hl:#FDE047 }
+section{border-top:0}
+.btn{background:linear-gradient(135deg,#4F46E5,#7C3AED);box-shadow:0 10px 24px -12px rgba(91,33,182,.7)}
+.btn:hover{background:linear-gradient(135deg,#4338CA,#6D28D9)}
+.btn.ghost{box-shadow:none}
+.brand .mark{color:#6D28D9}
+.eyebrow{color:#7C3AED} .eyebrow::before{background:linear-gradient(90deg,#4F46E5,#C026D3)}
+.hero{position:relative;isolation:isolate;margin-top:18px;padding:56px clamp(20px,5vw,56px);border-radius:34px;background:var(--grad);color:#fff;min-height:calc(100vh - 98px);box-shadow:0 40px 80px -50px rgba(76,29,149,.8)}
+.hero h1{color:#fff} .hero h1 .hl{color:var(--hl)}
+.hero .sub{color:rgba(255,255,255,.88)}
+.hero .pillbar{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff}
+.hero .trust{color:rgba(255,255,255,.9)} .hero .trust .ic{color:var(--hl)}
+.hero .btn{background:#fff;color:#4338CA;box-shadow:0 12px 28px -12px rgba(30,10,70,.6)}
+.hero .btn:hover{background:#F5F3FF}
+.hero .btn.ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.55);box-shadow:none}
+.hero .btn.ghost:hover{background:rgba(255,255,255,.18)}
+.hero .demo-cap{color:rgba(255,255,255,.88)}
+.hero .scn button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.32);color:#fff}
+.hero .scn button:hover{border-color:#fff;background:rgba(255,255,255,.22)}
+.hero .scn button[aria-pressed="true"]{background:#fff;border-color:#fff;color:#4338CA}
+.hero .phone{box-shadow:0 50px 90px -30px rgba(20,6,60,.75),inset 0 0 0 1px rgba(255,255,255,.08),0 0 0 1.5px #0a0a0c}
+.hero .notif{border-inline-start-color:#C026D3}
+.offer div{transition:transform .18s,box-shadow .18s}
+.offer div:hover{transform:translateY(-3px);box-shadow:0 26px 50px -28px rgba(76,29,149,.45)}
+.offer .oi{color:#fff;background:var(--c,#4F46E5);box-shadow:0 10px 20px -10px var(--c,#4F46E5)}
+.offer div:nth-child(1){--c:#16A34A} .offer div:nth-child(2){--c:#4F46E5} .offer div:nth-child(3){--c:#EA580C} .offer div:nth-child(4){--c:#DB2777}
+.offer div:nth-child(5){--c:#0D9488} .offer div:nth-child(6){--c:#2563EB} .offer div:nth-child(7){--c:#7C3AED} .offer div:nth-child(8){--c:#D97706}
+#signup{margin-top:10px;padding:44px clamp(20px,5vw,48px);border-radius:34px;background:var(--grad);color:#fff}
+#signup h2{color:#fff} #signup > .sub{color:rgba(255,255,255,.88)}
+#signup .lead-form{border:0;box-shadow:0 30px 60px -36px rgba(20,6,60,.8)}
+#signup .done{background:#fff;color:var(--fg)}
+@media (max-width:900px){ .hero{min-height:0;padding:36px 22px 30px;border-radius:28px} }
+@media (max-width:620px){ .hero{margin-top:12px;padding:30px 18px 26px;border-radius:24px} #signup{padding:32px 18px;border-radius:24px} }
 </style>
 </head>
 <body>
@@ -195,7 +229,7 @@ section.hero{border-top:0}
 <section class="hero">
   <div class="copy">
     <span class="pillbar">للمحلات والمشاريع اللي تستقبل طلبات على الواتساب</span>
-    <h1>عملاؤك يراسلونك، والبوت يرد ويحجز عنك</h1>
+    <h1>عملاؤك يراسلونك، والبوت <span class="hl">يرد ويحجز عنك</span></h1>
     <p class="sub">نركّب بوت على رقم واتساب نشاطك نفسه: يرد على عملائك بالأسعار والأوقات، يحجز لهم من المواعيد الفاضية، ويرسل رابط الدفع، والطلب يوصلك جاهز. ونسوي لك موقع خاص باسم نشاطك، وكل زر فيه يحجز من الواتساب.</p>
     <div class="cta"><a class="btn" href="sim.html?demo=1" target="_blank" rel="noopener">جرّب البوت</a><a class="btn ghost" href="#signup">أبيه لنشاطي</a></div>
     <div class="trust">
