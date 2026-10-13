@@ -22,9 +22,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
-/* احجزلي: صفحة قصيرة لكل المجالات (2026-10-11 بطلبها: النقاط الجوهرية بس، بدون «على كيفك» و«كيف نبدأ» والأسئلة). نيلي وذهبي على فاتح، مع خلفية ثلاثية الأبعاد تتحرك (Three.js) وسمة داكنة */
+/* احجزلي: صفحة قصيرة لكل المجالات (2026-10-11 بطلبها: النقاط الجوهرية بس، بدون «على كيفك» و«كيف نبدأ» والأسئلة). نيلي وذهبي على أبيض (2026-10-14 بطلبها: شيل المجسمات اللي ورا وخله أبيض، بدون سمة داكنة) */
 :root{
-  --bg:#F6F6FA; --fg:#17182B; --muted:#5F6178; --card:#FFFFFF; --line:#E2E3EC; --soft:#ECEBFB; --soft2:#FFF4D6;
+  --bg:#FFFFFF; --fg:#17182B; --muted:#5F6178; --card:#FFFFFF; --line:#E8E8F0; --soft:#F1F0FD; --soft2:#FFF4D6;
   --accent:#4338CA; --accent-2:#3730A3; --accent-ink:#FFFFFF; --gold:#F2B705; --gold-ink:#2A1F05;
   --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-ink:#111B21; --wa-sub:#667781; --wa-link:#027EB5; --wa-head:#008069; --wa-head-ink:#FFFFFF; --wa-field:#FFFFFF;
   --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140' fill='none' stroke='%23000' stroke-opacity='.07' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 18h24a6 6 0 0 1 6 6v11a6 6 0 0 1-6 6H26l-8 7v-7h-4a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6z'/%3E%3Cpath d='M98 20l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z'/%3E%3Ccircle cx='32' cy='98' r='11'/%3E%3Cpath d='M32 91v7l5 3'/%3E%3Cpath d='M104 112c-7-5-12-9-12-14a6 6 0 0 1 12-1 6 6 0 0 1 12 1c0 5-5 9-12 14z'/%3E%3Cpath d='M62 62l7 7 12-14'/%3E%3Crect x='60' y='104' width='18' height='16' rx='3'/%3E%3Cpath d='M60 109h18M65 101v5M73 101v5'/%3E%3C/svg%3E");
@@ -32,8 +32,6 @@
   --r:16px; --shadow:0 20px 50px -30px rgba(30,20,80,.35);
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0F0F1A; --fg:#ECECF6; --muted:#A2A3BD; --card:#181829; --line:#2A2A42; --soft:#1B1A33; --soft2:#2A2410; --accent:#8B85F6; --accent-2:#7A73F0; --accent-ink:#0F0D2E; --gold:#F5C542; --shadow:0 20px 50px -30px rgba(0,0,0,.7); --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-ink:#E9EDEF; --wa-sub:#8696A0; --wa-link:#53BDEB; --wa-head:#202C33; --wa-head-ink:#E9EDEF; --wa-field:#2A3942; --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140' fill='none' stroke='%23fff' stroke-opacity='.05' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 18h24a6 6 0 0 1 6 6v11a6 6 0 0 1-6 6H26l-8 7v-7h-4a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6z'/%3E%3Cpath d='M98 20l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z'/%3E%3Ccircle cx='32' cy='98' r='11'/%3E%3Cpath d='M32 91v7l5 3'/%3E%3Cpath d='M104 112c-7-5-12-9-12-14a6 6 0 0 1 12-1 6 6 0 0 1 12 1c0 5-5 9-12 14z'/%3E%3Cpath d='M62 62l7 7 12-14'/%3E%3Crect x='60' y='104' width='18' height='16' rx='3'/%3E%3Cpath d='M60 109h18M65 101v5M73 101v5'/%3E%3C/svg%3E"); color-scheme:dark } }
-:root[data-theme="dark"]{ --bg:#0F0F1A; --fg:#ECECF6; --muted:#A2A3BD; --card:#181829; --line:#2A2A42; --soft:#1B1A33; --soft2:#2A2410; --accent:#8B85F6; --accent-2:#7A73F0; --accent-ink:#0F0D2E; --gold:#F5C542; --shadow:0 20px 50px -30px rgba(0,0,0,.7); --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-ink:#E9EDEF; --wa-sub:#8696A0; --wa-link:#53BDEB; --wa-head:#202C33; --wa-head-ink:#E9EDEF; --wa-field:#2A3942; --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140' fill='none' stroke='%23fff' stroke-opacity='.05' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 18h24a6 6 0 0 1 6 6v11a6 6 0 0 1-6 6H26l-8 7v-7h-4a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6z'/%3E%3Cpath d='M98 20l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z'/%3E%3Ccircle cx='32' cy='98' r='11'/%3E%3Cpath d='M32 91v7l5 3'/%3E%3Cpath d='M104 112c-7-5-12-9-12-14a6 6 0 0 1 12-1 6 6 0 0 1 12 1c0 5-5 9-12 14z'/%3E%3Cpath d='M62 62l7 7 12-14'/%3E%3Crect x='60' y='104' width='18' height='16' rx='3'/%3E%3Cpath d='M60 109h18M65 101v5M73 101v5'/%3E%3C/svg%3E"); color-scheme:dark }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
@@ -57,21 +55,6 @@ section.hero{border-top:0}
 .btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .ic{width:22px;height:22px;flex:none}
 .tiny{color:var(--muted);font-size:13px}
-/* الخلفية ثلاثية الأبعاد */
-#bg3d{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:opacity .2s linear}
-#bg3d canvas{display:block;width:100%;height:100%}
-.aurora{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;opacity:var(--aur,.55);transition:opacity .2s linear}
-.aurora i{position:absolute;border-radius:50%;will-change:transform}
-.aurora i:nth-child(1){width:52vmax;height:52vmax;left:-14vmax;top:-10vmax;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 34%,transparent) 0,transparent 66%);animation:aur1 24s ease-in-out infinite alternate}
-.aurora i:nth-child(2){width:42vmax;height:42vmax;left:22vmax;top:-18vmax;background:radial-gradient(circle,rgba(139,92,246,.26) 0,transparent 66%);animation:aur2 28s ease-in-out infinite alternate}
-.aurora i:nth-child(3){width:38vmax;height:38vmax;left:-6vmax;top:30vmax;background:radial-gradient(circle,color-mix(in srgb,var(--gold) 26%,transparent) 0,transparent 66%);animation:aur3 32s ease-in-out infinite alternate}
-.aurora i:nth-child(4){width:30vmax;height:30vmax;right:-8vmax;top:22vmax;background:radial-gradient(circle,rgba(37,211,102,.16) 0,transparent 66%);animation:aur2 36s ease-in-out infinite alternate-reverse}
-@keyframes aur1{to{transform:translate(9vmax,7vmax) scale(1.12)}}
-@keyframes aur2{to{transform:translate(-7vmax,9vmax) scale(1.08)}}
-@keyframes aur3{to{transform:translate(8vmax,-6vmax) scale(1.15)}}
-@media (prefers-reduced-motion:reduce){ .aurora i{animation:none} }
-.veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(40% 46% at 74% 46%,color-mix(in srgb,var(--bg) 70%,transparent),transparent 72%),linear-gradient(to bottom,transparent 0,transparent 74vh,var(--bg) 100vh)}
-@media (max-width:900px){ .veil{background:radial-gradient(80% 34% at 50% 26%,color-mix(in srgb,var(--bg) 72%,transparent),transparent 74%),linear-gradient(to bottom,transparent 0,transparent 70vh,var(--bg) 100vh)} }
 /* الشريط العلوي */
 .topbar{position:sticky;top:0;z-index:7;margin-inline:-16px;padding-inline:16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;gap:22px;min-height:62px}
@@ -149,15 +132,6 @@ section.hero{border-top:0}
 .offer .oi svg{width:23px;height:23px}
 .offer b{font-family:var(--display);font-size:17px}
 .offer span:not(.oi){color:var(--muted);font-size:14.5px;line-height:1.7}
-/* وش نحتاج منك: قائمة قصيرة وجنبها «والباقي كله علينا» */
-.need{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:22px;align-items:stretch}
-.need ul{margin:0;padding:20px 22px;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;background:var(--card);border:1px solid var(--line);border-radius:20px;align-content:center}
-.need li{display:flex;gap:10px;align-items:center;font-family:var(--display);font-weight:700;font-size:16.5px}
-.need li .ic{color:var(--accent)}
-.need .rest{display:grid;gap:8px;align-content:center;justify-items:start;background:color-mix(in srgb,var(--accent) 8%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 26%,var(--line));border-radius:20px;padding:20px 22px}
-.need .rest b{font-family:var(--display);font-size:22px;color:var(--accent)}
-.need .rest span{color:var(--muted);font-size:15px}
-.need .rest .btn{margin-top:6px}
 /* الباقات */
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;align-items:stretch}
 .plan{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:12px;align-content:start;min-width:0;position:relative}
@@ -197,14 +171,12 @@ section.hero{border-top:0}
 .foot .tiny{margin-inline-start:auto}
 .dock{position:fixed;bottom:0;left:0;right:0;display:none;gap:10px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:8}
 .dock .btn{flex:1;padding:12px 10px;font-size:16px}
-@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px;min-height:0} .offer{grid-template-columns:1fr 1fr} .need{grid-template-columns:1fr} .plans{grid-template-columns:1fr} }
+@media (max-width:900px){ .hero{grid-template-columns:1fr;gap:28px;min-height:0} .offer{grid-template-columns:1fr 1fr} .plans{grid-template-columns:1fr} }
 @media (max-width:720px){ .nav{display:none} .top .btn{margin-inline-start:auto} .foot .tiny{margin:0;width:100%} }
-@media (max-width:620px){ .need ul{grid-template-columns:1fr} .screen{height:560px} .notif{position:static;width:min(330px,100%);transform:translateY(6px)} .notif.on{transform:none} .start{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
+@media (max-width:620px){ .screen{height:560px} .notif{position:static;width:min(330px,100%);transform:translateY(6px)} .notif.on{transform:none} .start{grid-template-columns:1fr} section{padding-block:40px} .dock{display:flex} .chat{height:390px} .lead-form{grid-template-columns:1fr} .price b{font-size:32px} }
 </style>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div id="bg3d" aria-hidden="true"></div><div class="veil" aria-hidden="true"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
@@ -215,7 +187,7 @@ section.hero{border-top:0}
 
 <div class="topbar"><div class="wrap top">
   <a class="brand" href="#top" aria-label="احجزلي، أعلى الصفحة"><svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg><span>احجزلي</span></a>
-  <nav class="nav" aria-label="أقسام الصفحة"><a href="#offer">وش نقدم لك</a><a href="#need">وش نحتاج منك</a></nav>
+  <nav class="nav" aria-label="أقسام الصفحة"><a href="#offer">وش نقدم لك</a></nav>
   <a class="btn sm" href="sim.html?demo=1" target="_blank" rel="noopener">جرّبه</a>
 </div></div>
 
@@ -257,22 +229,6 @@ section.hero{border-top:0}
     <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h4M7 12h7"/></svg></span><b>لوحة لك ولموظفينك</b><span>تنبيه بكل طلب جديد، وطلباتك ومحادثاتك وتقرير الشهر في مكان واحد.</span></div>
     <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span><b>عربي وإنجليزي</b><span>يرد على كل عميل بلغته.</span></div>
     <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span><b>تطبيق باسمك</b><span>إذا تبي، تطبيق بشعارك في المتاجر على نفس الطلبات.</span></div>
-  </div>
-</section>
-
-<section id="need">
-  <span class="eyebrow">منك بس</span>
-  <h2>وش نحتاج منك</h2>
-  <div class="need">
-    <ul>
-      <li><svg class="ic"><use href="#i-check"/></svg>رقم واتساب نشاطك</li>
-      <li><svg class="ic"><use href="#i-check"/></svg>صورة قائمة خدماتك وأسعارك</li>
-      <li><svg class="ic"><use href="#i-check"/></svg>أوقات العمل</li>
-      <li><svg class="ic"><use href="#i-check"/></svg>موقعك، أو المدن اللي تخدمها</li>
-      <li><svg class="ic"><use href="#i-check"/></svg>شعارك</li>
-      <li><svg class="ic"><use href="#i-check"/></svg>السجل التجاري</li>
-    </ul>
-    <div class="rest"><b>والباقي كله علينا</b><span>نجهّزه كامل على رقمك، ونسلّمك إياه شغّال.</span><a class="btn" href="#signup">اطلبه لنشاطك</a></div>
   </div>
 </section>
 
@@ -538,175 +494,6 @@ section.hero{border-top:0}
   }
   show(0);
 })();
-</script>
-<script type="module">
-/* خلفية ثلاثية الأبعاد بأسلوب «الزجاج السائل» (2026-10-11، طلبها: «شكل الثري دي قديم، خله أجمل وأفضل»):
-   فقاعة محادثة وعلامة صح وتقويم وبطاقة دفع من زجاج شفاف لامع، وفي قلب كل وحدة ضوء ملوّن (نقاط الكتابة، الصح، أيام التقويم)،
-   فوق خلفية متدرجة ناعمة تتحرك ببطء ويكسرها الزجاج. تطفو حول الجوال وبعيد عن النص، تميل مع الماوس، وتختفي مع النزول.
-   لمن يفضّل تقليل الحركة: صورة ثابتة. ولو ما فيه WebGL: الهالات (aurora) تبقى. */
-const still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-const host = document.getElementById('bg3d'), aur = document.querySelector('.aurora');
-const dark = () => document.documentElement.getAttribute('data-theme') === 'dark' || (matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.getAttribute('data-theme') !== 'light');
-const fade = () => { const f = Math.max(0, 1 - scrollY / (innerHeight * .8)); host.style.opacity = f; if (aur) aur.style.opacity = f * (dark() ? .7 : .55); return f; };
-fade();
-try {
-  const [THREE, { RoomEnvironment }, { RoundedBoxGeometry }] = await Promise.all([import('three'), import('three/addons/environments/RoomEnvironment.js'), import('three/addons/geometries/RoundedBoxGeometry.js')]);
-  const narrowScreen = () => innerWidth / innerHeight < .9;
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, narrowScreen() ? 1.25 : 1.5));
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  if ('transmissionResolutionScale' in renderer) renderer.transmissionResolutionScale = narrowScreen() ? .6 : .85;
-  host.appendChild(renderer.domElement);
-  const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), .03).texture;
-  const cam = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, .1, 100); cam.position.set(0, 0, 18);
-  const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(-5, 8, 10); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xb4b0ff, 1.2); rim.position.set(6, -3, -4); scene.add(rim);
-
-  // ── الخلفية: تدرّج ناعم بهالات تتحرك ببطء (الزجاج يكسرها، فلازم تكون داخل المشهد) ──
-  const PAL = {
-    light: { base: '#F3F2FE', c1: '#6D6AF5', c2: '#B49CFB', c3: '#5EE0C8', c4: '#FFD66B', k: [.62, .5, .36, .34] },
-    dark: { base: '#0A0A17', c1: '#4338CA', c2: '#7C3AED', c3: '#0E8F7E', c4: '#B7791F', k: [.6, .5, .32, .26] },
-  };
-  const U = { uTime: { value: 0 }, uAspect: { value: 1 }, uBase: { value: new THREE.Color() }, uC1: { value: new THREE.Color() }, uC2: { value: new THREE.Color() }, uC3: { value: new THREE.Color() }, uC4: { value: new THREE.Color() }, uK: { value: new THREE.Vector4() } };
-  const setPal = () => { const p = dark() ? PAL.dark : PAL.light; U.uBase.value.set(p.base); U.uC1.value.set(p.c1); U.uC2.value.set(p.c2); U.uC3.value.set(p.c3); U.uC4.value.set(p.c4); U.uK.value.set(...p.k); renderer.toneMappingExposure = dark() ? 1 : 1.05; };
-  setPal();
-  const back = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
-    uniforms: U, depthWrite: false, toneMapped: false,
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: `
-      uniform float uTime, uAspect; uniform vec3 uBase, uC1, uC2, uC3, uC4; uniform vec4 uK; varying vec2 vUv;
-      float blob(vec2 p, vec2 c, float r){ float d = length(p - c) / r; return exp(-d * d * 2.2); }
-      void main(){
-        vec2 p = vec2(vUv.x * uAspect, vUv.y); float t = uTime * .06;
-        vec3 col = uBase;
-        col = mix(col, uC1, blob(p, vec2((.18 + .05 * sin(t * 1.3)) * uAspect, .74 + .05 * cos(t * 1.1)), .62) * uK.x);
-        col = mix(col, uC2, blob(p, vec2((.42 + .06 * cos(t * .9)) * uAspect, .30 + .06 * sin(t * 1.4)), .56) * uK.y);
-        col = mix(col, uC3, blob(p, vec2((.08 + .04 * sin(t * .7)) * uAspect, .16 + .05 * cos(t * 1.2)), .44) * uK.z);
-        col = mix(col, uC4, blob(p, vec2((.86 + .05 * sin(t * 1.0)) * uAspect, .90 + .04 * cos(t * .8)), .40) * uK.w);
-        float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
-        col += (n - .5) * .014;
-        gl_FragColor = vec4(col, 1.0);
-        #include <colorspace_fragment>
-      }`,
-  }));
-  back.position.z = -14; back.renderOrder = -1; scene.add(back);
-
-  // ── المواد: زجاج لامع، وضوء ملوّن في القلب ──
-  const glass = (tint = 0xffffff, o = {}) => new THREE.MeshPhysicalMaterial({
-    color: 0xffffff, transmission: 1, thickness: 1.2, roughness: .08, ior: 1.42, metalness: 0,
-    iridescence: .6, iridescenceIOR: 1.32, iridescenceThicknessRange: [140, 520],
-    clearcoat: 1, clearcoatRoughness: .04, specularIntensity: 1, envMapIntensity: 1.25,
-    attenuationColor: new THREE.Color(tint), attenuationDistance: 2.2, ...o,
-  });
-  const glow = (color, k = 2.4) => new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: k, roughness: .4 });
-  const C = { green: 0x25D366, indigo: 0x6366F1, violet: 0xA78BFA, gold: 0xFBBF24, white: 0xFFFFFF, teal: 0x2DD4BF };
-
-  // فقاعة محادثة بذيل، وفي قلبها نقاط «يكتب…» تضوي
-  function bubble(tint, dots) {
-    const w = 2.6, h = 1.7, r = .62, sh = new THREE.Shape();
-    sh.moveTo(-w / 2 + .95, -h / 2); sh.lineTo(w / 2 - r, -h / 2); sh.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
-    sh.lineTo(w / 2, h / 2 - r); sh.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); sh.lineTo(-w / 2 + r, h / 2);
-    sh.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); sh.lineTo(-w / 2, -h / 2 + .32); sh.lineTo(-w / 2 - .4, -h / 2 - .6); sh.lineTo(-w / 2 + .95, -h / 2);
-    const geo = new THREE.ExtrudeGeometry(sh, { depth: .5, bevelEnabled: true, bevelThickness: .24, bevelSize: .2, bevelSegments: 10, curveSegments: 32 }); geo.center();
-    const g = new THREE.Group(); g.add(new THREE.Mesh(geo, glass(tint)));
-    const m = glow(dots, 2.2);
-    for (const x of [-.58, 0, .58]) { const d = new THREE.Mesh(new THREE.SphereGeometry(.17, 28, 18), m); d.position.set(x, .06, 0); g.add(d); }
-    g.userData.dots = g.children.slice(1);
-    return g;
-  }
-  // علامة صح مضيئة داخل قرص زجاج
-  function badge(tint, color) {
-    const g = new THREE.Group();
-    const disk = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, .5, 96, 1), glass(tint)); disk.rotation.x = Math.PI / 2; g.add(disk);
-    const a = new THREE.Vector3(-.42, .02, 0), b = new THREE.Vector3(-.1, -.3, 0), c = new THREE.Vector3(.46, .34, 0);
-    const p = new THREE.CurvePath(); p.add(new THREE.LineCurve3(a, b)); p.add(new THREE.LineCurve3(b, c));
-    const m = glow(color, 2.6);
-    g.add(new THREE.Mesh(new THREE.TubeGeometry(p, 48, .11, 16, false), m));
-    for (const v of [a, b, c]) { const cap = new THREE.Mesh(new THREE.SphereGeometry(.11, 20, 14), m); cap.position.copy(v); g.add(cap); }
-    return g;
-  }
-  // تقويم زجاج: شريط علوي ذهبي وأيام تضوي، ويوم محجوز أخضر
-  function calendar(tint) {
-    const g = new THREE.Group();
-    g.add(new THREE.Mesh(new RoundedBoxGeometry(2, 2, .5, 8, .3), glass(tint)));
-    const top = new THREE.Mesh(new RoundedBoxGeometry(1.5, .26, .14, 4, .07), glow(C.gold, 1.8)); top.position.set(0, .6, 0); g.add(top);
-    const day = glow(C.white, 1.1), booked = glow(C.green, 2.4);
-    for (let r = 0; r < 2; r++) for (let k = 0; k < 3; k++) { const c = new THREE.Mesh(new RoundedBoxGeometry(.32, .24, .1, 3, .05), r === 1 && k === 1 ? booked : day); c.position.set(-.46 + k * .46, .06 - r * .42, 0); g.add(c); }
-    return g;
-  }
-  // بطاقة دفع زجاج بشريط وشريحة
-  function card(tint) {
-    const g = new THREE.Group();
-    g.add(new THREE.Mesh(new RoundedBoxGeometry(2.5, 1.58, .16, 6, .14), glass(tint, { thickness: .5 })));
-    const stripe = new THREE.Mesh(new RoundedBoxGeometry(2.1, .14, .05, 2, .03), glow(C.violet, 1.6)); stripe.position.set(0, -.36, 0); g.add(stripe);
-    const chip = new THREE.Mesh(new RoundedBoxGeometry(.42, .32, .05, 3, .06), glow(C.gold, 1.6)); chip.position.set(-.72, .22, 0); g.add(chip);
-    return g;
-  }
-  const orb = (tint, rad) => new THREE.Mesh(new THREE.SphereGeometry(rad, 64, 40), glass(tint, { thickness: rad * 1.6 }));
-  const ring = (tint) => new THREE.Mesh(new THREE.TorusGeometry(.7, .2, 32, 96), glass(tint, { thickness: .5 }));
-  const pill = (tint) => new THREE.Mesh(new THREE.CapsuleGeometry(.36, 1.3, 12, 32), glass(tint, { thickness: .7 }));
-  const spark = (color) => new THREE.Mesh(new THREE.IcosahedronGeometry(.13, 1), glow(color, 3));
-
-  // الأماكن نسبةً لعرض الشاشة (حول الجوال وبعيد عن النص)، وعلى الجوال أقل وأصغر وعلى الأطراف
-  const group = new THREE.Group(); scene.add(group);
-  const items = [];
-  const add = (obj, pos, scale, rot, mobilePos, mobileScale) => { group.add(obj); items.push({ obj, pos, scale, rot, mobilePos, mobileScale, ph: Math.random() * 6, sp: .45 + Math.random() * .45 }); };
-  add(bubble(0xd9fbe6, C.green), [-.92, .42, -1.2], .98, [.16, .5, -.1], [-.84, .84, -1], .24);
-  add(badge(0xe0e7ff, C.indigo), [.1, .66, -.6], .52, [.15, -.35, .08], [.86, .84, -1], .2);
-  add(calendar(0xfff7d6), [-.92, -.46, -1.6], .82, [.12, .55, .1], null, 0);
-  add(card(0xede9fe), [.86, .7, -3.4], .62, [.2, -.5, .12], null, 0);
-  add(orb(0xe0e7ff, .52), [.32, -.88, -1.6], 1, [0, 0, 0], [-.88, -.06, -3.2], .55);
-  add(ring(0xfde7ff), [.44, .74, -3], .72, [.9, .3, 0], [.04, .85, -1.4], .22);
-  add(pill(0xccfbf1), [1, -.84, -4.2], .9, [0, 0, .9], null, 0);
-  add(orb(0xfff1c2, .28), [-.66, .78, -1.4], 1, [0, 0, 0], null, 0);
-  add(spark(C.gold), [-.62, -.9, -.8], 1, [0, 0, 0], null, 0);
-  add(spark(C.violet), [.66, .8, -3.2], .9, [0, 0, 0], null, 0);
-  add(spark(C.green), [-1.02, .12, -2.4], .8, [0, 0, 0], null, 0);
-
-  function layout() {
-    cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight);
-    const halfH = Math.tan(THREE.MathUtils.degToRad(19)) * 18, halfW = halfH * cam.aspect, narrow = cam.aspect < .9;
-    // الخلفية تغطي الشاشة كاملة عند عمقها
-    const bh = Math.tan(THREE.MathUtils.degToRad(19)) * (18 + 14) * 2 * 1.25; back.scale.set(bh * cam.aspect, bh, 1); U.uAspect.value = cam.aspect;
-    for (const it of items) {
-      const p = narrow ? it.mobilePos : it.pos, sc = narrow ? it.mobileScale : it.scale;
-      it.obj.visible = !!p && sc > 0;
-      if (!p) continue;
-      it.base = new THREE.Vector3(p[0] * halfW, p[1] * halfH, p[2]);
-      it.obj.position.copy(it.base); it.obj.scale.setScalar(sc); it.obj.rotation.set(it.rot[0], it.rot[1], it.rot[2]);
-    }
-  }
-  layout();
-  if (aur) aur.style.visibility = 'hidden';
-  addEventListener('resize', () => { layout(); if (still) renderer.render(scene, cam); });
-  const mq = matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', () => { setPal(); if (still) renderer.render(scene, cam); });
-  let mx = 0, my = 0, tx = 0, ty = 0, t = 0, onScreen = true;
-  addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
-  addEventListener('scroll', () => { onScreen = fade() > 0; }, { passive: true });
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) onScreen = fade() > 0; });
-  function draw() {
-    mx += (tx - mx) * .045; my += (ty - my) * .045;
-    group.rotation.y = mx * .14; group.rotation.x = -my * .09; group.position.y = scrollY * .006;
-    U.uTime.value = t;
-    for (const it of items) {
-      if (!it.base) continue;
-      it.obj.position.y = it.base.y + Math.sin(t * it.sp + it.ph) * .26;
-      it.obj.position.x = it.base.x + Math.cos(t * it.sp * .6 + it.ph) * .08;
-      it.obj.rotation.y = it.rot[1] + Math.sin(t * .33 * it.sp + it.ph) * .34;
-      it.obj.rotation.x = it.rot[0] + Math.cos(t * .29 * it.sp + it.ph) * .15;
-      // نقاط «يكتب…» تنبض بالدور
-      if (it.obj.userData.dots) it.obj.userData.dots.forEach((d, i) => { const s = 1 + .22 * Math.max(0, Math.sin(t * 3.2 - i * .9)); d.scale.setScalar(s); });
-    }
-    renderer.render(scene, cam);
-  }
-  if (still) { draw(); }
-  else {
-    (function frame() { requestAnimationFrame(frame); if (!onScreen || document.hidden) return; t += .016; draw(); })();
-  }
-} catch (e) { if (aur) aur.style.visibility = ''; console.warn("bg3d", e && e.message); /* بدون مشهد لو ما توفر WebGL، والهالات تبقى */ }
 </script>
 </body>
 </html>
