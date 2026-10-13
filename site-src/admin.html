@@ -53,6 +53,18 @@
 .modes input{position:absolute;opacity:0;pointer-events:none}
 .modes b{font-family:var(--display);font-size:14.5px} .modes span{font-size:12.5px;color:var(--muted)}
 @media (max-width:620px){ .rowline{grid-template-columns:1fr 100px 36px} .staffline{grid-template-columns:1fr} .modes{grid-template-columns:1fr} }
+/* العملاء المحتملين: أنشطة من البحث ورسالة لكل مجال */
+.pf{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr)) auto;gap:8px;align-items:center}
+.pf .check{font-size:13.5px;white-space:nowrap}
+.item.pro{min-width:0}
+.item.pro .pn{font-family:var(--display);font-size:16px}
+.item.pro .badge{white-space:normal}
+.fit{font-size:10px;letter-spacing:2px;color:var(--accent);white-space:nowrap} .fit i{font-style:normal;color:var(--line)} .fit em{font-style:normal;font-size:12px;letter-spacing:0;color:var(--muted)}
+.pnote{font-size:13.5px;padding:7px 10px}
+.pains{margin:0;padding-inline-start:18px;font-size:13.5px;color:var(--muted)}
+.mbox{display:grid;gap:6px;justify-items:start;min-width:0}
+.mbox pre{margin:0;width:100%;white-space:pre-wrap;word-break:break-word;font:inherit;font-size:14px;background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+@media (max-width:760px){ .pf{grid-template-columns:1fr 1fr} .pf #pQ{grid-column:1/-1} }
 </style>
 </head>
 <body>
@@ -71,8 +83,8 @@
   const sb = I.sb;
   async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
 
-  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '' };
-  const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['deal', 'سير العمل', 'guide']];
+  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '', pros: null, pmsgs: {} };
+  const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['pros', 'العملاء المحتملين', 'users'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['deal', 'سير العمل', 'guide']];
   const PLAN = { bot: 'أتمتة الحجز', bot_pay: 'أتمتة الحجز + الدفع' };
   const BSTATUS = { setup: ['قيد التجهيز', 'b-warn'], live: ['شغّالة', 'b-ok'], paused: ['موقفة', 'b-cancelled'], ended: ['منتهية', 'b-cancelled'] };
   const LSTATUS = { new: ['جديد', 'b-gold'], contacted: ['تواصلنا', 'b-confirmed'], agreed: ['اتفقنا', 'b-arrived'], setup: ['قيد التجهيز', 'b-warn'], live: ['شغّال', 'b-ok'], lost: ['ما تم', 'b-cancelled'] };
@@ -132,12 +144,12 @@
   // ───── الهيكل ─────
   function shell() {
     const nav = TABS.map(([k, t, ic]) => `<a href="#${k}" data-tab="${k}">${icon(ic)}<span>${t}</span>${k === 'leads' ? '<span class="cnt g" id="cntLeads" hidden></span>' : ''}</a>`).join('');
-    const bn = ['home', 'biz', 'new', 'leads', 'more'];
+    const bn = ['home', 'biz', 'pros', 'leads', 'more'];
     $('root').innerHTML = `<div class="app">
       <aside class="side"><div class="brand"><span class="lg">${icon('check')}</span><div><b>احجزلي</b><small>لوحتي</small></div></div><nav class="nav">${nav}</nav>
         <div class="foot"><button class="btn ghost sm" id="sndBtn" type="button"></button></div></aside>
       <div class="main"><header class="top"><div class="grow"><h1 id="tTitle"></h1><div class="sub" id="tSub"></div></div><span class="live" id="live"><i></i><span>مباشر</span></span><button class="ib" id="sndIb" type="button" aria-label="الصوت"></button></header><main class="content" id="view"></main></div>
-      <nav class="bnav">${bn.map((k) => k === 'more' ? `<a href="#more" data-tab="more">${icon('menu')}<span>المزيد</span></a>` : (() => { const t = TABS.find((x) => x[0] === k); return `<a href="#${k}" data-tab="${k}">${icon(t[2])}<span>${t[1]}</span></a>`; })()).join('')}</nav></div>`;
+      <nav class="bnav">${bn.map((k) => k === 'more' ? `<a href="#more" data-tab="more">${icon('menu')}<span>المزيد</span></a>` : (() => { const t = TABS.find((x) => x[0] === k); return `<a href="#${k}" data-tab="${k}">${icon(t[2])}<span>${k === 'pros' ? 'المحتملين' : t[1]}</span></a>`; })()).join('')}</nav></div>`;
     document.querySelectorAll('[data-tab]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.tab); }));
     $('sndBtn').onclick = $('sndIb').onclick = () => { I.toggleAlerts(); paintSnd(); };
     paintSnd(); paintCounts();
@@ -146,14 +158,14 @@
   function paintCounts() { const n = S.leads.filter((l) => l.status === 'new').length; const el = $('cntLeads'); if (el) { el.hidden = !n; el.textContent = n; } }
   function go(tab) {
     if (tab === 'deal') { location.href = 'deal.html'; return; }
-    if (tab === 'more') { const m = I.modal(`<div class="mh"><h3 class="grow">المزيد</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">${['subs', 'onboard', 'deal'].map((k) => { const t = TABS.find((x) => x[0] === k); return `<a class="btn ghost block" href="#${k}" data-go="${k}" style="justify-content:flex-start">${icon(t[2])}${t[1]}</a>`; }).join('')}</div>`); m.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); }); return; }
+    if (tab === 'more') { const m = I.modal(`<div class="mh"><h3 class="grow">المزيد</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">${['new', 'subs', 'onboard', 'deal'].map((k) => { const t = TABS.find((x) => x[0] === k); return `<a class="btn ghost block" href="#${k}" data-go="${k}" style="justify-content:flex-start">${icon(t[2])}${t[1]}</a>`; }).join('')}</div>`); m.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); }); return; }
     I.closeAll(); S.tab = tab; history.replaceState(null, '', '#' + tab);
     document.querySelectorAll('[data-tab]').forEach((a) => a.classList.toggle('on', a.dataset.tab === tab));
     $('tTitle').textContent = (TABS.find((x) => x[0] === tab) || [])[1] || '';
     $('tSub').textContent = '';
     render(); window.scrollTo(0, 0);
   }
-  function render() { ({ home: vHome, biz: vBiz, new: vNew, leads: vLeads, subs: vSubs, onboard: vOnboard }[S.tab] || vHome)($('view')); }
+  function render() { ({ home: vHome, biz: vBiz, new: vNew, leads: vLeads, pros: vPros, subs: vSubs, onboard: vOnboard }[S.tab] || vHome)($('view')); }
   const simUrl = (b) => `sim.html?b=${b.slug}&k=${b.sim_key}`;
   const logo = (b) => b.logo_url ? `<span class="lg"><img src="${esc(b.logo_url)}" alt=""></span>` : `<span class="lg">${esc(I.initials(b.name))}</span>`;
   const mrr = (b) => { const s = S.subs[b.id] || {}; return Number(s.monthly_fee || 0) + Number(s.app_monthly_fee || 0); };
@@ -650,6 +662,129 @@
     if ($('lConv')) $('lConv').onclick = () => { S.prefill = { lead_id: l.id, name: l.business_name, activity: l.activity, city: l.city, contact_name: l.contact_name, phone: l.phone, package: l.package, wants_app: l.wants_app }; go('new'); };
     if ($('lBiz')) $('lBiz').onclick = (e) => { e.preventDefault(); I.closeAll(); go('biz'); setTimeout(() => openBiz(l.business_id), 50); };
     $('lDel').onclick = async () => { if (!confirm('حذف الطلب نهائيًا؟')) return; try { await q1(sb.from('signup_requests').delete().eq('id', l.id).select('id')); S.leads = S.leads.filter((x) => x.id !== l.id); I.closeAll(); render(); paintCounts(); } catch (e) { I.fail(e); } };
+  }
+
+  // ═════ العملاء المحتملين: أنشطة من البحث، ترسلين لكل واحد رسالة مجاله وتتابعين حالته ═════
+  const PST = [['new', 'جديد', 'b-gold'], ['sent', 'أرسلت', 'b-confirmed'], ['replied', 'ردّ', 'b-arrived'], ['hot', 'مهتم', 'b-ok'], ['no', 'ما يبي', 'b-cancelled']];
+  const PF = { q: '', seg: '', city: '', s: '', wa: false, sort: 'fit', shown: 60, view: 'list' };
+  const enDigits = (s) => String(s || '').replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  const waOf = (p) => { const m = /(?:\+?966|00966|0)?(5\d{8})/.exec(enDigits(p).replace(/[\s\-()]/g, '')); return m ? '966' + m[1] : ''; };
+  const pLink = (v, kind) => { v = String(v || '').trim(); if (!v) return ''; if (/^https?:\/\//i.test(v)) return v; const h = v.replace(/^@/, ''); return { ig: 'https://www.instagram.com/' + h, tt: 'https://www.tiktok.com/@' + h, sc: 'https://www.snapchat.com/add/' + h, web: 'https://' + h }[kind] || ''; };
+  const pMsg = (l, field) => { const m = S.pmsgs[l.seg_key] || S.pmsgs.general; return m ? String(m[field] || '').split('{اسم_النشاط}').join(l.name).split('{رابط_التجربة}').join(m.demo || '') : ''; };
+  async function loadPros() {
+    const all = [];
+    for (let from = 0; ; from += 1000) { const rows = await q1(sb.from('prospects').select('*').order('id').range(from, from + 999)); all.push(...rows); if (rows.length < 1000) break; }
+    const msgs = await q1(sb.from('prospect_msgs').select('*').order('sort'));
+    S.pmsgs = Object.fromEntries(msgs.map((m) => [m.key, m])); S.pros = all;
+  }
+  function vPros(v) {
+    if (!S.pros) {
+      v.innerHTML = `<div class="empty">${icon('users')}<b>نحمّل القائمة…</b></div>`;
+      if (!S.prosP) S.prosP = loadPros().finally(() => { S.prosP = null; });
+      S.prosP.then(() => { if (S.tab === 'pros') render(); }, (e) => { console.error(e); if (S.tab !== 'pros') return; v.innerHTML = `<div class="empty">${icon('users')}<b>ما قدرنا نحمّل القائمة</b><button class="btn ghost" id="pRetry" type="button">${icon('refresh')}جرّب مرة ثانية</button></div>`; $('pRetry').onclick = render; });
+      return;
+    }
+    const segs = {}, cities = {};
+    S.pros.forEach((l) => { (segs[l.seg_key] = segs[l.seg_key] || { name: l.segment, n: 0 }).n++; cities[l.city] = (cities[l.city] || 0) + 1; });
+    $('tSub').textContent = `${S.pros.length} نشاط · ${Object.keys(segs).length} مجال · ${S.pros.filter((l) => waOf(l.phone)).length} برقم جوال`;
+    v.innerHTML = `<div class="stack"><div class="row"><div class="seg" id="pView"><button type="button" data-v="list" class="${PF.view === 'list' ? 'on' : ''}">العملاء</button><button type="button" data-v="msgs" class="${PF.view === 'msgs' ? 'on' : ''}">الرسائل</button></div></div><div class="stack" id="pBody"></div></div>`;
+    v.querySelectorAll('#pView [data-v]').forEach((b) => b.onclick = () => { PF.view = b.dataset.v; render(); });
+    if (PF.view === 'msgs') return prosMsgs($('pBody'));
+    const opts = (o, cur) => o.map(([k, t]) => `<option value="${esc(k)}" ${cur === k ? 'selected' : ''}>${esc(t)}</option>`).join('');
+    $('pBody').innerHTML = `<div class="row" id="pStats"></div>
+      <div class="pf"><input id="pQ" type="search" placeholder="ابحث بالاسم أو الحساب أو الرقم" value="${esc(PF.q)}">
+        <select id="pSeg"><option value="">كل المجالات</option>${opts(Object.entries(segs).sort((a, b) => b[1].n - a[1].n).map(([k, x]) => [k, `${x.name} (${x.n})`]), PF.seg)}</select>
+        <select id="pCity"><option value="">كل المدن</option>${opts(Object.entries(cities).sort((a, b) => b[1] - a[1]).map(([c, n]) => [c, `${c} (${n})`]), PF.city)}</select>
+        <select id="pSort">${opts([['fit', 'الأنسب أول'], ['name', 'بالاسم']], PF.sort)}</select>
+        <label class="check"><input type="checkbox" id="pWa" ${PF.wa ? 'checked' : ''}>برقم جوال</label></div>
+      <div class="list" id="pList"></div><button class="btn ghost block" id="pMore" type="button" hidden></button>`;
+    const set = (k, val) => { PF[k] = val; PF.shown = 60; paintPros(); };
+    $('pQ').oninput = I.debounce((e) => set('q', enDigits(e.target.value.trim()).toLowerCase()), 200);
+    $('pSeg').onchange = (e) => set('seg', e.target.value); $('pCity').onchange = (e) => set('city', e.target.value);
+    $('pSort').onchange = (e) => set('sort', e.target.value); $('pWa').onchange = (e) => set('wa', e.target.checked);
+    $('pStats').onclick = (e) => { const b = e.target.closest('[data-s]'); if (b) set('s', b.dataset.s); };
+    $('pMore').onclick = () => { PF.shown += 60; paintPros(); };
+    $('pList').onclick = (e) => {
+      const card = e.target.closest('[data-pro]'), l = card && S.pros.find((x) => x.id === card.dataset.pro); if (!l) return;
+      const b = e.target.closest('[data-ps]');
+      if (b) { if (b.dataset.ps !== l.status) savePro(l, { status: b.dataset.ps, status_at: new Date().toISOString() }, card); return; }
+      if (e.target.closest('[data-pa=copy]')) I.copy(pMsg(l, l.status === 'sent' ? 'followup' : 'message'), 'انتسخت الرسالة ✓');
+    };
+    $('pList').onchange = (e) => {
+      if (!e.target.matches('[data-pn]')) return;
+      const l = S.pros.find((x) => x.id === e.target.closest('[data-pro]').dataset.pro); if (l) savePro(l, { note: e.target.value.trim().slice(0, 500) });
+    };
+    paintPros();
+  }
+  function prosFiltered() {
+    const q = PF.q;
+    const out = S.pros.filter((l) => (!PF.seg || l.seg_key === PF.seg) && (!PF.city || l.city === PF.city) && (!PF.s || l.status === PF.s) && (!PF.wa || waOf(l.phone))
+      && (!q || [l.name, l.instagram, l.tiktok, l.snapchat, l.district, enDigits(l.phone)].join(' ').toLowerCase().includes(q)));
+    return out.sort(PF.sort === 'name' ? (a, b) => a.name.localeCompare(b.name, 'ar')
+      : (a, b) => (b.checked - a.checked) || (b.fit - a.fit) || (!!waOf(b.phone) - !!waOf(a.phone)) || a.name.localeCompare(b.name, 'ar'));
+  }
+  function paintProStats() {
+    const cnt = {}; S.pros.forEach((l) => { cnt[l.status] = (cnt[l.status] || 0) + 1; });
+    $('pStats').innerHTML = `<button class="chip ${!PF.s ? 'on' : ''}" data-s="" type="button">الكل<span class="n">${S.pros.length}</span></button>`
+      + PST.map(([k, t]) => `<button class="chip ${PF.s === k ? 'on' : ''}" data-s="${k}" type="button">${t}<span class="n">${cnt[k] || 0}</span></button>`).join('');
+  }
+  function paintPros() {
+    if (!$('pList')) return;
+    const rows = prosFiltered();
+    paintProStats();
+    $('pList').innerHTML = rows.slice(0, PF.shown).map(proCard).join('') || `<div class="empty">${icon('search')}<b>ما فيه نتائج بهالفلاتر</b></div>`;
+    const more = $('pMore'); more.hidden = rows.length <= PF.shown; more.textContent = `عرض المزيد (${rows.length - PF.shown})`;
+  }
+  function proCard(l) {
+    const st = PST.find((x) => x[0] === l.status) || PST[0], wa = waOf(l.phone), fit = Math.max(0, Math.min(5, l.fit || 0)), follow = l.status === 'sent';
+    const links = [['انستقرام', pLink(l.instagram, 'ig')], ['تيك توك', pLink(l.tiktok, 'tt')], ['سناب', pLink(l.snapchat, 'sc')], ['الموقع', pLink(l.website, 'web')], ['الخريطة', pLink(l.maps_url, 'web')], ['المصدر', pLink(l.source_url, 'web')]].filter((x) => x[1]);
+    const place = [l.city, l.district && !l.city.includes(l.district) && !l.district.includes(l.city) ? l.district : ''].filter(Boolean).join(' · ');
+    return `<div class="item pro" data-pro="${esc(l.id)}">
+      <div class="h"><b class="pn">${esc(l.name)}</b><span class="badge ${st[2]}">${st[1]}</span><span class="badge plain">${esc(l.segment)}</span>${l.checked ? '' : '<span class="badge b-cancelled plain">ما تأكدنا منه</span>'}<span class="sp"></span>${fit ? `<span class="fit" title="مدى المناسبة ${fit} من 5"><em>مناسب</em> ${'●'.repeat(fit)}<i>${'●'.repeat(5 - fit)}</i></span>` : ''}</div>
+      <div class="meta">${place ? `<span>${icon('pin')}${esc(place)}</span>` : ''}${l.followers ? `<span>${icon('users')}${esc(l.followers)}</span>` : ''}${l.phone ? `<span class="ltr">${icon('phone')}${esc(l.phone)}</span>` : ''}</div>
+      ${l.why_fit ? `<p class="small muted">${esc(l.why_fit)}${l.how_they_take_orders ? ` · يستقبل الطلبات: ${esc(l.how_they_take_orders)}` : ''}</p>` : ''}
+      ${links.length ? `<div class="chks">${links.map(([t, u]) => `<a class="chk" href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`).join('')}</div>` : ''}
+      <div class="row">${wa ? `<a class="btn sm" href="https://wa.me/${wa}?text=${encodeURIComponent(pMsg(l, follow ? 'followup' : 'message'))}" target="_blank" rel="noopener">${icon('wa')}${follow ? 'أرسل المتابعة' : 'واتساب برسالته'}</a>` : ''}<button class="btn sm ghost" data-pa="copy" type="button">${icon('copy')}${follow ? 'انسخ المتابعة' : 'انسخ الرسالة'}</button><span class="sp"></span>
+        <div class="seg" role="group" aria-label="الحالة">${PST.map(([k, t]) => `<button type="button" data-ps="${k}" class="${l.status === k ? 'on' : ''}" aria-pressed="${l.status === k}">${t}</button>`).join('')}</div></div>
+      <input class="pnote" data-pn placeholder="ملاحظة" maxlength="500" value="${esc(l.note || '')}">
+    </div>`;
+  }
+  async function savePro(l, patch, card) {
+    const old = { ...l }; Object.assign(l, patch);
+    if (card) { card.outerHTML = proCard(l); paintProStats(); }
+    try { await q1(sb.from('prospects').update(patch).eq('id', l.id).select('id')); if (!card) I.toast('انحفظت ✓'); }
+    catch (e) { Object.assign(l, old); I.fail(e); paintPros(); }
+  }
+  function prosMsgs(box) {
+    const n = {}; S.pros.forEach((l) => { n[l.seg_key] = (n[l.seg_key] || 0) + 1; });
+    const keys = Object.keys(S.pmsgs).sort((a, b) => S.pmsgs[a].sort - S.pmsgs[b].sort);
+    box.innerHTML = `<p class="hint">اسم النشاط ورابط التجربة ينحطون تلقائيًا لما ترسلين من بطاقة النشاط.</p><div class="list">${keys.map((k) => { const m = S.pmsgs[k]; return `<div class="item" data-mk="${esc(k)}">
+      <div class="h"><b class="pn" style="font-family:var(--display);font-size:16px">${esc(m.segment)}</b>${n[k] ? `<span class="badge plain">${n[k]} نشاط</span>` : ''}<span class="sp"></span><button class="btn sm ghost" data-me type="button">${icon('edit')}عدّل</button></div>
+      ${(m.pains || []).length ? `<ul class="pains">${m.pains.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
+      <div class="mbox"><span class="tiny">الرسالة الأولى</span><pre>${esc(m.message)}</pre><button class="btn sm" data-mc="message" type="button">${icon('copy')}انسخ</button></div>
+      <div class="mbox"><span class="tiny">المتابعة بعد يومين أو ثلاث</span><pre>${esc(m.followup)}</pre><button class="btn sm ghost" data-mc="followup" type="button">${icon('copy')}انسخ</button></div>
+      ${m.opener_tip ? `<p class="small muted">💡 ${esc(m.opener_tip)}</p>` : ''}</div>`; }).join('')}</div>`;
+    box.onclick = (e) => {
+      const it = e.target.closest('[data-mk]'), m = it && S.pmsgs[it.dataset.mk]; if (!m) return;
+      const c = e.target.closest('[data-mc]'); if (c) { I.copy(String(m[c.dataset.mc] || '').split('{رابط_التجربة}').join(m.demo || ''), 'انتسخت ✓'); return; }
+      if (e.target.closest('[data-me]')) editProMsg(m, () => prosMsgs(box));
+    };
+  }
+  function editProMsg(m, done) {
+    const md = I.modal(`<div class="mh"><h3 class="grow">${esc(m.segment)}</h3><button class="ib" data-close type="button">${icon('x')}</button></div><div class="mb">
+      <label class="f"><span>الرسالة الأولى</span><textarea id="emM" rows="9">${esc(m.message)}</textarea></label>
+      <label class="f"><span>المتابعة</span><textarea id="emF" rows="5">${esc(m.followup)}</textarea></label>
+      <label class="f"><span>رابط التجربة</span><input id="emD" class="ltr" value="${esc(m.demo)}"></label>
+      <p class="tiny">اكتبي {اسم_النشاط} و{رابط_التجربة} في المكان اللي تبينهم فيه.</p></div>
+      <div class="mf"><button class="btn ghost" data-close type="button">إلغاء</button><button class="btn" id="emS" type="button">${icon('check')}احفظ</button></div>`);
+    md.querySelector('#emS').onclick = async (e) => {
+      const patch = { message: md.querySelector('#emM').value.trim(), followup: md.querySelector('#emF').value.trim(), demo: md.querySelector('#emD').value.trim() };
+      if (!patch.message) return I.toast('الرسالة فاضية', true);
+      if (patch.demo && !/^https:\/\//i.test(patch.demo)) return I.toast('رابط التجربة لازم يبدأ بـ https://', true);
+      e.target.disabled = true;
+      try { await q1(sb.from('prospect_msgs').update(patch).eq('key', m.key).select('key')); Object.assign(m, patch); I.closeAll(); I.toast('انحفظت ✓'); done(); }
+      catch (x) { I.fail(x); e.target.disabled = false; }
+    };
   }
 
   // ═════ الاشتراكات ═════
