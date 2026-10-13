@@ -38,7 +38,8 @@ section.hero{border-top:0}
 .btn.ghost{background:transparent;color:var(--fg);border:2px solid var(--line)}
 .btn.ghost:hover{background:var(--card)}
 .btn.sm{padding:9px 16px;font-size:15px;border-radius:11px}
-.btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #4338CA;outline-offset:2px}
+.hero :focus-visible{outline-color:var(--hl)}
 .ic{width:22px;height:22px;flex:none}
 .tiny{color:var(--muted);font-size:13px}
 /* الشريط العلوي */
@@ -143,7 +144,7 @@ section.hero{border-top:0}
 .lead-form .f{display:grid;gap:6px;min-width:0} .lead-form .wide{grid-column:1/-1}
 .lead-form label,.lead-form legend{font-size:14px;color:var(--muted)}
 .lead-form input,.lead-form select,.lead-form textarea{width:100%;font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
-.lead-form input:focus,.lead-form select:focus,.lead-form textarea:focus{outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:1px}
+.lead-form input:focus,.lead-form select:focus,.lead-form textarea:focus{outline:2px solid #4338CA;outline-offset:1px}
 .lead-form fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
 .lead-form .opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--fg);font-size:15px}
 .lead-form .opt input{width:auto;margin:0} .lead-form .opt b{font-family:var(--display)}
@@ -171,14 +172,15 @@ section{border-top:0}
 .hero{position:relative;isolation:isolate;margin-top:18px;padding:56px clamp(20px,5vw,56px);border-radius:34px;background:var(--grad);color:#fff;min-height:calc(100vh - 98px);box-shadow:0 40px 80px -50px rgba(76,29,149,.8)}
 .hero h1{color:#fff} .hero h1 .hl{color:var(--hl)}
 .hero .sub{color:rgba(255,255,255,.88)}
-.hero .pillbar{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff}
+.hero .pillbar{background:rgba(30,10,80,.28);border:1px solid rgba(255,255,255,.3);color:#fff;width:fit-content;white-space:normal}
+.hero .copy{grid-template-columns:minmax(0,1fr)}
 .hero .trust{color:rgba(255,255,255,.9)} .hero .trust .ic{color:var(--hl)}
 .hero .btn{background:#fff;color:#4338CA;box-shadow:0 12px 28px -12px rgba(30,10,70,.6)}
 .hero .btn:hover{background:#F5F3FF}
 .hero .btn.ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.55);box-shadow:none}
 .hero .btn.ghost:hover{background:rgba(255,255,255,.18)}
 .hero .demo-cap{color:rgba(255,255,255,.88)}
-.hero .scn button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.32);color:#fff}
+.hero .scn button{background:rgba(30,10,80,.26);border-color:rgba(255,255,255,.32);color:#fff}
 .hero .scn button:hover{border-color:#fff;background:rgba(255,255,255,.22)}
 .hero .scn button[aria-pressed="true"]{background:#fff;border-color:#fff;color:#4338CA}
 .hero .phone{box-shadow:0 50px 90px -30px rgba(20,6,60,.75),inset 0 0 0 1px rgba(255,255,255,.08),0 0 0 1.5px #0a0a0c}
@@ -192,9 +194,103 @@ section{border-top:0}
 #signup h2{color:#fff} #signup > .sub{color:rgba(255,255,255,.88)}
 #signup .lead-form{border:0;box-shadow:0 30px 60px -36px rgba(20,6,60,.8)}
 #signup .done{background:#fff;color:var(--fg)}
-@media (max-width:900px){ .hero{min-height:0;padding:36px 22px 30px;border-radius:28px} }
+@media (max-width:900px){ .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding:36px 22px 30px;border-radius:28px} }
 @media (max-width:620px){ .hero{margin-top:12px;padding:30px 18px 26px;border-radius:24px} #signup{padding:32px 18px;border-radius:24px} }
+/* الحركات: ظهور مع النزول، عبارة العنوان تتبدّل وتحتها خط يترسم، شريط مجالات يمشي، ومسار الطلب بخطوات تضوي وفقاعات تطلع. كلها تتوقف لمن يفضّل تقليل الحركة */
+.js [data-rv]{opacity:0;translate:0 26px;transition:opacity .75s cubic-bezier(.2,.7,.2,1),translate .75s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .offer div[data-rv]{transition:opacity .75s cubic-bezier(.2,.7,.2,1),translate .75s cubic-bezier(.2,.7,.2,1),transform .18s,box-shadow .18s;transition-delay:var(--d,0s),var(--d,0s),0s,0s}
+@media print{ .js [data-rv]{opacity:1!important;translate:none!important;transition:none!important} }
+.js [data-rv].in{opacity:1;translate:none}
+.topbar{transition:box-shadow .25s} .topbar.sc{box-shadow:0 10px 28px -20px rgba(40,20,90,.5)}
+.btn{position:relative;overflow:hidden}
+.btn.shine::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);transform:translateX(130%);animation:shine 5s 1.8s ease-in-out infinite}
+.hero .btn.shine::after{background:linear-gradient(110deg,transparent 30%,rgba(139,92,246,.28) 50%,transparent 70%)}
+@keyframes shine{0%{transform:translateX(130%)}28%,100%{transform:translateX(-130%)}}
+.offer .oi{transition:transform .35s cubic-bezier(.2,.9,.3,1.4)} .offer div:hover .oi{transform:rotate(-8deg) scale(1.1)}
+/* عبارة العنوان */
+.rot{display:inline-grid;position:relative;vertical-align:bottom;padding-bottom:.14em}
+.rot > span{grid-area:1/1;justify-self:start;align-self:end;position:relative;white-space:nowrap;color:var(--hl);transition:opacity .4s,transform .55s cubic-bezier(.2,.8,.2,1)}
+.rot > span.on{transition-delay:.2s}
+.rot > span:not(.on){opacity:0;transform:translateY(.5em)}
+.rot > span.out{transform:translateY(-.5em);transition-duration:.22s,.35s;transition-delay:0s}
+.rot svg{position:absolute;inset-inline:0;bottom:-.24em;width:100%;height:.26em;overflow:visible;clip-path:inset(-8px -8px -8px 100%)}
+.rot svg path{fill:none;stroke:var(--hl);stroke-width:5;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.rot > span.on svg{animation:drawLine .9s .45s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes drawLine{to{clip-path:inset(-8px -8px -8px -8px)}}
+@media (min-width:901px) and (max-width:1100px){ .hero h1{font-size:46px} }
+@media (max-width:359px){ .hero h1{font-size:30px} }
+/* شريط المجالات */
+.strip{margin-top:30px;display:grid;gap:12px}
+.strip .cap{text-align:center;color:var(--muted);font-size:14.5px;font-weight:600}
+.mq{overflow:hidden;padding:6px 0 14px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.mq .track{display:flex;gap:0;width:max-content;animation:marq 46s linear infinite}
+.mq:hover .track,.mq:focus-within .track,.mq.stop .track{animation-play-state:paused}
+.mq span{margin-inline-end:10px;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:15px;white-space:nowrap;box-shadow:0 8px 18px -14px rgba(76,29,149,.45)}
+@keyframes marq{to{transform:translateX(50%)}}
+/* مسار الطلب */
+.flow{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;margin-top:24px;align-items:center}
+.steps{display:grid;gap:10px}
+.st{position:relative;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;text-align:start;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;cursor:pointer;font:inherit;color:var(--fg);overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.st i{font-style:normal;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--soft);color:#6D28D9;font-family:var(--display);font-weight:900;font-size:16px;transition:background .3s,color .3s}
+.st b{display:block;font-family:var(--display);font-size:17px;line-height:34px}
+.st small{display:block;color:var(--muted);font-size:14.5px;line-height:1.7;max-height:0;opacity:0;overflow:hidden;transition:max-height .4s,opacity .4s}
+.st:hover{border-color:#C4B5FD}
+.st.on{border-color:#7C3AED;box-shadow:0 18px 40px -26px rgba(76,29,149,.6)}
+.st.on i{background:linear-gradient(135deg,#4F46E5,#C026D3);color:#fff}
+.st.on small{max-height:90px;opacity:1}
+.st em{position:absolute;bottom:0;inset-inline-start:0;height:3px;width:0;background:linear-gradient(270deg,#4F46E5,#C026D3)}
+.st.on em{animation:prog 4.6s linear forwards}
+.flow.paused .st.on em{animation-play-state:paused}
+@media (hover:hover){ .flow:hover .st.on em{animation-play-state:paused} }
+.flow:focus-within .st.on em{animation-play-state:paused}
+.flow.manual .st.on em{animation:none}
+@keyframes prog{to{width:100%}}
+.flow-vis{position:relative;min-height:470px;border-radius:30px;background:radial-gradient(60% 55% at 50% 55%,#EDE9FE 0,transparent 72%),linear-gradient(160deg,#F5F3FF,#FDF2F8);border:1px solid #EDE9FE;overflow:hidden}
+.rings{position:absolute;left:50%;top:54%}
+.rings i{position:absolute;left:0;top:0;width:360px;height:360px;margin:-180px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.26),rgba(167,139,250,0) 70%);border:1.5px solid rgba(167,139,250,.4);opacity:0;animation:ring 4.8s ease-out infinite}
+.rings i:nth-child(2){animation-delay:1.6s} .rings i:nth-child(3){animation-delay:3.2s}
+@keyframes ring{0%{transform:scale(.3);opacity:0}25%{opacity:1}100%{transform:scale(1.3);opacity:0}}
+.fl{position:absolute;z-index:3;background:#fff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:13.5px;box-shadow:0 14px 30px -16px rgba(76,29,149,.55);border:1px solid #EDE9FE;white-space:nowrap}
+.fl.f1{top:16px;inset-inline-end:16px;animation:bob 5s ease-in-out infinite}
+.fl.f2{bottom:16px;inset-inline-start:16px;animation:bob 6s ease-in-out -2.5s infinite}
+@keyframes bob{50%{transform:translateY(-7px) rotate(-1.5deg)}}
+.stage{position:absolute;inset:62px 24px 66px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.stage:not(.on){visibility:hidden}
+.bb{max-width:84%;padding:10px 15px;border-radius:18px;font-size:15px;line-height:1.6;background:#fff;color:var(--fg);box-shadow:0 16px 34px -20px rgba(30,20,80,.45);border:1.5px solid #E9E5FB;transform:rotate(var(--r,0deg))}
+.bb.me{align-self:flex-end;background:#DCFCE7;border-color:#BBF7D0;border-end-end-radius:6px}
+.bb.bot{align-self:flex-start;border-end-start-radius:6px}
+.bb .qr{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bb .qr span{border:1.5px solid #C4B5FD;color:#6D28D9;border-radius:999px;padding:2px 11px;font-size:13px;font-weight:700}
+.cardx{position:relative;align-self:center;width:min(310px,100%);background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 24px 46px -24px rgba(30,20,80,.5);border:1.5px solid #E9E5FB;transform:rotate(var(--r,0deg))}
+.cardx h4{margin:0 0 9px;font-family:var(--display);font-size:15px;display:flex;align-items:center;gap:8px}
+.slots .row{display:flex;gap:8px}
+.slots .row span{flex:1;text-align:center;padding:8px 4px;border-radius:12px;border:1.5px solid var(--line);font-weight:700;font-size:14px;transition:background-color .3s}
+.note .bell{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#FEF3C7;font-size:17px}
+.note p{color:var(--muted);font-size:14.5px}
+.inv .ln{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--muted);padding:5px 0;border-bottom:1px dashed var(--line)}
+.inv .ln b{color:var(--fg)}
+.inv .pay{margin-top:10px;text-align:center;border-radius:12px;padding:8px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;font-family:var(--display);font-weight:800;font-size:15px}
+.inv .stamp{position:absolute;top:12px;inset-inline-end:12px;border:2.5px solid #16A34A;color:#16A34A;border-radius:10px;padding:2px 10px;font-family:var(--display);font-weight:900;font-size:15px;transform:rotate(-12deg);background:rgba(255,255,255,.9)}
+.stage.on [data-i]{animation:pop2 .6s cubic-bezier(.2,.9,.25,1.25) both;animation-delay:calc(var(--i) * .6s + .15s)}
+@keyframes pop2{from{opacity:0;transform:translateY(18px) rotate(calc(var(--r,0deg) * 4)) scale(.92)}to{opacity:1;transform:rotate(var(--r,0deg))}}
+.stage.on .slots .pick{animation:pick .4s 1.7s both}
+@keyframes pick{to{background-color:#6D28D9;color:#fff;border-color:#6D28D9}}
+.stage.on .note .bell{animation:shake .9s 1s 2}
+@keyframes shake{20%,60%{transform:rotate(14deg)}40%,80%{transform:rotate(-14deg)}}
+.stage.on .inv .stamp{animation:stamp .45s 1.9s cubic-bezier(.2,.9,.3,1.4) both}
+@keyframes stamp{from{opacity:0;transform:rotate(-12deg) scale(2.2)}to{opacity:1;transform:rotate(-12deg) scale(1)}}
+@media (max-width:900px){ .flow{grid-template-columns:1fr} .flow-vis{order:-1} .stage{inset:62px max(24px,calc(50% - 230px)) 66px} }
+@media (max-width:620px){ .flow-vis{min-height:480px;border-radius:24px} .stage{inset:58px 12px 62px} .bb{font-size:14px;max-width:90%} .rings i{width:280px;height:280px;margin:-140px} }
+@media (prefers-reduced-motion:reduce){
+  .js [data-rv]{opacity:1;translate:none;transition:none}
+  .mq .track{animation:none;flex-wrap:wrap;justify-content:center;width:auto} .mq{-webkit-mask-image:none;mask-image:none}
+  .rings i,.flow-vis .fl,.btn.shine::after,.st.on em{animation:none} .offer .oi,.offer div{transition:none} .rings i{opacity:.7;transform:scale(.85)}
+  .stage.on [data-i],.stage.on .slots .pick,.stage.on .note .bell,.stage.on .inv .stamp{animation:none}
+  .stage.on .slots .pick{background-color:#6D28D9;color:#fff;border-color:#6D28D9}
+  .rot > span,.st small{transition:none} .rot svg,.rot > span.on svg{clip-path:none;animation:none}
+}
 </style>
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -207,24 +303,27 @@ section{border-top:0}
 
 <div class="topbar"><div class="wrap top">
   <a class="brand" href="#top" aria-label="احجزلي، أعلى الصفحة"><svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg><span>احجزلي</span></a>
-  <nav class="nav" aria-label="أقسام الصفحة"><a href="#offer">وش نقدم لك</a><!--P--><a href="#plans">الباقات</a><!--/P--></nav>
+  <nav class="nav" aria-label="أقسام الصفحة"><a href="#flow">كيف يمشي الطلب</a><a href="#offer">وش نقدم لك</a><!--P--><a href="#plans">الباقات</a><!--/P--></nav>
   <a class="btn sm" href="SIMLINK" target="_blank" rel="noopener">جرّبه</a>
 </div></div>
 
 <div class="wrap" id="top">
 <section class="hero">
   <div class="copy">
-    <span class="pillbar">للمحلات والمشاريع اللي تستقبل طلبات على الواتساب</span>
-    <h1>عملاؤك يراسلونك، والبوت <span class="hl">يرد ويحجز عنك</span></h1>
-    <p class="sub">نركّب بوت على رقم واتساب نشاطك نفسه: يرد على عملائك بالأسعار والأوقات، يحجز لهم من المواعيد الفاضية، ويرسل رابط الدفع، والطلب يوصلك جاهز. ونسوي لك موقع خاص باسم نشاطك، وكل زر فيه يحجز من الواتساب.</p>
-    <div class="cta"><a class="btn" href="SIMLINK" target="_blank" rel="noopener">جرّب البوت</a><a class="btn ghost" href="#signup"><!--P-->اشترك<!--/P--><!--NP-->أبيه لنشاطي<!--/NP--></a></div>
-    <div class="trust">
+    <span class="pillbar" data-rv style="--d:.05s">للمحلات والمشاريع اللي تستقبل طلبات على الواتساب</span>
+    <h1 data-rv style="--d:.12s">عملاؤك يراسلونك، والبوت <span class="rot" id="heroRot">
+<span class="on">يرد ويحجز عنك<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span>
+<span aria-hidden="true">يذكّرهم بموعدهم<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span>
+<span aria-hidden="true">يرسل رابط الدفع<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span></span></h1>
+    <p class="sub" data-rv style="--d:.2s">نركّب بوت على رقم واتساب نشاطك نفسه: يرد على عملائك بالأسعار والأوقات، يحجز لهم من المواعيد الفاضية، ويرسل رابط الدفع، والطلب يوصلك جاهز. ونسوي لك موقع خاص باسم نشاطك، وكل زر فيه يحجز من الواتساب.</p>
+    <div class="cta" data-rv style="--d:.28s"><a class="btn shine" href="SIMLINK" target="_blank" rel="noopener">جرّب البوت</a><a class="btn ghost" href="#signup"><!--P-->اشترك<!--/P--><!--NP-->أبيه لنشاطي<!--/NP--></a></div>
+    <div class="trust" data-rv style="--d:.36s">
       <span><svg class="ic"><use href="#i-phone"/></svg>على رقمك الحالي</span>
       <span><svg class="ic"><use href="#i-chat"/></svg>يرد 24 ساعة</span>
       <span><svg class="ic"><use href="#i-globe"/></svg>موقع خاص باسمك</span>
     </div>
   </div>
-  <div class="demo" aria-label="مثال محادثة على الواتساب">
+  <div class="demo" aria-label="مثال محادثة على الواتساب" data-rv style="--d:.25s">
     <div class="pw"><div class="phone"><div class="screen">
       <div class="status"><span>9:41</span><span class="isl"></span><span class="ics"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 2.2c2.5 0 4.8 1 6.5 2.6l1.1-1.2A11 11 0 0 0 8 .5 11 11 0 0 0 .4 3.6l1.1 1.2A9.3 9.3 0 0 1 8 2.2zm0 3.4c1.6 0 3 .6 4.1 1.6l1.1-1.2A7.6 7.6 0 0 0 8 3.9a7.6 7.6 0 0 0-5.2 2.1l1.1 1.2A5.9 5.9 0 0 1 8 5.6zM8 9c.7 0 1.3.2 1.8.6L8 11.5 6.2 9.6C6.7 9.2 7.3 9 8 9z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3.2" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17.5" height="8" rx="1.8"/><path d="M24 4v4c.8-.3 1.4-1.1 1.4-2S24.8 4.3 24 4z" opacity=".5"/></svg></span></div>
       <div class="wa-head"><svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg><span class="av" id="heroAv">م</span><div class="who"><b><span id="heroName">محلك</span> <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#25D366"/><path d="M7.5 12.4l3 3 6-6.4" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></b><small>حساب تجاري</small></div><span class="tag">يرد لحاله</span></div>
@@ -237,18 +336,59 @@ section{border-top:0}
   </div>
 </section>
 
+<div class="strip" data-rv>
+  <p class="cap">يناسب كل نشاط يستقبل طلبات على الواتساب</p>
+  <div class="mq"><div class="track" id="mqTrack"><span>🔧 صيانة منازل</span><span>✂️ صالونات وحلاقين</span><span>💅 مشاغل وتجميل</span><span>🩺 عيادات</span><span>🚗 مغاسل سيارات</span><span>🧽 تنظيف منازل</span><span>🍲 أسر منتجة</span><span>🎂 حلويات وكيك</span><span>🍽️ مطاعم</span><span>☕ كافيهات</span><span>📸 تصوير</span><span>🏋️ مدربين</span><span>📚 دروس خصوصية</span><span>💐 ورد وتنسيق</span><span>🚚 نقل عفش</span><span>🐾 عناية بالحيوانات الأليفة</span><span>💻 استشارات أونلاين</span></div></div>
+</div>
+
+<section id="flow">
+  <span class="eyebrow" data-rv>كيف يمشي الطلب</span>
+  <h2 data-rv style="--d:.08s">من أول رسالة لين ما يخلص الطلب</h2>
+  <div class="flow paused" data-rv style="--d:.15s">
+    <div class="steps">
+      <button class="st" type="button" aria-pressed="false"><i>1</i><span><b>يرد على طول</b><small>يجاوب عملاءك عن الأسعار والأوقات والموقع، ليل ونهار.</small></span><em></em></button>
+      <button class="st" type="button" aria-pressed="false"><i>2</i><span><b>يحجز من الأوقات الفاضية</b><small>يعرض اللي فاضي بس، ويؤكّد الحجز برقم طلب.</small></span><em></em></button>
+      <button class="st" type="button" aria-pressed="false"><i>3</i><span><b>يذكّر قبل الموعد</b><small>يوصل عميلك تذكير، عشان ما ينسى ولا يغيب.</small></span><em></em></button>
+      <button class="st" type="button" aria-pressed="false"><i>4</i><span><b>الفاتورة ورابط الدفع</b><small>توصل عميلك في نفس المحادثة، ومعها رابط الدفع.</small></span><em></em></button>
+    </div>
+    <div class="flow-vis" aria-hidden="true">
+      <div class="rings"><i></i><i></i><i></i></div>
+      <span class="fl f1">⚡ يرد خلال ثانية</span><span class="fl f2">🔔 الطلب يوصل لوحتك</span>
+      <div class="stage">
+        <div class="bb me" data-i style="--i:0;--r:-2deg">السلام عليكم، متى تفتحون؟</div>
+        <div class="bb bot" data-i style="--i:1;--r:1.5deg">هلا والله 👋 نشتغل كل يوم من 9 الصبح لين 9 الليل. تبي تحجز؟<div class="qr"><span>احجز من هنا</span><span>الأسعار</span></div></div>
+        <div class="bb me" data-i style="--i:2;--r:-1deg">إيه، أبي بكرة العصر</div>
+      </div>
+      <div class="stage">
+        <div class="bb bot" data-i style="--i:0;--r:1.5deg">اختر الوقت المناسب ليوم بكرة ⏰</div>
+        <div class="cardx slots" data-i style="--i:1;--r:-1.5deg"><h4>📅 بكرة</h4><div class="row"><span>3:00 م</span><span class="pick">4:00 م</span><span>5:00 م</span></div></div>
+        <div class="bb bot" data-i style="--i:2.4;--r:1deg">تم تأكيد طلبك ✅ رقم الطلب: 1048</div>
+      </div>
+      <div class="stage">
+        <div class="cardx note" data-i style="--i:0;--r:2deg"><h4><span class="bell">⏰</span>تذكير بموعدك</h4><p>اليوم الساعة 4:00 م، ننتظرك 🌷</p></div>
+        <div class="bb me" data-i style="--i:1.6;--r:-1.5deg">تمام، أنا جاي 👍</div>
+      </div>
+      <div class="stage">
+        <div class="bb bot" data-i style="--i:0;--r:1.5deg">خلصنا ✨ هذي فاتورتك</div>
+        <div class="cardx inv" data-i style="--i:1;--r:-1.5deg"><h4>🧾 فاتورة رقم 1048</h4><div class="ln"><span>غسيل داخلي وخارجي</span><b>85 ريال</b></div><div class="pay">ادفع الحين</div><span class="stamp">تم الدفع ✓</span></div>
+        <div class="bb bot" data-i style="--i:3.4;--r:1deg">وصلنا المبلغ، شكرًا لك 🌷</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="offer">
-  <span class="eyebrow">خدماتنا</span>
-  <h2>وش نقدم لك</h2>
+  <span class="eyebrow" data-rv>خدماتنا</span>
+  <h2 data-rv style="--d:.08s">وش نقدم لك</h2>
   <div class="offer">
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z"/></svg></span><b>بوت واتساب يرد عنك</b><span>على رقم نشاطك نفسه، يرد على أي سؤال خلال ثانية، 24 ساعة.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20M6 6.5h.01M9 6.5h.01M7 13h6M7 16h4"/></svg></span><b>موقع خاص باسمك</b><span>بشعارك وخدماتك وأسعارك، وكل زر فيه يحجز من الواتساب.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 15l2 2 4-4"/></svg></span><b>حجز المواعيد والطلبات</b><span>من الأوقات الفاضية فعلًا، والعميل يعدّل أو يلغي بنفسه.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M5 3 2 6M22 6l-3-3"/></svg></span><b>تذكير قبل الموعد</b><span>يوصل عميلك تذكير، عشان ما ينسى ولا يغيب.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span><b>الفاتورة ورابط الدفع</b><span>توصل عميلك بعد الخدمة، والمبلغ يدخل حسابك.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h4M7 12h7"/></svg></span><b>لوحة لك ولموظفينك</b><span>تنبيه بكل طلب جديد، وطلباتك ومحادثاتك وتقرير الشهر في مكان واحد.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span><b>عربي وإنجليزي</b><span>يرد على كل عميل بلغته.</span></div>
-    <div><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span><b>تطبيق باسمك</b><span>إذا تبي، تطبيق بشعارك في المتاجر على نفس الطلبات.</span></div>
+    <div data-rv style="--d:0.00s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z"/></svg></span><b>بوت واتساب يرد عنك</b><span>على رقم نشاطك نفسه، يرد على أي سؤال خلال ثانية، 24 ساعة.</span></div>
+    <div data-rv style="--d:0.06s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20M6 6.5h.01M9 6.5h.01M7 13h6M7 16h4"/></svg></span><b>موقع خاص باسمك</b><span>بشعارك وخدماتك وأسعارك، وكل زر فيه يحجز من الواتساب.</span></div>
+    <div data-rv style="--d:0.12s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 15l2 2 4-4"/></svg></span><b>حجز المواعيد والطلبات</b><span>من الأوقات الفاضية فعلًا، والعميل يعدّل أو يلغي بنفسه.</span></div>
+    <div data-rv style="--d:0.18s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M5 3 2 6M22 6l-3-3"/></svg></span><b>تذكير قبل الموعد</b><span>يوصل عميلك تذكير، عشان ما ينسى ولا يغيب.</span></div>
+    <div data-rv style="--d:0.24s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span><b>الفاتورة ورابط الدفع</b><span>توصل عميلك بعد الخدمة، والمبلغ يدخل حسابك.</span></div>
+    <div data-rv style="--d:0.30s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h4M7 12h7"/></svg></span><b>لوحة لك ولموظفينك</b><span>تنبيه بكل طلب جديد، وطلباتك ومحادثاتك وتقرير الشهر في مكان واحد.</span></div>
+    <div data-rv style="--d:0.36s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span><b>عربي وإنجليزي</b><span>يرد على كل عميل بلغته.</span></div>
+    <div data-rv style="--d:0.42s"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span><b>تطبيق باسمك</b><span>إذا تبي، تطبيق بشعارك في المتاجر على نفس الطلبات.</span></div>
   </div>
 </section>
 
@@ -355,7 +495,9 @@ section{border-top:0}
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var cur = 0, picked = false, gen = 0;
   var later = function (g, fn, ms) { setTimeout(function () { if (g === gen) fn(); }, ms); };
+  var demo = document.querySelector('.demo');
   function paintChips() {
+    if (scn.children.length === SC.length) { scn.querySelectorAll('[data-i]').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.dataset.i === cur)); }); return; }
     scn.innerHTML = SC.map(function (x, i) { return '<button type="button" aria-pressed="' + (i === cur) + '" data-i="' + i + '">' + x.ic + ' ' + x.t + '</button>'; }).join('');
     scn.querySelectorAll('[data-i]').forEach(function (b) { b.onclick = function () { picked = true; show(+b.dataset.i);
       // على الشاشات الصغيرة الأزرار تحت الجوال: نطلع للجوال عشان يشوف المحادثة الجديدة
@@ -373,7 +515,7 @@ section{border-top:0}
     (function step() {
       if (k >= sc.m.length) {
         if (notif) notif.classList.add('on');
-        later(g, function () { if (notif) notif.classList.remove('on'); later(g, function () { show(picked ? cur : (cur + 1) % SC.length); }, 500); }, 3600);
+        later(g, function () { if (notif) notif.classList.remove('on'); later(g, function () { show(picked || (demo && demo.contains(document.activeElement)) ? cur : (cur + 1) % SC.length); }, 500); }, 3600);
         return;
       }
       var x = sc.m[k], time = clock(sc.h, k); k++;
@@ -384,6 +526,64 @@ section{border-top:0}
     })();
   }
   show(0);
+})();
+(function(){
+  /* الحركات: ظهور مع النزول، عبارة العنوان، شريط المجالات، خطوات مسار الطلب، وظل الشريط العلوي */
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasIO = 'IntersectionObserver' in window;
+  var rv = document.querySelectorAll('[data-rv]');
+  if (hasIO && !reduce) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0 });
+    rv.forEach(function (el) {
+      if (el.getBoundingClientRect().top < innerHeight) requestAnimationFrame(function () { el.classList.add('in'); });
+      else io.observe(el);
+    });
+  } else rv.forEach(function (el) { el.classList.add('in'); });
+
+  var rot = document.getElementById('heroRot');
+  if (rot) {
+    var ws = rot.querySelectorAll(':scope > span'), wi = 0;
+    var heroOn = true, swaps = 0;
+    if (hasIO) new IntersectionObserver(function (es) { heroOn = es[es.length - 1].isIntersecting; }).observe(rot);
+    var timer = (!reduce && ws.length > 1) && setInterval(function () {
+      if (document.hidden || !heroOn) return;
+      if (++swaps >= ws.length * 3) clearInterval(timer);
+      var a = ws[wi]; wi = (wi + 1) % ws.length; var b = ws[wi];
+      a.classList.remove('on'); a.classList.add('out'); setTimeout(function () { a.classList.remove('out'); }, 650);
+      b.classList.add('on');
+    }, 3400);
+  }
+
+  // الشريط يلف بلا نهاية: نسخة ثانية مخفية عن قارئ الشاشة
+  var tr = document.getElementById('mqTrack');
+  if (tr && !reduce) {
+    tr.insertAdjacentHTML('beforeend', tr.innerHTML.replace(/<span>/g, '<span aria-hidden="true">'));
+    var mq = tr.parentNode; mq.addEventListener('click', function () { mq.classList.toggle('stop'); });
+  }
+
+  var flow = document.querySelector('.flow');
+  if (flow) {
+    var sts = flow.querySelectorAll('.st'), sg = flow.querySelectorAll('.stage'), started = false;
+    var pick = function (i) {
+      sts.forEach(function (s, k) { s.classList.toggle('on', k === i); s.setAttribute('aria-pressed', String(k === i)); });
+      sg.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+    };
+    sts.forEach(function (s, k) {
+      s.addEventListener('click', function () { started = true; flow.classList.add('manual'); pick(k); });
+      var em = s.querySelector('em');
+      if (em) em.addEventListener('animationend', function () { if (s.classList.contains('on') && !flow.classList.contains('manual')) pick((k + 1) % sts.length); });
+    });
+    // يبدأ لما يبان القسم (عشان الزائر يشوف أول خطوة تطلع)، ويوقف لما يطلع من الشاشة
+    if (hasIO && !reduce) new IntersectionObserver(function (es) {
+      var e = es[es.length - 1], vis = e.isIntersecting;
+      flow.classList.toggle('paused', !vis);
+      if (vis && !started && (e.intersectionRatio >= .3 || e.intersectionRect.height >= innerHeight * .45)) { started = true; pick(0); }
+    }, { threshold: [0, .1, .2, .3] }).observe(flow);
+    else { flow.classList.remove('paused'); pick(0); }
+  }
+
+  var tb = document.querySelector('.topbar');
+  if (tb) { var onS = function () { tb.classList.toggle('sc', scrollY > 8); }; addEventListener('scroll', onS, { passive: true }); onS(); }
 })();
 </script>
 </body>
