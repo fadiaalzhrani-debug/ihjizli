@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>جرّبه بنفسك · احجزلي</title>
+<title>جرّبه كأنك عميل · احجزلي</title>
 <meta name="description" content="جرّب الرد والحجز والدفع على الواتساب لأي نشاط: صيانة، صالون، عيادة، استشارة أونلاين، مغسلة، مطعم.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%2325D366'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
@@ -11,43 +11,44 @@
 <style>
 /* محاكي واتساب احجزلي: نفس منطق البوت الحقيقي، بدون إرسال لأي رقم. قائمة مجالات + تخصيص + اقتراحات أسئلة */
 :root{
-  --page:#EEEEF6; --page-fg:#17182B; --muted:#5F6178; --accent:#4338CA;
+  --page:#FFFFFF; --page-fg:#17182B; --muted:#5F6178; --accent:#4338CA; --hl:#FDE047;
+  --grad:radial-gradient(55% 75% at 88% 8%,rgba(255,255,255,.2),transparent 62%),radial-gradient(50% 70% at 6% 96%,rgba(244,114,182,.6),transparent 70%),linear-gradient(135deg,#4338CA 0%,#6D28D9 52%,#A21CAF 100%);
   --wa-head:#008069; --wa-head-fg:#fff; --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-fg:#111B21; --wa-meta:#667781; --wa-link:#027EB5;
   --wa-input:#FFFFFF; --wa-green:#00A884; --wa-sheet:#FFFFFF; --wa-line:#E9EDEF; --wa-chip:#E1F2FB; --wa-tick:#53BDEB; --wa-list:#FFFFFF; --wa-hover:#F5F6F6;
   --doodle:rgba(0,0,0,.035);
   --display:"Tajawal",system-ui,"Segoe UI",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --page:#0C0C16; --page-fg:#ECECF6; --muted:#A2A3BD; --accent:#8B85F6;
-  --wa-head:#1F2C34; --wa-head-fg:#E9EDEF; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB;
-  --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --wa-list:#111B21; --wa-hover:#202C33; --doodle:rgba(255,255,255,.025); color-scheme:dark } }
-:root[data-theme="dark"]{
-  --page:#0C0C16; --page-fg:#ECECF6; --muted:#A2A3BD; --accent:#8B85F6;
-  --wa-head:#1F2C34; --wa-head-fg:#E9EDEF; --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-fg:#E9EDEF; --wa-meta:#8696A0; --wa-link:#53BDEB;
-  --wa-input:#2A3942; --wa-sheet:#1F2C34; --wa-line:#2A3942; --wa-chip:#182229; --wa-list:#111B21; --wa-hover:#202C33; --doodle:rgba(255,255,255,.025); color-scheme:dark }
 *{box-sizing:border-box} html,body{margin:0;height:100%}
 body{background:var(--page);color:var(--page-fg);font-family:var(--body);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;min-height:100vh}
 button{font:inherit;color:inherit;cursor:pointer}
 [hidden]{display:none!important}
 svg{flex:none}
 
+/* نفس شكل الرئيسية (2026-10-14 بطلبها: «خل شكل التجربة الخلفية والخ زي الرئيسية»): صفحة بيضاء وبطاقة كبيرة بالتدرّج النيلي البنفسجي الفوشي */
+body{padding:16px;position:relative;isolation:isolate}
+body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:var(--grad);box-shadow:0 40px 80px -50px rgba(76,29,149,.8);z-index:-1}
+.aside .brand{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-family:var(--display);font-weight:900;font-size:22px}
+.aside .brand svg{width:26px;height:26px}
 /* اللوحة الجانبية (كمبيوتر) */
 .aside{grid-column:1;justify-self:end;max-width:360px;padding:28px;display:grid;gap:16px}
-.aside h1{font-family:var(--display);font-size:26px;margin:0;line-height:1.25}
-.aside p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.75}
-.aside .try{display:grid;gap:7px;margin:0;padding:0;list-style:none;font-size:14px}
+.aside{color:#fff}
+.aside h1{font-family:var(--display);font-size:30px;font-weight:900;margin:0;line-height:1.25;color:#fff}
+.aside h1 em{font-style:normal;color:var(--hl)}
+.aside p{margin:0;color:rgba(255,255,255,.88);font-size:15px;line-height:1.75}
+.aside .try{display:grid;gap:9px;margin:0;padding:0;list-style:none;font-size:14.5px;font-weight:600}
 .aside .try li{display:flex;gap:9px;align-items:flex-start;line-height:1.6}
-.aside .try b{width:22px;height:22px;border-radius:50%;background:var(--wa-green);color:#fff;display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display);margin-top:2px}
+.aside .try b{width:24px;height:24px;border-radius:50%;background:var(--hl);color:#2E1065;box-shadow:0 0 0 4px rgba(253,224,71,.22);display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display);margin-top:2px}
 .aside .acts{display:flex;gap:8px;flex-wrap:wrap}
-.pill{border:1.5px solid color-mix(in srgb,var(--page-fg) 18%,transparent);background:transparent;border-radius:99px;padding:8px 14px;font-weight:600;font-size:14px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;color:inherit}
-.pill.main{background:var(--wa-green);color:#fff;border-color:var(--wa-green)}
+.pill{border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.08);color:#fff!important;border-radius:99px;padding:8px 14px;font-weight:600;font-size:14px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;color:inherit}
+.pill.main{background:#fff;color:#4338CA!important;border-color:#fff;box-shadow:0 12px 28px -12px rgba(30,10,70,.6)}
+.pill:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
 .pill svg{width:17px;height:17px}
 .cur{display:flex;flex-wrap:wrap;gap:6px}
-.cur span{font-size:12.5px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);border-radius:99px;padding:3px 10px;font-weight:600}
+.cur span{font-size:12.5px;background:rgba(30,10,80,.28);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:3px 10px;font-weight:600}
 
 /* الجوال */
-.phone{grid-column:2;width:390px;height:min(844px,calc(100vh - 32px));border-radius:46px;background:#0f1412;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.28),inset 0 0 0 2px #2a312d;position:relative}
+.phone{grid-column:2;width:390px;height:min(844px,calc(100vh - 72px));border-radius:46px;background:#0f1412;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.28),inset 0 0 0 2px #2a312d;position:relative}
 .screen{height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;background:var(--wa-bg);position:relative}
 .status{height:34px;background:var(--wa-head);color:var(--wa-head-fg);display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:600;direction:ltr;flex:none}
 .status i{display:inline-block;width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;vertical-align:middle}
@@ -66,7 +67,7 @@ svg{flex:none}
 
 /* قائمة المحادثات (المجالات) */
 .home{flex:1;overflow:auto;background:var(--wa-list);display:flex;flex-direction:column}
-.home .hd{background:var(--wa-head);color:var(--wa-head-fg);padding:10px 16px 14px;flex:none}
+.home .hd{background:var(--grad);color:#fff;padding:10px 16px 14px;flex:none}
 .home .hd b{font-family:var(--display);font-size:21px;display:block}
 .home .hd span{font-size:13px;opacity:.9}
 .chatrow{display:flex;gap:12px;align-items:center;width:100%;border:0;background:none;padding:11px 14px;text-align:start;color:var(--wa-fg);border-bottom:1px solid var(--wa-line)}
@@ -86,8 +87,6 @@ svg{flex:none}
   background-size:26px 26px;background-position:0 0,13px 13px;scroll-behavior:smooth}
 .daychip{align-self:center;background:var(--wa-chip);color:var(--wa-meta);font-size:12px;padding:4px 10px;border-radius:8px;margin:6px 0 8px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
 .e2e{align-self:center;max-width:88%;text-align:center;background:color-mix(in srgb,#FFEECD 85%,var(--wa-bg));color:#54656f;font-size:11.5px;padding:6px 10px;border-radius:8px;margin-bottom:6px;line-height:1.5}
-:root[data-theme="dark"] .e2e{background:#182229;color:#FFD279}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .e2e{background:#182229;color:#FFD279} }
 .msg{max-width:84%;display:grid;gap:3px;animation:pop .18s ease-out}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){ .msg{animation:none} .chat{scroll-behavior:auto} }
@@ -199,7 +198,8 @@ svg{flex:none}
 
 /* الجوال الحقيقي: الشاشة كاملة */
 @media (max-width:700px){
-  body{display:block;background:var(--wa-bg)}
+  body{display:block;background:var(--wa-bg);padding:0}
+  body::before{display:none}
   .aside{display:none}
   .phone{width:100%;height:100vh;height:100dvh;border-radius:0;padding:0;box-shadow:none;background:none}
   .screen{border-radius:0}
@@ -213,7 +213,8 @@ svg{flex:none}
 </head>
 <body>
 <aside class="aside" id="aside">
-  <h1>جرّبه بنفسك</h1>
+  <a class="brand" href="./" aria-label="احجزلي، الصفحة الرئيسية"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z" fill="#fff"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#6D28D9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>احجزلي</a>
+  <h1>جرّبه <em>كأنك عميل</em></h1>
   <p>اختر نشاط من القائمة وكلّمه كأنك عميل. اسأل أي سؤال أو احجز، وشوف كيف يرد لحاله.</p>
   <ul class="try">
     <li><b>1</b>اسأل عن السعر أو الموقع أو الدوام أو أي شي</li>
@@ -231,7 +232,7 @@ svg{flex:none}
     <div class="status"><span id="clock">9:41</span><span>5G <i></i></span></div>
     <!-- قائمة المحادثات -->
     <div class="home" id="home" hidden>
-      <div class="hd"><b>جرّبه بنفسك</b><span>اختر نشاط وكلّمه كأنك عميل</span></div>
+      <div class="hd"><b>جرّبه كأنك عميل</b><span>اختر نشاط وكلّمه، وشوف كيف يرد لحاله</span></div>
       <div id="homeList"></div>
       <div class="note">كل محادثة هنا تمشي على النظام الحقيقي نفسه، وما ينرسل شي لأي رقم. وكل شي فيها يتعدّل على كيف صاحب النشاط.</div>
     </div>
