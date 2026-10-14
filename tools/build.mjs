@@ -35,7 +35,7 @@ fs.writeFileSync(path.join(OUT, 'assets', 'demos.json'), JSON.stringify(demos));
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fields = demos.map((d) => `<a class="field" href="sim.html?demo=1&amp;open=${d.slug}" target="_blank" rel="noopener"><div class="h"><span class="em">${d.icon}</span><div><b>${esc(d.label)}</b><div class="tiny">${esc(d.desc)}</div></div></div><div class="tags">${d.tags.map((t) => `<i>${esc(t)}</i>`).join('')}</div><span class="go">جرّبه ←</span></a>`).join('\n    ');
 
-const meta = `<meta name="description" content="احجزلي: بوت على واتساب نشاطك يرد على عملائك ويحجز لهم ويرسل رابط الدفع لحاله، وموقع خاص باسم نشاطك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.${SHOW_PRICES ? " تأسيس مرة وحدة واشتراك شهري ثابت." : ""}">
+const meta = `<meta name="description" content="احجزلي: رد آلي على نفس رقم واتسابك يرد على عملائك ويحجز لهم ويذكّرهم، والتجهيز كله علينا، ومعه موقع باسمك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.${SHOW_PRICES ? " تأسيس مرة وحدة واشتراك شهري ثابت." : ""}">
 <meta name="theme-color" content="#4338CA">
 <link rel="canonical" href="${SITE_URL}">
 <meta property="og:type" content="website">
@@ -43,7 +43,7 @@ const meta = `<meta name="description" content="احجزلي: بوت على وا
 <meta property="og:url" content="${SITE_URL}">
 <meta property="og:site_name" content="احجزلي">
 <meta property="og:title" content="احجزلي · الواتساب يرد ويحجز ويحصّل لحاله">
-<meta property="og:description" content="بوت على واتساب نشاطك يرد على عملائك ويحجز لهم ويرسل رابط الدفع، وموقع خاص باسم نشاطك. جرّب البوت بنفسك.">
+<meta property="og:description" content="رد آلي على نفس رقم واتسابك يرد على عملائك ويحجز لهم ويذكّرهم، والتجهيز كله علينا، ومعه موقع باسمك. جرّبه كأنك عميل.">
 <meta property="og:image" content="${SITE_URL}img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
