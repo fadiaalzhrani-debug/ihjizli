@@ -111,7 +111,7 @@
   try { await loadAll(); } catch (e) { console.error(e); return I.gate('ما قدرنا نفتح اللوحة', 'حدّث الصفحة', 'err'); }
 
   // ───── خطوات التجهيز لكل منشأة بترتيب الشغل الحقيقي: مين يسوي كل خطوة، وتتعلّم لحالها من البيانات ─────
-  const PUBLIC = 'https://fadiaalzhrani-debug.github.io/ihjizli/';
+  const PUBLIC = 'https://almunawib.com/';
   const docsOf = (b) => S.docs[b.id] || {};
   const paidSetup = (b) => S.pays.filter((p) => p.business_id === b.id && p.kind === 'setup').reduce((a, p) => a + Number(p.amount), 0);
   const AR_TPL = ['ihj_reminder', 'ihj_on_the_way', 'ihj_arrived', 'ihj_invoice', 'ihj_paid', 'ihj_update', 'ihj_new_order', 'ihj_staff_order', 'ihj_handoff'];

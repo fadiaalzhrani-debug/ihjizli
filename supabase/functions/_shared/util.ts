@@ -5,7 +5,7 @@ export const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 export const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 export const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") || "";
 export const FN_BASE = `${SUPABASE_URL}/functions/v1`;
-export const SITE_URL = (Deno.env.get("IHJ_SITE_URL") || "https://fadiaalzhrani-debug.github.io/ihjizli/").replace(/\/?$/, "/");
+export const SITE_URL = (Deno.env.get("IHJ_SITE_URL") || "https://almunawib.com/").replace(/\/?$/, "/");
 
 let _db: SupabaseClient | null = null;
 export function db(): SupabaseClient {

@@ -2,7 +2,7 @@
 
 ## الاسم والدومين (2026-10-14)
 - الاسم التجاري الظاهر صار **«المناوب»** (طلبها: «عطني أسامي غير احجزلي» ثم اختارت almunawib.com من Namecheap: «خذ هذا الدومين وضبط الموقع»). الاسم الداخلي (المستودع، مشروع Supabase، المفاتيح، slug) يبقى ihjizli.
-- الدومين **almunawib.com** على GitHub Pages: سجلات DNS عندها في Namecheap (A للجذر على 185.199.108.153 و.109 و.110 و.111، وCNAME لـwww على fadiaalzhrani-debug.github.io). بعد ما تضيفها: ملف `docs/CNAME` فيه almunawib.com، ثم تفعيل Enforce HTTPS من واجهة Pages، ثم تبديل SITE_URL في tools/build.mjs وPUBLIC في admin/deal وسر `IHJ_SITE_URL` ونشر الدوال وروابط التجربة في prospect_msgs. **لا تضيف CNAME قبل DNS**: Pages يحوّل روابط github.io للدومين فورًا وتنكسر لوحتها وروابط العملاء لين يشتغل.
+- الدومين **almunawib.com** اشترته 2026-10-14 من Namecheap (حساب fadislarky، طلب 216698148، تجديد تلقائي) وأنا ضبطته كامل من حسابها عبر Claude in Chrome (هي سجّلت الدخول وضغطت الدفع بنفسها): سجلات A للجذر على 185.199.108.153 و.109 و.110 و.111 وCNAME لـwww على fadiaalzhrani-debug.github.io (التحويل والـparking انحذفوا)، ملف `docs/CNAME`، cname في إعدادات Pages، الشهادة وإجبار https، SITE_URL في tools/build.mjs وPUBLIC في admin وسر `IHJ_SITE_URL` والدوال منشورة، وروابط التجربة في prospect_msgs. الروابط القديمة على github.io تتحوّل لحالها للدومين (مع #k=).
 - صورة المشاركة docs/img/og.png تتولد من site-src/og/og.html (1200×630، بألوان الموقع).
 
 منتج فادية المستقل لأتمتة طلبات الواتساب للمحلات. مستقل تمامًا عن خافت: لا كود ولا قاعدة ولا مستودع ولا رقم من مشروع ثاني.

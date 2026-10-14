@@ -11,7 +11,7 @@ import { sql } from './sql.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'site-src'), OUT = path.join(ROOT, 'docs');
-const SITE_URL = 'https://fadiaalzhrani-debug.github.io/ihjizli/';
+const SITE_URL = 'https://almunawib.com/';
 const LEAD_API = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/lead';
 const SIM = 'sim.html?demo=1';
 // الأسعار والباقات والاشتراك في الموقع العام. مطفية من 2026-10-11 بطلبها («صديقي يجرب الموقع ولا يدفع أو يعرف حتى إن فيه دفع»).
