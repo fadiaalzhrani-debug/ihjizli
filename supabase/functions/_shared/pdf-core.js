@@ -81,7 +81,7 @@ export async function buildInvoicePdf(deps, d) {
   const bold = await doc.embedFont(d.fonts.bold, { subset: true });
   doc.setTitle(`${d.biz.name} ${d.invoice.number}`);
   doc.setAuthor(d.biz.name);
-  doc.setCreator("احجزلي");
+  doc.setCreator("المناوب");
   const W = 595.28, H = 841.89, M = 40, R = W - M;
   const page = doc.addPage([W, H]);
   const ink = rgb(0.09, 0.11, 0.1), muted = rgb(0.38, 0.42, 0.4), line = rgb(0.88, 0.9, 0.88), soft = rgb(0.96, 0.97, 0.96);

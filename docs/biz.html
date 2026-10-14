@@ -84,7 +84,7 @@
   try {
     if (q.get('b') && !location.hash.includes('k=')) { const r = await I.boot('ihj-admin'); session = r.session; me = r.me; }
     if (!session || !me || !me.admin) { const r = await I.boot('ihj-owner'); session = r.session; me = r.me; }
-  } catch (e) { return I.gate('الرابط غير صالح', 'اطلب رابط لوحتك الجديد من احجزلي', 'err'); }
+  } catch (e) { return I.gate('الرابط غير صالح', 'اطلب رابط لوحتك الجديد من المناوب', 'err'); }
   if (!session || !me) return I.gate('افتح رابط لوحتك', 'لوحة المنشأة تنفتح من الرابط الخاص اللي وصلك', 'err');
   const ownerOf = me.members.find((m) => m.role === 'owner');
   const BIZ = (me.admin && q.get('b')) ? q.get('b') : ownerOf && ownerOf.business_id;

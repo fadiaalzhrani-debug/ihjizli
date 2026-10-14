@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>جرّبه كأنك عميل · احجزلي</title>
+<title>جرّبه كأنك عميل · المناوب</title>
 <meta name="description" content="جرّب الرد والحجز والدفع على الواتساب لأي نشاط: صيانة، صالون، عيادة، استشارة أونلاين، مغسلة، مطعم.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%2325D366'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
@@ -213,7 +213,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
 </head>
 <body>
 <aside class="aside" id="aside">
-  <a class="brand" href="./" aria-label="احجزلي، الصفحة الرئيسية"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z" fill="#fff"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#6D28D9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>احجزلي</a>
+  <a class="brand" href="./" aria-label="المناوب، الصفحة الرئيسية"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z" fill="#fff"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#6D28D9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>المناوب</a>
   <h1>جرّبه <em>كأنك عميل</em></h1>
   <p>اختر نشاط من القائمة وكلّمه كأنك عميل. اسأل أي سؤال أو احجز، وشوف كيف يرد لحاله.</p>
   <ul class="try">
@@ -548,7 +548,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
     clearInterval(pollT); closeSheet();
     $('chatView').hidden = true; $('chatView').style.display = 'none'; $('home').hidden = false;
     $('cfgBtn').hidden = true; $('newChat').hidden = true; $('curTags').innerHTML = '';
-    document.title = 'جرّبه بنفسك · احجزلي';
+    document.title = 'جرّبه كأنك عميل · المناوب';
   }
   function renderHome() {
     $('homeList').innerHTML = demos.map((d, i) => `<button type="button" class="chatrow" data-i="${i}"><span class="av" style="background:${esc(d.color)}22">${esc(d.icon)}</span><span class="t"><b>${esc(d.name)}<small>${esc(d.label)}</small></b><span>${esc(d.desc)}</span><span class="tags">${d.tags.map((x) => `<i>${esc(x)}</i>`).join('')}</span></span></button>`).join('');

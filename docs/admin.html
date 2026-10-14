@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#4338CA">
-<title>احجزلي · لوحتي</title>
+<title>المناوب · لوحتي</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3Cpath d='M10.5 15.2l3.6 3.6 7.4-7.6' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
@@ -146,7 +146,7 @@
     const nav = TABS.map(([k, t, ic]) => `<a href="#${k}" data-tab="${k}">${icon(ic)}<span>${t}</span>${k === 'leads' ? '<span class="cnt g" id="cntLeads" hidden></span>' : ''}</a>`).join('');
     const bn = ['home', 'biz', 'pros', 'leads', 'more'];
     $('root').innerHTML = `<div class="app">
-      <aside class="side"><div class="brand"><span class="lg">${icon('check')}</span><div><b>احجزلي</b><small>لوحتي</small></div></div><nav class="nav">${nav}</nav>
+      <aside class="side"><div class="brand"><span class="lg">${icon('check')}</span><div><b>المناوب</b><small>لوحتي</small></div></div><nav class="nav">${nav}</nav>
         <div class="foot"><button class="btn ghost sm" id="sndBtn" type="button"></button></div></aside>
       <div class="main"><header class="top"><div class="grow"><h1 id="tTitle"></h1><div class="sub" id="tSub"></div></div><span class="live" id="live"><i></i><span>مباشر</span></span><button class="ib" id="sndIb" type="button" aria-label="الصوت"></button></header><main class="content" id="view"></main></div>
       <nav class="bnav">${bn.map((k) => k === 'more' ? `<a href="#more" data-tab="more">${icon('menu')}<span>المزيد</span></a>` : (() => { const t = TABS.find((x) => x[0] === k); return `<a href="#${k}" data-tab="${k}">${icon(t[2])}<span>${k === 'pros' ? 'المحتملين' : t[1]}</span></a>`; })()).join('')}</nav></div>`;
@@ -298,7 +298,7 @@
     const hi = first ? 'هلا ' + first : 'هلا', pay = iban ? `\n${[p.bank, p.holder].filter(Boolean).join(' · ')}\nالآيبان: ${iban}` : '';
     const agree = PUBLIC + 'agree.html?k=' + b.client_key, start = PUBLIC + 'start.html?k=' + b.client_key, sim = PUBLIC + simUrl(b), owner = ownerLinks[b.id] || '';
     return {
-      contract: { url: agree, msg: `${hi}، هذا رابط الدفعة الأولى لاحجزلي (${money(half)} ريال، نص التأسيس). تعلّم فيه على الموافقة وتطلع لك بيانات التحويل:\n${agree}` },
+      contract: { url: agree, msg: `${hi}، هذا رابط الدفعة الأولى من المناوب (${money(half)} ريال، نص التأسيس). تعلّم فيه على الموافقة وتطلع لك بيانات التحويل:\n${agree}` },
       docs: { url: start, msg: `عشان نجهّز الرد الآلي باسمكم، عبّ هذا النموذج (5 دقايق):\n${start}` },
       test: { url: sim, msg: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه كأنك عميل، وقل لي لو تبي تغيّر أي رد أو سعر:\n${sim}` },
       live: b.wa_number ? { url: 'https://wa.me/' + intlPhone(b.wa_number), msg: `ربطنا رقمكم ✅ جرّب الحين من جوال ثاني: أرسل «السلام عليكم» لرقمكم واحجز موعد تجريبي، وقل لي إذا وصلك الطلب.` } : null,
@@ -626,7 +626,7 @@
   }
   function openLead(id) {
     const l = S.leads.find((x) => x.id === id); if (!l) return;
-    const waMsg = encodeURIComponent(`هلا ${l.contact_name || ''}، معك احجزلي بخصوص طلب الاشتراك لـ${l.business_name}.`);
+    const waMsg = encodeURIComponent(`هلا ${l.contact_name || ''}، معك المناوب بخصوص طلب الاشتراك لـ${l.business_name}.`);
     const d = I.openDrawer(`<div class="dh"><h2 class="grow">${esc(l.business_name)}</h2><button class="ib" data-close aria-label="إغلاق">${icon('x')}</button></div><div class="db">
       <div class="card flat stack s"><div class="row"><span class="avatar">${esc(I.initials(l.contact_name || l.business_name))}</span><div class="grow"><b>${esc(l.contact_name || 'بدون اسم')}</b><div class="tiny ltr" style="text-align:right">${esc(I.phone(l.phone))}</div></div><a class="btn sm" href="https://wa.me/${esc(l.phone)}?text=${waMsg}" target="_blank" rel="noopener">${icon('wa')}واتساب</a><button class="btn sm ghost" id="lCp">${icon('copy')}نسخ</button></div>
         <div class="g2 small"><div><span class="tiny">النشاط</span><div>${esc(l.activity || 'غير محدد')}</div></div><div><span class="tiny">المدينة</span><div>${esc(l.city || 'غير محدد')}</div></div><div><span class="tiny">الطلبات يوميًا</span><div>${esc(l.orders_per_day || 'غير محدد')}</div></div><div><span class="tiny">وصل</span><div>${esc(I.ago(l.created_at))}</div></div></div>
