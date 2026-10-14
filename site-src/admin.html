@@ -810,7 +810,7 @@
       e.preventDefault(); const f = new FormData(e.target);
       const row = { name: String(f.get('name')).trim(), business: String(f.get('business') || '').trim(), body: String(f.get('body')).trim(), stars: +f.get('stars') || 5, published: !!f.get('published'), sort: S.testi.reduce((m, t) => Math.max(m, t.sort), 0) + 1 };
       if (!row.name || !row.body) return I.toast('اكتبي الاسم والرأي', true);
-      try { S.testi.push((await q1(sb.from('testimonials').insert(row).select('*')))[0]); I.toast(row.published ? 'انضاف وانشر في الموقع ✓' : 'انضاف ✓'); render(); } catch (x) { I.fail(x); }
+      try { S.testi.push((await q1(sb.from('testimonials').insert(row).select('*')))[0]); I.toast(row.published ? 'انضاف وصار منشور في الموقع ✓' : 'انضاف ✓'); render(); } catch (x) { I.fail(x); }
     };
     $('tList').onclick = async (e) => {
       const card = e.target.closest('[data-t]'); if (!card) return;

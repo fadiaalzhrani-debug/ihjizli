@@ -224,7 +224,10 @@ section{border-top:0}
 .cyc li i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);font-size:14.5px;transition:background-color .35s}
 .cyc li.on{background:#fff;color:#2E1065;border-color:#fff;transform:translateY(-2px)}
 .cyc li.on i{background:var(--hl)}
-@media (max-width:420px){ .cyc ol{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){ .cyc ol{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:360px){ .cyc li{font-size:13px;padding:6px 7px;gap:6px} .cyc li i{width:22px;height:22px;font-size:12.5px} }
+@media (min-width:1100px){ .hero{align-items:start} .hero .copy .trust{order:1} .hero .copy .cyc{order:2} }
+@media (min-width:1100px) and (max-width:1279px){ .cyc ol{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (prefers-reduced-motion:reduce){ .cyc li{transition:none} .cyc li.on{transform:none} }
 /* ركّز على شغلك: بدون ومع */
 .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
@@ -240,10 +243,12 @@ section{border-top:0}
 .vs-yes li::before{content:"✓";background:#DCFCE7;color:#15803D}
 @media (max-width:720px){ .vs{grid-template-columns:1fr} }
 /* آراء العملاء (من لوحتي) */
-.revs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:22px}
-.rev{margin:0;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;display:grid;gap:10px;align-content:start;box-shadow:var(--shadow);animation:revIn .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * .08s)}
+.revs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),340px));justify-content:center;gap:14px;margin-top:22px}
+.rev{margin:0;grid-template-columns:minmax(0,1fr);min-width:0;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;display:grid;gap:10px;align-content:start;box-shadow:var(--shadow);animation:revIn .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * .08s)}
 .rev .rstars{color:#F59E0B;letter-spacing:2px;font-size:15px}
-.rev p{font-size:15.5px;line-height:1.75;white-space:pre-wrap}
+.rev p{font-size:15.5px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext}
+.rev .who > span:last-child{min-width:0}
+.rev .who b,.rev .who small{overflow-wrap:anywhere}
 .rev p::before{content:"\201C";font-family:Georgia,serif;font-size:34px;line-height:0;color:#A78BFA;vertical-align:-12px;margin-inline-end:4px}
 .rev .who{display:flex;align-items:center;gap:10px;margin-top:2px}
 .rev .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#4F46E5,#C026D3);color:#fff;font-family:var(--display);font-weight:800;flex:none}
@@ -277,7 +282,7 @@ section{border-top:0}
 @keyframes shine{0%{transform:translateX(130%)}28%,100%{transform:translateX(-130%)}}
 .offer .oi{transition:transform .35s cubic-bezier(.2,.9,.3,1.4)} .offer div:hover .oi{transform:rotate(-8deg) scale(1.1)}
 /* عبارة العنوان */
-.rot{display:inline-grid;position:relative;vertical-align:bottom;padding-bottom:.14em}
+.rot{display:grid;width:max-content;max-width:100%;position:relative;padding-bottom:.14em}
 .rot > span{grid-area:1/1;justify-self:start;align-self:end;position:relative;white-space:nowrap;color:var(--hl);transition:opacity .4s,transform .55s cubic-bezier(.2,.8,.2,1)}
 .rot > span.on{transition-delay:.2s}
 .rot > span:not(.on){opacity:0;transform:translateY(.5em)}
@@ -717,15 +722,24 @@ section{border-top:0}
 
   // الدائرة كاملة: الضوء يمشي على الخطوات بالدور
   var cyc = document.querySelectorAll('#heroCyc li');
-  if (cyc.length && !reduce) { var ci = 0; cyc[0].classList.add('on'); setInterval(function () { if (document.hidden) return; cyc[ci].classList.remove('on'); ci = (ci + 1) % cyc.length; cyc[ci].classList.add('on'); }, 1300); }
+  if (cyc.length && !reduce) {
+    var ci = 0, steps = 0, cycOn = true, cycBox = document.querySelector('.cyc');
+    if (hasIO) new IntersectionObserver(function (es) { cycOn = es[es.length - 1].isIntersecting; }).observe(cycBox);
+    cyc[0].classList.add('on');
+    var cycT = setInterval(function () {
+      if (document.hidden || !cycOn || cycBox.matches(':hover') || cycBox.contains(document.activeElement)) return;
+      cyc[ci].classList.remove('on'); ci = (ci + 1) % cyc.length; cyc[ci].classList.add('on');
+      if (++steps >= cyc.length * 3) clearInterval(cycT);
+    }, 1300);
+  }
 
   // آراء العملاء: المنشور بس، من لوحتي. القسم يبقى مخفي لين يكون فيه رأي واحد
   var revSec = document.getElementById('reviews'), revList = document.getElementById('revList');
-  if (revSec && window.fetch) fetch('TESTIAPI?select=name,business,body,stars&published=eq.true&order=sort.asc,created_at.asc&limit=12', { headers: { apikey: 'ANONKEY', authorization: 'Bearer ANONKEY' } })
+  if (revSec && window.fetch) fetch('TESTIAPI?select=name,business,body,stars&published=eq.true&order=sort.asc,created_at.asc&limit=50', { headers: { apikey: 'ANONKEY', authorization: 'Bearer ANONKEY' } })
     .then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
       if (!rows || !rows.length) return;
       var e = function (x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-      revList.innerHTML = rows.map(function (t, i) { var n = Math.max(1, Math.min(5, t.stars || 5)); return '<figure class="rev" style="--i:' + i + '"><span class="rstars" aria-label="' + n + ' من 5">' + '★'.repeat(n) + '☆'.repeat(5 - n) + '</span><p>' + e(t.body) + '</p><figcaption class="who"><span class="av">' + e(String(t.name).trim().charAt(0)) + '</span><span><b>' + e(t.name) + '</b>' + (t.business ? '<small>' + e(t.business) + '</small>' : '') + '</span></figcaption></figure>'; }).join('');
+      revList.innerHTML = rows.map(function (t, i) { var n = Math.max(1, Math.min(5, t.stars || 5)); return '<figure class="rev" style="--i:' + i + '"><span class="rstars" aria-label="' + n + ' من 5">' + '★'.repeat(n) + '☆'.repeat(5 - n) + '</span><p dir="auto">' + e(t.body) + '</p><figcaption class="who"><span class="av">' + e(String(t.name).trim().charAt(0)) + '</span><span><b><bdi>' + e(t.name) + '</bdi></b>' + (t.business ? '<small><bdi>' + e(t.business) + '</bdi></small>' : '') + '</span></figcaption></figure>'; }).join('');
       revSec.hidden = false;
     }).catch(function () {});
 
