@@ -1,21 +1,21 @@
 <section id="signup" data-rv>
-  <h2>تبيه لنشاطك؟</h2>
-  <p class="sub">اكتب اسمك وجوالك، ونتواصل معك على الواتساب.</p>
+  <h2>تبيه على رقمك؟</h2>
+  <p class="sub">اكتب اسمك وجوالك، ونكلمك على الواتساب خلال يوم عمل. التجهيز كله علينا، ويكون جاهز خلال 7 أيام عمل.</p>
   <form id="leadForm" class="lead-form" novalidate>
-    <div class="f"><label for="f_name">اسمك أو اسم نشاطك</label><input id="f_name" name="business_name" required maxlength="80" autocomplete="name"></div>
-    <div class="f"><label for="f_phone">جوالك (واتساب)</label><input id="f_phone" name="phone" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></div>
+    <div class="f"><label for="f_name">اسمك أو اسم نشاطك</label><input id="f_name" name="business_name" required maxlength="80" autocomplete="name" aria-describedby="e_name"><small class="err" id="e_name"></small></div>
+    <div class="f"><label for="f_phone">جوالك (واتساب)</label><input id="f_phone" name="phone" type="tel" autocomplete="tel" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx" aria-describedby="e_phone"><small class="err" id="e_phone"></small></div>
     <!--P--><fieldset class="f wide"><legend>الباقة اللي تهمّك</legend>
       <label class="opt"><input type="radio" name="package" value="bot" checked><span><b>أتمتة الحجز</b> · 3,500 تأسيس + 350 شهريًا</span></label>
       <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>أتمتة الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
       <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
     </fieldset><!--/P-->
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-    <div class="f wide actions"><button type="submit" class="btn shine" id="leadBtn"><!--P-->أرسل طلب الاشتراك<!--/P--><!--NP-->اطلب<!--/NP--></button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
+    <div class="f wide actions"><button type="submit" class="btn shine" id="leadBtn"><!--P-->أرسل طلب الاشتراك<!--/P--><!--NP-->كلّموني على الواتساب<!--/NP--></button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
   </form>
   <div id="leadDone" class="done" hidden>
     <h3>وصلنا طلبك ✅</h3>
-    <p>نتواصل معك على الواتساب قريب. وبالانتظار، جرّبه على مجالك:</p>
-    <a class="btn" href="SIMLINK" target="_blank" rel="noopener">جرّبه بنفسك</a>
+    <p>نكلمك على الواتساب خلال يوم عمل. وبالانتظار، جرّبه على مجالك:</p>
+    <a class="btn" href="SIMLINK">جرّبه كأنك عميل</a>
   </div>
 </section>
 <script>
@@ -24,12 +24,15 @@
   var form = document.getElementById('leadForm'), btn = document.getElementById('leadBtn'), msg = document.getElementById('leadMsg'), done = document.getElementById('leadDone');
   if (!form) return;
   function digits(v){ return String(v || '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D+/g, ''); }
+  // الخطأ يطلع تحت الخانة نفسها، ويختفي أول ما يبدأ يكتب
+  function bad(id, eid, text) { var el = document.getElementById(id); el.setAttribute('aria-invalid', 'true'); document.getElementById(eid).textContent = text; el.focus(); }
+  ['f_name', 'f_phone'].forEach(function (id, i) { var el = document.getElementById(id); el.addEventListener('input', function () { el.removeAttribute('aria-invalid'); document.getElementById(i ? 'e_phone' : 'e_name').textContent = ''; }); });
   form.addEventListener('submit', async function (e) {
     e.preventDefault(); msg.textContent = '';
     var fd = new FormData(form), name = (fd.get('business_name') || '').toString().trim(), ph = digits(fd.get('phone'));
     if (ph.indexOf('00') === 0) ph = ph.slice(2); if (ph.indexOf('966') === 0) ph = ph.slice(3); if (ph.indexOf('0') === 0) ph = ph.slice(1);
-    if (name.length < 2) { msg.textContent = 'اكتب اسمك'; document.getElementById('f_name').focus(); return; }
-    if (!/^5\d{8}$/.test(ph)) { msg.textContent = 'اكتب جوال سعودي صحيح مثل 05xxxxxxxx'; document.getElementById('f_phone').focus(); return; }
+    if (name.length < 2) { bad('f_name', 'e_name', 'اكتب اسمك أو اسم نشاطك'); return; }
+    if (!/^5\d{8}$/.test(ph)) { bad('f_phone', 'e_phone', 'اكتب جوال سعودي صحيح مثل 05xxxxxxxx'); return; }
     var body = { business_name: name, activity: '', city: '', contact_name: name.slice(0, 60), phone: '966' + ph, package: fd.get('package') || 'bot', wants_app: fd.get('wants_app') === '1', orders_per_day: '', notes: '', website: fd.get('website') || '', source: 'site' };
     btn.disabled = true; var old = btn.textContent; btn.textContent = 'جارٍ الإرسال…';
     try {

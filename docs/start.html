@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>بيانات نشاطك · المناوب</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
 /* نموذج بيانات النشاط كخطوات قصيرة (سؤال واحد بالشاشة): النشاط ← المكان ← الخدمات ← الدوام ← الدفع ← الموظفون ← الإرسال.
@@ -16,7 +16,7 @@ body{padding:16px 16px 40px}
 .top{display:grid;gap:8px}
 .top h1{font-size:22px}
 .prog{display:flex;gap:4px} .prog i{flex:1;height:5px;border-radius:9px;background:var(--line)} .prog i.on{background:var(--accent)}
-.step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:12px;animation:in .2s ease-out}
+.step{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:12px;animation:in .2s ease-out}
 @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){ .step{animation:none} }
 .step h2{font-size:20px}
@@ -110,7 +110,7 @@ details.more .g2{padding-bottom:12px}
   const save = () => { try { localStorage.setItem(DKEY, JSON.stringify({ st: { ...st, logo: '' }, step, t: Date.now() })); } catch (e) { /* */ } };
   const STEPS = ['biz', 'place', 'services', 'hours', 'pay', 'staff', 'send'];
   document.title = k ? `بيانات ${b.name} · المناوب` : 'بيانات نشاطك · المناوب';
-  $('doc').innerHTML = `<div class="top"><h1 id="ttl"></h1><div class="prog" id="prog"></div></div><div id="body"></div><div class="saved" id="savedNote"></div>`;
+  $('doc').innerHTML = `<a class="mark-brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="mk" fill="#6D28D9" d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>المناوب</a><div class="top"><h1 id="ttl"></h1><div class="prog" id="prog"></div></div><div id="body"></div><div class="saved" id="savedNote"></div>`;
 
   function hoursFor() {
     const p = HP.find((x) => x[0] === st.hoursPreset);

@@ -65,6 +65,8 @@
 #pkBody .t select{min-width:150px}
 .faq-row:last-child{border-bottom:0}
 @media (max-width:640px){ .modes{grid-template-columns:1fr} .faq-row{grid-template-columns:1fr 36px} .faq-row textarea{grid-column:1} }
+label.check{min-height:44px}
+label.check input{width:20px;height:20px;flex:none;margin:0}
 </style>
 </head>
 <body>
@@ -257,7 +259,7 @@
     const staffSel = isOpen(o) ? `<select data-assign="${o.id}" aria-label="الموظف" style="width:auto;padding:5px 8px;font-size:13.5px"><option value="">بدون موظف</option>${S.staff.filter((s) => s.active || s.id === o.staff_id).map((s) => `<option value="${s.id}" ${s.id === o.staff_id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select>` : (o.staff_id ? `<span>${icon('users')}${esc(staffName(o.staff_id))}</span>` : '');
     return `<div class="item ord click ${o.status} ${S.fresh && S.fresh.has(o.id) ? 'new' : ''}" data-oid="${o.id}">
       <div class="h"><span class="no">#${o.number}</span>${badge(o.status)}${o.is_test ? '<span class="badge b-test plain">تجربة</span>' : ''}${o.prepaid ? '<span class="badge b-ok plain">مدفوع مقدمًا</span>' : ''}${isOpen(o) && !o.staff_id && !o.is_test ? '<span class="badge b-warn plain">بدون موظف</span>' : ''}<span class="sp"></span><span class="when">${I.when(o.slot_start)}</span></div>
-      <div class="who"><span class="avatar">${esc(I.initials(custName(c)))}</span><div class="grow"><b>${esc(custName(c))}</b><div class="tiny">${c.is_sim ? 'من المحاكي' : `<span class="ltr">${esc(I.phone(c.wa_id))}</span>`}${c.bot_paused ? ' · <span style="color:var(--warn)">البوت موقف معه</span>' : ''}</div></div></div>
+      <div class="who"><span class="avatar">${esc(I.initials(custName(c)))}</span><div class="grow"><b>${esc(custName(c))}</b><div class="tiny">${c.is_sim ? 'من المحاكي' : `<span class="ltr">${esc(I.phone(c.wa_id))}</span>`}${c.bot_paused ? ' · <span style="color:var(--warn)">الرد الآلي موقف معه</span>' : ''}</div></div></div>
       <div class="meta">${o.city_id ? `<span>${icon('pin')}${esc(cityName(o.city_id))}</span>` : ''}${o.service_id ? `<span>${icon('box')}${esc(svcName(o.service_id))}</span>` : ''}${o.price != null ? `<span>${icon('money')}${money(o.price)} ر.س</span>` : ''}${staffSel}</div>
     </div>`;
   }
@@ -440,15 +442,15 @@
   }
 
   // ═════ المحادثات ═════
-  const REASON = { complaint: ['شكوى', 'b-bad'], human: ['طلب يكلم موظف', 'b-warn'], unknown: ['رسالة ما فهمها البوت', 'b-gold'], location: ['مشكلة بالموقع', 'b-warn'], order: ['بخصوص طلب', 'b-warn'], package: ['يبي يشتري بكج', 'b-gold'] };
+  const REASON = { complaint: ['شكوى', 'b-bad'], human: ['طلب يكلم موظف', 'b-warn'], unknown: ['رسالة ما فهمها الرد الآلي', 'b-gold'], location: ['مشكلة بالموقع', 'b-warn'], order: ['بخصوص طلب', 'b-warn'], package: ['يبي يشتري بكج', 'b-gold'] };
   function vChats(v) {
     const list = S.handoffs;
-    v.innerHTML = `<div class="hint">هنا العملاء اللي البوت حوّلهم لكم، والبوت متوقف معهم لين ترجعونه. تقدرون تردون من هنا (خلال 24 ساعة من آخر رسالة منه) أو من واتساب المحل، وترجعون البوت له بزر.</div>
-      <div class="list">${list.length ? list.map((h) => { const c = h.customer || {}; const r = REASON[h.reason] || REASON.unknown; return `<div class="item click" data-cid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge ${r[1]} plain">${r[0]}</span><span class="sp"></span><span class="tiny">${I.ago(h.created_at)}</span></div><div class="small" style="white-space:pre-wrap">${esc(h.last_text || '')}</div></div>`; }).join('') : `<div class="empty">${icon('chat')}<b>ما فيه محادثات تنتظر رد</b><span class="tiny">البوت ماسك كل المحادثات الحين</span></div>`}</div>`;
-    // عملاء البوت موقف معهم بدون تحويل (رديتوا عليهم من تطبيق واتساب بزنس): يبانون هنا عشان ترجعونه لهم
+    v.innerHTML = `<div class="hint">هنا العملاء اللي حوّلهم الرد الآلي لكم، وهو متوقف معهم لين ترجعونه. تقدرون تردون من هنا (خلال 24 ساعة من آخر رسالة منه) أو من واتساب المحل، وترجعون الرد الآلي له بزر.</div>
+      <div class="list">${list.length ? list.map((h) => { const c = h.customer || {}; const r = REASON[h.reason] || REASON.unknown; return `<div class="item click" data-cid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge ${r[1]} plain">${r[0]}</span><span class="sp"></span><span class="tiny">${I.ago(h.created_at)}</span></div><div class="small" style="white-space:pre-wrap">${esc(h.last_text || '')}</div></div>`; }).join('') : `<div class="empty">${icon('chat')}<b>ما فيه محادثات تنتظر رد</b><span class="tiny">الرد الآلي ماسك كل المحادثات الحين</span></div>`}</div>`;
+    // عملاء الرد الآلي موقف معهم بدون تحويل (رديتوا عليهم من تطبيق واتساب بزنس): يبانون هنا عشان ترجعونه لهم
     const hid = new Set(list.map((h) => h.customer && h.customer.id));
     const quiet = (S.paused || []).filter((c) => !hid.has(c.id) && !c.is_sim);
-    if (quiet.length) v.insertAdjacentHTML('beforeend', `<h3 style="margin-top:14px">البوت موقف معهم</h3><div class="tiny">رديتوا عليهم من التطبيق، فالبوت وقف عشان ما يقاطعكم. يرجع لحاله بعد المدة اللي في الإعدادات، أو ترجعونه الحين.</div><div class="list">${quiet.map((c) => `<div class="item click" data-pcid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge plain">رد عليه صاحب المحل</span><span class="sp"></span><span class="tiny">${c.paused_at ? I.ago(c.paused_at) : ''}</span></div></div>`).join('')}</div>`);
+    if (quiet.length) v.insertAdjacentHTML('beforeend', `<h3 style="margin-top:14px">الرد الآلي موقف معهم</h3><div class="tiny">رديتوا عليهم من التطبيق، فالرد الآلي وقف عشان ما يقاطعكم. يرجع لحاله بعد المدة اللي في الإعدادات، أو ترجعونه الحين.</div><div class="list">${quiet.map((c) => `<div class="item click" data-pcid="${c.id}"><div class="h"><span class="avatar">${esc(I.initials(custName(c)))}</span><b style="font-family:var(--display)">${esc(custName(c))}</b><span class="badge plain">رد عليه صاحب المحل</span><span class="sp"></span><span class="tiny">${c.paused_at ? I.ago(c.paused_at) : ''}</span></div></div>`).join('')}</div>`);
     v.querySelectorAll('[data-cid]').forEach((el) => el.addEventListener('click', () => openChat(el.dataset.cid)));
     v.querySelectorAll('[data-pcid]').forEach((el) => el.addEventListener('click', () => openChat(el.dataset.pcid)));
   }
@@ -479,7 +481,7 @@
     try { msgs = await q1(sb.from('wa_log').select('id,direction,preview,by_who,created_at,status,error').eq('customer_id', cid).order('id', { ascending: false }).limit(60)); } catch (e) { /* */ }
     msgs.reverse();
     const el = $('conv'); if (!el) return;
-    el.innerHTML = msgs.map((m) => `<div class="m ${m.direction === 'in' ? 'c' : m.by_who === 'owner' ? 'o' : 'b'}">${esc(m.preview)}<small>${m.direction === 'in' ? 'العميل' : m.by_who === 'owner' ? 'أنتم' : 'البوت'} · ${I.ago(m.created_at)}${m.status === 'failed' ? ' · ما انرسلت' : ''}</small></div>`).join('') || '<div class="tiny">لا يوجد</div>';
+    el.innerHTML = msgs.map((m) => `<div class="m ${m.direction === 'in' ? 'c' : m.by_who === 'owner' ? 'o' : 'b'}">${esc(m.preview)}<small>${m.direction === 'in' ? 'العميل' : m.by_who === 'owner' ? 'أنتم' : 'الرد الآلي'} · ${I.ago(m.created_at)}${m.status === 'failed' ? ' · ما انرسلت' : ''}</small></div>`).join('') || '<div class="tiny">لا يوجد</div>';
     el.scrollTop = el.scrollHeight;
   }
 
@@ -508,7 +510,7 @@
     };
     v.querySelectorAll('[data-st]').forEach((el) => {
       const id = el.dataset.st, s = S.staff.find((x) => x.id === id);
-      el.querySelector('[data-active]').onchange = async (e) => { try { await q1(sb.from('staff').update({ active: e.target.checked }).eq('id', id).select('id')); s.active = e.target.checked; I.toast(s.active ? 'الموظف فعّال ✓' : 'الموظف موقف'); } catch (x) { I.fail(x); e.target.checked = !e.target.checked; } };
+      el.querySelector('[data-active]').onchange = async (e) => { const say = () => { el.querySelector('[data-active-lbl]').textContent = e.target.checked ? 'يستقبل طلبات' : 'موقوف'; }; say(); try { await q1(sb.from('staff').update({ active: e.target.checked }).eq('id', id).select('id')); s.active = e.target.checked; I.toast(s.active ? 'الموظف فعّال ✓' : 'الموظف موقف'); } catch (x) { I.fail(x); e.target.checked = !e.target.checked; say(); } };
       el.querySelector('[data-lang]').onchange = async (e) => { const v = e.target.value === 'en' ? 'en' : 'ar'; try { await q1(sb.from('staff').update({ lang: v }).eq('id', id).select('id')); s.lang = v; I.toast(v === 'en' ? 'رسائله صارت بالإنجليزي ✓' : 'رسائله صارت بالعربي ✓'); } catch (x) { I.fail(x); e.target.value = s.lang || 'ar'; } };
       el.querySelectorAll('[data-sc]').forEach((cb) => cb.onchange = async () => { const ids = [...el.querySelectorAll('[data-sc]:checked')].map((x) => x.value); try { await q1(sb.from('staff').update({ city_ids: ids }).eq('id', id).select('id')); s.city_ids = ids; I.toast('انحفظت المدن ✓'); } catch (x) { I.fail(x); } });
       el.querySelector('[data-link]').onclick = async (e) => { e.target.disabled = true; try { const r = await I.api('biz/staff-link', { business_id: BIZ, staff_id: id }); I.copy(r.url, 'انسخ رابط الموظف ✓ أرسله له'); linkBox(el, r.url); } catch (x) { I.fail(x); } e.target.disabled = false; };
@@ -518,7 +520,7 @@
   function staffCard(s) {
     const links = S.links.filter((l) => l.staff_id === s.id);
     const load = S.orders.filter((o) => o.staff_id === s.id && isOpen(o)).length;
-    return `<div class="item" data-st="${s.id}"><div class="h"><span class="avatar">${esc(I.initials(s.name))}</span><b style="font-family:var(--display);font-size:16px">${esc(s.name)}</b>${s.phone ? `<span class="tiny ltr">${esc(s.phone)}</span>` : ''}<span class="badge plain">${load} طلب مفتوح</span><span class="sp"></span><select data-lang aria-label="لغة رسائله" style="width:auto;padding:5px 9px;font-size:13.5px"><option value="ar" ${s.lang !== 'en' ? 'selected' : ''}>رسائله: عربي</option><option value="en" ${s.lang === 'en' ? 'selected' : ''}>رسائله: English</option></select><label class="sw"><input type="checkbox" data-active ${s.active ? 'checked' : ''}><i></i></label></div>
+    return `<div class="item" data-st="${s.id}"><div class="h"><span class="avatar">${esc(I.initials(s.name))}</span><b style="font-family:var(--display);font-size:16px">${esc(s.name)}</b>${s.phone ? `<span class="tiny ltr">${esc(s.phone)}</span>` : ''}<span class="badge plain">${load} طلب مفتوح</span><span class="sp"></span><select data-lang aria-label="لغة رسائله" style="width:auto;padding:5px 9px;font-size:13.5px"><option value="ar" ${s.lang !== 'en' ? 'selected' : ''}>رسائله: عربي</option><option value="en" ${s.lang === 'en' ? 'selected' : ''}>رسائله: English</option></select><label class="sw"><input type="checkbox" data-active ${s.active ? 'checked' : ''}><i></i><span class="small" data-active-lbl>${s.active ? 'يستقبل طلبات' : 'موقوف'}</span></label></div>
       <div class="row">${S.cities.map((c) => `<label class="check small"><input type="checkbox" data-sc value="${c.id}" ${(s.city_ids || []).length === 0 || (s.city_ids || []).includes(c.id) ? 'checked' : ''}>${esc(c.name)}</label>`).join('')}</div>
       <div class="row"><button class="btn sm ghost" data-link type="button">${icon('link')}${links.length ? 'رابط جديد للموظف' : 'رابط لوحة الموظف'}</button>${links.map((l) => `<span class="tiny">رابط فعّال${l.last_used_at ? ' · آخر دخول ' + I.ago(l.last_used_at) : ''}</span><button class="btn sm bad ghost" data-revoke="${l.id}" type="button">إلغاء</button>`).join('')}</div>
       <div data-linkbox></div></div>`;
@@ -530,19 +532,19 @@
   function vCatalog(v) {
     v.innerHTML = `
       ${S.ai || asAdmin ? `<div class="import-cta"><div class="grow"><b>قائمة أسعار أو موقع؟</b><span class="tiny">ارفع صورة قائمة الأسعار أو حط رابط الموقع، ونعبّي الخدمات والأسعار والأوقات والأسئلة. تراجعها قبل ما تنحفظ.</span></div><button class="btn" type="button" id="svImport">${icon('file')}عبّيها من صورة أو موقع</button></div>` : ''}
-      <div class="card stack"><div class="sec-h"><h3>الخدمات</h3><span class="tiny">لو أكثر من خدمة، البوت يسأل العميل يختار. بدون سعر = السعر بعد الزيارة</span></div>
+      <div class="card stack"><div class="sec-h"><h3>الخدمات</h3><span class="tiny">لو أكثر من خدمة، الرد الآلي يسأل العميل يختار. بدون سعر = السعر بعد الزيارة</span></div>
         <div class="tbl"><table class="t"><thead><tr><th>الخدمة</th><th>بالإنجليزي</th><th>السعر</th><th>يبدأ من</th><th>المدة (دقيقة)</th><th>الخيارات</th><th>فعّالة</th><th></th></tr></thead><tbody>
         ${S.services.map((s) => `<tr data-sv="${s.id}"><td><input data-k="name" value="${esc(s.name)}" maxlength="24"></td><td><input data-k="name_en" value="${esc(s.name_en)}" maxlength="24" dir="ltr"></td><td><input data-k="price" type="number" min="0" step="0.01" value="${s.price ?? ''}" placeholder="بعد الزيارة" style="max-width:120px"></td><td><input type="checkbox" data-k="price_from" ${s.price_from ? 'checked' : ''} aria-label="السعر يبدأ من"></td><td><input data-k="duration_min" type="number" min="10" max="720" value="${s.duration_min ?? ''}" placeholder="${S.set.slot_minutes}" style="max-width:100px"></td><td><button class="btn sm ghost" data-opt type="button" style="white-space:nowrap">${esc(optLabel(s))}</button></td><td><input type="checkbox" data-k="active" ${s.active ? 'checked' : ''}></td><td><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></td></tr>`).join('')}
         </tbody></table></div>
         <button class="btn sm ghost" id="svAdd" style="justify-self:start">${icon('plus')}خدمة</button></div>
-      <div class="card stack"><div class="sec-h"><h3>أسئلة قبل الحجز</h3><span class="tiny">البوت يسألها بعد الموقع وقبل اليوم (مثل رقم اللوحة أو تفاصيل الموقع)، وجوابها يطلع في الطلب وعند الموظف</span></div>
+      <div class="card stack"><div class="sec-h"><h3>أسئلة قبل الحجز</h3><span class="tiny">الرد الآلي يسألها بعد الموقع وقبل اليوم (مثل رقم اللوحة أو تفاصيل الموقع)، وجوابها يطلع في الطلب وعند الموظف</span></div>
         <div id="askList" class="stack s"></div>
         <div class="row"><button class="btn sm ghost" id="askAdd" type="button">${icon('plus')}سؤال</button><button class="btn sm" id="askSave" type="button">${icon('check')}حفظ الأسئلة</button></div></div>
       <div class="card stack" id="pkCard"><div class="sec-h"><h3>البكجات</h3><span class="tiny">العميل يشتريها من الواتساب برابط دفع، وتنخصم من رصيده لما يحجز. بدون دفع إلكتروني: طلبه يوصلك وترسل له الرابط</span></div>
         <div class="row"><span class="tiny">كلمة الرصيد</span><input id="puOne" value="${esc((S.set.pkg_unit || {}).one || '')}" placeholder="غسلة" maxlength="20" style="max-width:110px"><input id="puTwo" value="${esc((S.set.pkg_unit || {}).two || '')}" placeholder="غسلتين" maxlength="20" style="max-width:110px"><input id="puMany" value="${esc((S.set.pkg_unit || {}).many || '')}" placeholder="غسلات" maxlength="20" style="max-width:110px"></div>
         <div id="pkBody" class="stack s" style="min-width:0"><div class="spin"></div></div></div>
-      <div class="card stack"><div class="sec-h"><h3>المدن ونطاق الخدمة</h3><span class="tiny">البوت يعرف مدينة العميل من موقعه، واللي برا النطاق يوصله إنه خارج التغطية</span></div>
-        <div class="list">${S.cities.map((c) => `<div class="item" data-ct="${c.id}"><div class="h"><b style="font-family:var(--display)">${esc(c.name)}</b><span class="tiny">نصف قطر ${c.radius_km} كم</span><span class="sp"></span><label class="sw"><input type="checkbox" data-k="active" ${c.active ? 'checked' : ''}><i></i></label><button class="btn sm ghost" data-map>${icon('pin')}النطاق على الخريطة</button><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></div></div>`).join('') || '<div class="empty">ما فيه مدن، والبوت يقبل أي موقع</div>'}</div>
+      <div class="card stack"><div class="sec-h"><h3>المدن ونطاق الخدمة</h3><span class="tiny">الرد الآلي يعرف مدينة العميل من موقعه، واللي برا النطاق يوصله إنه خارج التغطية</span></div>
+        <div class="list">${S.cities.map((c) => `<div class="item" data-ct="${c.id}"><div class="h"><b style="font-family:var(--display)">${esc(c.name)}</b><span class="tiny">نصف قطر ${c.radius_km} كم</span><span class="sp"></span><label class="sw"><input type="checkbox" data-k="active" ${c.active ? 'checked' : ''}><i></i></label><button class="btn sm ghost" data-map>${icon('pin')}النطاق على الخريطة</button><button class="ib" data-del aria-label="حذف">${icon('trash')}</button></div></div>`).join('') || '<div class="empty">ما فيه مدن، والرد الآلي يقبل أي موقع</div>'}</div>
         <div class="row"><select id="ctPreset" style="max-width:220px"><option value="">أضف مدينة…</option>${PRESETS.filter((p) => !S.cities.some((c) => c.name === p[0])).map((p, i) => `<option value="${PRESETS.indexOf(p)}">${p[0]}</option>`).join('')}</select></div></div>`;
     v.querySelectorAll('[data-sv]').forEach((tr) => {
       const id = tr.dataset.sv;
@@ -566,7 +568,7 @@
     });
     $('ctPreset').onchange = async (e) => { const p = PRESETS[+e.target.value]; if (!p) return; try { const row = (await q1(sb.from('cities').insert({ business_id: BIZ, name: p[0], lat: p[1], lng: p[2], radius_km: p[3], sort: S.cities.length }).select('*')))[0]; S.cities.push(row); I.toast('انضافت ' + p[0] + ' ✓'); render(); } catch (x) { I.fail(x); } };
   }
-  // ── خيارات الخدمة: الإضافات بأسعارها والعدد (مثل كم سيارة)، والبوت يسألها وقت الحجز ──
+  // ── خيارات الخدمة: الإضافات بأسعارها والعدد (مثل كم سيارة)، والرد الآلي يسألها وقت الحجز ──
   function optLabel(s) {
     const n = (Array.isArray(s.addons) ? s.addons : []).length, m = Number((s.qty || {}).max || 1);
     const parts = [];
@@ -583,7 +585,7 @@
         <div class="stack s"><b>الإضافات</b><span class="tiny">تطلع للعميل بعد ما يختار الخدمة وتنضاف على السعر. نفس «المجموعة» يختار منها وحدة بس (مثل تكييس دعاستين أو 4).</span>
           <div id="adList" class="stack s"></div>
           <button class="btn sm ghost" id="adAdd" type="button" style="justify-self:start">${icon('plus')}إضافة</button></div>
-        <div class="stack s"><b>العدد</b><span class="tiny">لو العميل يقدر يطلب أكثر من وحدة بنفس الحجز (مثل كم سيارة)، البوت يسأله ويضرب السعر.</span>
+        <div class="stack s"><b>العدد</b><span class="tiny">لو العميل يقدر يطلب أكثر من وحدة بنفس الحجز (مثل كم سيارة)، الرد الآلي يسأله ويضرب السعر.</span>
           <label class="f" style="max-width:200px"><span>أقصى عدد</span><select id="qMax">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => `<option value="${n}" ${+qt.max === n ? 'selected' : ''}>${n === 1 ? 'بدون سؤال' : n}</option>`).join('')}</select></label>
           <div class="row" id="qWords"><label class="f grow"><span>المفرد</span><input id="qOne" value="${esc(qt.one || '')}" placeholder="سيارة" maxlength="20"></label><label class="f grow"><span>المثنى</span><input id="qTwo" value="${esc(qt.two || '')}" placeholder="سيارتين" maxlength="20"></label><label class="f grow"><span>الجمع</span><input id="qMany" value="${esc(qt.many || '')}" placeholder="سيارات" maxlength="20"></label></div></div>
       </div>
@@ -605,7 +607,7 @@
       const qty = max > 1 ? { max, one: $('qOne').value.trim(), two: $('qTwo').value.trim(), many: $('qMany').value.trim(), en_one: qt.en_one || '', en_many: qt.en_many || '' } : {};
       if (max > 1 && !qty.one) return I.toast('اكتب المفرد (مثل سيارة)', true);
       e.target.disabled = true;
-      try { await q1(sb.from('services').update({ addons, qty }).eq('id', s.id).select('id')); Object.assign(s, { addons, qty }); I.closeAll(); I.toast('انحفظ ✓ والبوت يسألها الحين'); render(); }
+      try { await q1(sb.from('services').update({ addons, qty }).eq('id', s.id).select('id')); Object.assign(s, { addons, qty }); I.closeAll(); I.toast('انحفظ ✓ والرد الآلي يسألها الحين'); render(); }
       catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }
@@ -615,7 +617,7 @@
   function askEditor() {
     if (!askDraft) askDraft = (Array.isArray(S.set.ask) ? S.set.ask : []).map((x) => ({ ...x }));
     const el = $('askList'); if (!el) return;
-    el.innerHTML = askDraft.map((x, i) => `<div class="row nw" data-i="${i}"><input data-k="q" value="${esc(x.q || '')}" placeholder="السؤال، مثل: وش رقم لوحة السيارة؟" maxlength="80" style="flex:1.2;min-width:0"><input data-k="hint" value="${esc(x.hint || '')}" placeholder="مثال يساعده (اختياري)" maxlength="80" style="flex:1;min-width:0"><button class="ib" data-del="${i}" type="button" aria-label="حذف">${icon('trash')}</button></div>`).join('') || '<span class="tiny">ما فيه أسئلة، البوت يروح من الموقع لليوم على طول</span>';
+    el.innerHTML = askDraft.map((x, i) => `<div class="row nw" data-i="${i}"><input data-k="q" value="${esc(x.q || '')}" placeholder="السؤال، مثل: وش رقم لوحة السيارة؟" maxlength="80" style="flex:1.2;min-width:0"><input data-k="hint" value="${esc(x.hint || '')}" placeholder="مثال يساعده (اختياري)" maxlength="80" style="flex:1;min-width:0"><button class="ib" data-del="${i}" type="button" aria-label="حذف">${icon('trash')}</button></div>`).join('') || '<span class="tiny">ما فيه أسئلة، الرد الآلي يروح من الموقع لليوم على طول</span>';
     el.querySelectorAll('input').forEach((x) => x.oninput = () => { askDraft[+x.closest('[data-i]').dataset.i][x.dataset.k] = x.value; });
     el.querySelectorAll('[data-del]').forEach((b) => b.onclick = () => { askDraft.splice(+b.dataset.del, 1); askEditor(); });
     $('askAdd').onclick = () => { if (askDraft.length >= 5) return I.toast('5 أسئلة بالكثير', true); askDraft.push({ q: '', hint: '', svc: [] }); askEditor(); };
@@ -675,7 +677,7 @@
     $('pkGrant').onclick = () => {
       if (!pk.length) return I.toast('أضف بكج أول', true);
       const m = I.modal(`<div class="mh"><h3 class="grow">أضف رصيد لعميل</h3><button class="ib" data-close>${icon('x')}</button></div>
-        <div class="mb stack"><p class="tiny">لعميل اشترى بكج من مكان ثاني أو دفع لكم مباشرة. لما يراسل الواتساب ويحجز، البوت يعرض عليه رصيده.</p>
+        <div class="mb stack"><p class="tiny">لعميل اشترى بكج من مكان ثاني أو دفع لكم مباشرة. لما يراسل الواتساب ويحجز، الرد الآلي يعرض عليه رصيده.</p>
           <label class="f"><span>جوال العميل</span><input id="gPh" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx"></label>
           <label class="f"><span>اسمه (اختياري)</span><input id="gNm" maxlength="60"></label>
           <label class="f"><span>البكج</span><select id="gPk">${pk.map((p) => `<option value="${p.id}">${esc(p.name)} (${p.uses})</option>`).join('')}</select></label>
@@ -702,7 +704,7 @@
     if (!r) return;
     await I.review(r.data, {
       current: { services: S.services.filter((s) => s.active), hours: S.hours.filter((h) => !h.city_id).map((h) => ({ weekday: h.weekday, open: String(h.open_time).slice(0, 5), close: String(h.close_time).slice(0, 5) })), faq: S.set.faq || [] },
-      place: S.set.place_mode || 'visit', applyLabel: 'احفظها في البوت',
+      place: S.set.place_mode || 'visit', applyLabel: 'احفظها في الرد الآلي',
       apply: async (sel) => {
         // الترتيب يمشي على ترتيب القائمة، واللي مو فيها ينزل تحتها
         let added = 0, updated = 0, places = 0;
@@ -742,7 +744,7 @@
         const shop = (S.set.place_mode || 'visit') === 'shop';
         const parts = [added ? I.count(added, 'خدمة جديدة', 'خدمتين جديدتين', 'خدمات جديدة', 'خدمة جديدة') : '', updated ? 'تحديث ' + I.count(updated, 'خدمة', 'خدمتين', 'خدمات', 'خدمة') : '', sel.hours ? 'الأوقات' : '',
           sel.faq.length ? I.count(sel.faq.length, 'سؤال', 'سؤالين', 'أسئلة', 'سؤال') : '', places ? (shop ? I.count(places, 'فرع', 'فرعين', 'فروع', 'فرع') : I.count(places, 'مدينة', 'مدينتين', 'مدن', 'مدينة')) : ''].filter(Boolean);
-        return `انحفظ: ${parts.join('، ')} ✓ والبوت يستخدمها الحين`;
+        return `انحفظ: ${parts.join('، ')} ✓ والرد الآلي يستخدمها الحين`;
       },
     });
   }
@@ -813,7 +815,7 @@
   const shownKeys = () => Object.keys(LBL).filter((k) => (S.set.place_mode || 'visit') === 'visit' || !['ask_location', 'out_of_area', 'on_the_way'].includes(k));
   const LBL = { welcome: 'الترحيب', ask_location: 'طلب الموقع', out_of_area: 'خارج النطاق', ask_day: 'اختيار اليوم', confirmed_tail: 'سطر بعد تأكيد الطلب', reminder: 'التذكير قبل الموعد', on_the_way: 'الموظف في الطريق', paid: 'وصلنا دفعك', handoff: 'التحويل للفريق', handoff_complaint: 'الرد على الشكوى', thanks: 'الرد على الشكر' };
   let txLang = 'ar';
-  // ── الأسئلة والأجوبة: لو رسالة العميل فيها وحدة من الكلمات يرد البوت بالجواب
+  // ── الأسئلة والأجوبة: لو رسالة العميل فيها وحدة من الكلمات يرسل الرد الآلي الجواب
   let faqDraft = null;
   // ── الأزرار: أول ما يكلّمكم العميل وش يطلع له (لو أكثر من 3 تصير قائمة)، واللي يطلع تحت كل جواب
   const MITEMS = { book: 'احجز من هنا', orders: 'طلباتي', prices: 'الأسعار', location: 'موقعنا', hours: 'الدوام', services: 'الخدمات', pay: 'طريقة الدفع', contact: 'تواصل معنا', lang: 'English' };
@@ -838,25 +840,25 @@
       if (!menuDraft.main.length) return I.toast('اختر زر واحد على الأقل', true);
       e.target.disabled = true;
       const menu = { main: menuDraft.main, after: menuDraft.after.length ? menuDraft.after : ['book', 'orders'] };
-      try { await q1(sb.from('settings').update({ menu }).eq('business_id', BIZ).select('business_id')); S.set.menu = menu; I.toast('انحفظت الأزرار ✓ والبوت يستخدمها الحين'); } catch (x) { I.fail(x); }
+      try { await q1(sb.from('settings').update({ menu }).eq('business_id', BIZ).select('business_id')); S.set.menu = menu; I.toast('انحفظت الأزرار ✓ والرد الآلي يستخدمها الحين'); } catch (x) { I.fail(x); }
       e.target.disabled = false;
     };
   }
   function faqCard() {
     if (!faqDraft) faqDraft = (Array.isArray(S.set.faq) ? S.set.faq : []).map((x) => ({ chip: x.chip || '', q: x.q || '', a: x.a || '' }));
-    return `<div class="card stack"><div class="sec-h"><h3>الأسئلة والأجوبة</h3><span class="tiny">لو رسالة العميل فيها وحدة من الكلمات، البوت يرد بالجواب</span></div><div id="faqList"></div>
+    return `<div class="card stack"><div class="sec-h"><h3>الأسئلة والأجوبة</h3><span class="tiny">لو رسالة العميل فيها وحدة من الكلمات، الرد الآلي يرد بالجواب</span></div><div id="faqList"></div>
       <div class="row"><button class="btn sm ghost" type="button" id="faqAdd">${icon('plus')}سؤال</button><span class="sp"></span><button class="btn sm" type="button" id="faqSave">${icon('check')}حفظ الأسئلة</button></div></div>`;
   }
   function paintFaq() {
     const el = $('faqList'); if (!el) return;
-    el.innerHTML = faqDraft.length ? faqDraft.map((f, i) => `<div class="faq-row"><div class="stack s"><input data-fq="${i}" data-k="chip" value="${esc(f.chip)}" maxlength="60" placeholder="السؤال، مثل: وين موقعكم؟"><input data-fq="${i}" data-k="q" value="${esc(f.q)}" maxlength="200" placeholder="كلمات يتعرف منها: موقع، وين، لوكيشن"></div><textarea data-fq="${i}" data-k="a" maxlength="600" rows="3" placeholder="الجواب">${esc(f.a)}</textarea><button class="ib" type="button" data-fdel="${i}" aria-label="حذف">${icon('trash')}</button></div>`).join('') : '<div class="tiny">ما فيه أسئلة مضافة. البوت يرد على الأسعار والموقع والدفع من بياناتكم، وأي شي ما يعرفه يتحوّل لكم في المحادثات.</div>';
+    el.innerHTML = faqDraft.length ? faqDraft.map((f, i) => `<div class="faq-row"><div class="stack s"><input data-fq="${i}" data-k="chip" value="${esc(f.chip)}" maxlength="60" placeholder="السؤال، مثل: وين موقعكم؟"><input data-fq="${i}" data-k="q" value="${esc(f.q)}" maxlength="200" placeholder="كلمات يتعرف منها: موقع، وين، لوكيشن"></div><textarea data-fq="${i}" data-k="a" maxlength="600" rows="3" placeholder="الجواب">${esc(f.a)}</textarea><button class="ib" type="button" data-fdel="${i}" aria-label="حذف">${icon('trash')}</button></div>`).join('') : '<div class="tiny">ما فيه أسئلة مضافة. الرد الآلي يرد على الأسعار والموقع والدفع من بياناتكم، وأي شي ما يعرفه يتحوّل لكم في المحادثات.</div>';
     el.querySelectorAll('[data-fq]').forEach((x) => x.oninput = () => { faqDraft[+x.dataset.fq][x.dataset.k] = x.value; });
     el.querySelectorAll('[data-fdel]').forEach((x) => x.onclick = () => { faqDraft.splice(+x.dataset.fdel, 1); paintFaq(); });
     $('faqAdd').onclick = () => { faqDraft.push({ chip: '', q: '', a: '' }); paintFaq(); const last = $('faqList').querySelector('.faq-row:last-child input'); if (last) last.focus(); };
     $('faqSave').onclick = async (e) => {
       const clean = faqDraft.map((f) => ({ chip: f.chip.trim().slice(0, 60), q: (f.q.trim() || f.chip.trim().replace(/[؟?]/g, '')).slice(0, 200), a: f.a.trim().slice(0, 600) })).filter((f) => f.a && f.q);
       e.target.disabled = true;
-      try { await q1(sb.from('settings').update({ faq: clean }).eq('business_id', BIZ).select('business_id')); S.set.faq = clean; faqDraft = null; I.toast('انحفظت الأسئلة ✓ والبوت يستخدمها الحين'); render(); } catch (x) { I.fail(x); e.target.disabled = false; }
+      try { await q1(sb.from('settings').update({ faq: clean }).eq('business_id', BIZ).select('business_id')); S.set.faq = clean; faqDraft = null; I.toast('انحفظت الأسئلة ✓ والرد الآلي يستخدمها الحين'); render(); } catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }
   function vTexts(v) {
@@ -874,7 +876,7 @@
       texts[txLang] = Object.fromEntries(Object.entries(texts[txLang] || {}).filter(([k]) => !shown.includes(k)));
       v.querySelectorAll('[data-tx]').forEach((t) => { const val = t.value.trim(); if (val && val !== defOf(txLang, t.dataset.tx)) texts[txLang][t.dataset.tx] = val.slice(0, 900); });
       e.target.disabled = true;
-      try { await q1(sb.from('settings').update({ texts }).eq('business_id', BIZ).select('business_id')); S.set.texts = texts; I.toast('انحفظت النصوص ✓ والبوت يستخدمها الحين'); render(); } catch (x) { I.fail(x); e.target.disabled = false; }
+      try { await q1(sb.from('settings').update({ texts }).eq('business_id', BIZ).select('business_id')); S.set.texts = texts; I.toast('انحفظت النصوص ✓ والرد الآلي يستخدمها الحين'); render(); } catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }
 
@@ -949,7 +951,7 @@
       </div>
       <div class="card stack"><h3>التذكير والتحويل والتنبيه</h3><div class="g3">
         <label class="f"><span>التذكير قبل الموعد</span><select data-s="reminder_minutes">${[[0, 'بدون تذكير'], [60, 'ساعة'], [120, 'ساعتين'], [180, '3 ساعات'], [360, '6 ساعات'], [720, '12 ساعة'], [1440, 'يوم']].map(([x, l]) => `<option value="${x}" ${s.reminder_minutes === x ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-        <label class="f"><span>يرجع البوت للعميل المحوّل بعد</span><select data-s="resume_hours">${[[0, 'يدويًا فقط'], [2, 'ساعتين'], [6, '6 ساعات'], [12, '12 ساعة'], [24, 'يوم'], [48, 'يومين']].map(([x, l]) => `<option value="${x}" ${s.resume_hours === x ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label class="f"><span>يرجع الرد الآلي للعميل المحوّل بعد</span><select data-s="resume_hours">${[[0, 'يدويًا فقط'], [2, 'ساعتين'], [6, '6 ساعات'], [12, '12 ساعة'], [24, 'يوم'], [48, 'يومين']].map(([x, l]) => `<option value="${x}" ${s.resume_hours === x ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
         <label class="f"><span>جوال المالك للتنبيهات</span><input data-b="owner_phone" value="${esc(I.phone(b.owner_phone))}" dir="ltr" placeholder="05xxxxxxxx"></label>
       </div><label class="check"><input type="checkbox" id="notifyStaff" ${s.notify_staff ? 'checked' : ''}>إشعار واتساب للموظف المسؤول مع كل طلب ينسند له</label><label class="check"><input type="checkbox" id="notifyOwner" ${s.notify_owner ? 'checked' : ''}>تنبيه واتساب على جوال المالك مع كل طلب جديد ومع كل عميل يحتاج رد</label></div>
       <div class="card stack"><h3>التصدير لجدول قوقل أو Webhook</h3>
@@ -964,7 +966,7 @@
     const setS = async (patch, msg) => { try { await q1(sb.from('settings').update(patch).eq('business_id', BIZ).select('business_id')); Object.assign(S.set, patch); I.toast(msg || 'انحفظ ✓'); return true; } catch (e) { I.fail(e); return false; } };
     v.querySelectorAll('input[name=place_mode]').forEach((x) => x.onchange = async () => { if (await setS({ place_mode: x.value })) $('onBox').hidden = x.value !== 'online'; });
     v.querySelectorAll('input[name=pay_timing]').forEach((x) => x.onchange = async () => { if (await setS({ pay_timing: x.value })) $('preBox').hidden = x.value !== 'before'; });
-    v.querySelectorAll('input[name=tone]').forEach((x) => x.onchange = () => setS({ tone: x.value }, 'انحفظ ✓ والبوت يرد بالأسلوب الجديد'));
+    v.querySelectorAll('input[name=tone]').forEach((x) => x.onchange = () => setS({ tone: x.value }, 'انحفظ ✓ والرد الآلي يرد بالأسلوب الجديد'));
     $('onNote').onchange = (e) => setS({ online_note: e.target.value.trim().slice(0, 300) });
     $('preAmt').onchange = (e) => setS({ prepay_amount: Math.max(0, Math.min(100000, Number(e.target.value) || 0)) });
     $('holdM').onchange = (e) => setS({ hold_minutes: +e.target.value });

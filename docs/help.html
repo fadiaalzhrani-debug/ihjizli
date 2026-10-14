@@ -6,30 +6,35 @@
 <title>كيف نشتغل معك · المناوب</title>
 <meta name="description" content="المناوب يجهّز كل شي لك: نأخذ بياناتك، نربط رقمك معك في اتصال واحد، ونسلّمك لوحتك. أنت ما تسوي شي تقني.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%234338CA'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/ihj.css">
 <style>
 /* كيف نشتغل معك: كل شي علينا، والعميل بس يوافق ويعطينا اللي نحتاجه. الأقسام تنفتح بالرابط (#connect, #meta, #moyasar, #dashboard) */
 body{padding:22px 16px 60px}
 .doc{max-width:720px;margin:0 auto;display:grid;gap:14px}
-.lead{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:8px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hd .mark-brand{margin:0}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;display:grid;gap:8px;box-shadow:var(--shadow)}
 .lead h1{font-size:26px}
 .path{display:grid;gap:10px;counter-reset:p}
-.st{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:grid;gap:8px;counter-increment:p;scroll-margin-top:16px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow);display:grid;gap:8px;counter-increment:p;scroll-margin-top:16px}
 .st:target{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}
 .st h2{display:flex;align-items:center;gap:10px;font-size:18px}
-.st h2::before{content:counter(p);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:13px;flex:none;font-family:var(--display)}
+.st h2::before{content:counter(p);width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;display:grid;place-items:center;font:800 13px/1 var(--display);flex:none}
 .who{display:flex;gap:6px;flex-wrap:wrap}
-.who span{font-size:12.5px;border-radius:99px;padding:3px 10px;font-weight:600;background:var(--soft);color:var(--accent)}
+.who span{display:inline-flex;align-items:center;height:24px;font-size:12.5px;line-height:1;border-radius:999px;padding:0 10px;font-weight:700;background:var(--soft);color:var(--accent)}
 .who span.you{background:var(--soft2);color:var(--fg)}
 .st p{margin:0;font-size:15px;line-height:1.8}
 .st ul{margin:0;padding-inline-start:20px;display:grid;gap:4px;font-size:14.5px;line-height:1.7}
 .need{background:var(--soft2);border-radius:12px;padding:9px 13px;font-size:14px}
-.ok{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:16px;padding:16px 18px;display:grid;gap:6px}
+.ok{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card));border-radius:20px;padding:16px 18px;display:grid;gap:6px}
+.end{display:flex;justify-content:center;padding-top:6px}
+@media (max-width:520px){ .end .btn{width:100%} }
 </style>
 </head>
 <body>
 <main class="doc">
+  <header class="hd"><a class="mark-brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="mk" fill="#6D28D9" d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>المناوب</a></header>
   <div class="lead"><h1>كيف نشتغل معك</h1><p class="muted">أنت ما تسوي شي تقني. نأخذ منك البيانات، ونجهّز كل شي، ونربط رقمك معك في اتصال واحد، ونسلّمك لوحتك جاهزة.</p></div>
   <div class="path">
     <section class="st" id="data"><h2>تعطينا بياناتك</h2><div class="who"><span class="you">منك</span><span>5 دقايق</span></div>
@@ -44,14 +49,15 @@ body{padding:22px 16px 60px}
     <section class="st" id="meta"><h2>نوثّق نشاطك عند ميتا</h2><div class="who"><span>علينا</span><span>ميتا تراجع من يومين إلى 14 يوم</span></div>
       <p>نرفع لك طلب التوثيق باسم نشاطك ونتابعه لين يعتمد. الرد الآلي يشتغل من أول يوم، والتوثيق يرفع حدود الإرسال ويعتمد اسمك الظاهر.</p>
       <div class="need">منك: صورة السجل التجاري، والاسم القانوني مثل ما هو في السجل.</div></section>
-    <section class="st" id="moyasar"><h2>نربط الدفع الإلكتروني</h2><div class="who"><span>علينا</span><span>لباقة الحجز + الدفع</span></div>
+    <section class="st" id="moyasar"><h2>نربط الدفع الإلكتروني</h2><div class="who"><span>علينا</span><span>لو تبي الدفع الإلكتروني</span></div>
       <p>نفتح لك حساب في بوابة الدفع (ميسر) باسم منشأتك ونتابع تفعيله ونربطه. العميل يدفع بمدى أو أبل باي أو البطاقة، والمبلغ يدخل حسابك البنكي مباشرة.</p>
       <div class="need">منك: السجل التجاري، هوية المالك، وآيبان باسم المنشأة.</div></section>
     <section class="st" id="dashboard"><h2>تستلم لوحتك</h2><div class="who"><span>معك في اتصال</span><span>30 دقيقة</span></div>
       <p>نرسل لك رابط لوحتك (تنفتح من الجوال والكمبيوتر بدون كلمة مرور)، ونسوي معك أول طلب حقيقي وتشوفه يوصل بالصوت. ونشرح لك:</p>
-      <ul><li><b>الطلبات:</b> كل طلب يوصلك بصوت، وتقدر تغيّر الموعد أو تلغي أو ترسل الفاتورة.</li><li><b>المحادثات:</b> العملاء اللي يحتاجون ردك. البوت يوقف معهم لين ترجّعه بزر، أو يرجع لحاله بعد المدة اللي تحددها.</li><li><b>الموظفون:</b> كل موظف له رابط بسيط: في الطريق، وصلت، الفاتورة.</li><li><b>الإيقاف والتشغيل:</b> بزر واحد في أي وقت.</li></ul></section>
+      <ul><li><b>الطلبات:</b> كل طلب يوصلك بصوت، وتقدر تغيّر الموعد أو تلغي أو ترسل الفاتورة.</li><li><b>المحادثات:</b> العملاء اللي يحتاجون ردك. الرد الآلي يوقف معهم لين ترجّعه بزر، أو يرجع لحاله بعد المدة اللي تحددها.</li><li><b>الموظفون:</b> كل موظف له رابط بسيط: في الطريق، وصلت، الفاتورة.</li><li><b>الإيقاف والتشغيل:</b> بزر واحد في أي وقت.</li></ul></section>
   </div>
-  <div class="ok"><h3>وبعدها؟</h3><span>نتابع معك أول أسبوع، وأي تعديل على الردود أو الأسعار أو الأوقات ضمن اشتراكك الشهري. كلّمنا على نفس الرقم اللي تواصلنا منه.</span></div>
+  <div class="ok"><h3>وبعدها؟</h3><span>نتابع معك أول أسبوع، وأي تعديل على الردود أو الأسعار أو الأوقات ضمن متابعتنا لك. كلّمنا على نفس الرقم اللي تواصلنا منه.</span></div>
+  <div class="end"><a class="btn lg" href="./#signup">أبيه على رقمي</a></div>
 </main>
 </body>
 </html>

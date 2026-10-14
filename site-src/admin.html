@@ -14,6 +14,9 @@
 .biz-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
 .biz-row .lg{width:46px;height:46px;border-radius:13px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;overflow:hidden}
 .biz-row .lg img{width:100%;height:100%;object-fit:cover;background:#fff}
+/* شعار لوحتي: نفس علامة الرئيسية (فقاعة وصح) على تدرّج الأزرار */
+.side .brand .lg{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff}
+.side .brand .lg svg{width:26px;height:26px}
 .prog{height:7px;border-radius:9px;background:var(--soft2);overflow:hidden;width:120px}
 .prog i{display:block;height:100%;background:var(--accent)}
 /* دليل التشغيل: خطوات كل منشأة بروابطها */
@@ -146,7 +149,7 @@
     const nav = TABS.map(([k, t, ic]) => `<a href="#${k}" data-tab="${k}">${icon(ic)}<span>${t}</span>${k === 'leads' ? '<span class="cnt g" id="cntLeads" hidden></span>' : ''}</a>`).join('');
     const bn = ['home', 'biz', 'pros', 'leads', 'more'];
     $('root').innerHTML = `<div class="app">
-      <aside class="side"><div class="brand"><span class="lg">${icon('check')}</span><div><b>المناوب</b><small>لوحتي</small></div></div><nav class="nav">${nav}</nav>
+      <aside class="side"><div class="brand"><span class="lg"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#6D28D9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>المناوب</b><small>لوحتي</small></div></div><nav class="nav">${nav}</nav>
         <div class="foot"><button class="btn ghost sm" id="sndBtn" type="button"></button></div></aside>
       <div class="main"><header class="top"><div class="grow"><h1 id="tTitle"></h1><div class="sub" id="tSub"></div></div><span class="live" id="live"><i></i><span>مباشر</span></span><button class="ib" id="sndIb" type="button" aria-label="الصوت"></button></header><main class="content" id="view"></main></div>
       <nav class="bnav">${bn.map((k) => k === 'more' ? `<a href="#more" data-tab="more">${icon('menu')}<span>المزيد</span></a>` : (() => { const t = TABS.find((x) => x[0] === k); return `<a href="#${k}" data-tab="${k}">${icon(t[2])}<span>${k === 'pros' ? 'المحتملين' : t[1]}</span></a>`; })()).join('')}</nav></div>`;

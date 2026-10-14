@@ -75,6 +75,7 @@ if (!SHOW_PRICES) {
     if (m) throw new Error('الأسعار مخفية بس باقي في الموقع: «' + m[0] + '» عند: ' + text.slice(Math.max(0, m.index - 80), m.index + 40).replace(/\s+/g, ' '));
   }
 }
+{ const vis = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<!--[\s\S]*?-->/g, ''); const m = /البوت|بوت واتساب|رد تلقائي/.exec(vis); if (m) throw new Error('كلمة ممنوعة في الرئيسية: «' + m[0] + '» (نقول «رد آلي»)'); }
 if (/SIMLINK|LEADAPI|TESTIAPI|ANONKEY|<!--[A-Z_]+-->/.test(page)) throw new Error('unreplaced placeholder in index');
 
 let admin = fs.readFileSync(path.join(SRC, 'admin.html'), 'utf8');

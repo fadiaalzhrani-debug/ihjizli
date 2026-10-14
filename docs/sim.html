@@ -6,7 +6,7 @@
 <title>جرّبه كأنك عميل · المناوب</title>
 <meta name="description" content="جرّب الرد والحجز والدفع على الواتساب لأي نشاط: صيانة، صالون، عيادة، استشارة أونلاين، مغسلة، مطعم.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%2325D366'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 /* محاكي واتساب احجزلي: نفس منطق البوت الحقيقي، بدون إرسال لأي رقم. قائمة مجالات + تخصيص + اقتراحات أسئلة */
@@ -27,7 +27,7 @@ svg{flex:none}
 
 /* نفس شكل الرئيسية (2026-10-14 بطلبها: «خل شكل التجربة الخلفية والخ زي الرئيسية»): صفحة بيضاء وبطاقة كبيرة بالتدرّج النيلي البنفسجي الفوشي */
 body{padding:16px;position:relative;isolation:isolate}
-body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:var(--grad);box-shadow:0 40px 80px -50px rgba(76,29,149,.8);z-index:-1}
+body::before{content:"";position:fixed;inset:16px;border-radius:32px;background:var(--grad);box-shadow:0 40px 80px -50px rgba(76,29,149,.8);z-index:-1}
 .aside .brand{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-family:var(--display);font-weight:900;font-size:22px}
 .aside .brand svg{width:26px;height:26px}
 /* اللوحة الجانبية (كمبيوتر) */
@@ -40,12 +40,12 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
 .aside .try li{display:flex;gap:9px;align-items:flex-start;line-height:1.6}
 .aside .try b{width:24px;height:24px;border-radius:50%;background:var(--hl);color:#2E1065;box-shadow:0 0 0 4px rgba(253,224,71,.22);display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display);margin-top:2px}
 .aside .acts{display:flex;gap:8px;flex-wrap:wrap}
-.pill{border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.08);color:#fff!important;border-radius:99px;padding:8px 14px;font-weight:600;font-size:14px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;color:inherit}
+.pill{border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.08);color:#fff!important;border-radius:14px;min-height:44px;padding:8px 14px;font-family:var(--display);font-weight:700;font-size:14.5px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;color:inherit}
 .pill.main{background:#fff;color:#4338CA!important;border-color:#fff;box-shadow:0 12px 28px -12px rgba(30,10,70,.6)}
 .pill:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
 .pill svg{width:17px;height:17px}
 .cur{display:flex;flex-wrap:wrap;gap:6px}
-.cur span{font-size:12.5px;background:rgba(30,10,80,.28);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:3px 10px;font-weight:600}
+.cur span{display:inline-flex;align-items:center;min-height:24px;line-height:1.3;font-size:12.5px;background:rgba(30,10,80,.28);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px;font-weight:700}
 
 /* الجوال */
 .phone{grid-column:2;width:390px;height:min(844px,calc(100vh - 72px));border-radius:46px;background:#0f1412;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.28),inset 0 0 0 2px #2a312d;position:relative}
@@ -54,15 +54,16 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
 .status i{display:inline-block;width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;vertical-align:middle}
 .status i::after{content:"";position:absolute;inset:1.5px;right:5px;background:currentColor;border-radius:1px}
 .head{background:var(--wa-head);color:var(--wa-head-fg);display:flex;align-items:center;gap:10px;padding:8px 10px 10px;flex:none}
-.head .back{width:26px;height:26px;display:grid;place-items:center;background:none;border:0;padding:0}
+.head .back{width:44px;height:44px;display:grid;place-items:center;background:none;border:0;padding:0}
 .head .back svg{width:22px;height:22px}
 .av{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#dfe5e7;color:#54656f;display:grid;place-items:center;font-family:var(--display);font-weight:800;flex:none;font-size:19px}
 .av img{width:100%;height:100%;object-fit:cover;background:#fff}
 .head .who{flex:1;min-width:0;line-height:1.25}
 .head .who b{display:flex;align-items:center;gap:5px;font-size:16.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .head .who b svg{width:16px;height:16px;color:#25D366}
-.head .who span{font-size:12.5px;opacity:.85;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.head .ic{background:none;border:0;padding:6px;display:grid;place-items:center}
+.head .who > span{font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head .who b span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.head .ic{background:none;border:0;padding:6px;display:grid;place-items:center;min-width:44px;min-height:44px}
 .head .ic svg{width:21px;height:21px}
 
 /* قائمة المحادثات (المجالات) */
@@ -70,22 +71,27 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
 .home .hd{background:var(--grad);color:#fff;padding:10px 16px 14px;flex:none}
 .home .hd b{font-family:var(--display);font-size:21px;display:block}
 .home .hd span{font-size:13px;opacity:.9}
+.home .hd .hx{display:inline-flex;align-items:center;min-height:44px;margin:-10px 0 -6px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;opacity:.9}
+.home .hd .hx:focus-visible{outline:3px solid var(--hl);outline-offset:2px;opacity:1}
+@media (min-width:1061px){ .home .hd .hx{display:none} }
 .chatrow{display:flex;gap:12px;align-items:center;width:100%;border:0;background:none;padding:11px 14px;text-align:start;color:var(--wa-fg);border-bottom:1px solid var(--wa-line)}
 .chatrow:hover{background:var(--wa-hover)}
 .chatrow .av{width:50px;height:50px;font-size:24px}
 .chatrow .t{flex:1;min-width:0}
 .chatrow .t b{display:flex;justify-content:space-between;gap:8px;font-size:16px;font-weight:600}
-.chatrow .t b small{font-size:12px;color:var(--wa-green);font-weight:600}
+.chatrow .t b small{font-size:12.5px;color:#008069;font-weight:600}
 .chatrow .t span{display:block;font-size:13.5px;color:var(--wa-meta);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chatrow .tags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
-.chatrow .tags i{font-style:normal;font-size:11.5px;border-radius:99px;padding:1px 8px;background:color-mix(in srgb,var(--wa-green) 13%,transparent);color:var(--wa-fg)}
-.home .note{padding:14px 18px 20px;font-size:12.5px;color:var(--wa-meta);text-align:center;line-height:1.7}
+.chatrow .tags i{font-style:normal;font-size:12.5px;border-radius:99px;padding:1px 8px;background:color-mix(in srgb,var(--wa-green) 13%,transparent);color:var(--wa-fg)}
+.home .note{padding:14px 18px 20px;font-size:13.5px;color:#54656F;text-align:center;line-height:1.7}
+.home .own{display:block;flex:none;margin:0 16px calc(16px + env(safe-area-inset-bottom,0px));padding:14px;border-radius:14px;background:var(--grad);color:#fff;font-family:var(--display);font-weight:800;font-size:16px;text-align:center;text-decoration:none;box-shadow:0 12px 28px -14px rgba(76,29,149,.7)}
+.home .own:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
 .chat{flex:1;overflow-y:auto;padding:10px 12px 14px;display:flex;flex-direction:column;gap:3px;
   background-color:var(--wa-bg);
   background-image:radial-gradient(var(--doodle) 1.2px,transparent 1.3px),radial-gradient(var(--doodle) 1.2px,transparent 1.3px);
   background-size:26px 26px;background-position:0 0,13px 13px;scroll-behavior:smooth}
-.daychip{align-self:center;background:var(--wa-chip);color:var(--wa-meta);font-size:12px;padding:4px 10px;border-radius:8px;margin:6px 0 8px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.daychip{align-self:center;background:var(--wa-chip);color:#54656F;font-size:12px;padding:4px 10px;border-radius:8px;margin:6px 0 8px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
 .e2e{align-self:center;max-width:88%;text-align:center;background:color-mix(in srgb,#FFEECD 85%,var(--wa-bg));color:#54656f;font-size:11.5px;padding:6px 10px;border-radius:8px;margin-bottom:6px;line-height:1.5}
 .msg{max-width:84%;display:grid;gap:3px;animation:pop .18s ease-out}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -121,16 +127,17 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
 /* اقتراحات «جرّب تسأل» */
 .chips{display:flex;gap:6px;overflow-x:auto;padding:6px 10px 2px;flex:none;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chips button{flex:none;border:1px solid var(--wa-line);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:6px 12px;font-size:13px;box-shadow:0 1px .5px rgba(11,20,26,.1);white-space:nowrap}
+.chips button{flex:none;min-height:44px;border:1px solid var(--wa-line);background:var(--wa-in);color:var(--wa-fg);border-radius:99px;padding:10px 14px;font-size:14px;box-shadow:0 1px .5px rgba(11,20,26,.1);white-space:nowrap}
 .chips button:hover{border-color:var(--wa-green)}
 .chips em{flex:none;font-style:normal;font-size:12px;color:var(--wa-meta);align-self:center}
 
 /* شريط الكتابة */
 .bar{display:flex;gap:6px;align-items:flex-end;padding:6px 8px 10px;flex:none}
-.field{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:var(--wa-input);border-radius:24px;padding:4px 6px;min-height:46px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.field{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:var(--wa-input);border-radius:24px;padding:1px 6px;min-height:46px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.field:focus-within{box-shadow:0 0 0 2px #008069}
 .field input{flex:1;border:0;background:transparent;color:var(--wa-fg);font:inherit;font-size:15.5px;padding:8px 4px;outline:none;min-width:0}
 .field input::placeholder{color:var(--wa-meta)}
-.field button{background:none;border:0;padding:6px;color:var(--wa-meta);display:grid;place-items:center}
+.field button{background:none;border:0;padding:6px;color:var(--wa-meta);display:grid;place-items:center;min-width:44px;min-height:44px}
 .field svg{width:22px;height:22px}
 .send{width:46px;height:46px;border-radius:50%;border:0;background:var(--wa-green);color:#fff;display:grid;place-items:center;flex:none;box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .send svg{width:21px;height:21px}
@@ -138,13 +145,13 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
 
 /* الورقة السفلية: القائمة، الخريطة، التخصيص */
 .sheet-bg{position:absolute;inset:0;background:rgba(11,20,26,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
-.sheet{position:absolute;inset-inline:0;bottom:0;background:var(--wa-sheet);color:var(--wa-fg);border-radius:16px 16px 0 0;z-index:6;transform:translateY(105%);transition:transform .22s ease;max-height:88%;display:flex;flex-direction:column}
-.sheet.on{transform:none} .sheet-bg.on{opacity:1;pointer-events:auto}
-@media (prefers-reduced-motion:reduce){ .sheet,.sheet-bg{transition:none} }
+.sheet{position:absolute;inset-inline:0;bottom:0;background:var(--wa-sheet);color:var(--wa-fg);border-radius:16px 16px 0 0;z-index:6;transform:translateY(105%);visibility:hidden;transition:transform .22s ease,visibility 0s linear .22s;max-height:88%;display:flex;flex-direction:column}
+.sheet.on{transform:none;visibility:visible;transition:transform .22s ease} .sheet-bg.on{opacity:1;pointer-events:auto}
+@media (prefers-reduced-motion:reduce){ .sheet,.sheet.on,.sheet-bg{transition:none} }
 .sheet .grab{width:36px;height:4px;border-radius:9px;background:var(--wa-line);margin:8px auto 2px}
 .sheet .sh{display:flex;align-items:center;gap:8px;padding:6px 14px 10px;border-bottom:1px solid var(--wa-line)}
 .sheet .sh b{flex:1;text-align:center;font-size:16px}
-.sheet .sh button{background:none;border:0;padding:4px;color:var(--wa-meta);display:grid;place-items:center}
+.sheet .sh button{background:none;border:0;padding:4px;color:var(--wa-meta);display:grid;place-items:center;min-width:44px;min-height:44px}
 .sheet .sh svg{width:22px;height:22px}
 .sheet .sb{overflow:auto;padding:4px 0 12px}
 .sheet .sec{padding:12px 18px 4px;color:var(--wa-green);font-size:13.5px;font-weight:600}
@@ -232,9 +239,10 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
     <div class="status"><span id="clock">9:41</span><span>5G <i></i></span></div>
     <!-- قائمة المحادثات -->
     <div class="home" id="home" hidden>
-      <div class="hd"><b>جرّبه كأنك عميل</b><span>اختر نشاط وكلّمه، وشوف كيف يرد لحاله</span></div>
+      <div class="hd"><a class="hx" href="./" aria-label="المناوب، الصفحة الرئيسية">→ المناوب</a><b>جرّبه كأنك عميل</b><span>اختر نشاط وكلّمه، وشوف كيف يرد لحاله</span></div>
       <div id="homeList"></div>
       <div class="note">كل محادثة هنا تمشي على النظام الحقيقي نفسه، وما ينرسل شي لأي رقم. وكل شي فيها يتعدّل على كيف صاحب النشاط.</div>
+      <a class="own" href="./#signup">أبي مثله على رقمي</a>
     </div>
     <!-- المحادثة -->
     <div id="chatView" style="display:flex;flex-direction:column;flex:1;min-height:0" hidden>
@@ -260,7 +268,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
       </form>
     </div>
     <div class="sheet-bg" id="sheetBg"></div>
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div class="sh"><button type="button" id="sheetX" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button><b id="sheetT"></b><span style="width:30px"></span></div><div class="sb" id="sheetB"></div></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetT" inert><div class="grab"></div><div class="sh"><button type="button" id="sheetX" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button><b id="sheetT"></b><span style="width:44px"></span></div><div class="sb" id="sheetB"></div></div>
   </div>
 </div>
 
@@ -382,9 +390,21 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
   }
 
   // ───── الورقة السفلية ─────
-  function openSheet(title, html) { $('sheetT').textContent = title; $('sheetB').innerHTML = html; $('sheet').classList.add('on'); $('sheetBg').classList.add('on'); }
-  function closeSheet() { $('sheet').classList.remove('on'); $('sheetBg').classList.remove('on'); }
+  let sheetRet = null;
+  function openSheet(title, html) {
+    const sh = $('sheet');
+    if (!sh.classList.contains('on')) { sheetRet = document.activeElement; if (sheetRet && sheetRet.closest && sheetRet.closest('#attach')) sheetRet = $('attBtn'); }
+    $('sheetT').textContent = title; $('sheetB').innerHTML = html; sh.inert = false; sh.classList.add('on'); $('sheetBg').classList.add('on');
+    setTimeout(() => { if (sh.classList.contains('on') && !sh.contains(document.activeElement)) $('sheetX').focus(); }, 60);
+  }
+  function closeSheet() {
+    const sh = $('sheet'), was = sh.classList.contains('on');
+    sh.classList.remove('on'); $('sheetBg').classList.remove('on'); sh.inert = true;
+    if (was && sheetRet && sheetRet.isConnected && sheetRet !== document.body) sheetRet.focus();
+    if (was) sheetRet = null;
+  }
   $('sheetX').onclick = closeSheet; $('sheetBg').onclick = closeSheet;
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('sheet').classList.contains('on')) closeSheet(); });
   function openList(b) {
     const html = (b.sections || []).map((s) => `${s.title ? `<div class="sec">${esc(s.title)}</div>` : ''}${(s.rows || []).map((r) => `<button type="button" class="opt" data-id="${esc(r.id)}" data-title="${esc(r.title)}"><span class="t"><b>${esc(r.title)}</b>${r.desc ? `<span>${esc(r.desc)}</span>` : ''}</span><span class="r"></span></button>`).join('')}`).join('');
     openSheet(b.button || '', html);
@@ -450,7 +470,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
       if (k === 'name') { q = 'وش اسم نشاطك؟'; hint = 'يظهر في الترحيب وفي كل الردود.'; body = `<input id="wName" maxlength="40" placeholder="${esc(biz ? biz.name : '')}" value="${esc(W.name)}"><div class="h" style="margin-top:4px">رسالة الترحيب (اختياري)</div><textarea id="wWelcome" maxlength="300" placeholder="مثال: يا هلا فيك في ${esc(W.name || (biz ? biz.name : ''))} 👋 كيف نخدمك؟">${esc(W.welcome)}</textarea>`; }
       else if (k === 'main') { q = 'أول ما يكلّمك العميل، وش الخيارات اللي تطلع له؟'; body = pickHtml(W.main, 9) + preview(); }
       else if (k === 'after') {
-        q = 'لما يسأل العميل سؤال ويجاوبه البوت، وش الأزرار اللي تطلع تحت الجواب؟';
+        q = 'لما يسأل العميل سؤال ويجاوبه الرد الآلي، وش الأزرار اللي تطلع تحت الجواب؟';
         hint = 'مثلًا يسأل «كم السعر؟» ويجاوبه، وتحت الجواب يطلع زر يخليه يكمل بدون ما يكتب. أقصى شي 3 أزرار.';
         const ex = W.answers.prices || 'القص 60 ريال، والصبغة من 150';
         const after = W.after.map(label);
@@ -523,7 +543,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:34px;background:
   function paintHead() {
     const name = cfg.name || (biz && biz.name) || '';
     $('hName').textContent = name; $('hAv').innerHTML = avatarHtml(cfg.name ? null : biz, demo);
-    document.title = `${name} · جرّبه بنفسك`;
+    document.title = `${name} · جرّبه كأنك عميل`;
   }
 
   async function openChat(slug, key, d) {
