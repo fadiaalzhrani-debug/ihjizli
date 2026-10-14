@@ -83,8 +83,8 @@
   const sb = I.sb;
   async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
 
-  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '', pros: null, pmsgs: {} };
-  const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['pros', 'العملاء المحتملين', 'users'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['deal', 'سير العمل', 'guide']];
+  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '', pros: null, pmsgs: {}, testi: null };
+  const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['pros', 'العملاء المحتملين', 'users'], ['testi', 'آراء العملاء', 'chat'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['deal', 'سير العمل', 'guide']];
   const PLAN = { bot: 'أتمتة الحجز', bot_pay: 'أتمتة الحجز + الدفع' };
   const BSTATUS = { setup: ['قيد التجهيز', 'b-warn'], live: ['شغّالة', 'b-ok'], paused: ['موقفة', 'b-cancelled'], ended: ['منتهية', 'b-cancelled'] };
   const LSTATUS = { new: ['جديد', 'b-gold'], contacted: ['تواصلنا', 'b-confirmed'], agreed: ['اتفقنا', 'b-arrived'], setup: ['قيد التجهيز', 'b-warn'], live: ['شغّال', 'b-ok'], lost: ['ما تم', 'b-cancelled'] };
@@ -158,14 +158,14 @@
   function paintCounts() { const n = S.leads.filter((l) => l.status === 'new').length; const el = $('cntLeads'); if (el) { el.hidden = !n; el.textContent = n; } }
   function go(tab) {
     if (tab === 'deal') { location.href = 'deal.html'; return; }
-    if (tab === 'more') { const m = I.modal(`<div class="mh"><h3 class="grow">المزيد</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">${['new', 'subs', 'onboard', 'deal'].map((k) => { const t = TABS.find((x) => x[0] === k); return `<a class="btn ghost block" href="#${k}" data-go="${k}" style="justify-content:flex-start">${icon(t[2])}${t[1]}</a>`; }).join('')}</div>`); m.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); }); return; }
+    if (tab === 'more') { const m = I.modal(`<div class="mh"><h3 class="grow">المزيد</h3><button class="ib" data-close>${icon('x')}</button></div><div class="mb">${['new', 'testi', 'subs', 'onboard', 'deal'].map((k) => { const t = TABS.find((x) => x[0] === k); return `<a class="btn ghost block" href="#${k}" data-go="${k}" style="justify-content:flex-start">${icon(t[2])}${t[1]}</a>`; }).join('')}</div>`); m.querySelectorAll('[data-go]').forEach((a) => a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); }); return; }
     I.closeAll(); S.tab = tab; history.replaceState(null, '', '#' + tab);
     document.querySelectorAll('[data-tab]').forEach((a) => a.classList.toggle('on', a.dataset.tab === tab));
     $('tTitle').textContent = (TABS.find((x) => x[0] === tab) || [])[1] || '';
     $('tSub').textContent = '';
     render(); window.scrollTo(0, 0);
   }
-  function render() { ({ home: vHome, biz: vBiz, new: vNew, leads: vLeads, pros: vPros, subs: vSubs, onboard: vOnboard }[S.tab] || vHome)($('view')); }
+  function render() { ({ home: vHome, biz: vBiz, new: vNew, leads: vLeads, pros: vPros, testi: vTesti, subs: vSubs, onboard: vOnboard }[S.tab] || vHome)($('view')); }
   const simUrl = (b) => `sim.html?b=${b.slug}&k=${b.sim_key}`;
   const logo = (b) => b.logo_url ? `<span class="lg"><img src="${esc(b.logo_url)}" alt=""></span>` : `<span class="lg">${esc(I.initials(b.name))}</span>`;
   const mrr = (b) => { const s = S.subs[b.id] || {}; return Number(s.monthly_fee || 0) + Number(s.app_monthly_fee || 0); };
@@ -784,6 +784,70 @@
       e.target.disabled = true;
       try { await q1(sb.from('prospect_msgs').update(patch).eq('key', m.key).select('key')); Object.assign(m, patch); I.closeAll(); I.toast('انحفظت ✓'); done(); }
       catch (x) { I.fail(x); e.target.disabled = false; }
+    };
+  }
+
+  // ═════ آراء العملاء: تكتبينها وتنشرينها وترتّبينها، والموقع يعرض المنشور بس ═════
+  const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+  async function loadTesti() { S.testi = await q1(sb.from('testimonials').select('*').order('sort').order('created_at')); }
+  function vTesti(v) {
+    if (!S.testi) {
+      v.innerHTML = `<div class="empty">${icon('chat')}<b>نحمّل الآراء…</b></div>`;
+      loadTesti().then(() => { if (S.tab === 'testi') render(); }, (e) => { I.fail(e); });
+      return;
+    }
+    const pub = S.testi.filter((t) => t.published).length;
+    $('tSub').textContent = `${S.testi.length} رأي · ${pub} منشور في الموقع`;
+    v.innerHTML = `<div class="stack">
+      <p class="hint">اللي تنشرينه يطلع في الموقع تحت «وش يقولون عنّا» بنفس الترتيب هنا، واللي مو منشور يبقى عندك بس. والقسم ما يطلع في الموقع لين يكون فيه رأي منشور واحد على الأقل. <a href="${PUBLIC}#reviews" target="_blank" rel="noopener">شوفها في الموقع</a></p>
+      <form class="card stack s" id="tAdd"><h3>أضيفي رأي</h3>
+        <div class="g2"><label class="f"><span>الاسم</span><input name="name" required maxlength="60" placeholder="مثل: أبو فهد"></label><label class="f"><span>النشاط والمدينة</span><input name="business" maxlength="80" placeholder="مثل: صالون حلاقة · الدمام"></label></div>
+        <label class="f"><span>الرأي</span><textarea name="body" required maxlength="600" rows="3" placeholder="اكتبي كلام العميل مثل ما قاله"></textarea></label>
+        <div class="row"><label class="f" style="max-width:160px"><span>التقييم</span><select name="stars">${[5, 4, 3, 2, 1].map((n) => `<option value="${n}">${stars(n)}</option>`).join('')}</select></label><label class="check"><input type="checkbox" name="published" checked>انشريه في الموقع</label><span class="sp"></span><button class="btn">${icon('plus')}أضف</button></div>
+      </form>
+      <div class="list" id="tList">${S.testi.map((t, i) => testiCard(t, i)).join('') || `<div class="empty">${icon('chat')}<b>ما فيه آراء بعد</b><span class="tiny">أول ما تضيفين رأي وتنشرينه يطلع في الموقع</span></div>`}</div></div>`;
+    $('tAdd').onsubmit = async (e) => {
+      e.preventDefault(); const f = new FormData(e.target);
+      const row = { name: String(f.get('name')).trim(), business: String(f.get('business') || '').trim(), body: String(f.get('body')).trim(), stars: +f.get('stars') || 5, published: !!f.get('published'), sort: S.testi.reduce((m, t) => Math.max(m, t.sort), 0) + 1 };
+      if (!row.name || !row.body) return I.toast('اكتبي الاسم والرأي', true);
+      try { S.testi.push((await q1(sb.from('testimonials').insert(row).select('*')))[0]); I.toast(row.published ? 'انضاف وانشر في الموقع ✓' : 'انضاف ✓'); render(); } catch (x) { I.fail(x); }
+    };
+    $('tList').onclick = async (e) => {
+      const card = e.target.closest('[data-t]'); if (!card) return;
+      const i = S.testi.findIndex((x) => x.id === card.dataset.t), t = S.testi[i]; if (!t) return;
+      const mv = e.target.closest('[data-mv]');
+      if (mv) {
+        const j = i + (+mv.dataset.mv); const o = S.testi[j]; if (!o) return;
+        const a = t.sort === o.sort ? j : o.sort, b = t.sort === o.sort ? i : t.sort;
+        try { await q1(sb.from('testimonials').update({ sort: a }).eq('id', t.id).select('id')); await q1(sb.from('testimonials').update({ sort: b }).eq('id', o.id).select('id')); t.sort = a; o.sort = b; S.testi.sort((x, y) => x.sort - y.sort || x.created_at.localeCompare(y.created_at)); render(); } catch (x) { I.fail(x); }
+        return;
+      }
+      if (e.target.closest('[data-del]')) { if (!confirm('حذف هذا الرأي نهائيًا؟')) return; try { await q1(sb.from('testimonials').delete().eq('id', t.id).select('id')); S.testi.splice(i, 1); I.toast('انحذف'); render(); } catch (x) { I.fail(x); } return; }
+      if (e.target.closest('[data-ed]')) editTesti(t);
+    };
+    $('tList').onchange = async (e) => {
+      if (!e.target.matches('[data-pub]')) return;
+      const t = S.testi.find((x) => x.id === e.target.closest('[data-t]').dataset.t); if (!t) return;
+      const v2 = e.target.checked;
+      try { await q1(sb.from('testimonials').update({ published: v2 }).eq('id', t.id).select('id')); t.published = v2; I.toast(v2 ? 'منشور في الموقع ✓' : 'انشال من الموقع'); render(); } catch (x) { I.fail(x); e.target.checked = !v2; }
+    };
+  }
+  function testiCard(t, i) {
+    return `<div class="item" data-t="${t.id}"><div class="h"><span style="color:#D97706;letter-spacing:1px">${stars(t.stars)}</span><b style="font-family:var(--display)">${esc(t.name)}</b>${t.business ? `<span class="tiny">${esc(t.business)}</span>` : ''}<span class="badge ${t.published ? 'b-ok' : 'b-cancelled'}">${t.published ? 'منشور' : 'مخفي'}</span><span class="sp"></span><label class="sw" title="منشور في الموقع"><input type="checkbox" data-pub ${t.published ? 'checked' : ''}><i></i></label></div>
+      <p class="small" style="margin:0;white-space:pre-wrap">${esc(t.body)}</p>
+      <div class="row"><button class="btn sm ghost" data-mv="-1" type="button" ${i === 0 ? 'disabled' : ''} aria-label="فوق">▲</button><button class="btn sm ghost" data-mv="1" type="button" ${i === S.testi.length - 1 ? 'disabled' : ''} aria-label="تحت">▼</button><span class="sp"></span><button class="btn sm ghost" data-ed type="button">${icon('edit')}تعديل</button><button class="btn sm ghost bad" data-del type="button">${icon('trash')}حذف</button></div></div>`;
+  }
+  function editTesti(t) {
+    const md = I.modal(`<div class="mh"><h3 class="grow">تعديل الرأي</h3><button class="ib" data-close type="button">${icon('x')}</button></div><div class="mb">
+      <div class="g2"><label class="f"><span>الاسم</span><input id="teN" maxlength="60" value="${esc(t.name)}"></label><label class="f"><span>النشاط والمدينة</span><input id="teB" maxlength="80" value="${esc(t.business)}"></label></div>
+      <label class="f"><span>الرأي</span><textarea id="teT" rows="5" maxlength="600">${esc(t.body)}</textarea></label>
+      <label class="f" style="max-width:160px"><span>التقييم</span><select id="teS">${[5, 4, 3, 2, 1].map((n) => `<option value="${n}" ${t.stars === n ? 'selected' : ''}>${stars(n)}</option>`).join('')}</select></label></div>
+      <div class="mf"><button class="btn ghost" data-close type="button">إلغاء</button><button class="btn" id="teSave" type="button">${icon('check')}احفظ</button></div>`);
+    md.querySelector('#teSave').onclick = async (e) => {
+      const patch = { name: md.querySelector('#teN').value.trim(), business: md.querySelector('#teB').value.trim(), body: md.querySelector('#teT').value.trim(), stars: +md.querySelector('#teS').value || 5 };
+      if (!patch.name || !patch.body) return I.toast('الاسم والرأي لازم', true);
+      e.target.disabled = true;
+      try { await q1(sb.from('testimonials').update(patch).eq('id', t.id).select('id')); Object.assign(t, patch); I.closeAll(); I.toast('انحفظ ✓'); render(); } catch (x) { I.fail(x); e.target.disabled = false; }
     };
   }
 

@@ -35,7 +35,7 @@ fs.writeFileSync(path.join(OUT, 'assets', 'demos.json'), JSON.stringify(demos));
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fields = demos.map((d) => `<a class="field" href="sim.html?demo=1&amp;open=${d.slug}" target="_blank" rel="noopener"><div class="h"><span class="em">${d.icon}</span><div><b>${esc(d.label)}</b><div class="tiny">${esc(d.desc)}</div></div></div><div class="tags">${d.tags.map((t) => `<i>${esc(t)}</i>`).join('')}</div><span class="go">جرّبه ←</span></a>`).join('\n    ');
 
-const meta = `<meta name="description" content="المناوب: رد آلي على نفس رقم واتسابك يرد على عملائك ويحجز لهم ويذكّرهم، والتجهيز كله علينا، ومعه موقع باسمك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.${SHOW_PRICES ? " تأسيس مرة وحدة واشتراك شهري ثابت." : ""}">
+const meta = `<meta name="description" content="المناوب: الشغل كله أوتوماتيك على نفس رقم واتسابك، من أول رد لين الحجز والتذكير والفاتورة، والتجهيز كله علينا، ومعه موقع باسمك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.${SHOW_PRICES ? " تأسيس مرة وحدة واشتراك شهري ثابت." : ""}">
 <meta name="theme-color" content="#4338CA">
 <link rel="canonical" href="${SITE_URL}">
 <meta property="og:type" content="website">
@@ -58,7 +58,10 @@ for (const [k, v] of [['<!--HEAD_META-->', meta], ['<!--FIELDS-->', fields], ['<
   if (!page.includes(k)) { if (k === '<!--FIELDS-->') continue; throw new Error('missing placeholder ' + k); }
   page = page.replace(k, v);
 }
-page = page.split('SIMLINK').join(SIM).split('LEADAPI').join(LEAD_API);
+// آراء العملاء تنقرا من القاعدة بمفتاح القراءة العام (نفس اللي في اللوحات، والجدول يعرض المنشور بس)
+const ANON_KEY = (/const ANON = '([^']+)'/.exec(fs.readFileSync(path.join(OUT, 'assets/ihj.js'), 'utf8')) || [])[1];
+if (!ANON_KEY) throw new Error('anon key not found in assets/ihj.js');
+page = page.split('SIMLINK').join(SIM).split('LEADAPI').join(LEAD_API).split('TESTIAPI').join('https://kvreqxdgjeietzsfamei.supabase.co/rest/v1/testimonials').split('ANONKEY').join(ANON_KEY);
 // علامات الأسعار: <!--P--> و/*P*/ للي يطلع مع الأسعار بس، و<!--NP--> و/*NP*/ للي يطلع بدونها
 const keep = (re, on) => { page = page.replace(re, on ? '$1' : ''); };
 keep(/<!--P-->([\s\S]*?)<!--\/P-->/g, SHOW_PRICES); keep(/\/\*P\*\/([\s\S]*?)\/\*\/P\*\//g, SHOW_PRICES);
@@ -72,7 +75,7 @@ if (!SHOW_PRICES) {
     if (m) throw new Error('الأسعار مخفية بس باقي في الموقع: «' + m[0] + '» عند: ' + text.slice(Math.max(0, m.index - 80), m.index + 40).replace(/\s+/g, ' '));
   }
 }
-if (/SIMLINK|LEADAPI|<!--[A-Z_]+-->/.test(page)) throw new Error('unreplaced placeholder in index');
+if (/SIMLINK|LEADAPI|TESTIAPI|ANONKEY|<!--[A-Z_]+-->/.test(page)) throw new Error('unreplaced placeholder in index');
 
 let admin = fs.readFileSync(path.join(SRC, 'admin.html'), 'utf8');
 if (/<!--[A-Z_]+-->/.test(admin)) throw new Error('unreplaced placeholder in admin');
