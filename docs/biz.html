@@ -495,7 +495,7 @@
       </div>
       <div class="list">${S.staff.map(staffCard).join('') || `<div class="empty">${icon('users')}<b>ما أضفتم موظفين</b></div>`}</div>
       <form class="card stack s" id="addStaff"><h3>إضافة موظف</h3>
-        <div class="g2"><label class="f"><span>الاسم</span><input name="name" required maxlength="40"></label><label class="f"><span>الجوال</span><input name="phone" inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></label></div>
+        <div class="g2"><label class="f"><span>الاسم</span><input name="name" required maxlength="40"></label><label class="f"><span>الجوال</span><input name="phone" inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></label><label class="f"><span>لغة رسائله</span><select name="lang"><option value="ar">عربي</option><option value="en">English</option></select></label></div>
         <div class="row">${S.cities.map((c) => `<label class="check"><input type="checkbox" name="city" value="${c.id}" checked>${esc(c.name)}</label>`).join('')}</div>
         <button class="btn" style="justify-self:start">${icon('plus')}إضافة</button></form>`;
     v.querySelectorAll('[data-c]').forEach((b) => b.onclick = async () => { try { await q1(sb.from('settings').update({ capacity_mode: b.dataset.c }).eq('business_id', BIZ).select('business_id')); S.set.capacity_mode = b.dataset.c; render(); } catch (e) { I.fail(e); } });
@@ -503,12 +503,13 @@
     $('addStaff').onsubmit = async (e) => {
       e.preventDefault(); const f = new FormData(e.target);
       const city_ids = f.getAll('city');
-      try { const row = (await q1(sb.from('staff').insert({ business_id: BIZ, name: String(f.get('name')).trim(), phone: String(f.get('phone') || '').trim(), city_ids }).select('*')))[0]; S.staff.push(row); I.toast('انضاف الموظف ✓'); render(); }
+      try { const row = (await q1(sb.from('staff').insert({ business_id: BIZ, name: String(f.get('name')).trim(), phone: String(f.get('phone') || '').trim(), city_ids, lang: f.get('lang') === 'en' ? 'en' : 'ar' }).select('*')))[0]; S.staff.push(row); I.toast('انضاف الموظف ✓'); render(); }
       catch (x) { I.fail(x); }
     };
     v.querySelectorAll('[data-st]').forEach((el) => {
       const id = el.dataset.st, s = S.staff.find((x) => x.id === id);
       el.querySelector('[data-active]').onchange = async (e) => { try { await q1(sb.from('staff').update({ active: e.target.checked }).eq('id', id).select('id')); s.active = e.target.checked; I.toast(s.active ? 'الموظف فعّال ✓' : 'الموظف موقف'); } catch (x) { I.fail(x); e.target.checked = !e.target.checked; } };
+      el.querySelector('[data-lang]').onchange = async (e) => { const v = e.target.value === 'en' ? 'en' : 'ar'; try { await q1(sb.from('staff').update({ lang: v }).eq('id', id).select('id')); s.lang = v; I.toast(v === 'en' ? 'رسائله صارت بالإنجليزي ✓' : 'رسائله صارت بالعربي ✓'); } catch (x) { I.fail(x); e.target.value = s.lang || 'ar'; } };
       el.querySelectorAll('[data-sc]').forEach((cb) => cb.onchange = async () => { const ids = [...el.querySelectorAll('[data-sc]:checked')].map((x) => x.value); try { await q1(sb.from('staff').update({ city_ids: ids }).eq('id', id).select('id')); s.city_ids = ids; I.toast('انحفظت المدن ✓'); } catch (x) { I.fail(x); } });
       el.querySelector('[data-link]').onclick = async (e) => { e.target.disabled = true; try { const r = await I.api('biz/staff-link', { business_id: BIZ, staff_id: id }); I.copy(r.url, 'انسخ رابط الموظف ✓ أرسله له'); linkBox(el, r.url); } catch (x) { I.fail(x); } e.target.disabled = false; };
       el.querySelectorAll('[data-revoke]').forEach((b) => b.onclick = async () => { if (!confirm('إلغاء رابط هذا الموظف؟')) return; try { await I.api('biz/link-revoke', { business_id: BIZ, link_id: b.dataset.revoke }); I.toast('انلغى الرابط'); render(); } catch (x) { I.fail(x); } });
@@ -517,7 +518,7 @@
   function staffCard(s) {
     const links = S.links.filter((l) => l.staff_id === s.id);
     const load = S.orders.filter((o) => o.staff_id === s.id && isOpen(o)).length;
-    return `<div class="item" data-st="${s.id}"><div class="h"><span class="avatar">${esc(I.initials(s.name))}</span><b style="font-family:var(--display);font-size:16px">${esc(s.name)}</b>${s.phone ? `<span class="tiny ltr">${esc(s.phone)}</span>` : ''}<span class="badge plain">${load} طلب مفتوح</span><span class="sp"></span><label class="sw"><input type="checkbox" data-active ${s.active ? 'checked' : ''}><i></i></label></div>
+    return `<div class="item" data-st="${s.id}"><div class="h"><span class="avatar">${esc(I.initials(s.name))}</span><b style="font-family:var(--display);font-size:16px">${esc(s.name)}</b>${s.phone ? `<span class="tiny ltr">${esc(s.phone)}</span>` : ''}<span class="badge plain">${load} طلب مفتوح</span><span class="sp"></span><select data-lang aria-label="لغة رسائله" style="width:auto;padding:5px 9px;font-size:13.5px"><option value="ar" ${s.lang !== 'en' ? 'selected' : ''}>رسائله: عربي</option><option value="en" ${s.lang === 'en' ? 'selected' : ''}>رسائله: English</option></select><label class="sw"><input type="checkbox" data-active ${s.active ? 'checked' : ''}><i></i></label></div>
       <div class="row">${S.cities.map((c) => `<label class="check small"><input type="checkbox" data-sc value="${c.id}" ${(s.city_ids || []).length === 0 || (s.city_ids || []).includes(c.id) ? 'checked' : ''}>${esc(c.name)}</label>`).join('')}</div>
       <div class="row"><button class="btn sm ghost" data-link type="button">${icon('link')}${links.length ? 'رابط جديد للموظف' : 'رابط لوحة الموظف'}</button>${links.map((l) => `<span class="tiny">رابط فعّال${l.last_used_at ? ' · آخر دخول ' + I.ago(l.last_used_at) : ''}</span><button class="btn sm bad ghost" data-revoke="${l.id}" type="button">إلغاء</button>`).join('')}</div>
       <div data-linkbox></div></div>`;

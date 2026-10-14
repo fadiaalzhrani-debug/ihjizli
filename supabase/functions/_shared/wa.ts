@@ -209,15 +209,17 @@ export async function sendToOwner(business: any, channel: any, tpl: TplCall, tex
   return await sendToNumber(business, channel, business.owner_phone, tpl, text);
 }
 
-export async function sendToNumber(business: any, channel: any, to: string, tpl: TplCall, text: string): Promise<SendResult> {
+export async function sendToNumber(business: any, channel: any, to: string, tpl: TplCall, text: string, lang: "ar" | "en" = "ar", tplAr?: TplCall): Promise<SendResult> {
+  // لغة غير العربي: لو قالبها ما اعتمد عند ميتا بعد، نرسل القالب العربي بدالها عشان التنبيه يوصل
+  if (lang !== "ar" && tplAr && !approved(channel, tpl.name, lang) && approved(channel, tplAr.name, "ar")) { tpl = tplAr; lang = "ar"; }
   const row: any = { business_id: business.id, customer_id: null, direction: "out", channel: "wa", kind: "template", body: { to, template: tpl, text }, preview: text.slice(0, 500), by_who: "system" };
   if (!to) return { ok: false, ids: [], error: "no_phone", mode: "failed" };
   const connected = channel && channel.provider !== "none" && channel.status === "connected";
   if (!connected) { row.status = "not_connected"; }
-  else if (!approved(channel, tpl.name, "ar")) { row.status = "failed"; row.error = `template_not_approved:${tpl.name}:ar`; }
+  else if (!approved(channel, tpl.name, lang)) { row.status = "failed"; row.error = `template_not_approved:${tpl.name}:${lang}`; }
   else if (channel.dry_run) { row.status = "dry_run"; }
   else {
-    const r = await postMessage(channel, await loadSecrets(business.id), templateSendPayload(tpl, "ar", to));
+    const r = await postMessage(channel, await loadSecrets(business.id), templateSendPayload(tpl, lang, to));
     row.status = r.ok ? "sent" : "failed"; row.error = r.error || ""; row.wa_msg_id = r.id || null;
   }
   const { data } = await db().from("wa_log").insert(row).select("id").single();

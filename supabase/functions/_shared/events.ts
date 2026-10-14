@@ -67,12 +67,24 @@ async function doNotify(job: any) {
     const snap = await orderSnapshot(job.payload.order_id);
     const { data: o } = await db().from("orders").select("staff_id, status").eq("id", job.payload.order_id).maybeSingle();
     if (!snap || !o?.staff_id || o.status === "cancelled") return;
-    const { data: st } = await db().from("staff").select("name, phone, active").eq("id", o.staff_id).maybeSingle();
+    const { data: st } = await db().from("staff").select("name, phone, active, lang").eq("id", o.staff_id).maybeSingle();
     const to = intl(st?.phone);
     if (!to || !st?.active) return;
     const x = snap.order;
-    const text = `طلب جديد لك رقم ${x.number} 🔔\n📅 ${x.day} ⏰ ${x.time}${x.city ? "\n📍 " + x.city : ""}`;
-    const r = await sendToNumber(b, ch, to, { name: "ihj_staff_order", params: [b.name, String(x.number), `${x.day} ${x.time}`, x.city || b.city || "أونلاين"] }, text);
+    const textAr = `طلب جديد لك رقم ${x.number} 🔔\n📅 ${x.day} ⏰ ${x.time}${x.city ? "\n📍 " + x.city : ""}`;
+    const tplAr = { name: "ihj_staff_order", params: [b.name, String(x.number), `${x.day} ${x.time}`, x.city || b.city || "أونلاين"] };
+    let r;
+    if (st.lang === "en") {
+      // الموظف يبي رسائله بالإنجليزي: اليوم والوقت والمدينة بالإنجليزي
+      const tz = b.timezone || "Asia/Riyadh";
+      const day = dayLabel(local(x.slot_start, tz).ymd, "en", tz, false), time = timeLabel(x.slot_start, "en", tz);
+      const { data: oc } = await db().from("orders").select("city:cities(name, name_en)").eq("id", job.payload.order_id).maybeSingle();
+      const cy = (oc as any)?.city, city = cy?.name_en || cy?.name || "";
+      const text = `A new order for you, No. ${x.number} 🔔\n📅 ${day} ⏰ ${time}${city ? "\n📍 " + city : ""}`;
+      r = await sendToNumber(b, ch, to, { name: "ihj_staff_order", params: [b.name_en || b.name, String(x.number), `${day} ${time}`, city || "Online"] }, text, "en", tplAr);
+    } else {
+      r = await sendToNumber(b, ch, to, tplAr, textAr);
+    }
     if (!r.ok && !soft(r.error)) throw new Error(r.error || "notify_staff");
     return;
   }

@@ -119,7 +119,38 @@ section.hero{border-top:0}
 .notif.on{opacity:1;transform:none}
 .notif .k{font-size:12px;font-weight:700;color:var(--accent)}
 .notif b{font-family:var(--display);font-size:15.5px;color:var(--fg)}
-.pw{position:relative;display:grid;justify-items:center;width:100%}
+.pw{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;width:100%}
+.pw .phone{flex:none;width:min(310px,100%)}
+.hero .demo{grid-template-columns:minmax(0,1fr)}
+.side{flex:0 1 240px;min-width:0;display:grid;gap:12px;align-content:center}
+.dash,.wk{background:#fff;color:var(--fg);border-radius:18px;box-shadow:0 30px 60px -30px rgba(20,6,60,.75);overflow:hidden}
+.dash .bar{display:flex;align-items:center;gap:5px;padding:8px 10px;background:#F4F3FA;border-bottom:1px solid var(--line)}
+.dash .bar i{width:8px;height:8px;border-radius:50%;background:#F87171} .dash .bar i:nth-child(2){background:#FBBF24} .dash .bar i:nth-child(3){background:#34D399}
+.dash .bar span{flex:1;text-align:center;font-size:11.5px;color:var(--muted);background:#fff;border-radius:7px;padding:1px 8px;border:1px solid var(--line);margin-inline-start:6px}
+.dash .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px 2px}
+.dash .hd b{font-family:var(--display);font-size:14.5px}
+.dash .live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#16A34A}
+.dash .live::before{content:"";width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.dash ul{list-style:none;margin:0;padding:8px 10px 12px;display:grid;gap:6px}
+.dash li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:11px;border:1.5px solid var(--line);font-size:13.5px;transition:background-color .4s,border-color .4s}
+.dash li b{font-variant-numeric:tabular-nums;unicode-bidi:isolate}
+.dash li em{font-style:normal;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:#F4F4F5;color:#71717A;white-space:nowrap}
+.dash li.free em{background:#ECFDF5;color:#047857}
+.dash li.new{border-color:#7C3AED;background:#F5F3FF;animation:slotIn 1.1s ease-out}
+.dash li.new em{background:#6D28D9;color:#fff}
+@keyframes slotIn{0%{box-shadow:0 0 0 0 rgba(124,58,237,.55);transform:scale(1.04)}100%{box-shadow:0 0 0 14px rgba(124,58,237,0);transform:none}}
+.wk{opacity:0;transform:translateY(12px) scale(.97);transition:opacity .4s,transform .5s cubic-bezier(.2,.9,.3,1.25)}
+.wk.on{opacity:1;transform:none}
+.wk .hd{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#075E54;color:#fff;font-weight:700;font-size:13px}
+.wk .hd .lg{margin-inline-start:auto;font-size:11px;padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.2)}
+.wk .body{background:#EFEAE2;padding:10px}
+.wk .msg{padding:8px 10px;border-radius:10px;border-start-start-radius:0;background:#fff;box-shadow:0 1px .5px rgba(11,20,26,.13);white-space:pre-line;font-size:13px;line-height:1.6;color:#111B21}
+.wk .msg[dir="ltr"]{text-align:left;border-start-start-radius:10px;border-start-end-radius:0}
+@media (min-width:1100px){ .hero{margin-inline:calc(50% - min(600px, 50vw - 16px));grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)} }
+@media (min-width:1100px){ .hero h1{font-size:52px} }
+@media (min-width:1100px) and (max-width:1199px){ .hero h1{font-size:46px} }
+@media (max-width:639px){ .pw{flex-direction:column} .side{flex:none;width:min(330px,100%)} }
+@media (prefers-reduced-motion:reduce){ .wk{transition:none} .dash li.new{animation:none} }
 .demo-cap{font-size:13.5px;color:var(--muted);text-align:center;margin-bottom:-4px}
 .scn{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:420px}
 .scn button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:7px 13px;font:600 14px/1.2 var(--body);cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
@@ -212,7 +243,7 @@ section{border-top:0}
 #signup h2{color:#fff} #signup > .sub{color:rgba(255,255,255,.88)}
 #signup .lead-form{border:0;box-shadow:0 30px 60px -36px rgba(20,6,60,.8)}
 #signup .done{background:#fff;color:var(--fg)}
-@media (max-width:900px){ .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding:36px 22px 30px;border-radius:28px} }
+@media (max-width:1099px){ .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding:36px 22px 30px;border-radius:28px} }
 @media (max-width:620px){ .hero{margin-top:12px;padding:30px 18px 26px;border-radius:24px} #signup{padding:32px 18px;border-radius:24px} }
 /* الحركات: ظهور مع النزول، عبارة العنوان تتبدّل وتحتها خط يترسم، شريط مجالات يمشي، ومسار الطلب بخطوات تضوي وفقاعات تطلع. كلها تتوقف لمن يفضّل تقليل الحركة */
 .js [data-rv]{opacity:0;translate:0 26px;transition:opacity .75s cubic-bezier(.2,.7,.2,1),translate .75s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
@@ -235,7 +266,6 @@ section{border-top:0}
 .rot svg path{fill:none;stroke:var(--hl);stroke-width:5;stroke-linecap:round;vector-effect:non-scaling-stroke}
 .rot > span.on svg{animation:drawLine .9s .45s cubic-bezier(.6,.1,.2,1) forwards}
 @keyframes drawLine{to{clip-path:inset(-8px -8px -8px -8px)}}
-@media (min-width:901px) and (max-width:1100px){ .hero h1{font-size:46px} }
 @media (max-width:359px){ .hero h1{font-size:30px} }
 /* شريط المجالات */
 .strip{margin-top:30px;display:grid;gap:12px}
@@ -328,12 +358,12 @@ section{border-top:0}
 <div class="wrap" id="top">
 <section class="hero">
   <div class="copy">
-    <span class="pillbar" data-rv style="--d:.05s">للحلاقين والمشاغل والمغاسل والأسر المنتجة وغيرهم</span>
-    <h1 data-rv style="--d:.12s">واتسابك يرد على عملائك ويحجز لهم <span class="rot" id="heroRot">
-<span class="on">وأنت مشغول<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span>
-<span aria-hidden="true">وأنت نايم<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span>
-<span aria-hidden="true">حتى بعد الدوام<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span></span></h1>
-    <p class="sub" data-rv style="--d:.2s">رد آلي على نفس رقم واتسابك، بأسعارك وأوقاتك. ترسل لنا صورة أسعارك، والتجهيز كله علينا.</p>
+    <span class="pillbar" data-rv style="--d:.05s">لكل نشاط يستقبل طلبات على الواتساب</span>
+    <h1 data-rv style="--d:.12s">واتسابك <span class="rot" id="heroRot">
+<span class="on">يرد على عملائك<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span>
+<span aria-hidden="true">يحجز مواعيدهم<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span>
+<span aria-hidden="true">يذكّرهم بموعدهم<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M99 5.5C72 1.5 40 9.5 1 4"/></svg></span></span> لحاله</h1>
+    <p class="sub" data-rv style="--d:.2s">رد آلي على نفس رقم واتسابك، يجاوب بأسعارك ويحجز من أوقاتك الفاضية، 24 ساعة.</p>
     <ol class="hsteps" data-rv style="--d:.26s">
       <li><i>1</i>عميلك يكتب لك واتساب مثل العادة</li>
       <li><i>2</i>يجيه الرد على طول ويختار موعده</li>
@@ -353,7 +383,12 @@ section{border-top:0}
       <div class="chat" id="heroChat"></div>
       <div class="wa-input" aria-hidden="true"><span class="fld"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c.9 1.2 2.1 1.8 3.5 1.8s2.6-.6 3.5-1.8M9 9.5h.01M15 9.5h.01"/></svg>اكتب رسالة</span><span class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span></div>
     </div></div>
-    <div class="notif" id="heroNotif" aria-hidden="true"><span class="k">🔔 في لوحتك</span><b id="heroNb">طلب جديد رقم 1048</b><span id="heroNs">بكرة 4:00 م · ووصل موظفك تنبيه</span></div></div>
+    <div class="side" aria-hidden="true">
+      <div class="dash"><div class="bar"><i></i><i></i><i></i><span>لوحتك</span></div>
+        <div class="hd"><b id="dashDay">مواعيد بكرة</b><span class="live">مباشر</span></div>
+        <ul id="dashSlots"></ul></div>
+      <div class="wk" id="heroWk"><div class="hd">📲 وصلت للموظف<span class="lg" id="wkLang">عربي</span></div><div class="body"><div class="msg" id="wkMsg"></div></div></div>
+    </div></div>
     <span class="demo-cap">اختر مجالك وشوف كيف يرد</span>
     <div class="scn" id="heroScn" role="group" aria-label="المجالات"></div>
   </div>
@@ -596,7 +631,8 @@ section{border-top:0}
 (function(){
   /* محادثة الرأس لكل مجال: خطوات البوت الحقيقية (خدمة، فرع أو موقع، يوم ووقت، تأكيد) وبعدها تنبيه «في لوحتك» جنب الجوال.
      تلف على المجالات لحالها لين الزائر يختار واحد، وبعدها تعيد مجاله. لمن يفضّل تقليل الحركة: المحادثة كاملة بدون حركة. */
-  var chat = document.getElementById('heroChat'), notif = document.getElementById('heroNotif'), scn = document.getElementById('heroScn');
+  var chat = document.getElementById('heroChat'), scn = document.getElementById('heroScn');
+  var dashDay = document.getElementById('dashDay'), dashSlots = document.getElementById('dashSlots'), wk = document.getElementById('heroWk'), wkMsg = document.getElementById('wkMsg'), wkLang = document.getElementById('wkLang');
   if (!chat) return;
   var SC = [
     { id: 'fix', ic: '🔧', t: 'صيانة', name: 'محلك', av: 'م', c: '#F2B705', ink: '#2A1F05', h: 16, nb: 'طلب جديد رقم 1048', ns: 'بكرة 4:00 م · ووصل موظفك تنبيه', m: [
@@ -632,9 +668,34 @@ section{border-top:0}
       ['out', 'الأربعاء'], ['in', 'اختر الوقت:', ['5:00 م', '7:00 م']],
       ['out', '7:00 م'], ['in', 'تم تأكيد جلستك ✅\nرقم الطلب: 6203\n📅 الأربعاء ⏰ 7:00 م\n💻 رابط الجلسة يوصلك قبل الموعد'] ] },
   ];
+  // [اليوم، اليوم بالإنجليزي، الأوقات [[وقت، b محجوز من قبل | f فاضي | p اللي ينحجز]]، الوقت بالإنجليزي، المكان، المكان بالإنجليزي، لغة الموظف]
+  var SIDE = {
+    fix: ['بكرة', 'Tomorrow', [['3:00 م', 'b'], ['4:00 م', 'p'], ['5:00 م', 'f']], '4:00 PM', 'الخبر', 'Khobar', 'ar'],
+    salon: ['اليوم', 'Today', [['7:00 م', 'f'], ['7:45 م', 'b'], ['8:30 م', 'p']], '8:30 PM', 'قص شعر', 'Haircut', 'en'],
+    clinic: ['الأحد', 'Sunday', [['9:00 ص', 'b'], ['10:00 ص', 'p'], ['11:30 ص', 'f']], '10:00 AM', 'فرع النرجس', 'Al Narjis branch', 'ar'],
+    wash: ['بكرة', 'Tomorrow', [['9:00 ص', 'p'], ['10:00 ص', 'b'], ['11:00 ص', 'f']], '9:00 AM', 'عند العميل', 'At the customer', 'en'],
+    home: ['بكرة', 'Tomorrow', [['12:30 م', 'p'], ['1:15 م', 'b'], ['2:00 م', 'f']], '12:30 PM', 'توصيل', 'Delivery', 'ar'],
+    resto: ['الليلة', 'Tonight', [['8:00 م', 'f'], ['8:45 م', 'b'], ['9:30 م', 'p']], '9:30 PM', '4 أشخاص', '4 guests', 'en'],
+    online: ['الأربعاء', 'Wednesday', [['5:00 م', 'f'], ['6:00 م', 'b'], ['7:00 م', 'p']], '7:00 PM', 'أونلاين', 'Online', 'ar'],
+  };
+  var orderNo = function (sc) { var m = /(\d{4})/.exec(sc.nb); return m ? m[1] : ''; };
+  function paintSide(sc, done) {
+    var d = SIDE[sc.id]; if (!d || !dashSlots) return;
+    dashDay.textContent = 'مواعيد ' + d[0];
+    dashSlots.innerHTML = d[2].map(function (x) {
+      var st = x[1] === 'b' ? ['booked', 'محجوز'] : x[1] === 'p' && done ? ['new', 'محجوز ✓ ' + orderNo(sc)] : ['free', 'فاضي'];
+      return '<li class="' + st[0] + '"><b>' + x[0] + '</b><em>' + st[1] + '</em></li>';
+    }).join('');
+    var t = d[2].filter(function (x) { return x[1] === 'p'; })[0][0], no = orderNo(sc);
+    var en = d[6] === 'en';
+    wkLang.textContent = en ? 'English' : 'عربي';
+    wkMsg.setAttribute('dir', en ? 'ltr' : 'rtl');
+    wkMsg.textContent = en ? 'A new order for you, No. ' + no + ' 🔔\n📅 ' + d[1] + ' ⏰ ' + d[3] + '\n📍 ' + d[5] : 'طلب جديد لك رقم ' + no + ' 🔔\n📅 ' + d[0] + ' ⏰ ' + t + '\n📍 ' + d[4];
+    if (wk) wk.classList.toggle('on', !!done);
+  }
   var TICKS = '<svg viewBox="0 0 16 11" aria-hidden="true"><path fill="#53BDEB" d="M11.1.6 5.3 7.3 2.4 4.6 1.4 5.7l4 3.8L12.2 1.6zM15.2.6 9.4 7.3l-.9-.8-1 1.1 2 1.9L16.2 1.6z"/></svg>';
   var REPLY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0-6 6v3"/></svg>';
-  var av = document.getElementById('heroAv'), nm = document.getElementById('heroName'), nb = document.getElementById('heroNb'), ns = document.getElementById('heroNs');
+  var av = document.getElementById('heroAv'), nm = document.getElementById('heroName');
   var clock = function (h, k) { var mi = 1 + Math.floor(k / 3), hh = h % 12 === 0 ? 12 : h % 12; return hh + ':' + (mi < 10 ? '0' + mi : mi) + (h < 12 ? ' ص' : ' م'); };
   function msg(x, time) {
     var m = document.createElement('div'); m.className = 'm ' + x[0];
@@ -659,15 +720,14 @@ section{border-top:0}
     cur = i; gen++; var g = gen, sc = SC[i];
     paintChips();
     av.textContent = sc.av; av.style.background = sc.c; av.style.color = sc.ink; nm.textContent = sc.name;
-    nb.textContent = sc.nb; ns.textContent = sc.ns;
-    if (notif) notif.classList.remove('on');
+    paintSide(sc, false);
     chat.innerHTML = '';
-    if (reduce) { sc.m.forEach(function (x, k) { chat.appendChild(msg(x, clock(sc.h, k))); }); down(false); if (notif) notif.classList.add('on'); return; }
+    if (reduce) { sc.m.forEach(function (x, k) { chat.appendChild(msg(x, clock(sc.h, k))); }); down(false); paintSide(sc, true); return; }
     var k = 0;
     (function step() {
       if (k >= sc.m.length) {
-        if (notif) notif.classList.add('on');
-        later(g, function () { if (notif) notif.classList.remove('on'); later(g, function () { show(picked || (demo && demo.contains(document.activeElement)) ? cur : (cur + 1) % SC.length); }, 500); }, 3600);
+        paintSide(sc, true);
+        later(g, function () { if (wk) wk.classList.remove('on'); later(g, function () { show(picked || (demo && demo.contains(document.activeElement)) ? cur : (cur + 1) % SC.length); }, 500); }, 4600);
         return;
       }
       var x = sc.m[k], time = clock(sc.h, k); k++;
