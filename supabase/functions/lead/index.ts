@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
     package: PACKAGES.has(String(b.package)) ? String(b.package) : "bot",
     wants_app: b.wants_app === true || b.wants_app === "1" || b.wants_app === "on",
     orders_per_day: clip(b.orders_per_day, 30), notes: clip(b.notes, 600), source: clip(b.source, 30) || "site", ip,
-    promo_code: /^[A-Z0-9]{3,24}$/.test(String(b.promo || "").trim().toUpperCase()) ? String(b.promo).trim().toUpperCase() : "",
+    promo_code: /^[A-Z0-9]{2,24}$/.test(String(b.promo || "").trim().toUpperCase()) ? String(b.promo).trim().toUpperCase() : "",
   };
   const { data, error } = await db().from("signup_requests").insert(row).select("id").single();
   if (error) { console.error("lead", error.message); return json({ ok: false, error: "save" }, 500); }

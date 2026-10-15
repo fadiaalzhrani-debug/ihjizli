@@ -96,7 +96,7 @@ ol.terms b{font-family:var(--display)}
   async function applyCode(c) {
     c = String(c || '').trim().toUpperCase(); S.promoMsg = '';
     if (!c) { S.promo = null; return; }
-    if (!/^[A-Z0-9]{3,24}$/.test(c)) { S.promo = null; S.promoMsg = 'الكود حروف إنجليزية وأرقام بس'; return; }
+    if (!/^[A-Z0-9]{2,24}$/.test(c)) { S.promo = null; S.promoMsg = 'الكود حروف إنجليزية وأرقام بس'; return; }
     try { const p = (await post('promo', { code: c })).promo || {}; if (p.ok) S.promo = p; else { S.promo = null; S.promoMsg = 'الكود غير صحيح أو انتهى'; } }
     catch (e) { S.promo = null; S.promoMsg = 'ما قدرنا نتأكد من الكود، جرّب مرة ثانية'; }
   }

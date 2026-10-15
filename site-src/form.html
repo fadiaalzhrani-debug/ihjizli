@@ -10,7 +10,7 @@
       <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
     </fieldset><!--/P-->
     <div class="f wide promo"><button type="button" class="plink" id="promoOpen" aria-expanded="false">عندك كود خصم؟</button>
-      <div class="pbox" id="promoBox" hidden><label for="f_promo">كود الخصم</label><input id="f_promo" name="promo" maxlength="24" dir="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="مثل ABC99"><small class="pmsg" id="promoMsg" role="status" aria-live="polite"></small></div></div>
+      <div class="pbox" id="promoBox" hidden><label for="f_promo">كود الخصم</label><input id="f_promo" name="promo" maxlength="24" dir="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="مثل 99"><small class="pmsg" id="promoMsg" role="status" aria-live="polite"></small></div></div>
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
     <div class="f wide actions"><button type="submit" class="btn shine" id="leadBtn"><!--P-->أرسل طلب الاشتراك<!--/P--><!--NP-->كلّموني على الواتساب<!--/NP--></button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
   </form>
@@ -36,7 +36,7 @@
   async function checkPromo() {
     var c = pIn.value.trim().toUpperCase(); promoOk = null; pMsg.className = 'pmsg'; pMsg.textContent = '';
     if (!c) return;
-    if (!/^[A-Z0-9]{3,24}$/.test(c)) { pMsg.className = 'pmsg no'; pMsg.textContent = 'الكود حروف إنجليزية وأرقام بس'; return; }
+    if (!/^[A-Z0-9]{2,24}$/.test(c)) { pMsg.className = 'pmsg no'; pMsg.textContent = 'الكود حروف إنجليزية وأرقام بس'; return; }
     pMsg.textContent = 'نتأكد من الكود…';
     try {
       var r = await fetch(PROMO, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code: c }) });
