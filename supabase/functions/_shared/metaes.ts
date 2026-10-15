@@ -154,3 +154,28 @@ export async function registerPhone(bizId: string) {
   await db().from("channels").update({ register_error: err }).eq("business_id", bizId);
   return { ok: reg.ok, register_error: err };
 }
+
+// مفاتيح الربط المباشر تنتهي بعد 60 يوم (قالب ميتا): نجددها قبل 15 يوم من انتهائها، مرة كل ساعة.
+// لو فشل التجديد نكتب السبب في «ربط الرقم» ونعيد المحاولة الساعة الجاية، ولو انتهى فعلًا يحتاج يربط من جديد
+export async function refreshEsTokens(limit = 10) {
+  const app = await metaApp(true);
+  if (!app.secret || !app.app_id) return 0;
+  const soon = new Date(Date.now() + 15 * 86400_000).toISOString();
+  const { data: rows } = await db().from("channels").select("business_id, token_expires_at").eq("onboarded_via", "es").not("token_expires_at", "is", null).lt("token_expires_at", soon).limit(limit);
+  let n = 0;
+  for (const ch of rows || []) {
+    const { data: sec } = await db().from("business_secrets").select("wa_token").eq("business_id", ch.business_id).maybeSingle();
+    if (!sec?.wa_token) continue;
+    const r = await graph(`/oauth/access_token?${new URLSearchParams({ grant_type: "fb_exchange_token", client_id: app.app_id, client_secret: app.secret, set_token_expires_in_60_days: "true", fb_exchange_token: sec.wa_token })}`, "", {}, app.graph);
+    if (r.ok && r.json?.access_token) {
+      const exp = Number(r.json.expires_in || 0);
+      await db().from("business_secrets").update({ wa_token: String(r.json.access_token) }).eq("business_id", ch.business_id);
+      await db().from("channels").update({ token_expires_at: exp > 0 ? new Date(Date.now() + exp * 1000).toISOString() : null }).eq("business_id", ch.business_id);
+      n++;
+    } else {
+      const expired = new Date(ch.token_expires_at).getTime() < Date.now();
+      await db().from("channels").update(expired ? { status: "error", last_error: "انتهى مفتاح الربط، يحتاج يربط من جديد" } : { last_error: "تجديد مفتاح الربط فشل: " + gErr(r) }).eq("business_id", ch.business_id);
+    }
+  }
+  return n;
+}

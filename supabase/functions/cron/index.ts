@@ -5,6 +5,7 @@ import { expireHolds, pollMoyasar, sendReminders } from "../_shared/actions.ts";
 import { pollSubInvoices } from "../_shared/subpay.ts";
 import { runJobs } from "../_shared/events.ts";
 import { channelsHousekeeping } from "../_shared/channel.ts";
+import { refreshEsTokens } from "../_shared/metaes.ts";
 
 const KEY = Deno.env.get("IHJ_CRON_KEY") || "";
 
@@ -22,6 +23,10 @@ Deno.serve(async (req) => {
   // حالة القوالب تتحدث لحالها لين تنعتمد، والربط ينفحص كل 6 ساعات (عشان المفتاح المنتهي يبان في لوحتها)
   if (new Date().getUTCMinutes() % 15 === 3 || new Date().getUTCMinutes() === 41) {
     try { out.channels = await channelsHousekeeping(); } catch (e) { out.channels_error = errMsg(e); }
+  }
+  // مفاتيح الربط المباشر (60 يوم) تتجدد قبل انتهائها
+  if (new Date().getUTCMinutes() === 23) {
+    try { out.es_tokens = await refreshEsTokens(10); } catch (e) { out.es_tokens_error = errMsg(e); }
   }
   if (new Date().getUTCMinutes() % 5 === 0 || new URL(req.url).searchParams.has("poll")) {
     try { out.moyasar = await pollMoyasar(20); } catch (e) { out.moyasar_error = errMsg(e); }
