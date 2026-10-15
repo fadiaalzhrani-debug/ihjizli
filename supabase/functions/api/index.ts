@@ -12,6 +12,7 @@ import { loadSecrets, providerFetch, sendToCustomer, TEMPLATES, templateCreatePa
 import { exportTest, orderEvent } from "../_shared/events.ts";
 import { dayLabel, local, timeLabel } from "../_shared/dates.ts";
 import { mask, moyasarCheckKey } from "../_shared/pay.ts";
+import { cardReadyFor, createSubInvoice, platformKey, subDue, subGoLink } from "../_shared/subpay.ts";
 import { locationFromText } from "../_shared/maps.ts";
 import { channelTest, templatesSync } from "../_shared/channel.ts";
 import { AI_MODEL, aiReady, costUsd, extractMaterial } from "../_shared/extract.ts";
@@ -237,6 +238,39 @@ const DEFAULT_BASE: Record<string, string> = { meta: "https://graph.facebook.com
 async function adminAction(r: Roles, action: string, body: any) {
   need(r.admin);
   switch (action) {
+    // مفاتيح ميسر حق المناوب (دفع اشتراكات المحلات بالبطاقة): تلصقها فادية، وما ترجع إلا مخفية
+    case "platform-moyasar": {
+      if (body.clear) {
+        await db().from("ihj_secrets").delete().in("key", ["moyasar_sk", "moyasar_pk"]);
+        await db().from("sub_invoices").update({ status: "void" }).eq("status", "issued");
+        return { moyasar: "" };
+      }
+      const sk = String(body.sk || "").trim(), pk = String(body.pk || "").trim();
+      if (!sk && !pk) { const v = await platformKey(); return { moyasar: mask(v.sk), test_mode: v.test }; }
+      need(/^sk_(live|test)_[A-Za-z0-9]{10,}$/.test(sk), "sk", 400);
+      need(!pk || /^pk_(live|test)_[A-Za-z0-9]{10,}$/.test(pk), "pk", 400);
+      need(await moyasarCheckKey(sk), "sk_rejected", 400);
+      const now = new Date().toISOString();
+      const rows = [{ key: "moyasar_sk", value: sk, updated_at: now }, ...(pk ? [{ key: "moyasar_pk", value: pk, updated_at: now }] : [])];
+      const { error } = await db().from("ihj_secrets").upsert(rows);
+      if (error) throw new Error(error.message);
+      if (!pk) await db().from("ihj_secrets").delete().eq("key", "moyasar_pk");
+      const test = sk.startsWith("sk_test_");
+      await db().from("sub_invoices").update({ status: "void" }).eq("status", "issued").neq("test", test);
+      return { moyasar: mask(sk), test_mode: test };
+    }
+    // رابط دفع اشتراك لمنشأة (شهري، تأسيس، ...) ترسله فادية بالواتساب
+    case "sub-pay-link": {
+      const bizId = uuid(body.business_id, "business_id");
+      need((await platformKey()).sk, "no_card", 409);
+      const { data: b } = await db().from("businesses").select("id, name").eq("id", bizId).maybeSingle();
+      need(b, "business_id", 404);
+      const kind = ["setup", "monthly", "app", "other"].includes(body.kind) ? body.kind : "monthly";
+      const amount = Math.round(Number(body.amount) * 100) / 100;
+      need(amount >= 1 && amount <= 100000, "amount", 400);
+      const row = await createSubInvoice({ business_id: b!.id, kind, amount, name: b!.name });
+      return { url: subGoLink(row.token), amount: row.amount, test: row.test };
+    }
     case "business/create": {
       const p: any = {
         name: clip(body.name, 80), name_en: clip(body.name_en, 80), slug: clip(body.slug, 40), activity: clip(body.activity, 60), city: clip(body.city, 60),
@@ -540,9 +574,10 @@ async function clientAction(req: Request, action: string) {
       db().from("staff").select("name, phone, city_ids").eq("business_id", b.id).eq("active", true),
     ]);
     const cityName = (id: string) => (cities || []).find((c: any) => c.id === id)?.name;
-    const { data: paid } = await db().from("sub_payments").select("amount").eq("business_id", b.id).eq("kind", "setup");
+    const due = await subDue(b.id);
     return {
-      pay: docs?.agreed_at ? await payInfo() : null, paid_claim_at: docs?.paid_claim_at || null, setup_paid: (paid || []).reduce((a: number, x: any) => a + Number(x.amount || 0), 0),
+      card: await cardReadyFor(!!b.is_demo), due,
+      pay: docs?.agreed_at ? await payInfo() : null, paid_claim_at: docs?.paid_claim_at || null, setup_paid: due.setup_paid,
       business: { name: b.name, name_en: b.name_en, activity: b.activity, plan: b.plan, wants_app: b.wants_app, owner_name: b.owner_name, owner_phone: b.owner_phone, wa_number: b.wa_number,
         cr_number: b.cr_number, vat_number: b.vat_number, address: b.address, logo_url: b.logo_url, brand_color: b.brand_color },
       fees: sub || {}, agreed: docs?.agreed_at ? { at: docs.agreed_at, name: docs.agreed_name } : null, intake_at: docs?.intake_at || null, intake: docs?.intake || null,
@@ -564,6 +599,16 @@ async function clientAction(req: Request, action: string) {
     const { error } = await db().from("client_docs").upsert({ business_id: b.id, agreed_at: new Date().toISOString(), agreed_name: name, agreed_phone: phone, agreed_terms: terms, agreed_ip: ip, updated_at: new Date().toISOString() }, { onConflict: "business_id" });
     if (error) throw new Error(error.message);
     return { agreed: true, pay: await payInfo() };
+  }
+  // الدفع بالبطاقة لمنشأة برابطها: نص التأسيس لو ما انْدفع، وإلا أول شهر
+  if (action === "sub-pay") {
+    need(await cardReadyFor(!!b.is_demo), "no_card", 409);
+    const { data: docs } = await db().from("client_docs").select("agreed_at").eq("business_id", b.id).maybeSingle();
+    need(docs?.agreed_at, "not_agreed", 409);
+    const d = await subDue(b.id);
+    if (d.already) return { already: true };
+    const row = await createSubInvoice({ business_id: b.id, kind: d.kind, amount: d.due, name: b.name });
+    return { url: subGoLink(row.token), amount: row.amount, kind: d.kind };
   }
   if (action === "paid") {
     const { data: docs } = await db().from("client_docs").select("agreed_at, paid_claim_at").eq("business_id", b.id).maybeSingle();

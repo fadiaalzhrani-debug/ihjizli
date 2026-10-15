@@ -72,7 +72,7 @@ ol.terms b{font-family:var(--display)}
   const errMsg = (x) => ({ business: 'اكتب اسم النشاط', name: 'اكتب الاسم كامل', phone: 'اكتب جوال صحيح', busy: 'محاولات كثيرة، جرّب بعد شوي', not_agreed: 'علّم على الموافقة أول' }[x.code] || 'ما انحفظت، جرّب مرة ثانية');
 
   // الحالة: المنشأة (بمفتاحها) أو رابط عام يختار فيه الباقة
-  const S = { plan: 'bot', app: false, biz: '', name: '', phone: '', agreed: null, pay: null, claimed: false, paid: false, ok: false, promo: null, promoMsg: '' };
+  const S = { plan: 'bot', app: false, biz: '', name: '', phone: '', agreed: null, pay: null, claimed: false, paid: false, ok: false, promo: null, promoMsg: '', card: false, due: null };
   let F = { bot: { setup_fee: 3500, monthly_fee: 350 }, bot_pay: { setup_fee: 5500, monthly_fee: 600 }, app: { setup_fee: 9000, monthly_fee: 150 } };
   let fixed = null; // رسوم المنشأة لو بمفتاح
   if (k) {
@@ -80,6 +80,7 @@ ol.terms b{font-family:var(--display)}
     try { d = await post('info', {}); } catch (e) { $('doc').innerHTML = '<div class="card" style="text-align:center;padding:30px"><h2>الرابط غير صالح</h2><p class="muted">اطلب الرابط من المناوب</p></div>'; return; }
     const b = d.business, f = d.fees || {};
     fixed = { setup: Number(f.setup_fee || 0) + Number(f.app_setup_fee || 0), monthly: Number(f.monthly_fee || 0) + Number(f.app_monthly_fee || 0) };
+    S.card = !!d.card; S.due = d.due || null;
     Object.assign(S, { plan: b.plan || 'bot', app: !!b.wants_app, biz: b.name, name: b.owner_name || '', phone: b.owner_phone ? I.phone(b.owner_phone) : '', agreed: d.agreed, pay: d.pay, claimed: !!d.paid_claim_at, paid: Number(d.setup_paid || 0) > 0 });
     document.title = `الدفعة الأولى · ${b.name}`;
   } else {
@@ -130,19 +131,38 @@ ol.terms b{font-family:var(--display)}
       ${S.agreed ? payPaper(half) : ''}`;
     bind();
   }
+  // زر البطاقة: برابط المنشأة بس، ولما فيه مبلغ مستحق
+  const cardOk = () => !!(k && S.card && S.due && !S.due.already && S.due.due > 0);
+  const cardBtn = (label) => `<button class="btn lg block" id="card" type="button">${icon('check')}${label}</button><span class="tiny" style="text-align:center">مدى · أبل باي · بطاقة</span><span class="msg" id="msg3" role="status"></span>`;
   function payPaper(half) {
-    if (!(half > 0)) return `<div class="paper"><div class="okbox"><h3>تم ✅</h3><span>نبدأ التجهيز، ويوصلك رابط البيانات بالواتساب.</span></div></div>`;
+    if (!(half > 0)) {
+      const month = S.due && S.due.kind === 'monthly' && S.due.already && fees().monthly > 0
+        ? '<div class="okbox"><h3>استلمنا أول شهر ✅</h3><span>الاشتراك يبدأ من يوم التشغيل.</span></div>'
+        : cardOk() ? cardBtn(`ادفع أول شهر بالبطاقة (${money(S.due.due)} ريال)`) + '<span class="tiny" style="text-align:center">اختياري، والاشتراك يبدأ من يوم التشغيل</span>' : '';
+      return `<div class="paper"><div class="okbox"><h3>تم ✅</h3><span>نبدأ التجهيز، ويوصلك رابط البيانات بالواتساب.</span></div>${month}</div>`;
+    }
     if (S.paid) return `<div class="paper"><div class="okbox"><h3>استلمنا الدفعة الأولى ✅</h3><span>نشتغل الحين على تجهيز الرد الآلي باسمكم.</span></div></div>`;
     const done = S.claimed ? `<div class="okbox"><h3>وصلنا خبر التحويل ✅</h3><span>نأكد التحويل ونبدأ التجهيز، ويوصلك رابط البيانات بالواتساب.</span></div>` : '';
-    if (!S.pay) return `<div class="paper" id="payBox"><h2 style="font-size:19px;margin:0">التحويل</h2><p class="muted" style="margin:0">بيانات التحويل توصلك بالواتساب من فريق المناوب.</p>${done}</div>`;
+    const card = cardOk() && !S.claimed ? cardBtn(`ادفع ${money(S.due.due)} ريال بالبطاقة`) : '';
+    if (!S.pay) return `<div class="paper" id="payBox">${card}<h2 style="font-size:19px;margin:0">${card ? 'أو التحويل' : 'التحويل'}</h2><p class="muted" style="margin:0">بيانات التحويل توصلك بالواتساب من فريق المناوب.</p>${done}</div>`;
     const row = (l, v, cp, ltr) => `<div class="r"><span>${l}</span><b class="${ltr ? 'ltr' : ''}">${esc(v)}</b>${cp ? `<button class="btn sm ghost" type="button" data-cp="${esc(cp)}">${icon('copy')}نسخ</button>` : ''}</div>`;
-    return `<div class="paper" id="payBox"><h2 style="font-size:19px;margin:0">بيانات التحويل</h2>
+    return `<div class="paper" id="payBox">${card}<h2 style="font-size:19px;margin:0">${card ? 'أو حوّل على الحساب' : 'بيانات التحويل'}</h2>
       <div class="bank">${row('المبلغ', money(half) + ' ريال', String(half))}${S.pay.bank ? row('البنك', S.pay.bank) : ''}${S.pay.holder ? row('اسم الحساب', S.pay.holder) : ''}${row('الآيبان', S.pay.iban.replace(/(.{4})/g, '$1 ').trim(), S.pay.iban, true)}</div>
       ${S.pay.note ? `<div class="hint">${esc(S.pay.note)}</div>` : ''}
       ${done || `<button class="btn lg block" id="sent" type="button">${icon('check')}حوّلت</button><span class="msg" id="msg2" role="status"></span>`}</div>`;
   }
   function bind() {
     document.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+    if ($('card')) $('card').onclick = async (e) => {
+      e.target.disabled = true; $('msg3').textContent = '';
+      try {
+        const r = await post('sub-pay', {});
+        if (r.url) { location.href = r.url; return; }
+        if (r.already) { S.due = Object.assign({}, S.due, { already: true, due: 0 }); paint(); return; }
+        $('msg3').textContent = 'ما قدرنا نفتح الدفع، جرّب مرة ثانية';
+      } catch (x) { $('msg3').textContent = x.code === 'no_card' ? 'الدفع بالبطاقة موقف الحين، حوّل على الحساب' : 'ما قدرنا نفتح الدفع، جرّب مرة ثانية'; }
+      e.target.disabled = false;
+    };
     const keep = () => { if ($('bn')) S.biz = $('bn').value; if ($('n')) S.name = $('n').value; if ($('p')) S.phone = $('p').value; };
     document.querySelectorAll('input[name=plan]').forEach((x) => x.onchange = () => { keep(); S.plan = x.value; paint(); });
     if ($('app')) $('app').onchange = (e) => { keep(); S.app = e.target.checked; paint(); };

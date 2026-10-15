@@ -2,6 +2,7 @@
 // رجوع البوت تلقائيًا بعد مدة التحويل، ومتابعة فواتير ميسر المعلقة كل 5 دقايق
 import { db, errMsg, json, sameSecret } from "../_shared/util.ts";
 import { expireHolds, pollMoyasar, sendReminders } from "../_shared/actions.ts";
+import { pollSubInvoices } from "../_shared/subpay.ts";
 import { runJobs } from "../_shared/events.ts";
 import { channelsHousekeeping } from "../_shared/channel.ts";
 
@@ -24,6 +25,7 @@ Deno.serve(async (req) => {
   }
   if (new Date().getUTCMinutes() % 5 === 0 || new URL(req.url).searchParams.has("poll")) {
     try { out.moyasar = await pollMoyasar(20); } catch (e) { out.moyasar_error = errMsg(e); }
+    try { out.sub_moyasar = await pollSubInvoices(20); } catch (e) { out.sub_moyasar_error = errMsg(e); }
   }
   return json({ ok: true, ...out });
 });

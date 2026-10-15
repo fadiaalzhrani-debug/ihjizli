@@ -4,8 +4,10 @@
 //   GET  /pay/return/<رمز>    رجوع العميل من ميسر بعد الدفع
 //   POST /pay/info {t}        بيانات صفحة الفاتورة pay.html
 //   POST /pay/demo {t,method} دفع تجريبي للمنشآت التجريبية فقط (بدون فلوس)
+//   GET  /pay/sub/<رمز> · POST /pay/subhook/<رمز> · GET /pay/subreturn/<رمز>   دفع اشتراك المحل للمناوب بالبطاقة
 import { CORS, db, errMsg, ipOf, json, limiter, readJson, routeParts, SITE_URL } from "../_shared/util.ts";
 import { markInvoicePaid, signedPdf, verifyMoyasar } from "../_shared/actions.ts";
+import { settleSubInvoice, subByToken, subExpired } from "../_shared/subpay.ts";
 
 const TOKEN = /^[0-9a-f]{32}$/;
 const lim = limiter(120, 600_000);
@@ -40,6 +42,32 @@ Deno.serve(async (req) => {
   if (lim(ip)) return json({ ok: false, error: "busy" }, 429);
   try {
     const [a, t = ""] = parts;
+    // اشتراكات المحلات (ميسر حساب المناوب)
+    if (a === "sub" && req.method === "GET") {
+      const s = await subByToken(t);
+      if (!s) return redirect(`${SITE_URL}thanks.html?e=1`);
+      if (s.status === "paid") return redirect(`${SITE_URL}thanks.html?paid=1`);
+      if (s.status === "issued" && subExpired(s)) {
+        // انتهت مدته: نتأكد ما انْدفع، وبعدها ينلغي
+        if (await settleSubInvoice(s).catch(() => false)) return redirect(`${SITE_URL}thanks.html?paid=1`);
+        await db().from("sub_invoices").update({ status: "void" }).eq("id", s.id).eq("status", "issued");
+        return redirect(`${SITE_URL}thanks.html?e=2`);
+      }
+      if (s.status === "issued" && s.pay_url) return redirect(s.pay_url);
+      return redirect(`${SITE_URL}thanks.html?e=2`);
+    }
+    if (a === "subhook" && req.method === "POST") {
+      const s = await subByToken(t);
+      if (!s) return json({ ok: false }, 404);
+      await settleSubInvoice(s).catch((e) => console.error("subhook", s.id, errMsg(e)));
+      return json({ ok: true });
+    }
+    if (a === "subreturn" && req.method === "GET") {
+      const s = await subByToken(t);
+      if (!s) return redirect(`${SITE_URL}thanks.html?e=1`);
+      const paid = await settleSubInvoice(s).catch(() => false);
+      return redirect(`${SITE_URL}thanks.html?${paid ? "paid=1" : `pending=1&t=${t}`}`);
+    }
     if (a === "go" && req.method === "GET") {
       const inv = await invByToken(t);
       if (!inv) return redirect(`${SITE_URL}pay.html?e=1`);
