@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>المناوب · يرد، ينسّق، ويحجز. كلّه عنك</title>
-<meta name="description" content="المناوب: الشغل كله أوتوماتيك على نفس رقم واتسابك، من أول رد لين الحجز والتذكير والفاتورة، والتجهيز كله علينا، ومعه موقع باسمك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.">
+<meta name="description" content="المناوب: الشغل كله أوتوماتيك على نفس رقم واتسابك، من أول رد لين الحجز والتذكير والفاتورة، والتجهيز كله علينا، ومعه موقع باسمك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم. تأسيس مرة وحدة واشتراك شهري ثابت.">
 <meta name="theme-color" content="#F6FAF8">
 <link rel="canonical" href="https://almunawib.com/">
 <meta property="og:type" content="website">
@@ -242,8 +242,16 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
 .lead-form input:focus{outline:2px solid var(--green);outline-offset:1px;background:#fff}
 .lead-form .err{color:#B42318;font-size:13px;min-height:0}
 .lead-form fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
-.lead-form .opt{display:flex;gap:10px;align-items:center;border:1px solid var(--line-2);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:15px}
+.lead-form .opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:15px;background:#fff}
+.lead-form .opt input{width:20px;height:20px;min-height:0;padding:0;margin:0;flex:none;accent-color:var(--green)}
+.lead-form .opt:has(input:checked){border-color:var(--green);background:#F2FBF6}
 .lead-form .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.lead-form .plink{justify-self:start;border:0;background:none;padding:6px 2px;color:var(--green);font-weight:600;font-size:14.5px;text-decoration:underline;text-underline-offset:4px}
+.lead-form .pbox{display:grid;gap:6px;max-width:320px}
+.lead-form .pbox input{text-transform:uppercase;letter-spacing:1px}
+.lead-form .pmsg{font-size:13.5px;color:var(--muted);min-height:0}
+.lead-form .pmsg.ok{color:var(--green);font-weight:600}
+.lead-form .pmsg.no{color:#B42318}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--green);color:#fff;border:1px solid #00815B;border-radius:14px;min-height:52px;padding:0 26px;font-size:16px;font-weight:600;box-shadow:0 8px 22px rgba(0,139,97,.14);transition:background .2s,transform .2s;cursor:pointer}
 .btn:hover{background:var(--green-2);transform:translateY(-1px)}
 .btn.ghost{background:#fff;color:var(--green);border-color:var(--line-2);box-shadow:none}
@@ -358,7 +366,7 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
   </ul>
 
   <div class="action">
-    <a class="cta" id="heroCta" href="#signup">أبيه على واتسابي<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <a class="cta" id="heroCta" href="#signup">اشترك<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     <p class="assure">التجهيز علينا. ووقتك لشغلك.</p>
     <div class="try"><a href="sim.html?demo=1">أو جرّبه بنفسك كأنك عميل<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
   </div>
@@ -416,7 +424,24 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
   </div>
 </section>
 
-
+<section class="sec" id="plans">
+  <span class="kick">الباقات</span>
+  <h2>تأسيس مرة وحدة واشتراك شهري ثابت</h2>
+  <div class="plans">
+    <div class="plan card">
+      <h3>أتمتة الحجز</h3>
+      <div class="price"><b>3,500</b><span>ريال تأسيس</span><small>ثم 350 ريال شهريًا</small></div>
+      <ul><li>يرد على أي رسالة، ويحوّل لك اللي يحتاجك</li><li>حجز وتعديل وإلغاء وتذكير قبل الموعد</li><li>لوحة الطلبات بتنبيه صوتي، ولوحة للموظفين</li><li>فاتورة PDF بشعارك، وتقرير شهري</li></ul>
+    </div>
+    <div class="plan card">
+      <span class="tag">الأكثر طلبًا</span>
+      <h3>أتمتة الحجز + الدفع</h3>
+      <div class="price"><b>5,500</b><span>ريال تأسيس</span><small>ثم 600 ريال شهريًا</small></div>
+      <ul><li>كل مزايا أتمتة الحجز</li><li>الدفع قبل الحجز أو بعد الخدمة: مدى، أبل باي، بطاقة</li><li>رابط الدفع داخل الفاتورة، والمبلغ يدخل حسابك مباشرة</li></ul>
+    </div>
+  </div>
+  <div class="addon card plan"><h3>إضافة: تطبيق باسمك في المتاجر</h3><div class="price"><b>9,000</b><span>ريال</span><small>ثم 150 ريال شهريًا</small></div></div>
+</section>
 
 <section class="sec" id="reviews" hidden aria-labelledby="h-rev">
   <span class="kick">آراء عملائنا</span>
@@ -442,9 +467,15 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
   <form id="leadForm" class="lead-form" novalidate>
     <div class="f"><label for="f_name">اسمك أو اسم نشاطك</label><input id="f_name" name="business_name" required maxlength="80" autocomplete="name" aria-describedby="e_name"><small class="err" id="e_name"></small></div>
     <div class="f"><label for="f_phone">جوالك (واتساب)</label><input id="f_phone" name="phone" type="tel" autocomplete="tel" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx" aria-describedby="e_phone"><small class="err" id="e_phone"></small></div>
-    
+    <fieldset class="f wide"><legend>الباقة اللي تهمّك</legend>
+      <label class="opt"><input type="radio" name="package" value="bot" checked><span><b>أتمتة الحجز</b> · 3,500 تأسيس + 350 شهريًا</span></label>
+      <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>أتمتة الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
+      <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
+    </fieldset>
+    <div class="f wide promo"><button type="button" class="plink" id="promoOpen" aria-expanded="false">عندك كود خصم؟</button>
+      <div class="pbox" id="promoBox" hidden><label for="f_promo">كود الخصم</label><input id="f_promo" name="promo" maxlength="24" dir="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="مثل ABC99"><small class="pmsg" id="promoMsg" role="status" aria-live="polite"></small></div></div>
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-    <div class="f wide actions"><button type="submit" class="btn shine" id="leadBtn">كلّموني على الواتساب</button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
+    <div class="f wide actions"><button type="submit" class="btn shine" id="leadBtn">أرسل طلب الاشتراك</button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
   </form>
   <div id="leadDone" class="done" hidden>
     <h3>وصلنا طلبك ✅</h3>
@@ -454,20 +485,43 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
 </section>
 <script>
 (function(){
-  var API = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/lead';
+  var API = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/lead', PROMO = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/api/client/promo', promoOk = null;
   var form = document.getElementById('leadForm'), btn = document.getElementById('leadBtn'), msg = document.getElementById('leadMsg'), done = document.getElementById('leadDone');
   if (!form) return;
   function digits(v){ return String(v || '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D+/g, ''); }
   // الخطأ يطلع تحت الخانة نفسها، ويختفي أول ما يبدأ يكتب
   function bad(id, eid, text) { var el = document.getElementById(id); el.setAttribute('aria-invalid', 'true'); document.getElementById(eid).textContent = text; el.focus(); }
   ['f_name', 'f_phone'].forEach(function (id, i) { var el = document.getElementById(id); el.addEventListener('input', function () { el.removeAttribute('aria-invalid'); document.getElementById(i ? 'e_phone' : 'e_name').textContent = ''; }); });
+  // كود الخصم: يتأكد منه أول ما ينكتب ويقول سعره، ويجي معبّى لو الرابط فيه ?code=
+  var pOpen = document.getElementById('promoOpen'), pBox = document.getElementById('promoBox'), pIn = document.getElementById('f_promo'), pMsg = document.getElementById('promoMsg'), pT = null;
+  var money = function (n) { n = Number(n) || 0; return n % 1 ? n.toFixed(2) : String(n); };
+  function openPromo() { pBox.hidden = false; pOpen.setAttribute('aria-expanded', 'true'); pOpen.hidden = true; }
+  async function checkPromo() {
+    var c = pIn.value.trim().toUpperCase(); promoOk = null; pMsg.className = 'pmsg'; pMsg.textContent = '';
+    if (!c) return;
+    if (!/^[A-Z0-9]{3,24}$/.test(c)) { pMsg.className = 'pmsg no'; pMsg.textContent = 'الكود حروف إنجليزية وأرقام بس'; return; }
+    pMsg.textContent = 'نتأكد من الكود…';
+    try {
+      var r = await fetch(PROMO, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code: c }) });
+      var j = await r.json().catch(function () { return {}; }), p = j.promo || {};
+      if (pIn.value.trim().toUpperCase() !== c) return;
+      if (p.ok) { promoOk = c; pMsg.className = 'pmsg ok'; pMsg.textContent = '✓ كودك يخلي الاشتراك ' + money(p.monthly_fee) + ' ريال شهريًا' + (Number(p.setup_fee) ? ' + ' + money(p.setup_fee) + ' تأسيس' : ' فقط، بدون تأسيس'); }
+      else { pMsg.className = 'pmsg no'; pMsg.textContent = 'الكود غير صحيح أو انتهى'; }
+    } catch (err) { pMsg.className = 'pmsg no'; pMsg.textContent = 'ما قدرنا نتأكد من الكود، جرّب مرة ثانية'; }
+  }
+  if (pOpen) {
+    pOpen.onclick = function () { openPromo(); pIn.focus(); };
+    pIn.addEventListener('input', function () { clearTimeout(pT); pT = setTimeout(checkPromo, 450); });
+    var qc = new URLSearchParams(location.search).get('code');
+    if (qc) { openPromo(); pIn.value = qc.trim().toUpperCase().slice(0, 24); checkPromo(); }
+  }
   form.addEventListener('submit', async function (e) {
     e.preventDefault(); msg.textContent = '';
     var fd = new FormData(form), name = (fd.get('business_name') || '').toString().trim(), ph = digits(fd.get('phone'));
     if (ph.indexOf('00') === 0) ph = ph.slice(2); if (ph.indexOf('966') === 0) ph = ph.slice(3); if (ph.indexOf('0') === 0) ph = ph.slice(1);
     if (name.length < 2) { bad('f_name', 'e_name', 'اكتب اسمك أو اسم نشاطك'); return; }
     if (!/^5\d{8}$/.test(ph)) { bad('f_phone', 'e_phone', 'اكتب جوال سعودي صحيح مثل 05xxxxxxxx'); return; }
-    var body = { business_name: name, activity: '', city: '', contact_name: name.slice(0, 60), phone: '966' + ph, package: fd.get('package') || 'bot', wants_app: fd.get('wants_app') === '1', orders_per_day: '', notes: '', website: fd.get('website') || '', source: 'site' };
+    var body = { business_name: name, activity: '', city: '', contact_name: name.slice(0, 60), phone: '966' + ph, package: fd.get('package') || 'bot', wants_app: fd.get('wants_app') === '1', orders_per_day: '', notes: '', website: fd.get('website') || '', source: 'site', promo: promoOk || '' };
     btn.disabled = true; var old = btn.textContent; btn.textContent = 'جارٍ الإرسال…';
     try {
       var r = await fetch(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
@@ -531,8 +585,10 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
   // قاعدة المعرفة: [كلمات التعرف (بدون همزات وتاء مربوطة)، الجواب، أزرار المتابعة]
   var norm = function (t) { return String(t || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ًٌٍَُِّْ]/g, '').replace(/[؟?!.،,]/g, ' ').replace(/\s+/g, ' ').trim(); };
   var KB = [
-    ['السعر,الاسعار,كم,بكم,تكلف,التكلفه,الباقات,الباقه,اشتراك,الاشتراك,رسوم,price,cost', 'نجهّز لك تجربة على نشاطك أول، وتشوف بنفسك كيف يرد ويحجز. اترك رقمك ونكلمك على الواتساب.', ['جرّبه كأنك عميل', 'أبيه على رقمي']],
     
+    ['السعر,الاسعار,كم,بكم,تكلف,التكلفه,الباقات,الباقه,price,cost', 'باقتين، تأسيس مرة وحدة واشتراك شهري ثابت:\n• أتمتة الحجز: 3,500 ريال تأسيس + 350 شهريًا\n• أتمتة الحجز + الدفع: 5,500 ريال + 600 شهريًا\nوإضافة تطبيق باسمك: 9,000 + 150 شهريًا.\nالتأسيس على دفعتين: النص عند الاتفاق والنص عند التسليم.', ['وش الفرق بين الباقتين؟', 'فيه رسوم ثانية؟', 'أبي أشترك']],
+    ['الفرق,الفرق بين,ايش الفرق,الدفع والحجز', 'الباقتين فيها: الرد على أي رسالة، الحجز والتعديل والإلغاء والتذكير، لوحة الطلبات بتنبيه صوتي ولوحة للموظفين، وفاتورة PDF بشعارك وتقرير شهري.\nباقة الحجز + الدفع تزيد: رابط دفع داخل الفاتورة (مدى، أبل باي، بطاقة)، والدفع قبل الحجز لو تبي، والدفع يتأكد لحاله.', ['كم السعر؟', 'أبي أشترك']],
+    ['رسوم,رسوم ثانيه,مخفي,اضافي,ميتا,ضريبه', 'غير الباقة: رسوم رسائل ميتا (هللات للرسالة)، ومزوّد الربط نحو 45 ريال شهريًا، ونسبة بوابة الدفع لو اخترت الدفع الإلكتروني. والأسعار قبل الضريبة.', ['كم السعر؟', 'أبي أشترك']],
     ['كيف يشتغل,كيف يشتغل,وش هو,ايش هو,وش احجزلي,وش المناوب,مناوب,يعني ايش,شرح,فكره,بوت,البوت', 'نركّب رد آلي على نفس رقم واتسابك. عميلك يراسلك عادي، والرد الآلي يجاوبه بأسعارك وأوقاتك، يحجز له من المواعيد الفاضية ويذكّره، والحجز يوصلك جاهز. يشتغل 24 ساعة، والعميل ما يحمّل شي.\nونسوي لك بعد موقع خاص باسمك.', ['جرّبه كأنك عميل', 'وش الموقع الخاص؟', 'يناسب نشاطي؟']],
     ['موقع,الموقع,موقع خاص,الموقع الخاص,موقعي,ويب,صفحه,دومين,website,site', 'نصمم لك موقع خاص باسم نشاطك وشعارك: خدماتك وأسعارك وآراء عملائك، وكل زر فيه يفتح الواتساب على الرد الآلي ويحجز. ونربطه بدومينك لو عندك واحد.', ['جرّبه كأنك عميل', 'وش المطلوب مني؟']],
     ['يناسب,نشاطي,مجالي,صالون,عياده,مطعم,مغسله,صيانه,استشار,تدريب,تاجير,كافيه,محل', 'يناسب أي نشاط ياخذ طلبات أو مواعيد على الواتساب: صيانة، صالونات، عيادات، مغاسل، استشارات، مطاعم، تدريب، تأجير وغيرها. وفيه تجربة جاهزة لكل مجال تكلّمها كأنك عميل.', ['جرّبه كأنك عميل', 'كم السعر؟']],
@@ -540,17 +596,17 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
     ['المطلوب,وش احتاج,ايش احتاج,متطلبات,اوراق,سجل', 'منك بس: رقم واتساب نشاطك، صورة قائمة خدماتك وأسعارك، أوقات العمل، موقعك أو المدن اللي تخدمها، شعارك، والسجل التجاري. والباقي كله علينا.', ['كم ياخذ التجهيز؟', 'أبي أشترك']],
     ['كم ياخذ,المده,متى يجهز,كم يوم,التجهيز,وقت', 'خلال 7 أيام عمل من استلام اللي نحتاجه منك، ونسلّمك إياه شغّال.', ['وش المطلوب مني؟', 'أبي أشترك']],
     ['ما يعرف,ما يعرفه,مايعرف,ما فهم,ما فهمه,سوال غريب,شكوى,شكوي,صوتيه,يتكلم مع موظف,تحويل,يحول', 'لو العميل سأل شي ما يعرفه النظام، أو أرسل شكوى أو رسالة صوتية: يرد عليه بلطف إن رسالته وصلت، ويحوّلها لك في لوحتك، ويوقف الرد الآلي مع هالعميل لين ترجّعه بزر أو بعد مدة تحددها.', ['جرّبه كأنك عميل', 'كم السعر؟']],
-    ['اعدل,تعديل,اغير,الردود,النصوص,الاسعار,الاوقات,على كيفي,تخصيص', 'أي رد أو سعر أو وقت تبي تغيّره، نغيّره لك.', ['جرّبه كأنك عميل', 'أبي أشترك']],
+    ['اعدل,تعديل,اغير,الردود,النصوص,الاسعار,الاوقات,على كيفي,تخصيص', 'أي رد أو سعر أو وقت تبي تغيّره، نغيّره لك ضمن الاشتراك.', ['جرّبه كأنك عميل', 'أبي أشترك']],
     ['الدفع,يوصلني,حسابي,مدى,ابل باي,بطاقه,ميسر,فلوس,تحويل', 'الدفع يدخل حسابك مباشرة عبر بوابة الدفع (ميسر): مدى، أبل باي، أو البطاقة. وتختار يكون قبل الحجز أو بعد الخدمة، أو في المحل بدون دفع إلكتروني.', ['كم السعر؟', 'أبي أشترك']],
-    ['اوقف,الغاء,الغي,توقف,اشعار,اترك,عقد,التزام', 'بياناتك وعملاؤك ملكك، وفيه زر في لوحتك يوقف الرد الآلي ويشغله في أي وقت.', ['كم السعر؟', 'أبي أشترك']],
+    ['اوقف,الغاء,الغي,توقف,اشعار,اترك,عقد,التزام', 'تقدر توقف الاشتراك الشهري بإشعار قبل شهر، وبياناتك وعملاؤك ملكك. وفيه زر في لوحتك يوقف الرد الآلي ويشغله في أي وقت.', ['كم السعر؟', 'أبي أشترك']],
     ['انجليزي,english,لغه,اللغه,الانجليزيه', 'نعم، يرد بلغة العميل: عربي أو إنجليزي، والعميل يبدّل بزر.', ['جرّبه كأنك عميل']],
     ['موظف,الموظفين,فني,فنيين,فروع,فرع,اكثر من', 'لو عندك فروع أو موظفين: العميل يختار الفرع، أو النظام يعرف مدينته من موقعه، والطلب يروح للموظف الفاضي ويوصله على جواله بلوحة بسيطة: في الطريق، وصلت، الفاتورة.', ['جرّبه كأنك عميل', 'كم السعر؟']],
-    ['تطبيق,ابل ستور,قوقل بلاي,متجر', 'العميل ما يحتاج تطبيق، كل شي داخل الواتساب. ولو تبي تطبيق باسمك في المتاجر لعملائك، نسويه لك على نفس الطلبات واللوحة.', ['كم السعر؟', 'أبي أشترك']],
+    ['تطبيق,ابل ستور,قوقل بلاي,متجر', 'العميل ما يحتاج تطبيق، كل شي داخل الواتساب. ولو تبي تطبيق باسمك في المتاجر لعملائك: إضافة 9,000 ريال + 150 شهريًا على نفس الطلبات واللوحة.', ['كم السعر؟', 'أبي أشترك']],
     ['واتساب العادي,واتساب عادي,العادي,مو بزنس,تطبيق بزنس,بزنس,البزنس', 'لو رقمك على واتساب العادي، ننقله معك لتطبيق واتساب بزنس بنفس الرقم وقت الربط، ويبقى على جوالك وترد منه متى ما تبي.', ['وش المطلوب مني؟', 'أبيه على رقمي']],
     ['تعطل,عطل,خرب,خلل,مشكله,وقف الرد', 'تقدر توقف الرد الآلي وتشغّله بزر من لوحتك وتكمل مع عملائك بنفسك، وأي مشكلة كلّمنا ونتابعها معك على طول.', ['كيف يشتغل؟', 'أبيه على رقمي']],
     ['جرب,تجربه,اجرب,اشوف,ديمو,demo', 'جرّبه الحين كأنك عميل: اختر مجالك، اسأله عن السعر أو الموقع، واحجز موعد، وشوف كيف يرد لحاله.', ['جرّبه كأنك عميل']],
-    ['اشترك,اشتراك,ابدا,نبدا,ابي,اسجل,تسجيل,تواصل,كلموني,اتصلوا', 'أبشر. اكتب اسمك وجوالك في النموذج تحت ونكلمك على الواتساب، ونرسل لك تجربة على نشاطك.', ['افتح نموذج الاشتراك']],
-    ['السلام,هلا,مرحبا,اهلا,صباح,مساء,hi,hello', 'هلا وسهلا 👋 اسألني أي شي عن المناوب: كيف يشتغل، وش المطلوب منك، أو جرّبه بنفسك.', ['كم السعر؟', 'كيف يشتغل؟', 'جرّبه كأنك عميل']],
+    ['اشترك,اشتراك,ابدا,نبدا,ابي,اسجل,تسجيل,تواصل,كلموني,اتصلوا', 'أبشر. عبّي نموذج الاشتراك (دقيقة) ونكلمك على الواتساب، ونرسل لك تجربة على نشاطك.', ['افتح نموذج الاشتراك']],
+    ['السلام,هلا,مرحبا,اهلا,صباح,مساء,hi,hello', 'هلا وسهلا 👋 اسألني أي شي عن المناوب: الأسعار، كيف يشتغل، وش المطلوب منك، أو جرّبه بنفسك.', ['كم السعر؟', 'كيف يشتغل؟', 'جرّبه كأنك عميل']],
     ['شكرا,مشكور,يعطيك العافيه,تسلم', 'العفو 🌷 لو عندك سؤال ثاني أنا هنا.', ['كم السعر؟', 'أبي أشترك']],
   ].map(function (r) { return { k: r[0].split(',').map(norm), a: r[1], q: r[2] }; });
   var hits = function (n, w) { return w.length >= 2 && (n.indexOf(' ' + w + ' ') >= 0 || n === w); };
@@ -561,9 +617,9 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
   }
   function add(cls, html) { var d = document.createElement('div'); d.className = 'm ' + cls; d.innerHTML = html; cv.appendChild(d); cv.scrollTop = cv.scrollHeight; return d; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  var SWAP = { 'كم السعر؟': 'كيف يشتغل؟', 'أبي أشترك': 'أبيه على رقمي', 'افتح نموذج الاشتراك': 'أبيه على رقمي' };
+  
   function chips(list) {
-    list = list.map(function (t) { return t in SWAP ? SWAP[t] : t; }).filter(function (t, i, a) { return t && a.indexOf(t) === i; });
+    
     var d = document.createElement('div'); d.className = 'qs';
     list.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { act(t); }; d.appendChild(b); });
     cv.appendChild(d); cv.scrollTop = cv.scrollHeight;
@@ -619,7 +675,7 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
 </footer>
 </div>
 
-<div class="dock" id="dock"><a class="cta" href="#signup">أبيه على واتسابي<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+<div class="dock" id="dock"><a class="cta" href="#signup">اشترك<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
 
 <script>
 (function(){

@@ -9,6 +9,8 @@
       <label class="opt"><input type="radio" name="package" value="bot_pay"><span><b>أتمتة الحجز + الدفع</b> · 5,500 تأسيس + 600 شهريًا</span></label>
       <label class="opt"><input type="checkbox" name="wants_app" value="1"><span><b>وأبي تطبيق باسمي</b> · 9,000 + 150 شهريًا</span></label>
     </fieldset><!--/P-->
+    <div class="f wide promo"><button type="button" class="plink" id="promoOpen" aria-expanded="false">عندك كود خصم؟</button>
+      <div class="pbox" id="promoBox" hidden><label for="f_promo">كود الخصم</label><input id="f_promo" name="promo" maxlength="24" dir="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="مثل ABC99"><small class="pmsg" id="promoMsg" role="status" aria-live="polite"></small></div></div>
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
     <div class="f wide actions"><button type="submit" class="btn shine" id="leadBtn"><!--P-->أرسل طلب الاشتراك<!--/P--><!--NP-->كلّموني على الواتساب<!--/NP--></button><span class="tiny" id="leadMsg" role="status" aria-live="polite"></span></div>
   </form>
@@ -20,20 +22,43 @@
 </section>
 <script>
 (function(){
-  var API = 'LEADAPI';
+  var API = 'LEADAPI', PROMO = 'PROMOAPI', promoOk = null;
   var form = document.getElementById('leadForm'), btn = document.getElementById('leadBtn'), msg = document.getElementById('leadMsg'), done = document.getElementById('leadDone');
   if (!form) return;
   function digits(v){ return String(v || '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/\D+/g, ''); }
   // الخطأ يطلع تحت الخانة نفسها، ويختفي أول ما يبدأ يكتب
   function bad(id, eid, text) { var el = document.getElementById(id); el.setAttribute('aria-invalid', 'true'); document.getElementById(eid).textContent = text; el.focus(); }
   ['f_name', 'f_phone'].forEach(function (id, i) { var el = document.getElementById(id); el.addEventListener('input', function () { el.removeAttribute('aria-invalid'); document.getElementById(i ? 'e_phone' : 'e_name').textContent = ''; }); });
+  // كود الخصم: يتأكد منه أول ما ينكتب ويقول سعره، ويجي معبّى لو الرابط فيه ?code=
+  var pOpen = document.getElementById('promoOpen'), pBox = document.getElementById('promoBox'), pIn = document.getElementById('f_promo'), pMsg = document.getElementById('promoMsg'), pT = null;
+  var money = function (n) { n = Number(n) || 0; return n % 1 ? n.toFixed(2) : String(n); };
+  function openPromo() { pBox.hidden = false; pOpen.setAttribute('aria-expanded', 'true'); pOpen.hidden = true; }
+  async function checkPromo() {
+    var c = pIn.value.trim().toUpperCase(); promoOk = null; pMsg.className = 'pmsg'; pMsg.textContent = '';
+    if (!c) return;
+    if (!/^[A-Z0-9]{3,24}$/.test(c)) { pMsg.className = 'pmsg no'; pMsg.textContent = 'الكود حروف إنجليزية وأرقام بس'; return; }
+    pMsg.textContent = 'نتأكد من الكود…';
+    try {
+      var r = await fetch(PROMO, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code: c }) });
+      var j = await r.json().catch(function () { return {}; }), p = j.promo || {};
+      if (pIn.value.trim().toUpperCase() !== c) return;
+      if (p.ok) { promoOk = c; pMsg.className = 'pmsg ok'; pMsg.textContent = '✓ كودك يخلي الاشتراك ' + money(p.monthly_fee) + ' ريال شهريًا' + (Number(p.setup_fee) ? ' + ' + money(p.setup_fee) + ' تأسيس' : ' فقط، بدون تأسيس'); }
+      else { pMsg.className = 'pmsg no'; pMsg.textContent = 'الكود غير صحيح أو انتهى'; }
+    } catch (err) { pMsg.className = 'pmsg no'; pMsg.textContent = 'ما قدرنا نتأكد من الكود، جرّب مرة ثانية'; }
+  }
+  if (pOpen) {
+    pOpen.onclick = function () { openPromo(); pIn.focus(); };
+    pIn.addEventListener('input', function () { clearTimeout(pT); pT = setTimeout(checkPromo, 450); });
+    var qc = new URLSearchParams(location.search).get('code');
+    if (qc) { openPromo(); pIn.value = qc.trim().toUpperCase().slice(0, 24); checkPromo(); }
+  }
   form.addEventListener('submit', async function (e) {
     e.preventDefault(); msg.textContent = '';
     var fd = new FormData(form), name = (fd.get('business_name') || '').toString().trim(), ph = digits(fd.get('phone'));
     if (ph.indexOf('00') === 0) ph = ph.slice(2); if (ph.indexOf('966') === 0) ph = ph.slice(3); if (ph.indexOf('0') === 0) ph = ph.slice(1);
     if (name.length < 2) { bad('f_name', 'e_name', 'اكتب اسمك أو اسم نشاطك'); return; }
     if (!/^5\d{8}$/.test(ph)) { bad('f_phone', 'e_phone', 'اكتب جوال سعودي صحيح مثل 05xxxxxxxx'); return; }
-    var body = { business_name: name, activity: '', city: '', contact_name: name.slice(0, 60), phone: '966' + ph, package: fd.get('package') || 'bot', wants_app: fd.get('wants_app') === '1', orders_per_day: '', notes: '', website: fd.get('website') || '', source: 'site' };
+    var body = { business_name: name, activity: '', city: '', contact_name: name.slice(0, 60), phone: '966' + ph, package: fd.get('package') || 'bot', wants_app: fd.get('wants_app') === '1', orders_per_day: '', notes: '', website: fd.get('website') || '', source: 'site', promo: promoOk || '' };
     btn.disabled = true; var old = btn.textContent; btn.textContent = 'جارٍ الإرسال…';
     try {
       var r = await fetch(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });

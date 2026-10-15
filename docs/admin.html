@@ -613,7 +613,7 @@
   // ═════ طلبات الاشتراك ═════
   function leadRow(l) {
     const st = LSTATUS[l.status] || LSTATUS.new;
-    return `<div class="item click" data-lead="${l.id}"><div class="h"><b style="font-family:var(--display);font-size:16px">${esc(l.business_name)}</b><span class="badge ${st[1]}">${st[0]}</span>${l.business_id ? '<span class="badge b-ok plain">صارت منشأة</span>' : ''}${l.agreed_at ? '<span class="badge b-arrived plain">وافق</span>' : ''}${l.paid_claim_at && !l.business_id ? '<span class="badge b-gold plain">قال إنه حوّل</span>' : ''}${l.intake_at ? '<span class="badge b-confirmed plain">عبّى النموذج</span>' : ''}${l.source === 'sitebot' ? '<span class="badge b-gold plain">سؤال من الموقع</span>' : ''}<span class="sp"></span><span class="tiny">${I.ago(l.created_at)}</span></div>
+    return `<div class="item click" data-lead="${l.id}"><div class="h"><b style="font-family:var(--display);font-size:16px">${esc(l.business_name)}</b>${l.promo_code ? `<span class="badge b-ok plain ltr">${esc(l.promo_code)}</span>` : ''}<span class="badge ${st[1]}">${st[0]}</span>${l.business_id ? '<span class="badge b-ok plain">صارت منشأة</span>' : ''}${l.agreed_at ? '<span class="badge b-arrived plain">وافق</span>' : ''}${l.paid_claim_at && !l.business_id ? '<span class="badge b-gold plain">قال إنه حوّل</span>' : ''}${l.intake_at ? '<span class="badge b-confirmed plain">عبّى النموذج</span>' : ''}${l.source === 'sitebot' ? '<span class="badge b-gold plain">سؤال من الموقع</span>' : ''}<span class="sp"></span><span class="tiny">${I.ago(l.created_at)}</span></div>
       <div class="meta"><span>${esc(l.activity || 'نشاط غير محدد')}</span><span>${esc(l.city || '')}</span><span>${l.package === 'bot_pay' ? PLAN.bot_pay : PLAN.bot}${l.wants_app ? ' + تطبيق' : ''}</span>${l.orders_per_day ? `<span>${esc(l.orders_per_day)} طلب يوميًا</span>` : ''}${l.follow_up ? `<span>متابعة ${esc(I.relDay(l.follow_up))}</span>` : ''}</div></div>`;
   }
   function vLeads(v) {
@@ -865,8 +865,26 @@
       <div class="tbl"><table class="t"><thead><tr><th>المنشأة</th><th>الباقة</th><th>الشهري</th><th>البداية</th><th>التجديد القادم</th><th>آخر دفعة</th><th></th></tr></thead><tbody>
       ${rows.map((b) => { const s = S.subs[b.id] || {}; const last = S.pays.find((p) => p.business_id === b.id); const d = daysTo(s.next_renewal);
         return `<tr><td><b>${esc(b.name)}</b><div class="tiny">${(BSTATUS[b.status] || [''])[0]}</div></td><td class="small">${PLAN[b.plan]}${b.wants_app ? ' + تطبيق' : ''}</td><td class="num">${money(mrr(b))}</td><td class="small">${s.started_on ? esc(I.dayName(s.started_on)) : '<span class="tiny">لم يبدأ</span>'}</td><td class="small">${s.next_renewal ? `${esc(I.dayName(s.next_renewal))}${d !== null && d >= 0 && d <= 7 ? ` <span class="badge b-gold plain">بعد ${d} ${d === 1 ? 'يوم' : 'أيام'}</span>` : ''}` : '<span class="tiny">غير محدد</span>'}</td><td class="small">${last ? `${money(last.amount)} · ${esc(I.dayName(last.paid_on))}` : '<span class="tiny">ما فيه</span>'}</td><td><button class="btn sm ghost" data-pay="${b.id}">${icon('plus')}دفعة</button></td></tr>`; }).join('') || '<tr><td colspan="7" class="tiny">ما فيه منشآت</td></tr>'}
-      </tbody></table></div>`;
+      </tbody></table></div>
+      <div class="card stack s" id="promoCard"><div class="row"><h3 class="grow">أكواد الخصم</h3><span class="tiny">اللي يكتب الكود في الموقع أو صفحة الدفعة الأولى، يصير اشتراكه بسعر الكود</span></div><div id="promoList"><div class="tiny">نحمّل…</div></div>
+        <form class="row" id="promoAdd" style="align-items:flex-end"><label class="f" style="flex:1;min-width:140px"><span>الكود</span><input name="code" class="ltr" maxlength="24" required placeholder="FRIEND99" style="text-transform:uppercase"></label><label class="f" style="width:110px"><span>الشهري</span><input name="monthly" type="number" min="0" value="99" required></label><label class="f" style="width:110px"><span>التأسيس</span><input name="setup" type="number" min="0" value="0" required></label><label class="f" style="width:110px"><span>كم مرة</span><input name="max" type="number" min="1" placeholder="بلا حد"></label><label class="f" style="flex:1;min-width:140px"><span>ملاحظة</span><input name="label" maxlength="80" placeholder="لمين الكود؟"></label><button class="btn" type="submit">${icon('plus')}أضف</button></form></div>`;
     v.querySelectorAll('[data-pay]').forEach((x) => x.onclick = () => payModal(S.biz.find((b) => b.id === x.dataset.pay), () => render()));
+    paintPromos();
+    $('promoAdd').onsubmit = async (e) => {
+      e.preventDefault(); const f = new FormData(e.target);
+      const code = String(f.get('code') || '').trim().toUpperCase();
+      if (!/^[A-Z0-9]{3,24}$/.test(code)) return I.toast('الكود حروف إنجليزية وأرقام بس (3 إلى 24)', true);
+      try { await q1(sb.from('promo_codes').insert({ code, monthly_fee: Number(f.get('monthly')) || 0, setup_fee: Number(f.get('setup')) || 0, max_uses: Number(f.get('max')) || null, label: String(f.get('label') || '').trim() }).select('code')); I.toast('انضاف الكود ✓'); e.target.reset(); paintPromos(); }
+      catch (x) { I.fail(x); }
+    };
+  }
+  async function paintPromos() {
+    const box = $('promoList'); if (!box) return;
+    let rows = [];
+    try { rows = await q1(sb.from('promo_codes').select('*').order('created_at', { ascending: false })); } catch (e) { box.innerHTML = '<div class="tiny">ما قدرنا نحمّل الأكواد</div>'; return; }
+    box.innerHTML = rows.length ? `<div class="tbl"><table class="t"><thead><tr><th>الكود</th><th>الشهري</th><th>التأسيس</th><th>الاستخدام</th><th>لمين</th><th>شغّال</th><th></th></tr></thead><tbody>${rows.map((c) => `<tr><td><b class="ltr">${esc(c.code)}</b></td><td class="num">${money(c.monthly_fee)}</td><td class="num">${money(c.setup_fee)}</td><td class="small">${c.uses}${c.max_uses ? ' من ' + c.max_uses : ''}</td><td class="small">${esc(c.label || '')}</td><td><label class="sw"><input type="checkbox" data-pa="${esc(c.code)}" ${c.active ? 'checked' : ''}><i></i></label></td><td><button class="btn sm ghost" type="button" data-pl="${esc(c.code)}">${icon('copy')}رابط</button></td></tr>`).join('')}</tbody></table></div>` : '<div class="tiny">ما فيه أكواد بعد</div>';
+    box.querySelectorAll('[data-pa]').forEach((x) => x.onchange = async () => { try { await q1(sb.from('promo_codes').update({ active: x.checked }).eq('code', x.dataset.pa).select('code')); I.toast(x.checked ? 'الكود شغّال ✓' : 'الكود موقف'); } catch (e) { I.fail(e); x.checked = !x.checked; } });
+    box.querySelectorAll('[data-pl]').forEach((x) => x.onclick = () => I.copy(PUBLIC + '?code=' + encodeURIComponent(x.dataset.pl) + '#signup', 'انسخ رابط الكود ✓ أرسله'));
   }
 
   // ═════ دليل التشغيل: خطوات كل منشأة بروابطها ═════

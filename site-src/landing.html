@@ -228,8 +228,16 @@ section.sec{padding:76px 0;border-top:1px solid var(--line)}
 .lead-form input:focus{outline:2px solid var(--green);outline-offset:1px;background:#fff}
 .lead-form .err{color:#B42318;font-size:13px;min-height:0}
 .lead-form fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
-.lead-form .opt{display:flex;gap:10px;align-items:center;border:1px solid var(--line-2);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:15px}
+.lead-form .opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:15px;background:#fff}
+.lead-form .opt input{width:20px;height:20px;min-height:0;padding:0;margin:0;flex:none;accent-color:var(--green)}
+.lead-form .opt:has(input:checked){border-color:var(--green);background:#F2FBF6}
 .lead-form .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.lead-form .plink{justify-self:start;border:0;background:none;padding:6px 2px;color:var(--green);font-weight:600;font-size:14.5px;text-decoration:underline;text-underline-offset:4px}
+.lead-form .pbox{display:grid;gap:6px;max-width:320px}
+.lead-form .pbox input{text-transform:uppercase;letter-spacing:1px}
+.lead-form .pmsg{font-size:13.5px;color:var(--muted);min-height:0}
+.lead-form .pmsg.ok{color:var(--green);font-weight:600}
+.lead-form .pmsg.no{color:#B42318}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--green);color:#fff;border:1px solid #00815B;border-radius:14px;min-height:52px;padding:0 26px;font-size:16px;font-weight:600;box-shadow:0 8px 22px rgba(0,139,97,.14);transition:background .2s,transform .2s;cursor:pointer}
 .btn:hover{background:var(--green-2);transform:translateY(-1px)}
 .btn.ghost{background:#fff;color:var(--green);border-color:var(--line-2);box-shadow:none}

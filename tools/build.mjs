@@ -16,7 +16,7 @@ const LEAD_API = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/lead';
 const SIM = 'sim.html?demo=1';
 // الأسعار والباقات والاشتراك في الموقع العام. مطفية من 2026-10-11 بطلبها («صديقي يجرب الموقع ولا يدفع أو يعرف حتى إن فيه دفع»).
 // لما تبيها ترجع: خلها true وابنِ. الصفحات الداخلية (لوحتها، الدفعة الأولى) ما تتأثر.
-const SHOW_PRICES = false;
+const SHOW_PRICES = true;
 
 // مجالات «جرّبه بنفسك» (المنشآت التجريبية في tools/seed-presets.sql)
 const PRESETS = [
@@ -61,7 +61,7 @@ for (const [k, v] of [['<!--HEAD_META-->', meta], ['<!--FIELDS-->', fields], ['<
 // آراء العملاء تنقرا من القاعدة بمفتاح القراءة العام (نفس اللي في اللوحات، والجدول يعرض المنشور بس)
 const ANON_KEY = (/const ANON = '([^']+)'/.exec(fs.readFileSync(path.join(OUT, 'assets/ihj.js'), 'utf8')) || [])[1];
 if (!ANON_KEY) throw new Error('anon key not found in assets/ihj.js');
-page = page.split('SIMLINK').join(SIM).split('LEADAPI').join(LEAD_API).split('TESTIAPI').join('https://kvreqxdgjeietzsfamei.supabase.co/rest/v1/testimonials').split('ANONKEY').join(ANON_KEY);
+page = page.split('SIMLINK').join(SIM).split('LEADAPI').join(LEAD_API).split('TESTIAPI').join('https://kvreqxdgjeietzsfamei.supabase.co/rest/v1/testimonials').split('ANONKEY').join(ANON_KEY).split('PROMOAPI').join('https://kvreqxdgjeietzsfamei.supabase.co/functions/v1/api/client/promo');
 // علامات الأسعار: <!--P--> و/*P*/ للي يطلع مع الأسعار بس، و<!--NP--> و/*NP*/ للي يطلع بدونها
 const keep = (re, on) => { page = page.replace(re, on ? '$1' : ''); };
 keep(/<!--P-->([\s\S]*?)<!--\/P-->/g, SHOW_PRICES); keep(/\/\*P\*\/([\s\S]*?)\/\*\/P\*\//g, SHOW_PRICES);
@@ -76,7 +76,7 @@ if (!SHOW_PRICES) {
   }
 }
 { const vis = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<!--[\s\S]*?-->/g, ''); const m = /البوت|بوت واتساب|رد تلقائي/.exec(vis); if (m) throw new Error('كلمة ممنوعة في الرئيسية: «' + m[0] + '» (نقول «رد آلي»)'); }
-if (/SIMLINK|LEADAPI|TESTIAPI|ANONKEY|<!--[A-Z_]+-->/.test(page)) throw new Error('unreplaced placeholder in index');
+if (/SIMLINK|LEADAPI|TESTIAPI|ANONKEY|PROMOAPI|<!--[A-Z_]+-->/.test(page)) throw new Error('unreplaced placeholder in index');
 
 let admin = fs.readFileSync(path.join(SRC, 'admin.html'), 'utf8');
 if (/<!--[A-Z_]+-->/.test(admin)) throw new Error('unreplaced placeholder in admin');

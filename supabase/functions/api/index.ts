@@ -458,6 +458,8 @@ async function clientAction(req: Request, action: string) {
     return { fees: { bot: { setup_fee: x.setup_fee, monthly_fee: x.monthly_fee }, bot_pay: { setup_fee: y.setup_fee, monthly_fee: y.monthly_fee }, app: { setup_fee: x.app_setup_fee, monthly_fee: x.app_monthly_fee } } };
   }
   // نموذج البيانات: «عندك قائمة أسعار أو موقع؟ نعبّيها عنك» (يظهر بس لو القراءة مفعّلة، وله حد يومي)
+  // كود الخصم: يرجع سعره لو صالح (بدون كشف باقي الأكواد)
+  if (action === "promo") { const { data } = await db().rpc("ihj_promo_check", { p_code: clip(body.code, 30) }); return { promo: data || { ok: false } }; }
   if (action === "ai") return { ready: aiReady() };
   if (action === "extract") {
     if (clip(body.website, 50)) return { data: null };
@@ -474,11 +476,13 @@ async function clientAction(req: Request, action: string) {
       need(body.accept === true, "accept", 400);
       const plan = body.package === "bot_pay" ? "bot_pay" : "bot", app = !!body.wants_app;
       const { data: fees } = await db().rpc("ihj_plan_fees", { p_plan: plan, p_app: app });
-      const terms = { business: bizName, plan, wants_app: app, ...(fees as any || {}), version: "2026-10" };
+      const { data: pr } = body.promo ? await db().rpc("ihj_promo_check", { p_code: clip(body.promo, 30) }) : { data: null };
+      const promo = (pr as any)?.ok ? pr as any : null;
+      const terms = { business: bizName, plan, wants_app: app, ...(fees as any || {}), ...(promo ? { setup_fee: promo.setup_fee, monthly_fee: promo.monthly_fee, promo: promo.code } : {}), version: "2026-10" };
       const lead = await leadByPhone(phone, { business_name: bizName, contact_name: name, package: plan, wants_app: app, source: "agree" }, ip);
       const now = new Date().toISOString();
       const biz = await bizForLead(lead);
-      const patch: any = { agreed_at: now, agreed_name: name, agreed_terms: terms, updated_at: now, log: [...(lead.log || []), { t: now, what: "وافق على الاتفاقية من الرابط العام" }].slice(-60) };
+      const patch: any = { agreed_at: now, agreed_name: name, agreed_terms: terms, updated_at: now, ...(promo ? { promo_code: promo.code } : {}), log: [...(lead.log || []), { t: now, what: "وافق على الاتفاقية من الرابط العام" }].slice(-60) };
       if (!biz) { patch.package = plan; patch.wants_app = app; if (["new", "contacted"].includes(lead.status)) patch.status = "agreed"; if (lead.business_name === "بدون اسم") patch.business_name = bizName; if (!lead.contact_name) patch.contact_name = name; }
       const { error } = await db().from("signup_requests").update(patch).eq("id", lead.id);
       if (error) throw new Error(error.message);

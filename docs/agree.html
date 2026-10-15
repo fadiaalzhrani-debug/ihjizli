@@ -72,7 +72,7 @@ ol.terms b{font-family:var(--display)}
   const errMsg = (x) => ({ business: 'اكتب اسم النشاط', name: 'اكتب الاسم كامل', phone: 'اكتب جوال صحيح', busy: 'محاولات كثيرة، جرّب بعد شوي', not_agreed: 'علّم على الموافقة أول' }[x.code] || 'ما انحفظت، جرّب مرة ثانية');
 
   // الحالة: المنشأة (بمفتاحها) أو رابط عام يختار فيه الباقة
-  const S = { plan: 'bot', app: false, biz: '', name: '', phone: '', agreed: null, pay: null, claimed: false, paid: false, ok: false };
+  const S = { plan: 'bot', app: false, biz: '', name: '', phone: '', agreed: null, pay: null, claimed: false, paid: false, ok: false, promo: null, promoMsg: '' };
   let F = { bot: { setup_fee: 3500, monthly_fee: 350 }, bot_pay: { setup_fee: 5500, monthly_fee: 600 }, app: { setup_fee: 9000, monthly_fee: 150 } };
   let fixed = null; // رسوم المنشأة لو بمفتاح
   if (k) {
@@ -85,12 +85,21 @@ ol.terms b{font-family:var(--display)}
   } else {
     try { F = (await post('terms', {})).fees || F; } catch (e) { /* الأسعار الافتراضية */ }
     const pre = new URLSearchParams(location.search);
-    S.plan = pre.get('p') === 'bot_pay' ? 'bot_pay' : 'bot'; S.app = pre.get('app') === '1';
+    S.plan = pre.get('p') === 'bot_pay' ? 'bot_pay' : 'bot'; S.app = pre.get('app') === '1'; S.code = (pre.get('code') || '').trim().toUpperCase().slice(0, 24);
     // الرابط العام: لو رجع للصفحة يلقى موافقته وبيانات التحويل مثل ما تركها
     try { const m = JSON.parse(localStorage.getItem('ihj_firstpay') || 'null'); if (m && m.agreed && Date.now() - new Date(m.agreed.at).getTime() < 30 * 86400000) Object.assign(S, m); } catch (e) { /* */ }
   }
-  const remember = () => { if (k) return; try { localStorage.setItem('ihj_firstpay', JSON.stringify({ plan: S.plan, app: S.app, biz: S.biz, name: S.name, phone: S.phone, agreed: S.agreed, pay: S.pay, claimed: S.claimed })); } catch (e) { /* */ } };
-  const fees = () => fixed || { setup: F[S.plan].setup_fee + (S.app ? F.app.setup_fee : 0), monthly: F[S.plan].monthly_fee + (S.app ? F.app.monthly_fee : 0) };
+  const remember = () => { if (k) return; try { localStorage.setItem('ihj_firstpay', JSON.stringify({ plan: S.plan, app: S.app, biz: S.biz, name: S.name, phone: S.phone, agreed: S.agreed, pay: S.pay, claimed: S.claimed, promo: S.promo })); } catch (e) { /* */ } };
+  // كود الخصم يحدد التأسيس والشهري بدل سعر الباقة
+  const fees = () => fixed || (S.promo ? { setup: Number(S.promo.setup_fee) + (S.app ? F.app.setup_fee : 0), monthly: Number(S.promo.monthly_fee) + (S.app ? F.app.monthly_fee : 0) }
+    : { setup: F[S.plan].setup_fee + (S.app ? F.app.setup_fee : 0), monthly: F[S.plan].monthly_fee + (S.app ? F.app.monthly_fee : 0) });
+  async function applyCode(c) {
+    c = String(c || '').trim().toUpperCase(); S.promoMsg = '';
+    if (!c) { S.promo = null; return; }
+    if (!/^[A-Z0-9]{3,24}$/.test(c)) { S.promo = null; S.promoMsg = 'الكود حروف إنجليزية وأرقام بس'; return; }
+    try { const p = (await post('promo', { code: c })).promo || {}; if (p.ok) S.promo = p; else { S.promo = null; S.promoMsg = 'الكود غير صحيح أو انتهى'; } }
+    catch (e) { S.promo = null; S.promoMsg = 'ما قدرنا نتأكد من الكود، جرّب مرة ثانية'; }
+  }
 
   function paint() {
     const fe = fees(), half = Math.round(fe.setup / 2);
@@ -100,9 +109,13 @@ ol.terms b{font-family:var(--display)}
         <h1>الدفعة الأولى</h1>
         ${k ? `<div class="who"><b>${esc(S.biz)}</b> · ${PLAN[S.plan] || PLAN.bot}${S.app ? ' + تطبيق باسمكم' : ''}</div>`
           : `<div class="pk">${[['bot', F.bot], ['bot_pay', F.bot_pay]].map(([v, f]) => `<label><input type="radio" name="plan" value="${v}" ${S.plan === v ? 'checked' : ''} ${S.agreed ? 'disabled' : ''}><b>${PLAN[v]}</b><span>${money(f.setup_fee)} تأسيس + ${money(f.monthly_fee)} شهريًا</span></label>`).join('')}</div>
-             <label class="check"><input type="checkbox" id="app" ${S.app ? 'checked' : ''} ${S.agreed ? 'disabled' : ''}>تطبيق باسمكم (${money(F.app.setup_fee)} + ${money(F.app.monthly_fee)} شهريًا)</label>`}
-        <div class="amount"><span class="lbl">المطلوب الحين</span><div class="big">${money(half)} <small>ريال</small></div>
-          <span class="tiny">نص التأسيس (${money(fe.setup)} ريال)، والنص الثاني عند التسليم. والاشتراك الشهري ${money(fe.monthly)} ريال يبدأ من يوم التشغيل.</span></div>
+             <label class="check"><input type="checkbox" id="app" ${S.app ? 'checked' : ''} ${S.agreed ? 'disabled' : ''}>تطبيق باسمكم (${money(F.app.setup_fee)} + ${money(F.app.monthly_fee)} شهريًا)</label>
+             ${S.agreed ? (S.promo ? `<div class="hint">كود الخصم ${esc(S.promo.code)}</div>` : '') : `<div class="g2 promo"><label class="f"><span>كود الخصم (لو عندك)</span><input id="pc" dir="ltr" maxlength="24" autocomplete="off" spellcheck="false" value="${esc(S.promo ? S.promo.code : (S.code || ''))}"></label><button class="btn ghost" id="pcGo" type="button">طبّق الكود</button></div>
+             ${S.promo ? `<div class="hint" style="color:#047857">✓ الكود طبّق: ${money(S.promo.monthly_fee)} ريال شهريًا${Number(S.promo.setup_fee) ? ' + ' + money(S.promo.setup_fee) + ' تأسيس' : '، بدون تأسيس'}</div>` : (S.promoMsg ? `<div class="hint" style="color:#B42318">${esc(S.promoMsg)}</div>` : '')}`}`}
+        ${half > 0 ? `<div class="amount"><span class="lbl">المطلوب الحين</span><div class="big">${money(half)} <small>ريال</small></div>
+          <span class="tiny">نص التأسيس (${money(fe.setup)} ريال)، والنص الثاني عند التسليم. والاشتراك الشهري ${money(fe.monthly)} ريال يبدأ من يوم التشغيل.</span></div>`
+          : `<div class="amount"><span class="lbl">الاشتراك الشهري</span><div class="big">${money(fe.monthly)} <small>ريال</small></div>
+          <span class="tiny">بدون رسوم تأسيس، وما عليك دفعة الحين. الاشتراك يبدأ من يوم التشغيل.</span></div>`}
         ${S.agreed ? '' : `
           ${k ? '' : '<label class="f"><span>اسم النشاط</span><input id="bn" maxlength="80" autocomplete="organization" value="' + esc(S.biz) + '"></label>'}
           <div class="g2"><label class="f"><span>الاسم</span><input id="n" maxlength="60" autocomplete="name" value="${esc(S.name)}"></label><label class="f"><span>الجوال</span><input id="p" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx" autocomplete="tel" value="${esc(S.phone)}"></label></div>
@@ -118,6 +131,7 @@ ol.terms b{font-family:var(--display)}
     bind();
   }
   function payPaper(half) {
+    if (!(half > 0)) return `<div class="paper"><div class="okbox"><h3>تم ✅</h3><span>نبدأ التجهيز، ويوصلك رابط البيانات بالواتساب.</span></div></div>`;
     if (S.paid) return `<div class="paper"><div class="okbox"><h3>استلمنا الدفعة الأولى ✅</h3><span>نشتغل الحين على تجهيز الرد الآلي باسمكم.</span></div></div>`;
     const done = S.claimed ? `<div class="okbox"><h3>وصلنا خبر التحويل ✅</h3><span>نأكد التحويل ونبدأ التجهيز، ويوصلك رابط البيانات بالواتساب.</span></div>` : '';
     if (!S.pay) return `<div class="paper" id="payBox"><h2 style="font-size:19px;margin:0">التحويل</h2><p class="muted" style="margin:0">بيانات التحويل توصلك بالواتساب من فريق المناوب.</p>${done}</div>`;
@@ -132,6 +146,8 @@ ol.terms b{font-family:var(--display)}
     const keep = () => { if ($('bn')) S.biz = $('bn').value; if ($('n')) S.name = $('n').value; if ($('p')) S.phone = $('p').value; };
     document.querySelectorAll('input[name=plan]').forEach((x) => x.onchange = () => { keep(); S.plan = x.value; paint(); });
     if ($('app')) $('app').onchange = (e) => { keep(); S.app = e.target.checked; paint(); };
+    if ($('pcGo')) $('pcGo').onclick = async (e) => { keep(); e.target.disabled = true; await applyCode($('pc').value); paint(); };
+    if ($('pc')) $('pc').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); $('pcGo').click(); } };
     if (!S.agreed) {
       $('ok').onchange = (e) => { S.ok = e.target.checked; $('agreeBox').classList.toggle('on', S.ok); $('go').disabled = !S.ok; $('msg').textContent = ''; };
       $('go').onclick = async (e) => {
@@ -140,7 +156,7 @@ ol.terms b{font-family:var(--display)}
         e.target.disabled = true;
         try {
           const r = k ? await post('agree', { name: S.name, phone: S.phone, accept: true })
-            : await post('agree-new', { business_name: S.biz, name: S.name, phone: S.phone, package: S.plan, wants_app: S.app, accept: true, website: $('hp') ? $('hp').value : '' });
+            : await post('agree-new', { business_name: S.biz, name: S.name, phone: S.phone, package: S.plan, wants_app: S.app, promo: S.promo ? S.promo.code : '', accept: true, website: $('hp') ? $('hp').value : '' });
           S.agreed = { name: S.name, at: new Date().toISOString() }; S.pay = r.pay || null;
           remember(); paint();
           const pb = $('payBox'); if (pb) pb.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -153,6 +169,7 @@ ol.terms b{font-family:var(--display)}
       catch (x) { $('msg2').textContent = errMsg(x); e.target.disabled = false; }
     };
   }
+  if (!k && S.code && !S.promo && !S.agreed) await applyCode(S.code);
   paint();
   window.__firstpay = { S, paint };
 })();
