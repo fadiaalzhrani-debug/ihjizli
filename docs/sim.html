@@ -6,17 +6,17 @@
 <title>جرّبه كأنك عميل · المناوب</title>
 <meta name="description" content="جرّب الرد والحجز والدفع على الواتساب لأي نشاط: صيانة، صالون، عيادة، استشارة أونلاين، مغسلة، مطعم.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z' fill='%2325D366'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 /* محاكي واتساب احجزلي: نفس منطق البوت الحقيقي، بدون إرسال لأي رقم. قائمة مجالات + تخصيص + اقتراحات أسئلة */
 :root{
-  --page:#FFFFFF; --page-fg:#17182B; --muted:#5F6178; --accent:#4338CA; --hl:#FDE047;
-  --grad:radial-gradient(55% 75% at 88% 8%,rgba(255,255,255,.2),transparent 62%),radial-gradient(50% 70% at 6% 96%,rgba(244,114,182,.6),transparent 70%),linear-gradient(135deg,#4338CA 0%,#6D28D9 52%,#A21CAF 100%);
+  --page:#F6FAF8; --page-fg:#102F27; --muted:#6A8178; --accent:#008C62; --hl:#05AA71;
+  --grad:linear-gradient(145deg,#05AA71,#00764F);
   --wa-head:#008069; --wa-head-fg:#fff; --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-fg:#111B21; --wa-meta:#667781; --wa-link:#027EB5;
   --wa-input:#FFFFFF; --wa-green:#00A884; --wa-sheet:#FFFFFF; --wa-line:#E9EDEF; --wa-chip:#E1F2FB; --wa-tick:#53BDEB; --wa-list:#FFFFFF; --wa-hover:#F5F6F6;
   --doodle:rgba(0,0,0,.035);
-  --display:"Tajawal",system-ui,"Segoe UI",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+  --display:"IBM Plex Sans Arabic",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box} html,body{margin:0;height:100%}
@@ -27,25 +27,27 @@ svg{flex:none}
 
 /* نفس شكل الرئيسية (2026-10-14 بطلبها: «خل شكل التجربة الخلفية والخ زي الرئيسية»): صفحة بيضاء وبطاقة كبيرة بالتدرّج النيلي البنفسجي الفوشي */
 body{padding:16px;position:relative;isolation:isolate}
-body::before{content:"";position:fixed;inset:16px;border-radius:32px;background:var(--grad);box-shadow:0 40px 80px -50px rgba(76,29,149,.8);z-index:-1}
-.aside .brand{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-family:var(--display);font-weight:900;font-size:22px}
-.aside .brand svg{width:26px;height:26px}
+body::before{content:"";position:fixed;z-index:-1;inset:8% 20% 4% auto;width:520px;background:radial-gradient(ellipse,rgba(124,221,177,.22),transparent 67%);pointer-events:none}
+.aside .brand{display:inline-flex;align-items:center;gap:8px;color:var(--page-fg);text-decoration:none;font-family:var(--display);font-weight:900;font-size:22px}
+.aside .brand{font-weight:700;letter-spacing:-.5px}
+.aside .brand .bm{width:30px;height:32px;display:grid;place-items:center;background:var(--grad);color:#fff;border-radius:11px 11px 11px 4px}
+.aside .brand svg{width:20px;height:20px}
 /* اللوحة الجانبية (كمبيوتر) */
 .aside{grid-column:1;justify-self:end;max-width:360px;padding:28px;display:grid;gap:16px}
-.aside{color:#fff}
-.aside h1{font-family:var(--display);font-size:30px;font-weight:900;margin:0;line-height:1.25;color:#fff}
-.aside h1 em{font-style:normal;color:var(--hl)}
-.aside p{margin:0;color:rgba(255,255,255,.88);font-size:15px;line-height:1.75}
+.aside{color:var(--page-fg)}
+.aside h1{font-family:var(--display);font-size:32px;font-weight:700;letter-spacing:-1px;margin:0;line-height:1.3;color:var(--page-fg)}
+.aside h1 em{font-style:normal;color:var(--accent)}
+.aside p{margin:0;color:var(--muted);font-size:15px;line-height:1.75}
 .aside .try{display:grid;gap:9px;margin:0;padding:0;list-style:none;font-size:14.5px;font-weight:600}
 .aside .try li{display:flex;gap:9px;align-items:flex-start;line-height:1.6}
-.aside .try b{width:24px;height:24px;border-radius:50%;background:var(--hl);color:#2E1065;box-shadow:0 0 0 4px rgba(253,224,71,.22);display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display);margin-top:2px}
+.aside .try b{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(0,140,98,.12);display:grid;place-items:center;font-size:12px;flex:none;font-family:var(--display);margin-top:2px}
 .aside .acts{display:flex;gap:8px;flex-wrap:wrap}
-.pill{border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.08);color:#fff!important;border-radius:14px;min-height:44px;padding:8px 14px;font-family:var(--display);font-weight:700;font-size:14.5px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;color:inherit}
-.pill.main{background:#fff;color:#4338CA!important;border-color:#fff;box-shadow:0 12px 28px -12px rgba(30,10,70,.6)}
+.pill{border:1px solid #CFE4D9;background:#fff;color:var(--accent)!important;border-radius:14px;min-height:44px;padding:8px 14px;font-family:var(--display);font-weight:600;font-size:14.5px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;cursor:pointer}
+.pill.main{background:var(--accent);color:#fff!important;border-color:#00815B;box-shadow:0 8px 22px rgba(0,139,97,.14)}
 .pill:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
 .pill svg{width:17px;height:17px}
 .cur{display:flex;flex-wrap:wrap;gap:6px}
-.cur span{display:inline-flex;align-items:center;min-height:24px;line-height:1.3;font-size:12.5px;background:rgba(30,10,80,.28);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px;font-weight:700}
+.cur span{display:inline-flex;align-items:center;min-height:24px;line-height:1.3;font-size:12.5px;background:#E9F7EF;color:#00865E;border:1px solid #CFE4D9;border-radius:999px;padding:3px 10px;font-weight:700}
 
 /* الجوال */
 .phone{grid-column:2;width:390px;height:min(844px,calc(100vh - 72px));border-radius:46px;background:#0f1412;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.28),inset 0 0 0 2px #2a312d;position:relative}
@@ -84,7 +86,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:32px;background:
 .chatrow .tags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
 .chatrow .tags i{font-style:normal;font-size:12.5px;border-radius:99px;padding:1px 8px;background:color-mix(in srgb,var(--wa-green) 13%,transparent);color:var(--wa-fg)}
 .home .note{padding:14px 18px 20px;font-size:13.5px;color:#54656F;text-align:center;line-height:1.7}
-.home .own{display:block;flex:none;margin:0 16px calc(16px + env(safe-area-inset-bottom,0px));padding:14px;border-radius:14px;background:var(--grad);color:#fff;font-family:var(--display);font-weight:800;font-size:16px;text-align:center;text-decoration:none;box-shadow:0 12px 28px -14px rgba(76,29,149,.7)}
+.home .own{display:block;flex:none;margin:0 16px calc(16px + env(safe-area-inset-bottom,0px));padding:14px;border-radius:14px;background:var(--grad);color:#fff;font-family:var(--display);font-weight:800;font-size:16px;text-align:center;text-decoration:none;box-shadow:0 12px 28px -14px rgba(0,110,76,.7)}
 .home .own:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
 .chat{flex:1;overflow-y:auto;padding:10px 12px 14px;display:flex;flex-direction:column;gap:3px;
@@ -220,7 +222,7 @@ body::before{content:"";position:fixed;inset:16px;border-radius:32px;background:
 </head>
 <body>
 <aside class="aside" id="aside">
-  <a class="brand" href="./" aria-label="المناوب، الصفحة الرئيسية"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.2 3 14.6c0 3.4 1.6 6.4 4.2 8.5L6 29l6.6-2.6c1.1.2 2.2.4 3.4.4 7.2 0 13-5.2 13-11.6S23.2 3 16 3z" fill="#fff"/><path d="M10.5 15.2l3.6 3.6 7.4-7.6" fill="none" stroke="#6D28D9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>المناوب</a>
+  <a class="brand" href="./" aria-label="المناوب، الصفحة الرئيسية"><span class="bm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="m9 12 2 2 4-4"/></svg></span>المناوب</a>
   <h1>جرّبه <em>كأنك عميل</em></h1>
   <p>اختر نشاط من القائمة وكلّمه كأنك عميل. اسأل أي سؤال أو احجز، وشوف كيف يرد لحاله.</p>
   <ul class="try">

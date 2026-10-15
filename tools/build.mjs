@@ -36,19 +36,19 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const fields = demos.map((d) => `<a class="field" href="sim.html?demo=1&amp;open=${d.slug}" target="_blank" rel="noopener"><div class="h"><span class="em">${d.icon}</span><div><b>${esc(d.label)}</b><div class="tiny">${esc(d.desc)}</div></div></div><div class="tags">${d.tags.map((t) => `<i>${esc(t)}</i>`).join('')}</div><span class="go">جرّبه ←</span></a>`).join('\n    ');
 
 const meta = `<meta name="description" content="المناوب: الشغل كله أوتوماتيك على نفس رقم واتسابك، من أول رد لين الحجز والتذكير والفاتورة، والتجهيز كله علينا، ومعه موقع باسمك. لأي نشاط: صيانة، صالون، عيادة، أونلاين، مغسلة، مطعم.${SHOW_PRICES ? " تأسيس مرة وحدة واشتراك شهري ثابت." : ""}">
-<meta name="theme-color" content="#4338CA">
+<meta name="theme-color" content="#F6FAF8">
 <link rel="canonical" href="${SITE_URL}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">
 <meta property="og:url" content="${SITE_URL}">
 <meta property="og:site_name" content="المناوب">
-<meta property="og:title" content="المناوب · الواتساب يرد ويحجز ويحصّل لحاله">
-<meta property="og:description" content="رد آلي على نفس رقم واتسابك يرد على عملائك ويحجز لهم ويذكّرهم، والتجهيز كله علينا، ومعه موقع باسمك. جرّبه كأنك عميل.">
+<meta property="og:title" content="المناوب · يرد، ينسّق، ويحجز. كلّه عنك">
+<meta property="og:description" content="المناوب يتولّى محادثات عملائك ومواعيدهم على الواتساب، على نفس رقمك: يعرض المتاح ويحجز، يذكّرهم، والفاتورة في نفس المحادثة. التجهيز علينا.">
 <meta property="og:image" content="${SITE_URL}img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="المناوب · الواتساب يرد ويحجز ويحصّل لحاله">
+<meta name="twitter:title" content="المناوب · يرد، ينسّق، ويحجز. كلّه عنك">
 <meta name="twitter:image" content="${SITE_URL}img/og.png">`;
 
 let page = fs.readFileSync(path.join(SRC, 'landing.html'), 'utf8');
