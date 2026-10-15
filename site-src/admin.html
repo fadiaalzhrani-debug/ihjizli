@@ -88,14 +88,14 @@
   const sb = I.sb;
   async function q1(p) { const { data, error } = await p; if (error) throw error; return data; }
 
-  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '', pros: null, pmsgs: {}, testi: null };
+  const S = { tab: 'home', biz: [], set: {}, ch: {}, subs: {}, pays: [], steps: [], docs: {}, stats: {}, cfg: {}, leads: [], leadFilter: 'open', leadSearch: '', seenLeads: new Set(), prefill: null, obBiz: '', pros: null, pmsgs: {}, testi: null, meta: null, dreq: [] };
   const TABS = [['home', 'الرئيسية', 'home'], ['biz', 'المنشآت', 'store'], ['new', 'منشأة جديدة', 'plus'], ['leads', 'طلبات الاشتراك', 'bell'], ['pros', 'العملاء المحتملين', 'users'], ['testi', 'آراء العملاء', 'chat'], ['subs', 'الاشتراكات', 'money'], ['onboard', 'دليل التشغيل', 'guide'], ['deal', 'سير العمل', 'guide']];
   const PLAN = { bot: 'أتمتة الحجز', bot_pay: 'أتمتة الحجز + الدفع' };
   const BSTATUS = { setup: ['قيد التجهيز', 'b-warn'], live: ['شغّالة', 'b-ok'], paused: ['موقفة', 'b-cancelled'], ended: ['منتهية', 'b-cancelled'] };
   const LSTATUS = { new: ['جديد', 'b-gold'], contacted: ['تواصلنا', 'b-confirmed'], agreed: ['اتفقنا', 'b-arrived'], setup: ['قيد التجهيز', 'b-warn'], live: ['شغّال', 'b-ok'], lost: ['ما تم', 'b-cancelled'] };
 
   async function loadAll() {
-    const [biz, set, ch, subs, pays, steps, stats, leads, docs, cfg] = await Promise.all([
+    const [biz, set, ch, subs, pays, steps, stats, leads, docs, cfg, dreq] = await Promise.all([
       q1(sb.from('businesses').select('*').order('created_at', { ascending: false })),
       q1(sb.from('settings').select('business_id,pay_provider,vat_percent,capacity_mode,place_mode,pay_timing,faq,menu,tone,notify_owner,reminder_minutes')),
       q1(sb.from('channels').select('*')),
@@ -106,8 +106,9 @@
       q1(sb.from('signup_requests').select('*').order('created_at', { ascending: false }).limit(500)),
       q1(sb.from('client_docs').select('business_id,agreed_at,agreed_name,intake_at,intake_applied_at,intake,paid_claim_at')),
       sb.from('ihj_config').select('key,value').then((r) => r.data || []),
+      sb.from('data_requests').select('*').order('created_at', { ascending: false }).limit(50).then((r) => r.data || []),
     ]);
-    S.cfg = Object.fromEntries(cfg.map((x) => [x.key, x.value]));
+    S.cfg = Object.fromEntries(cfg.map((x) => [x.key, x.value])); S.dreq = dreq;
     S.biz = biz; S.set = Object.fromEntries(set.map((x) => [x.business_id, x])); S.ch = Object.fromEntries(ch.map((x) => [x.business_id, x]));
     S.subs = Object.fromEntries(subs.map((x) => [x.business_id, x])); S.pays = pays; S.steps = steps; S.stats = Object.fromEntries(stats.map((x) => [x.business_id, x])); S.leads = leads;
     S.docs = Object.fromEntries(docs.map((x) => [x.business_id, x]));
@@ -129,7 +130,7 @@
     ['docs', 'بياناته', 'العميل + أنتِ', 'يرسل لك صورة قائمة أسعاره أو رابط موقعه وتضغطين «عبّيها من صورة أو موقع»، أو يعبّي النموذج (5 دقايق). بعدها «طبّق بياناته».', (b) => !!docsOf(b).intake_applied_at],
     ['build', 'برمجة البوت', 'أنتِ', 'من لوحة المنشأة: الخدمات والأسعار، الأوقات، المدن أو الفروع، الأسئلة والأجوبة، الأزرار، الأسلوب، الموظفون.', (b, st) => built(b, st)],
     ['test', 'تجربته باسمه', 'العميل + أنتِ', 'يكلّم البوت في المحاكي كأنه عميل، وأي تعديل يطلبه تسوينه من لوحة المنشأة.', (b, st) => st.sim_orders > 0],
-    ['connect', 'ربط الرقم', 'أنتِ + العميل (اتصال)', 'تجهّزين حساب المزوّد قبل الاتصال. في الاتصال يدخل فيسبوك ويأكّد الرقم من جواله (رمز يوصله، أو مسح كود من تطبيق واتساب الأعمال لو بيكمل يستخدمه)، وأنتِ تلصقين البيانات والويبهوك. تخلص لما توصل أول رسالة حقيقية.', (b, st) => (S.ch[b.id] || {}).status === 'connected' && !!st.last_real_in],
+    ['connect', 'ربط الرقم', 'العميل (أو أنتِ معه)', 'ترسلين له رابط «اربط واتسابك»: يدخل فيسبوك ويختار رقمه ويأكّد من جواله، ورقمه يبقى على تطبيق واتساب للأعمال. ينربط بوضع الفحص، وبعدها ترفعين القوالب. (لين يجهز الربط المباشر: حساب Dualhook أو 360dialog باسم نشاطه، وتلصقين بياناته في «ربط الرقم».) تخلص لما توصل أول رسالة حقيقية.', (b, st) => (S.ch[b.id] || {}).status === 'connected' && !!st.last_real_in],
     ['templates', 'القوالب', 'أنتِ + ميتا', 'بعد الربط مباشرة ترفعينها بزر، وميتا تعتمدها (دقايق إلى يوم). حالتها تتحدث لحالها.', (b) => arApproved(b) >= AR_TPL.length],
     ['meta', 'توثيق ميتا', 'أنتِ + ميتا (موازي)', 'في اتصال الربط يضيفك مسؤول في حساب ميتا للأعمال حقه، وبعدها ترفعين الطلب بسجله. ميتا تراجع من يومين إلى 14 يوم، والبوت يشتغل قبله.', (b) => (S.ch[b.id] || {}).meta_verification === 'verified'],
     ['payment', 'الدفع الإلكتروني (ميسر)', 'أنتِ + ميسر (موازي)', 'لباقة الدفع: تفتحين حسابه بأوراقه، وبعد التفعيل تلصقين المفتاحين في إعدادات لوحته.', (b) => b.plan !== 'bot_pay' || (S.set[b.id] || {}).pay_provider === 'moyasar'],
@@ -200,7 +201,9 @@
           <div class="row"><span class="grow">عملاء يحتاجون رد (كل المنشآت)</span><b>${Object.values(S.stats).reduce((a, s) => a + (s.open_handoffs || 0), 0)}</b></div>
         </div>
       </div>
+      <div class="card stack" id="dreqCard" hidden></div>
       <div class="card stack" id="payCard"></div>
+      <div class="card stack" id="metaCard"><div class="sec-h"><h3>الربط المباشر بواتساب</h3><span class="spin" style="width:18px;height:18px"></span></div></div>
       <div class="card stack" id="aiCard"><div class="sec-h"><h3>القراءة الذكية</h3><span class="spin" style="width:18px;height:18px"></span></div></div>
       <div class="card stack"><div class="sec-h"><h3>المنشآت قيد التجهيز</h3></div>${setup.length ? setup.map((b) => `<div class="biz-row item click" data-b="${b.id}">${logo(b)}<div><b>${esc(b.name)}</b><div class="tiny">${PLAN[b.plan]} · ${progress(b)} من ${STEPS.length} خطوات</div></div><span class="prog"><i style="width:${progress(b) / STEPS.length * 100}%"></i></span></div>`).join('') : '<div class="tiny">ما فيه منشآت قيد التجهيز</div>'}</div>
       <div class="card stack"><div class="sec-h"><h3>آخر طلبات الاشتراك</h3><a class="btn sm ghost" href="#leads" data-go="leads">الكل</a></div>${S.leads.slice(0, 5).map(leadRow).join('') || '<div class="tiny">ما فيه طلبات</div>'}</div>`;
@@ -208,7 +211,7 @@
     v.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
     v.querySelectorAll('[data-b]').forEach((el) => el.onclick = () => openBiz(el.dataset.b));
     v.querySelectorAll('[data-lead]').forEach((el) => el.onclick = () => openLead(el.dataset.lead));
-    paintAi(); paintPayCard();
+    paintAi(); paintPayCard(); paintMeta(); paintDreq();
   }
   // بيانات التحويل: تطلع للعميل في صفحة الدفعة الأولى بعد ما يعلّم على الموافقة
   function paintPayCard() {
@@ -228,6 +231,50 @@
       try { await q1(sb.from('ihj_config').upsert({ key: 'pay', value, updated_at: new Date().toISOString() }).select('key')); S.cfg.pay = value; I.toast('انحفظت بيانات التحويل ✓'); paintPayCard(); }
       catch (x) { I.fail(x); e.target.disabled = false; }
     };
+  }
+  // الربط المباشر: تطبيق ميتا حق المناوب (Tech Provider). فادية تلصق معرّفه وسرّه ومعرّف الإعداد، وتنسخ الباقي لإعدادات التطبيق عند ميتا
+  async function loadMeta() { const had = !!S.meta; try { S.meta = await I.api('admin/meta-app', {}); } catch (e) { /* */ } if (!had && S.meta && S.meta.ready && S.tab === 'onboard') render(); return S.meta; }
+  async function paintMeta() {
+    const el = $('metaCard'); if (!el) return;
+    const m = await loadMeta();
+    if (!el.isConnected) return;
+    if (!m) { el.innerHTML = '<div class="sec-h"><h3>الربط المباشر بواتساب</h3></div><div class="tiny">ما قدرنا نجيب حالته، حدّثي الصفحة.</div>'; return; }
+    const cp = (label, v) => `<span class="tiny">${label}</span><div class="copybox"><code class="ltr">${esc(v)}</code><button class="btn sm ghost" type="button" data-cp="${esc(v)}">${icon('copy')}نسخ</button></div>`;
+    el.innerHTML = `<div class="sec-h"><h3>الربط المباشر بواتساب</h3>${m.ready ? '<span class="badge b-ok plain">جاهز</span>' : '<span class="badge b-warn plain">ينتظر تطبيق ميتا</span>'}</div>
+      <p class="tiny" style="margin:0">لما يجهز، صاحب المحل يربط رقمه بنفسه من رابط «اربط واتسابك» (تلقينه في «ربط الرقم» لكل منشأة) بدون Dualhook. تسوين التطبيق من <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener">developers.facebook.com/apps</a>، وتلصقين هنا معرّفه وسرّه، ومعرّف إعداد «WhatsApp Embedded Signup» من Facebook Login for Business.</p>
+      <form class="stack s" id="mtForm" autocomplete="off">
+        <div class="g2"><label class="f"><span>App ID</span><input name="app_id" dir="ltr" inputmode="numeric" value="${esc(m.app_id)}"></label><label class="f"><span>Configuration ID</span><input name="config_id" dir="ltr" inputmode="numeric" value="${esc(m.config_id)}"></label></div>
+        <div class="g2"><label class="f"><span>App Secret</span><input name="app_secret" type="password" dir="ltr" autocomplete="new-password" placeholder="${m.has_secret ? 'محفوظ ' + esc(m.secret_mask) + ' · اتركيه فاضي لو ما تبين تغيّرينه' : ''}"></label>
+          <label class="f"><span>نوع الربط</span><select name="feature_type"><option value="">تلقائي (حسب إعداد ميتا)</option><option value="whatsapp_business_app_onboarding" ${m.feature_type ? 'selected' : ''}>رقم عليه تطبيق واتساب للأعمال</option></select></label></div>
+        <div class="row"><button class="btn sm" type="submit">${icon('check')}حفظ</button>${m.app_id ? '<button class="btn sm ghost bad" type="button" id="mtClear">احذف</button>' : ''}</div>
+      </form>
+      <details><summary class="small">اللي تحطينه في إعدادات التطبيق عند ميتا</summary><div class="stack s" style="margin-top:8px">
+        ${cp('Webhook · Callback URL', m.webhook_url)}${cp('Webhook · Verify token', m.verify_token)}${cp('Webhook fields (اشتركي فيها كلها)', m.fields.join(', '))}
+        ${cp('App domains · Allowed domains · Valid OAuth redirect URIs', m.domain)}${cp('Privacy policy URL', m.privacy_url)}${cp('Data deletion instructions URL', m.deletion_url)}
+        <span class="tiny">أيقونة التطبيق (1024×1024)</span><a class="btn sm ghost" href="${esc(m.icon_url)}" target="_blank" rel="noopener" download>${icon('file')}نزّلي الأيقونة</a>
+      </div></details>`;
+    el.querySelectorAll('[data-cp]').forEach((x) => x.onclick = () => I.copy(x.dataset.cp));
+    $('mtForm').onsubmit = async (e) => {
+      e.preventDefault(); const fd = new FormData(e.target), btn = e.target.querySelector('button[type=submit]');
+      const app_id = String(fd.get('app_id') || '').trim();
+      if (!/^\d{8,20}$/.test(app_id)) return I.toast('App ID أرقام بس', true);
+      btn.disabled = true;
+      try { S.meta = await I.api('admin/meta-app', { app_id, config_id: String(fd.get('config_id') || '').trim(), app_secret: String(fd.get('app_secret') || '').trim(), feature_type: fd.get('feature_type') }); I.toast(S.meta.ready ? 'انحفظ ✓ الربط المباشر جاهز' : 'انحفظ ✓'); paintMeta(); }
+      catch (x) { I.toast({ app_id: 'App ID أرقام بس', config_id: 'Configuration ID أرقام بس', app_secret: 'App Secret لازم 32 حرف ورقم', app_rejected: 'ميتا رفضت المعرّف أو السر، تأكدي إنك نسختيهم كامل' }[x.code] || 'ما انحفظ، جرّبي مرة ثانية', true); btn.disabled = false; }
+    };
+    const c = $('mtClear'); if (c) c.onclick = async () => { if (!confirm('حذف إعدادات تطبيق ميتا؟ زر «اربط واتسابك» يوقف لين تحطينها من جديد، والأرقام المربوطة تكمل شغلها')) return; try { S.meta = await I.api('admin/meta-app', { clear: true }); I.toast('انحذفت'); paintMeta(); } catch (x) { I.fail(x); } };
+  }
+  // طلبات حذف البيانات أو أسئلة الخصوصية من privacy.html
+  function paintDreq() {
+    const el = $('dreqCard'); if (!el) return;
+    const open = S.dreq.filter((r) => r.status === 'new');
+    el.hidden = !open.length; if (!open.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="sec-h"><h3>طلبات الخصوصية</h3><span class="badge b-gold plain">${open.length}</span></div>
+      <p class="tiny" style="margin:0">من صفحة الخصوصية. تأكدي من صاحب الطلب على نفس الجوال، وقوليلي أحذف بياناته من القاعدة (الفواتير تبقى)، خلال 30 يوم من الطلب.</p>
+      ${open.map((r) => `<div class="card flat stack s"><div class="row"><b class="grow">${r.kind === 'delete' ? 'حذف بيانات' : 'سؤال'} · ${esc(r.name)}</b><span class="tiny">${esc(I.ago(r.created_at))}</span></div>
+        <div class="row small"><span class="ltr">${esc(r.phone)}</span>${r.business ? '<span>· ' + esc(r.business) + '</span>' : ''}</div>${r.note ? `<div class="small">${esc(r.note)}</div>` : ''}
+        <div class="row"><a class="btn sm ghost" href="https://wa.me/${esc(intlPhone(r.phone))}" target="_blank" rel="noopener">${icon('wa')}واتساب</a><button class="btn sm" type="button" data-dr="${r.id}">${icon('check')}تم</button></div></div>`).join('')}`;
+    el.querySelectorAll('[data-dr]').forEach((x) => x.onclick = async () => { x.disabled = true; try { const done_at = new Date().toISOString(); await q1(sb.from('data_requests').update({ status: 'done', done_at }).eq('id', x.dataset.dr).select('id')); const r = S.dreq.find((y) => y.id === x.dataset.dr); if (r) Object.assign(r, { status: 'done', done_at }); paintDreq(); } catch (e) { I.fail(e); x.disabled = false; } });
   }
   // القراءة الذكية (صورة قائمة الأسعار أو الموقع ← الخدمات والأسعار): مفعّلة؟ وكم استهلكت هالشهر؟ وطريقة تفعيلها
   async function paintAi() {
@@ -308,7 +355,8 @@
       test: { url: sim, msg: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه كأنك عميل، وقل لي لو تبي تغيّر أي رد أو سعر:\n${sim}` },
       live: b.wa_number ? { url: 'https://wa.me/' + intlPhone(b.wa_number), msg: `ربطنا رقمكم ✅ جرّب الحين من جوال ثاني: أرسل «السلام عليكم» لرقمكم واحجز موعد تجريبي، وقل لي إذا وصلك الطلب.` } : null,
 
-      connect: { url: PUBLIC + 'help.html#connect', msg: `باقي نربط رقمكم، وهذي أسهل خطوة: أتصل عليك 15 دقيقة، أنت بس تفتح حسابك في فيسبوك، وتأكّد رقم الواتساب من جوالك، وتضيفني مسؤول في حساب أعمالك عشان أكمّل التوثيق عنك. والباقي كله أسويه أنا.\nمتى يناسبك؟` },
+      connect: S.meta && S.meta.ready ? { url: PUBLIC + 'connect.html?k=' + b.client_key, msg: `باقي نربط رقمكم، وهي دقيقتين: افتح الرابط واضغط «اربط واتسابك»، وادخل بحسابك في فيسبوك، واختر رقم الواتساب وأكّد من جوالك. رقمك يبقى على تطبيق واتساب للأعمال عادي.\n${PUBLIC}connect.html?k=${b.client_key}` }
+        : { url: PUBLIC + 'help.html#connect', msg: `باقي نربط رقمكم، وهذي أسهل خطوة: أتصل عليك 15 دقيقة، أنت بس تفتح حسابك في فيسبوك، وتأكّد رقم الواتساب من جوالك، وتضيفني مسؤول في حساب أعمالك عشان أكمّل التوثيق عنك. والباقي كله أسويه أنا.\nمتى يناسبك؟` },
       meta: { url: PUBLIC + 'help.html#meta', msg: `أرفع لكم طلب توثيق النشاط عند ميتا وأتابعه لين يعتمد. أحتاج منك بس صورة السجل التجاري، والاسم القانوني مثل ما هو في السجل 🙏` },
       payment: b.plan === 'bot_pay' ? { url: PUBLIC + 'help.html#moyasar', msg: `عشان الدفع الإلكتروني، أفتح لكم حساب في بوابة الدفع (ميسر) باسم المنشأة وأتابع تفعيله وأربطه. أحتاج منك: السجل التجاري، هوية المالك، وآيبان باسم المنشأة.` } : null,
       handover: owner ? { url: owner, msg: `كل شي جاهز 🎉 هذي لوحتكم، افتحوها مرة وحدة من الجوال والكمبيوتر:\n${owner}\nومن «الموظفون» ترسلون لكل موظف رابطه. الشرح: ${PUBLIC}help.html#dashboard\n\nوالدفعة الثانية: ${money(setup - half)} ريال، والاشتراك الشهري يبدأ من اليوم.${pay}` } : null,
@@ -411,11 +459,19 @@
   async function dConnect(el, b) {
     const ch = S.ch[b.id] || {};
     let info = {}; try { info = await I.api('admin/channel/info', { business_id: b.id }); } catch (e) { /* */ }
-    el.innerHTML = `<div class="stack">
+    if (!S.meta) await loadMeta();
+    const esUrl = PUBLIC + 'connect.html?k=' + b.client_key, phone = intlPhone(b.owner_phone || b.wa_number);
+    const esMsg = `باقي نربط رقمكم، وهي دقيقتين: افتح الرابط واضغط «اربط واتسابك»، وادخل بحسابك في فيسبوك، واختر رقم الواتساب وأكّد من جوالك. رقمك يبقى على تطبيق واتساب للأعمال عادي.\n${esUrl}`;
+    const esBox = S.meta && S.meta.ready ? `<div class="card flat stack s"><h3>الربط المباشر (بدون Dualhook)</h3>
+        ${ch.onboarded_via === 'es' ? `<div class="row small">${'<span class="badge b-ok plain">انربط من الرابط</span>'}${ch.coex ? '<span class="badge plain">على تطبيق واتساب للأعمال</span>' : ''}${ch.connected_at ? '<span class="tiny">' + esc(I.ago(ch.connected_at)) + '</span>' : ''}</div>` : '<p class="tiny" style="margin:0">أرسلي له الرابط، ويربط رقمه بنفسه. ينربط بوضع الفحص، وتطفينه من تحت لما تجربون.</p>'}
+        <div class="copybox"><code class="ltr">${esc(esUrl)}</code><button class="btn sm ghost" type="button" data-cp="${esc(esUrl)}">${icon('copy')}نسخ</button></div>
+        ${phone ? `<a class="btn sm ghost" target="_blank" rel="noopener" href="https://wa.me/${phone}?text=${encodeURIComponent(esMsg)}">${icon('wa')}أرسليه له</a>` : ''}</div>` : '';
+    el.innerHTML = `<div class="stack">${esBox}
       <div class="card flat row"><span class="dot ${ch.status === 'connected' ? 'ok' : ch.status === 'error' ? 'bad' : ''}"></span><b class="grow">${ch.status === 'connected' ? 'الرقم مربوط' : ch.status === 'error' ? 'فيه خطأ بالربط' : 'الرقم غير مربوط'}</b>${ch.display_phone ? `<span class="ltr tiny">${esc(ch.display_phone)}</span>` : ''}${ch.verified_name ? `<span class="tiny">${esc(ch.verified_name)}</span>` : ''}</div>
       ${ch.last_error ? `<div class="hint" style="color:var(--bad)">${esc(ch.last_error)}</div>` : ''}
+      ${ch.register_error ? `<div class="card flat row small"><span class="grow" style="color:var(--bad)">تسجيل الرقم عند ميتا ما كمل: ${esc(ch.register_error)}</span><button class="btn sm" type="button" id="cReg">${icon('refresh')}سجّله مرة ثانية</button></div>` : ''}
       ${(() => { const st = S.stats[b.id] || {}; return `<div class="card flat row small"><span class="grow">${st.last_real_in ? 'آخر رسالة حقيقية وصلت ' + esc(I.ago(st.last_real_in)) + '، يعني الويبهوك شغّال' : 'ما وصلت رسالة حقيقية بعد. بعد الربط أرسلي «السلام عليكم» للرقم من جوالك: لو ردّ البوت، الربط كامل'}</span>${st.failed_week ? `<span class="badge b-bad plain">${st.failed_week} رسالة فشلت هالأسبوع</span>` : ''}${ch.dry_run ? '<span class="badge b-gold plain">وضع الفحص شغّال: ما ينرسل شي للعملاء</span>' : ''}</div>`; })()}
-      <div class="card flat stack s"><h3>1. بيانات المزوّد</h3>
+      <div class="card flat stack s"><h3>${esBox ? 'أو يدويًا: ' : ''}1. بيانات المزوّد</h3>
         <label class="f"><span>مزوّد الربط</span><select id="cProv"><option value="none">بدون (المحاكي فقط)</option><option value="dualhook" ${ch.provider === 'dualhook' ? 'selected' : ''}>Dualhook</option><option value="d360" ${ch.provider === 'd360' ? 'selected' : ''}>360dialog</option><option value="meta" ${ch.provider === 'meta' ? 'selected' : ''}>ميتا مباشرة (Cloud API)</option></select></label>
         <div class="g2"><label class="f"><span>معرّف الرقم Phone Number ID</span><input id="cPid" dir="ltr" value="${esc(ch.phone_number_id || '')}"></label><label class="f"><span>معرّف الحساب WABA ID</span><input id="cWaba" dir="ltr" value="${esc(ch.waba_id || '')}"></label></div>
         <label class="f"><span>مفتاح الإرسال (Token / API key)</span><input id="cTok" dir="ltr" type="password" autocomplete="off" placeholder="${info.has_token ? 'محفوظ ' + esc(info.token_mask || '') + ' · اتركه فاضي لو ما تبي تغيّره' : ''}"></label>
@@ -438,6 +494,7 @@
       } catch (x) { I.fail(x); e.target.disabled = false; }
     };
     $('cSave').onclick = (e) => save(e, false); $('cTest').onclick = (e) => save(e, true);
+    const rg = $('cReg'); if (rg) rg.onclick = async () => { rg.disabled = true; try { const r = await I.api('admin/channel/register', { business_id: b.id }); S.ch[b.id] = { ...(S.ch[b.id] || {}), register_error: r.register_error }; I.toast(r.ok ? 'انسجّل الرقم ✓' : 'ما زال يرفض، شوفي الخطأ', !r.ok); dConnect(el, b); } catch (x) { I.fail(x); rg.disabled = false; } };
   }
 
   function dTemplates(el, b) {
@@ -988,9 +1045,21 @@
     I.alertNew('دفعة بالبطاقة وصلت 💳', `${b ? b.name : ''} · ${money(n.amount)} ريال`);
     try { const r = await q1(sb.from('subscriptions').select('*').eq('business_id', n.business_id)); if (r[0]) S.subs[n.business_id] = r[0]; } catch (e) { /* */ }
     if (S.tab === 'subs' || S.tab === 'home') render();
+  }).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'channels' }, (p) => {
+    const n = p.new; if (!n || !n.business_id) return;
+    const old = S.ch[n.business_id] || {};
+    S.ch[n.business_id] = { ...old, ...n };
+    const b = S.biz.find((x) => x.id === n.business_id);
+    if (b && n.onboarded_via === 'es' && n.connected_at && n.connected_at !== old.connected_at) I.alertNew('انربط رقم واتساب ✅', `${b.name}${n.display_phone ? ' · ' + n.display_phone : ''}`);
+    else if (b && n.status === 'error' && old.status === 'connected') I.alertNew('انفصل ربط واتساب ⚠️', b.name);
+  }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'data_requests' }, (p) => {
+    const n = p.new; if (!n || S.dreq.some((x) => x.id === n.id)) return;
+    S.dreq.unshift(n); I.alertNew(n.kind === 'delete' ? 'طلب حذف بيانات' : 'سؤال عن الخصوصية', n.name || '');
+    if (S.tab === 'home') paintDreq();
   }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => { refreshStats(); })
     .subscribe((st) => { const el = $('live'); if (el) el.classList.toggle('on', st === 'SUBSCRIBED'); });
 
+  loadMeta();
   shell();
   const h0 = location.hash.slice(1).split('/');
   if (h0[0] === 'onboard' && h0[1]) S.obBiz = h0[1];

@@ -131,6 +131,11 @@ async function postMessage(channel: any, secrets: any, payload: any): Promise<{ 
   const r = await providerFetch(channel, secrets, messagesPath(channel), { method: "POST", body: JSON.stringify(payload) });
   if (!r.ok) {
     const e = r.json?.error || r.json?.errors?.[0] || {};
+    if (Number(e.code) === 190 && channel.business_id) {
+      secretsCache.delete(channel.business_id);
+      const { data: cur } = await db().from("business_secrets").select("wa_token").eq("business_id", channel.business_id).maybeSingle();
+      if (cur?.wa_token && cur.wa_token === secrets.wa_token) await db().from("channels").update({ status: "error", last_error: "190 المفتاح بطل، يحتاج يربط من جديد" }).eq("business_id", channel.business_id);
+    }
     return { ok: false, error: `${r.status} ${e.code ?? ""} ${e.message ?? e.title ?? ""}`.trim().slice(0, 300) };
   }
   return { ok: true, id: r.json?.messages?.[0]?.id };

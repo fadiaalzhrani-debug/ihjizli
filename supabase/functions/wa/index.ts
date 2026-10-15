@@ -5,9 +5,8 @@
 import { background, clip, clipLines, CORS, db, errMsg, hmacHex, ipOf, json, limiter, readJson, routeParts, sameSecret } from "../_shared/util.ts";
 import { handleMessage, type Inbound, loadCtx } from "../_shared/bot.ts";
 import { loadSecrets, markRead } from "../_shared/wa.ts";
-
-const SHARED_APP_SECRET = Deno.env.get("WA_APP_SECRET") || "";
-const SHARED_VERIFY = Deno.env.get("WA_VERIFY_TOKEN") || "";
+import { metaApp } from "../_shared/metaes.ts";
+import { channelTest, templatesSync } from "../_shared/channel.ts";
 const simLimit = limiter(240, 600_000);
 const badHook = limiter(30, 3600_000);
 
@@ -88,10 +87,53 @@ async function processEcho(businessId: string, e: any) {
   if (!c.bot_paused) await db().from("customers").update({ bot_paused: true, paused_at: new Date().toISOString(), paused_reason: "owner_replied", state: "idle", state_data: {} }).eq("id", c.id);
 }
 
+// أحداث على مستوى حساب واتساب (بدون رقم): المنشأة من الحساب نفسه (entry.id)
+const ACCOUNT_FIELDS = ["account_update", "message_template_status_update", "history", "smb_app_state_sync", "phone_number_quality_update"];
+async function businessByWaba(waba: string) {
+  if (!/^\d{5,25}$/.test(waba)) return null;
+  const { data } = await db().from("channels").select("business_id").eq("waba_id", waba).limit(2);
+  return data && data.length === 1 ? data[0].business_id : null;
+}
+async function processAccount(fixedBusiness: string | null, entry: any, ch: any) {
+  const v = ch?.value || {};
+  const waba = String(v?.waba_info?.waba_id || entry?.id || "");
+  const biz = fixedBusiness || await businessByWaba(waba);
+  if (!biz) return;
+  if (ch.field === "account_update") {
+    const ev = String(v.event || "");
+    // حظر الحساب: بحالته (إيقاف فعلي، أو إنذار قبل الإيقاف، أو رجوع)
+    const raw = v?.ban_info?.waba_ban_state;
+    const ban: string[] = (Array.isArray(raw) ? raw : raw ? [raw] : []).map(String);
+    // فصل الربط من جهة المحل أو ميتا (شال تطبيقنا، أو الجوال ما انفتح قرابة 14 يوم في الربط مع التطبيق)
+    if (["PARTNER_REMOVED", "PARTNER_APP_UNINSTALLED", "ACCOUNT_OFFBOARDED", "ACCOUNT_DELETED"].includes(ev) || (ev === "DISABLED_UPDATE" && ban.includes("DISABLE"))) {
+      await db().from("channels").update({ status: "error", last_error: "ميتا: " + ev }).eq("business_id", biz);
+    } else if (ev === "DISABLED_UPDATE" && ban.includes("SCHEDULE_FOR_DISABLE")) {
+      await db().from("channels").update({ last_error: "ميتا: إنذار بإيقاف الحساب" }).eq("business_id", biz);
+    } else if (["ACCOUNT_RECONNECTED", "PARTNER_ADDED", "PARTNER_APP_INSTALLED"].includes(ev) || (ev === "DISABLED_UPDATE" && ban.includes("REINSTATE"))) {
+      await channelTest(biz);
+    }
+  } else if (ch.field === "message_template_status_update") {
+    const name = String(v.message_template_name || ""), lang = String(v.message_template_language || "");
+    if (!name.startsWith("ihj_") || !lang) return;
+    // الحدث مو دايم حالة (FLAGGED، REINSTATED...): نقرا الحالة الحقيقية من ميتا، ولو ما قدرنا نحدّث الحالات المعروفة بس
+    try { await templatesSync(biz); return; } catch { /* */ }
+    const KNOWN: Record<string, string> = { APPROVED: "APPROVED", REJECTED: "REJECTED", PENDING: "PENDING", DISABLED: "DISABLED", PAUSED: "PAUSED", IN_APPEAL: "IN_APPEAL", PENDING_DELETION: "PENDING_DELETION", DELETED: "DELETED", REINSTATED: "APPROVED" };
+    const st = KNOWN[String(v.event || "").toUpperCase()];
+    if (!st) return;
+    const { data: row } = await db().from("channels").select("templates").eq("business_id", biz).maybeSingle();
+    const list = Array.isArray(row?.templates) ? row!.templates : [];
+    const i = list.findIndex((t: any) => t.name === name && t.language === lang);
+    if (i >= 0) list[i] = { ...list[i], status: st }; else list.push({ name, language: lang, status: st, category: "UTILITY" });
+    await db().from("channels").update({ templates: list, templates_checked_at: new Date().toISOString() }).eq("business_id", biz);
+  }
+  // history و smb_app_state_sync و phone_number_quality_update: نستلمها بدون ما نخزن شي
+}
+
 async function processPayload(fixedBusiness: string | null, body: any) {
   for (const entry of body?.entry || []) {
     for (const ch of entry?.changes || []) {
       const v = ch?.value || {};
+      if (ACCOUNT_FIELDS.includes(ch?.field)) { await processAccount(fixedBusiness, entry, ch).catch((e) => console.error("account", errMsg(e))); continue; }
       const phoneId = String(v?.metadata?.phone_number_id || "");
       let biz = fixedBusiness;
       if (!biz && phoneId) biz = await businessByPhoneId(phoneId);
@@ -119,15 +161,16 @@ async function hook(req: Request, key: string): Promise<Response> {
     sec = await businessByHookKey(key);
     if (!sec) { badHook(ip); return json({ ok: false }, 404); }
   }
+  const shared = sec ? null : await metaApp();
   if (req.method === "GET") {
     const mode = url.searchParams.get("hub.mode"), tok = url.searchParams.get("hub.verify_token") || "", chal = url.searchParams.get("hub.challenge") || "";
-    const want = sec ? sec.wa_verify_token : SHARED_VERIFY;
+    const want = sec ? sec.wa_verify_token : shared!.verify;
     if (mode === "subscribe" && sameSecret(tok, want)) return new Response(chal, { status: 200, headers: { "content-type": "text/plain" } });
     return new Response("forbidden", { status: 403 });
   }
   if (req.method !== "POST") return json({ ok: false }, 405);
   const raw = new Uint8Array(await req.arrayBuffer());
-  const appSecret = sec ? sec.wa_app_secret : SHARED_APP_SECRET;
+  const appSecret = sec ? sec.wa_app_secret : shared!.hookSecret;
   if (appSecret) {
     const sig = (req.headers.get("x-hub-signature-256") || "").replace(/^sha256=/, "");
     const want = await hmacHex(appSecret, raw);

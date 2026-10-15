@@ -13,6 +13,7 @@ import { exportTest, orderEvent } from "../_shared/events.ts";
 import { dayLabel, local, timeLabel } from "../_shared/dates.ts";
 import { mask, moyasarCheckKey } from "../_shared/pay.ts";
 import { cardReadyFor, createSubInvoice, platformKey, subDue, subGoLink } from "../_shared/subpay.ts";
+import { dropMetaCache, esConnect, FEATURE_TYPES, metaApp, metaAppInfo, metaCheckApp, registerPhone } from "../_shared/metaes.ts";
 import { locationFromText } from "../_shared/maps.ts";
 import { channelTest, templatesSync } from "../_shared/channel.ts";
 import { AI_MODEL, aiReady, costUsd, extractMaterial } from "../_shared/extract.ts";
@@ -259,6 +260,32 @@ async function adminAction(r: Roles, action: string, body: any) {
       await db().from("sub_invoices").update({ status: "void" }).eq("status", "issued").neq("test", test);
       return { moyasar: mask(sk), test_mode: test };
     }
+    // تطبيق ميتا حق المناوب (الربط المباشر): تلصق فادية المعرّف والسر ومعرّف الإعداد، والسر ما يرجع إلا مخفي
+    case "meta-app": {
+      if (body.clear) {
+        await db().from("ihj_secrets").delete().eq("key", "meta_app_secret");
+        await db().from("ihj_config").delete().eq("key", "meta_es");
+        dropMetaCache();
+        return await metaAppInfo();
+      }
+      if (body.app_id !== undefined) {
+        const app_id = String(body.app_id || "").trim(), config_id = String(body.config_id || "").trim(), secret = String(body.app_secret || "").trim();
+        need(/^\d{8,20}$/.test(app_id), "app_id", 400);
+        need(!config_id || /^\d{8,20}$/.test(config_id), "config_id", 400);
+        need(!secret || /^[0-9a-f]{32}$/i.test(secret), "app_secret", 400);
+        const cur = await metaApp(true);
+        const sec = secret || (cur.app_id === app_id ? cur.secret : "");
+        if (sec) need(await metaCheckApp(app_id, sec), "app_rejected", 400);
+        const now = new Date().toISOString();
+        const feature_type = FEATURE_TYPES.includes(body.feature_type) ? body.feature_type : "";
+        const { error } = await db().from("ihj_config").upsert({ key: "meta_es", value: { app_id, config_id, feature_type }, updated_at: now });
+        if (error) throw new Error(error.message);
+        if (secret) await db().from("ihj_secrets").upsert({ key: "meta_app_secret", value: secret, updated_at: now });
+        else if (!sec) await db().from("ihj_secrets").delete().eq("key", "meta_app_secret");
+        dropMetaCache();
+      }
+      return await metaAppInfo();
+    }
     // رابط دفع اشتراك لمنشأة (شهري، تأسيس، ...) ترسله فادية بالواتساب
     case "sub-pay-link": {
       const bizId = uuid(body.business_id, "business_id");
@@ -316,6 +343,7 @@ async function adminAction(r: Roles, action: string, body: any) {
       return { channel: await channelTest(bizId) };
     }
     case "channel/test": return { channel: await channelTest(uuid(body.business_id, "business_id")) };
+    case "channel/register": return await registerPhone(uuid(body.business_id, "business_id"));
     case "channel/info": {
       const bizId = uuid(body.business_id, "business_id");
       const { data: sec } = await db().from("business_secrets").select("wa_hook_key, wa_verify_token, wa_token, wa_app_secret").eq("business_id", bizId).single();
@@ -495,6 +523,23 @@ async function clientAction(req: Request, action: string) {
   // كود الخصم: يرجع سعره لو صالح (بدون كشف باقي الأكواد)
   if (action === "promo") { const { data } = await db().rpc("ihj_promo_check", { p_code: clip(body.code, 30) }); return { promo: data || { ok: false } }; }
   if (action === "ai") return { ready: aiReady() };
+  if (action === "data-request") {
+    if (clip(body.website, 50)) return { ok: true };
+    const name = clip(body.name, 60), phone = saudi(body.phone) || intl(body.phone), note = clipLines(body.note, 600);
+    need(name.length >= 2, "name", 400);
+    need(phone, "phone", 400);
+    const kind = body.kind === "question" ? "question" : "delete", day = new Date(Date.now() - 86400_000).toISOString();
+    const [{ count: byIp }, { count: all }, { count: same }] = await Promise.all([
+      db().from("data_requests").select("id", { count: "exact", head: true }).eq("ip", ip).gte("created_at", day),
+      db().from("data_requests").select("id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 3600_000).toISOString()),
+      db().from("data_requests").select("id", { count: "exact", head: true }).eq("phone", phone).eq("kind", kind).eq("status", "new").gte("created_at", day),
+    ]);
+    if (same) return { ok: true };
+    need((byIp || 0) < 5 && (all || 0) < 30, "busy", 429);
+    const { error } = await db().from("data_requests").insert({ kind, name, phone, business: clip(body.business, 80), note, ip });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  }
   if (action === "extract") {
     if (clip(body.website, 50)) return { data: null };
     if (body.k) need(await bizByClientKey(body.k), "invalid_link", 404);
@@ -609,6 +654,16 @@ async function clientAction(req: Request, action: string) {
     if (d.already) return { already: true };
     const row = await createSubInvoice({ business_id: b.id, kind: d.kind, amount: d.due, name: b.name });
     return { url: subGoLink(row.token), amount: row.amount, kind: d.kind };
+  }
+  if (action === "wa-es") {
+    const app = await metaApp();
+    const { data: ch } = await db().from("channels").select("provider, status, display_phone, verified_name, onboarded_via, coex").eq("business_id", b.id).maybeSingle();
+    return { ready: app.ready, app_id: app.ready ? app.app_id : "", config_id: app.ready ? app.config_id : "", feature_type: app.feature_type, graph: app.graph,
+      business: { name: b.name, logo_url: b.logo_url }, channel: ch ? { connected: ch.status === "connected" && ch.provider !== "none", display_phone: ch.display_phone, verified_name: ch.verified_name, via: ch.onboarded_via, coex: ch.coex } : null };
+  }
+  if (action === "wa-connect") {
+    const r = await esConnect(b, { code: String(body.code || ""), waba_id: clip(body.waba_id, 30), phone_number_id: clip(body.phone_number_id, 30), business_id: clip(body.business_id, 30), event: clip(body.event, 60) });
+    return { connected: r.status === "connected", display_phone: r.display_phone, verified_name: r.verified_name, coex: r.coex };
   }
   if (action === "paid") {
     const { data: docs } = await db().from("client_docs").select("agreed_at, paid_claim_at").eq("business_id", b.id).maybeSingle();

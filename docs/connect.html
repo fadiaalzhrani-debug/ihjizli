@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F6FAF8">
+<title>المناوب · اربط واتسابك</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23008C62'/%3E%3Cpath d='M11.2 24.4A9 9 0 1 0 7.6 20.8L6 26z' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='m12.5 16 2.5 2.5 5-5' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* صاحب المحل يربط رقم واتساب نشاطه بالمناوب بنفسه (نافذة ميتا الرسمية) */
+:root{--bg:#F6FAF8;--ink:#102F27;--muted:#5E766D;--green:#008C62;--green2:#05AA71;--line:#CFE4D9;--soft:#E9F7EF;--bad:#B42318;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;line-height:1.8;display:grid;place-items:center;padding:24px 16px}
+main{width:min(460px,100%);display:grid;gap:14px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);text-decoration:none;justify-self:center}
+.brand svg{width:30px;height:30px}
+.box{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px 22px;box-shadow:0 18px 44px -26px rgba(10,108,66,.35);display:grid;gap:14px}
+h1{margin:0;font-size:24px;line-height:1.4;text-align:center}
+.biz{text-align:center;color:var(--muted);margin:-6px 0 0;font-size:15px}
+.biz b{color:var(--ink)}
+ol{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
+ol li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;font-size:15.5px;counter-increment:s}
+ol li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--soft);color:var(--green);display:grid;place-items:center;font-weight:700;font-size:14px;margin-top:1px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;padding:0 22px;border-radius:16px;border:0;background:var(--green);color:#fff;font:inherit;font-weight:700;font-size:17px;cursor:pointer;text-decoration:none;width:100%}
+.btn:hover{background:#007753}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:#fff;color:var(--green);border:1.5px solid var(--line);font-size:15px;min-height:46px}
+.btn:focus-visible{outline:3px solid var(--green2);outline-offset:3px}
+.btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ok{display:grid;gap:4px;justify-items:center;text-align:center;background:var(--soft);border-radius:18px;padding:18px}
+.ok .ic{width:56px;height:56px;border-radius:50%;background:#fff;color:var(--green);display:grid;place-items:center}
+.ok .ic svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ok b{font-size:19px}
+.num{direction:ltr;unicode-bidi:isolate;font-weight:600}
+.msg{min-height:1.4em;text-align:center;font-size:15px;color:var(--muted);margin:0}
+.msg.bad{color:var(--bad)}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .8s linear infinite}
+.load{justify-self:center;width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--green);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin,.load{animation-duration:2s}}
+.foot{text-align:center;font-size:13px;color:var(--muted)}
+.foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#008C62"/><path d="M11.2 24.4A9 9 0 1 0 7.6 20.8L6 26z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="m12.5 16 2.5 2.5 5-5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>المناوب</a>
+  <section class="box" id="box"><div class="load" role="status" aria-label="نحمّل"></div></section>
+  <p class="foot"><a href="privacy.html">الخصوصية</a></p>
+</main>
+<script>
+(function () {
+  var FN = 'https://kvreqxdgjeietzsfamei.supabase.co/functions/v1';
+  var k = new URLSearchParams(location.search).get('k') || '';
+  var box = document.getElementById('box');
+  var S = { cfg: null, session: null, busy: false };
+  var WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20.1A9 9 0 1 0 3.9 16.1L3 21z"/><path d="M9 8.6c0 3.3 3 6.4 6.4 6.4l1.2-1.6-2-1-1 .8a5 5 0 0 1-2.8-2.8l.8-1-1-2z"/></svg>';
+  var OK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>';
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  function post(path, body) {
+    body = body || {}; body.k = k;
+    return fetch(FN + '/api/client/' + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (j) { if (!j.ok) { var e = new Error(j.error || 'err'); e.code = j.error; throw e; } return j; });
+  }
+  var ERR = {
+    code_rejected: 'انتهت الجلسة قبل ما نكمل، جرّب مرة ثانية.',
+    token_invalid: 'ما قدرنا نتأكد من الربط، جرّب مرة ثانية.',
+    waba_mismatch: 'الحساب اللي اخترته ما وصلنا إذنه، جرّب مرة ثانية واختر نفس الحساب.',
+    no_waba: 'ما وصلنا حساب واتساب للأعمال، جرّب مرة ثانية وكمّل كل الخطوات.',
+    no_phone: 'ما وصلنا رقم. كمّل خطوة إضافة رقم الواتساب في النافذة.',
+    pick_phone: 'حسابك فيه أكثر من رقم، جرّب مرة ثانية واختر الرقم في النافذة.',
+    phone_mismatch: 'الرقم ما يتبع الحساب اللي اخترته، جرّب مرة ثانية.',
+    phone_id_used: 'هالرقم مربوط بنشاط ثاني عندنا. كلّم فريق المناوب.',
+    already_connected: 'نشاطك مربوط برقم من قبل. لتغييره كلّم فريق المناوب.',
+    subscribe_failed: 'ميتا ما سمحت بالربط الحين، جرّب بعد شوي.',
+    phones_fetch: 'ميتا ما ردّت، جرّب بعد شوي.',
+    no_meta: 'الربط من هنا مو متاح الحين. فريق المناوب يربطه معك.',
+    busy: 'محاولات كثيرة، جرّب بعد ساعة.'
+  };
+
+  function paint(state) {
+    var c = S.cfg || {}, ch = c.channel || null, name = (c.business && c.business.name) || '';
+    var head = '<h1>اربط واتساب نشاطك</h1>' + (name ? '<p class="biz"><b>' + esc(name) + '</b></p>' : '');
+    if (state === 'bad') { box.innerHTML = '<h1>الرابط غير صالح</h1><p class="msg">اطلب الرابط من فريق المناوب.</p>'; return; }
+    if (state === 'done' || (ch && ch.connected && state !== 'again')) {
+      var d = state === 'done' ? S.done : ch;
+      box.innerHTML = head + '<div class="ok"><span class="ic">' + OK + '</span><b>' + (state === 'done' ? 'انربط رقمك ✅' : 'رقمك مربوط ✅') + '</b>'
+        + (d.display_phone ? '<span class="num">' + esc(d.display_phone) + '</span>' : '')
+        + '<span>' + (d.coex ? 'تطبيق واتساب للأعمال يبقى على جوالك عادي.' : 'نجرّبه معك قبل ما يبدأ يرد على عملائك.') + '</span></div>'
+        + (state === 'done' ? '' : '<button class="btn ghost" id="again" type="button">اربط رقم ثاني</button>');
+      var a = document.getElementById('again'); if (a) a.onclick = function () { paint('again'); };
+      return;
+    }
+    if (!c.ready) { box.innerHTML = head + '<p class="msg">الربط من هنا مو متاح الحين. فريق المناوب يربطه معك.</p>'; return; }
+    box.innerHTML = head
+      + '<ol><li>اضغط الزر وادخل بحساب فيسبوك حقك.</li><li>اختر رقم واتساب نشاطك. لو عليه تطبيق واتساب للأعمال، يبقى شغّال على جوالك.</li><li>أكّد من جوالك بالرمز أو الكود اللي يطلع لك.</li></ol>'
+      + '<button class="btn" id="go" type="button" disabled>' + WA + 'اربط واتسابك</button><p class="msg" id="msg" role="status"></p>';
+    document.getElementById('go').onclick = start;
+    loadSdk();
+  }
+  function say(t, bad) { var m = document.getElementById('msg'); if (m) { m.textContent = t || ''; m.className = 'msg' + (bad ? ' bad' : ''); } }
+  function busy(on) {
+    S.busy = on; var g = document.getElementById('go'); if (!g) return;
+    g.disabled = on || !window.FB; g.innerHTML = on ? '<span class="spin" aria-hidden="true"></span>نربط رقمك…' : WA + 'اربط واتسابك';
+  }
+
+  // نافذة ميتا الرسمية (Embedded Signup)
+  function loadSdk() {
+    if (window.FB) { busy(false); return; }
+    window.fbAsyncInit = function () {
+      window.FB.init({ appId: S.cfg.app_id, autoLogAppEvents: true, xfbml: false, version: S.cfg.graph || 'v25.0' });
+      busy(false);
+    };
+    if (document.getElementById('fbsdk')) return;
+    var s = document.createElement('script');
+    s.id = 'fbsdk'; s.async = true; s.defer = true; s.crossOrigin = 'anonymous'; s.src = 'https://connect.facebook.net/en_US/sdk.js';
+    s.onerror = function () { say('ما قدرنا نفتح نافذة الربط. تأكد من النت أو جرّب متصفح ثاني.', true); };
+    document.head.appendChild(s);
+  }
+  window.addEventListener('message', function (e) {
+    var host = ''; try { host = new URL(e.origin).hostname; } catch (x) { return; }
+    if (!/(^|\.)facebook\.com$/.test(host)) return;
+    var d = e.data; if (typeof d === 'string') { try { d = JSON.parse(d); } catch (x) { return; } }
+    if (!d || d.type !== 'WA_EMBEDDED_SIGNUP') return;
+    var info = d.data || {};
+    S.session = { event: String(d.event || ''), waba_id: info.waba_id || '', phone_number_id: info.phone_number_id || '', business_id: info.business_id || '' };
+  });
+  function start() {
+    if (S.busy || !window.FB) return;
+    S.session = null; say(''); busy(true);
+    var extras = { setup: {}, sessionInfoVersion: '3' };
+    if (S.cfg.feature_type) extras.featureType = S.cfg.feature_type;
+    window.FB.login(function (res) {
+      var code = res && res.authResponse && res.authResponse.code;
+      if (!code) { busy(false); say(S.session && S.session.event === 'ERROR' ? 'صار خطأ في نافذة ميتا، جرّب مرة ثانية.' : 'ما كمّلت الربط. تقدر تحاول مرة ثانية متى ما تبي.'); return; }
+      // الرمز يعيش 30 ثانية: ننتظر بيانات النافذة شوي بس
+      var t0 = Date.now();
+      (function wait() {
+        if (!S.session && Date.now() - t0 < 1500) return setTimeout(wait, 150);
+        var si = S.session || {};
+        post('wa-connect', { code: code, event: si.event || '', waba_id: si.waba_id || '', phone_number_id: si.phone_number_id || '', business_id: si.business_id || '' })
+          .then(function (r) { S.done = r; busy(false); paint('done'); })
+          .catch(function (x) { busy(false); say(ERR[x.code] || 'ما كمل الربط، جرّب مرة ثانية.', true); });
+      })();
+    }, { config_id: S.cfg.config_id, response_type: 'code', override_default_response_type: true, extras: extras });
+  }
+
+  if (!/^[0-9a-f]{24}$/.test(k)) { paint('bad'); return; }
+  post('wa-es', {}).then(function (j) { S.cfg = j; paint(); }).catch(function (x) {
+    if (x.code === 'invalid_link') return paint('bad');
+    box.innerHTML = '<h1>ما قدرنا نفتح الصفحة</h1><p class="msg">تأكد من النت وحدّث الصفحة.</p>';
+  });
+})();
+</script>
+</body>
+</html>

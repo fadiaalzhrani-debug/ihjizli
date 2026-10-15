@@ -37,8 +37,8 @@ h1 svg.i,h2 svg.i{width:1em;height:1em}
 .muted{color:var(--muted)} .tiny{font-size:12.5px;color:var(--muted)} .small{font-size:13.5px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap} .row.nw{flex-wrap:nowrap} .sp{flex:1} .grow{flex:1;min-width:0}
 .stack{display:grid;gap:12px} .stack.s{gap:8px} .stack.l{gap:18px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px} .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px} .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-@media (max-width:640px){ .g2,.g3{grid-template-columns:1fr} .g4{grid-template-columns:1fr 1fr} }
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px} .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){ .g2,.g3{grid-template-columns:minmax(0,1fr)} .g4{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
 /* أزرار */
 /* الزر الأساسي بنفس تدرّج الرئيسية، وghost وsoft وgold وbad تبقى بشكلها بدون ظل */
@@ -53,7 +53,7 @@ h1 svg.i,h2 svg.i{width:1em;height:1em}
 .btn.bad.ghost:not(:disabled):hover{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .btn:disabled,.btn:disabled:hover{background:var(--btn-off);color:var(--btn-off-ink);border-color:transparent;box-shadow:none;opacity:1;cursor:default;filter:none;transform:none}
 .btn.ghost:disabled,.btn.ghost:disabled:hover{background:transparent;color:var(--btn-off-ink);border-color:var(--line)}
-.btn.sm{min-height:36px;padding:0 12px;font-size:13.5px;border-radius:11px} .btn.lg{min-height:54px;padding:0 20px;font-size:17px;border-radius:14px} .btn.block{width:100%}
+.btn.sm{min-height:36px;padding:0 12px;font-size:13.5px;border-radius:11px} .btn.lg{min-height:54px;padding:0 20px;font-size:17px;border-radius:14px} .btn.block{width:100%;white-space:normal;text-align:center;padding-block:8px}
 .btn svg{width:18px;height:18px;flex:none} .btn.sm svg{width:15px;height:15px}
 .ib{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;flex:none}
 .ib svg{width:19px;height:19px} .ib:hover{background:var(--soft2)} .ib.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -214,8 +214,8 @@ table.t tr:last-child td{border-bottom:0}
 .cols div:hover{background:var(--accent-2)}
 .cols-x{display:flex;gap:4px;font-size:10.5px;color:var(--muted)} .cols-x span{flex:1;text-align:center}
 
-.copybox{min-width:0;display:flex;gap:6px;align-items:center;background:var(--soft2);border:1px dashed var(--line);border-radius:10px;padding:6px 6px 6px 10px}
-.copybox code{flex:1;min-width:0;font-size:12.5px;direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Consolas,monospace}
+.copybox{min-width:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--soft2);border:1px dashed var(--line);border-radius:10px;padding:6px 6px 6px 10px}
+.copybox code{flex:1 1 120px;min-width:0;font-size:12.5px;direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Consolas,monospace}
 pre.code{background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;direction:ltr;text-align:left;overflow:auto;max-height:260px;margin:0;font-family:ui-monospace,Consolas,monospace}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--muted)} .dot.ok{background:var(--accent)} .dot.bad{background:var(--bad)} .dot.warn{background:var(--gold)}
 hr.s{border:0;border-top:1px solid var(--line);margin:4px 0}
