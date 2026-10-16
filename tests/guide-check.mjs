@@ -10,7 +10,7 @@ import { launch, sleep } from '../tools/cdp.mjs';
 const P = JSON.parse(fs.readFileSync(new URL('../.secrets/project.json', import.meta.url)));
 const FN = `${P.url}/functions/v1`;
 const BASE = 'http://localhost:5610/';
-const PUBLIC = 'https://fadiaalzhrani-debug.github.io/ihjizli/';
+const PUBLIC = 'https://almunawib.com/';
 const adminTok = fs.readFileSync(new URL('../.secrets/admin-link.txt', import.meta.url), 'utf8').trim().split('#k=')[1];
 let pass = 0, fail = 0;
 const ok = (c, name, extra = '') => { if (c) { pass++; console.log('✓ ' + name); } else { fail++; console.log('✗ ' + name + (extra ? ' · ' + extra : '')); } };

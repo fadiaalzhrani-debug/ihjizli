@@ -278,7 +278,7 @@ async function adminAction(r: Roles, action: string, body: any) {
         if (sec) need(await metaCheckApp(app_id, sec), "app_rejected", 400);
         const now = new Date().toISOString();
         const feature_type = FEATURE_TYPES.includes(body.feature_type) ? body.feature_type : "";
-        const { error } = await db().from("ihj_config").upsert({ key: "meta_es", value: { app_id, config_id, feature_type }, updated_at: now });
+        const { error } = await db().from("ihj_config").upsert({ key: "meta_es", value: { app_id, config_id, feature_type, live: body.live === true }, updated_at: now });
         if (error) throw new Error(error.message);
         if (secret) await db().from("ihj_secrets").upsert({ key: "meta_app_secret", value: secret, updated_at: now });
         else if (!sec) await db().from("ihj_secrets").delete().eq("key", "meta_app_secret");
@@ -444,8 +444,13 @@ async function cleanIntake(d: any, logoDir: string): Promise<{ out?: any; bad?: 
     has_moyasar: ["yes", "no", "later"].includes(d.has_moyasar) ? d.has_moyasar : "", notes: clipLines(d.notes, 1000),
     services: (Array.isArray(d.services) ? d.services : []).slice(0, 40).map((x: any) => {
       const price = x?.price === "" || x?.price == null || !Number.isFinite(+x.price) ? null : Math.max(0, Math.min(100000, +x.price));
-      return { name: clip(x?.name, 24), name_en: clip(x?.name_en, 24), price, price_from: price !== null && x?.price_from === true,
+      const out: any = { name: clip(x?.name, 24), name_en: clip(x?.name_en, 24), price, price_from: price !== null && x?.price_from === true,
         duration_min: x?.duration_min ? Math.max(10, Math.min(720, Math.round(+x.duration_min))) : null };
+      if (Array.isArray(x?.addons)) out.addons = x.addons.slice(0, 12).map((a: any) => ({
+        name: clip(a?.name, 30), name_en: clip(a?.name_en, 30), price: Number.isFinite(+a?.price) && a?.price !== "" && a?.price !== null ? Math.max(0, Math.min(10000, +a.price)) : 0,
+        group: /^[\w-]{0,20}$/.test(String(a?.group || "")) ? String(a?.group || "") : "",
+      })).filter((a: any) => a.name);
+      return out;
     }).filter((x: any) => x.name),
     faq: (Array.isArray(d.faq) ? d.faq : []).slice(0, 8)
       .map((x: any) => ({ chip: clip(x?.chip, 60), q: clip(x?.q, 200) || clip(x?.chip, 60).replace(/[؟?]/g, ""), a: clipLines(x?.a, 600) }))
@@ -454,9 +459,18 @@ async function cleanIntake(d: any, logoDir: string): Promise<{ out?: any; bad?: 
       .filter((h: any) => h && /^[0-6]$/.test(String(h.weekday)) && /^\d{2}:\d{2}$/.test(h.open) && /^\d{2}:\d{2}$/.test(h.close))
       .map((h: any) => ({ weekday: +h.weekday, open: h.open, close: h.close })),
     staff: (Array.isArray(d.staff) ? d.staff : []).slice(0, 30)
-      .map((x: any) => ({ name: clip(x?.name, 40), phone: saudi(x?.phone) || "", cities: Array.isArray(x?.cities) ? x.cities.slice(0, 12).map((c: any) => clip(c, 40)) : [] }))
+      .map((x: any) => ({ name: clip(x?.name, 40), phone: saudi(x?.phone) || "", lang: x?.lang === "en" ? "en" : "ar", cities: Array.isArray(x?.cities) ? x.cities.slice(0, 12).map((c: any) => clip(c, 40)) : [] }))
       .filter((x: any) => x.name),
   };
+  if (Number.isFinite(+d.capacity) && +d.capacity >= 1) out.capacity = Math.min(50, Math.round(+d.capacity));
+  if (Array.isArray(d.ask)) out.ask = d.ask.slice(0, 6).map((x: any) => ({
+    q: clip(x?.q, 120), hint: clip(x?.hint, 120), q_en: clip(x?.q_en, 120), hint_en: clip(x?.hint_en, 120),
+    svc: (Array.isArray(x?.svc) ? x.svc : []).filter((v: any) => UUID.test(String(v))).slice(0, 20),
+  })).filter((x: any) => x.q);
+  if (Array.isArray(d.packages)) out.packages = d.packages.slice(0, 20).map((x: any) => ({
+    id: UUID.test(String(x?.id || "")) ? String(x.id) : "", name: clip(x?.name, 40), uses: Math.round(+x?.uses), price: +x?.price,
+    note: clip(x?.note, 200), svc_name: clip(x?.svc_name, 24),
+  })).filter((x: any) => x.name && Number.isFinite(x.uses) && x.uses >= 1 && x.uses <= 500 && Number.isFinite(x.price) && x.price >= 0 && x.price <= 100000);
   need(out.name.length >= 2, "name", 400);
   // المدن (مراكز جاهزة) والفروع (رابط قوقل ماب يتحوّل لإحداثيات)
   const cities: any[] = [], bad: string[] = [];
@@ -612,12 +626,14 @@ async function clientAction(req: Request, action: string) {
     const [{ data: sub }, { data: docs }, { data: st }, { data: svcs }, { data: cities }, { data: hours }, { data: staff }] = await Promise.all([
       db().from("subscriptions").select("plan, setup_fee, monthly_fee, app_setup_fee, app_monthly_fee").eq("business_id", b.id).maybeSingle(),
       db().from("client_docs").select("agreed_at, agreed_name, intake, intake_at, paid_claim_at").eq("business_id", b.id).maybeSingle(),
-      db().from("settings").select("place_mode, pay_timing").eq("business_id", b.id).maybeSingle(),
-      db().from("services").select("name, name_en, price, price_from, duration_min").eq("business_id", b.id).eq("active", true).order("sort"),
+      db().from("settings").select("place_mode, pay_timing, capacity_mode, capacity_per_slot, ask, pkg_unit").eq("business_id", b.id).maybeSingle(),
+      db().from("services").select("id, name, name_en, price, price_from, duration_min, addons").eq("business_id", b.id).eq("active", true).order("sort"),
       db().from("cities").select("id, name, lat, lng, radius_km").eq("business_id", b.id).eq("active", true).order("sort"),
       db().from("hours").select("weekday, open_time, close_time").eq("business_id", b.id).is("city_id", null).order("weekday"),
-      db().from("staff").select("name, phone, city_ids").eq("business_id", b.id).eq("active", true),
+      db().from("staff").select("name, phone, city_ids, lang").eq("business_id", b.id).eq("active", true),
     ]);
+    const { data: pkgs } = await db().from("packages").select("id, name, uses, price, note, service_ids").eq("business_id", b.id).eq("active", true).order("sort");
+    const svcName = (ids: string[]) => ids && ids.length === 1 ? ((svcs || []) as any[]).find((x: any) => x.id === ids[0])?.name || "" : "";
     const cityName = (id: string) => (cities || []).find((c: any) => c.id === id)?.name;
     const due = await subDue(b.id);
     return {
@@ -628,9 +644,11 @@ async function clientAction(req: Request, action: string) {
       fees: sub || {}, agreed: docs?.agreed_at ? { at: docs.agreed_at, name: docs.agreed_name } : null, intake_at: docs?.intake_at || null, intake: docs?.intake || null,
       current: {
         place_mode: st?.place_mode, pay_timing: st?.pay_timing,
+        capacity: st?.capacity_mode === "fixed" ? st?.capacity_per_slot : null, ask: Array.isArray(st?.ask) ? st!.ask : [], unit: st?.pkg_unit || {},
+        packages: (pkgs || []).map((p: any) => ({ id: p.id, name: p.name, uses: p.uses, price: p.price, note: p.note, svc_name: svcName(p.service_ids) })),
         services: svcs || [], cities: (cities || []).map((c: any) => ({ name: c.name, lat: c.lat, lng: c.lng, radius_km: c.radius_km })),
         hours: (hours || []).map((h: any) => ({ weekday: h.weekday, open: String(h.open_time).slice(0, 5), close: String(h.close_time).slice(0, 5) })),
-        staff: (staff || []).map((x: any) => ({ name: x.name, phone: x.phone, cities: (x.city_ids || []).map(cityName).filter(Boolean) })),
+        staff: (staff || []).map((x: any) => ({ name: x.name, phone: x.phone, lang: x.lang || "ar", cities: (x.city_ids || []).map(cityName).filter(Boolean) })),
       },
     };
   }
@@ -658,7 +676,8 @@ async function clientAction(req: Request, action: string) {
   if (action === "wa-es") {
     const app = await metaApp();
     const { data: ch } = await db().from("channels").select("provider, status, display_phone, verified_name, onboarded_via, coex").eq("business_id", b.id).maybeSingle();
-    return { ready: app.ready, app_id: app.ready ? app.app_id : "", config_id: app.ready ? app.config_id : "", feature_type: app.feature_type, graph: app.graph,
+    const on = app.ready && app.live;
+    return { ready: on, app_id: on ? app.app_id : "", config_id: on ? app.config_id : "", feature_type: app.feature_type, graph: app.graph,
       business: { name: b.name, logo_url: b.logo_url }, channel: ch ? { connected: ch.status === "connected" && ch.provider !== "none", display_phone: ch.display_phone, verified_name: ch.verified_name, via: ch.onboarded_via, coex: ch.coex } : null };
   }
   if (action === "wa-connect") {

@@ -12,7 +12,8 @@ export const ES_FIELDS = ["messages", "smb_message_echoes", "account_update", "m
 export const FEATURE_TYPES = ["", "whatsapp_business_app_onboarding"];
 
 // secret: سر التطبيق اللي انلصق في لوحتي (لتبديل الرمز). hookSecret: لتوقيع الويبهوك المشترك (لوحتي، وإلا متغير البيئة القديم)
-export type MetaApp = { app_id: string; config_id: string; feature_type: string; graph: string; secret: string; hookSecret: string; verify: string; ready: boolean };
+// ready: المفاتيح كاملة. live: التطبيق منشور عند ميتا (فادية تعلّمها)، وقبلها الرابط ما يطلع للمحلات
+export type MetaApp = { app_id: string; config_id: string; feature_type: string; graph: string; secret: string; hookSecret: string; verify: string; ready: boolean; live: boolean };
 
 let cache: { at: number; v: MetaApp } | null = null;
 export async function metaApp(fresh = false): Promise<MetaApp> {
@@ -24,7 +25,7 @@ export async function metaApp(fresh = false): Promise<MetaApp> {
   const c = (cfg?.value || {}) as any, s = Object.fromEntries((secs || []).map((x: any) => [x.key, String(x.value || "")]));
   const v: MetaApp = {
     app_id: String(c.app_id || ""), config_id: String(c.config_id || ""), feature_type: FEATURE_TYPES.includes(c.feature_type) ? c.feature_type : "", graph: /^v\d{2}\.0$/.test(c.graph || "") ? c.graph : GRAPH,
-    secret: s.meta_app_secret || "", hookSecret: s.meta_app_secret || Deno.env.get("WA_APP_SECRET") || "", verify: s.meta_verify_token || Deno.env.get("WA_VERIFY_TOKEN") || "", ready: false,
+    secret: s.meta_app_secret || "", hookSecret: s.meta_app_secret || Deno.env.get("WA_APP_SECRET") || "", verify: s.meta_verify_token || Deno.env.get("WA_VERIFY_TOKEN") || "", ready: false, live: c.live === true,
   };
   v.ready = !!(v.app_id && v.config_id && v.secret);
   cache = { at: Date.now(), v };
@@ -61,7 +62,7 @@ export async function metaAppInfo() {
   const app = await metaApp(true), verify = await ensureVerifyToken();
   const mask = app.secret ? "••••" + app.secret.slice(-4) : "";
   return {
-    app_id: app.app_id, config_id: app.config_id, feature_type: app.feature_type, graph: app.graph, has_secret: !!app.secret, secret_mask: mask, ready: app.ready,
+    app_id: app.app_id, config_id: app.config_id, feature_type: app.feature_type, graph: app.graph, has_secret: !!app.secret, secret_mask: mask, ready: app.ready, live: app.live,
     webhook_url: `${FN_BASE}/wa/hook`, verify_token: verify, fields: ES_FIELDS, domain: SITE_URL, privacy_url: `${SITE_URL}privacy.html`, deletion_url: `${SITE_URL}privacy.html#delete`, icon_url: `${SITE_URL}img/app-icon.png`,
   };
 }

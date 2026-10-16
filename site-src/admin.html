@@ -233,19 +233,20 @@
     };
   }
   // الربط المباشر: تطبيق ميتا حق المناوب (Tech Provider). فادية تلصق معرّفه وسرّه ومعرّف الإعداد، وتنسخ الباقي لإعدادات التطبيق عند ميتا
-  async function loadMeta() { const had = !!S.meta; try { S.meta = await I.api('admin/meta-app', {}); } catch (e) { /* */ } if (!had && S.meta && S.meta.ready && S.tab === 'onboard') render(); return S.meta; }
+  async function loadMeta() { const had = !!S.meta; try { S.meta = await I.api('admin/meta-app', {}); } catch (e) { /* */ } if (!had && S.meta && S.meta.ready && S.meta.live && S.tab === 'onboard') render(); return S.meta; }
   async function paintMeta() {
     const el = $('metaCard'); if (!el) return;
     const m = await loadMeta();
     if (!el.isConnected) return;
     if (!m) { el.innerHTML = '<div class="sec-h"><h3>الربط المباشر بواتساب</h3></div><div class="tiny">ما قدرنا نجيب حالته، حدّثي الصفحة.</div>'; return; }
     const cp = (label, v) => `<span class="tiny">${label}</span><div class="copybox"><code class="ltr">${esc(v)}</code><button class="btn sm ghost" type="button" data-cp="${esc(v)}">${icon('copy')}نسخ</button></div>`;
-    el.innerHTML = `<div class="sec-h"><h3>الربط المباشر بواتساب</h3>${m.ready ? '<span class="badge b-ok plain">جاهز</span>' : '<span class="badge b-warn plain">ينتظر تطبيق ميتا</span>'}</div>
+    el.innerHTML = `<div class="sec-h"><h3>الربط المباشر بواتساب</h3>${m.ready && m.live ? '<span class="badge b-ok plain">شغّال للمحلات</span>' : m.ready ? '<span class="badge b-gold plain">جاهز · ينتظر نشر ميتا</span>' : '<span class="badge b-warn plain">ينتظر تطبيق ميتا</span>'}</div>
       <p class="tiny" style="margin:0">لما يجهز، صاحب المحل يربط رقمه بنفسه من رابط «اربط واتسابك» (تلقينه في «ربط الرقم» لكل منشأة) بدون Dualhook. تسوين التطبيق من <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener">developers.facebook.com/apps</a>، وتلصقين هنا معرّفه وسرّه، ومعرّف إعداد «WhatsApp Embedded Signup» من Facebook Login for Business.</p>
       <form class="stack s" id="mtForm" autocomplete="off">
         <div class="g2"><label class="f"><span>App ID</span><input name="app_id" dir="ltr" inputmode="numeric" value="${esc(m.app_id)}"></label><label class="f"><span>Configuration ID</span><input name="config_id" dir="ltr" inputmode="numeric" value="${esc(m.config_id)}"></label></div>
         <div class="g2"><label class="f"><span>App Secret</span><input name="app_secret" type="password" dir="ltr" autocomplete="new-password" placeholder="${m.has_secret ? 'محفوظ ' + esc(m.secret_mask) + ' · اتركيه فاضي لو ما تبين تغيّرينه' : ''}"></label>
           <label class="f"><span>نوع الربط</span><select name="feature_type"><option value="">تلقائي (حسب إعداد ميتا)</option><option value="whatsapp_business_app_onboarding" ${m.feature_type ? 'selected' : ''}>رقم عليه تطبيق واتساب للأعمال</option></select></label></div>
+        <label class="check"><input type="checkbox" name="live" ${m.live ? 'checked' : ''}>التطبيق منشور عند ميتا (Live)، وأبي رابط «اربط واتسابك» يطلع للمحلات</label>
         <div class="row"><button class="btn sm" type="submit">${icon('check')}حفظ</button>${m.app_id ? '<button class="btn sm ghost bad" type="button" id="mtClear">احذف</button>' : ''}</div>
       </form>
       <details><summary class="small">اللي تحطينه في إعدادات التطبيق عند ميتا</summary><div class="stack s" style="margin-top:8px">
@@ -259,7 +260,7 @@
       const app_id = String(fd.get('app_id') || '').trim();
       if (!/^\d{8,20}$/.test(app_id)) return I.toast('App ID أرقام بس', true);
       btn.disabled = true;
-      try { S.meta = await I.api('admin/meta-app', { app_id, config_id: String(fd.get('config_id') || '').trim(), app_secret: String(fd.get('app_secret') || '').trim(), feature_type: fd.get('feature_type') }); I.toast(S.meta.ready ? 'انحفظ ✓ الربط المباشر جاهز' : 'انحفظ ✓'); paintMeta(); }
+      try { S.meta = await I.api('admin/meta-app', { app_id, config_id: String(fd.get('config_id') || '').trim(), app_secret: String(fd.get('app_secret') || '').trim(), feature_type: fd.get('feature_type'), live: fd.get('live') === 'on' }); I.toast(S.meta.ready && S.meta.live ? 'انحفظ ✓ الرابط صار يطلع للمحلات' : 'انحفظ ✓'); paintMeta(); }
       catch (x) { I.toast({ app_id: 'App ID أرقام بس', config_id: 'Configuration ID أرقام بس', app_secret: 'App Secret لازم 32 حرف ورقم', app_rejected: 'ميتا رفضت المعرّف أو السر، تأكدي إنك نسختيهم كامل' }[x.code] || 'ما انحفظ، جرّبي مرة ثانية', true); btn.disabled = false; }
     };
     const c = $('mtClear'); if (c) c.onclick = async () => { if (!confirm('حذف إعدادات تطبيق ميتا؟ زر «اربط واتسابك» يوقف لين تحطينها من جديد، والأرقام المربوطة تكمل شغلها')) return; try { S.meta = await I.api('admin/meta-app', { clear: true }); I.toast('انحذفت'); paintMeta(); } catch (x) { I.fail(x); } };
@@ -355,7 +356,7 @@
       test: { url: sim, msg: `جهّزنا الرد الآلي باسمكم 🎉 جرّبه كأنك عميل، وقل لي لو تبي تغيّر أي رد أو سعر:\n${sim}` },
       live: b.wa_number ? { url: 'https://wa.me/' + intlPhone(b.wa_number), msg: `ربطنا رقمكم ✅ جرّب الحين من جوال ثاني: أرسل «السلام عليكم» لرقمكم واحجز موعد تجريبي، وقل لي إذا وصلك الطلب.` } : null,
 
-      connect: S.meta && S.meta.ready ? { url: PUBLIC + 'connect.html?k=' + b.client_key, msg: `باقي نربط رقمكم، وهي دقيقتين: افتح الرابط واضغط «اربط واتسابك»، وادخل بحسابك في فيسبوك، واختر رقم الواتساب وأكّد من جوالك. رقمك يبقى على تطبيق واتساب للأعمال عادي.\n${PUBLIC}connect.html?k=${b.client_key}` }
+      connect: S.meta && S.meta.ready && S.meta.live ? { url: PUBLIC + 'connect.html?k=' + b.client_key, msg: `باقي نربط رقمكم، وهي دقيقتين: افتح الرابط واضغط «اربط واتسابك»، وادخل بحسابك في فيسبوك، واختر رقم الواتساب وأكّد من جوالك. رقمك يبقى على تطبيق واتساب للأعمال عادي.\n${PUBLIC}connect.html?k=${b.client_key}` }
         : { url: PUBLIC + 'help.html#connect', msg: `باقي نربط رقمكم، وهذي أسهل خطوة: أتصل عليك 15 دقيقة، أنت بس تفتح حسابك في فيسبوك، وتأكّد رقم الواتساب من جوالك، وتضيفني مسؤول في حساب أعمالك عشان أكمّل التوثيق عنك. والباقي كله أسويه أنا.\nمتى يناسبك؟` },
       meta: { url: PUBLIC + 'help.html#meta', msg: `أرفع لكم طلب توثيق النشاط عند ميتا وأتابعه لين يعتمد. أحتاج منك بس صورة السجل التجاري، والاسم القانوني مثل ما هو في السجل 🙏` },
       payment: b.plan === 'bot_pay' ? { url: PUBLIC + 'help.html#moyasar', msg: `عشان الدفع الإلكتروني، أفتح لكم حساب في بوابة الدفع (ميسر) باسم المنشأة وأتابع تفعيله وأربطه. أحتاج منك: السجل التجاري، هوية المالك، وآيبان باسم المنشأة.` } : null,
@@ -462,7 +463,7 @@
     if (!S.meta) await loadMeta();
     const esUrl = PUBLIC + 'connect.html?k=' + b.client_key, phone = intlPhone(b.owner_phone || b.wa_number);
     const esMsg = `باقي نربط رقمكم، وهي دقيقتين: افتح الرابط واضغط «اربط واتسابك»، وادخل بحسابك في فيسبوك، واختر رقم الواتساب وأكّد من جوالك. رقمك يبقى على تطبيق واتساب للأعمال عادي.\n${esUrl}`;
-    const esBox = S.meta && S.meta.ready ? `<div class="card flat stack s"><h3>الربط المباشر (بدون Dualhook)</h3>
+    const esBox = S.meta && S.meta.ready && S.meta.live ? `<div class="card flat stack s"><h3>الربط المباشر (بدون Dualhook)</h3>
         ${ch.onboarded_via === 'es' ? `<div class="row small">${'<span class="badge b-ok plain">انربط من الرابط</span>'}${ch.coex ? '<span class="badge plain">على تطبيق واتساب للأعمال</span>' : ''}${ch.connected_at ? '<span class="tiny">' + esc(I.ago(ch.connected_at)) + '</span>' : ''}</div>` : '<p class="tiny" style="margin:0">أرسلي له الرابط، ويربط رقمه بنفسه. ينربط بوضع الفحص، وتطفينه من تحت لما تجربون.</p>'}
         <div class="copybox"><code class="ltr">${esc(esUrl)}</code><button class="btn sm ghost" type="button" data-cp="${esc(esUrl)}">${icon('copy')}نسخ</button></div>
         ${phone ? `<a class="btn sm ghost" target="_blank" rel="noopener" href="https://wa.me/${phone}?text=${encodeURIComponent(esMsg)}">${icon('wa')}أرسليه له</a>` : ''}</div>` : '';
