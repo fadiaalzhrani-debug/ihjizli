@@ -189,7 +189,7 @@ async function hook(req: Request, key: string): Promise<Response> {
 // ───────── المحاكي ─────────
 async function simBusiness(slug: string, key: string) {
   if (!/^[a-z0-9-]{2,42}$/.test(slug) || !key) return null;
-  const { data } = await db().from("businesses").select("id, slug, name, name_en, logo_url, brand_color, sim_key, city, status, bot_enabled").eq("slug", slug).maybeSingle();
+  const { data } = await db().from("businesses").select("id, slug, name, name_en, logo_url, brand_color, sim_key, city, status, bot_enabled, white_label").eq("slug", slug).maybeSingle();
   if (!data || !sameSecret(key, data.sim_key)) return null;
   return data;
 }
@@ -217,7 +217,7 @@ async function sim(req: Request, sub: string): Promise<Response> {
       db().from("services").select("name, price").eq("business_id", biz.id).eq("active", true).order("sort"),
     ]);
     const faqQ = (Array.isArray(st?.faq) ? st.faq : []).map((e: any) => String(e?.chip || String(e?.q || "").split(/[,،]/)[0] || "").trim()).filter(Boolean).slice(0, 6);
-    return json({ ok: true, business: { name: biz.name, name_en: biz.name_en, logo_url: biz.logo_url, brand_color: biz.brand_color, city: biz.city, bot_enabled: biz.bot_enabled, status: biz.status, activity: biz.activity },
+    return json({ ok: true, business: { name: biz.name, name_en: biz.name_en, logo_url: biz.logo_url, brand_color: biz.brand_color, city: biz.city, bot_enabled: biz.bot_enabled, status: biz.status, activity: biz.activity, white_label: !!biz.white_label },
       cities: cities || [], defaults: { place: st?.place_mode || "visit", pay: st?.pay_timing || "after", tone: st?.tone || "friendly", menu: st?.menu || {} }, faq: faqQ, services: svcs || [] });
   }
   const from = String(q.from || "");

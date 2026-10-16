@@ -639,7 +639,7 @@ async function clientAction(req: Request, action: string) {
     return {
       card: await cardReadyFor(!!b.is_demo), due,
       pay: docs?.agreed_at ? await payInfo() : null, paid_claim_at: docs?.paid_claim_at || null, setup_paid: due.setup_paid,
-      business: { name: b.name, name_en: b.name_en, activity: b.activity, plan: b.plan, wants_app: b.wants_app, owner_name: b.owner_name, owner_phone: b.owner_phone, wa_number: b.wa_number,
+      business: { name: b.name, name_en: b.name_en, activity: b.activity, plan: b.plan, wants_app: b.wants_app, owner_name: b.owner_name, owner_phone: b.owner_phone, wa_number: b.wa_number, white_label: !!b.white_label,
         cr_number: b.cr_number, vat_number: b.vat_number, address: b.address, logo_url: b.logo_url, brand_color: b.brand_color },
       fees: sub || {}, agreed: docs?.agreed_at ? { at: docs.agreed_at, name: docs.agreed_name } : null, intake_at: docs?.intake_at || null, intake: docs?.intake || null,
       current: {
