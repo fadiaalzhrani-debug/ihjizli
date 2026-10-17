@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23008C62'/%3E%3Cpath d='M11.2 24.4A9 9 0 1 0 7.6 20.8L6 26z' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='m12.5 16 2.5 2.5 5-5' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
-/* معرض تصاميم مواقع المحلات بهوية المناوب الهادئة: ستة جوالات حيّة، ثم «وش في موقعك» */
-:root{--bg:#F6FAF8;--card:#FFFFFF;--ink:#102F27;--muted:#5A7369;--line:#D3E6DC;--green:#008C62;--green-2:#05AA71;--soft:#E6F5EE;--amber:#9A5B05;--amber-soft:#FCF0DC;color-scheme:light;
+/* معرض تصاميم مواقع المحلات: شاشة كبيرة تعرض التصميم المختار حي، تحتها الستة للاختيار، وتحتها مميزات الموقع */
+:root{--bg:#F6FAF8;--card:#FFFFFF;--ink:#102F27;--muted:#5A7369;--line:#D3E6DC;--green:#008C62;--green-2:#05AA71;--soft:#E6F5EE;--amber:#9A5B05;--amber-soft:#FCF0DC;--frame:#0F231D;color-scheme:light;
   --display:"Cairo","IBM Plex Sans Arabic",Tahoma,sans-serif;--body:"IBM Plex Sans Arabic",Tahoma,sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -22,29 +22,40 @@ header.top{display:flex;align-items:center;gap:12px;padding-block:18px}
 .brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:19px;text-decoration:none}
 .brand svg{width:30px;height:30px}
 .top .sp{flex:1}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:14px;font-weight:600;text-decoration:none;font-size:15px;border:1.5px solid transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:14px;font-weight:600;text-decoration:none;font-size:15px;border:1.5px solid transparent;font-family:inherit;cursor:pointer}
 .btn.pri{background:var(--green);color:#fff}
 .btn.pri:hover{background:#007753}
 .btn.gho{background:var(--card);border-color:var(--line);color:var(--ink)}
-.btn:focus-visible{outline:3px solid var(--green-2);outline-offset:3px}
-.hero{padding-block:22px 10px;display:grid;gap:10px;max-width:720px}
+.btn:focus-visible,.pick:focus-visible{outline:3px solid var(--green-2);outline-offset:3px}
+.hero{padding-block:18px 8px;display:grid;gap:8px;max-width:720px}
 h1,h2,h3{font-family:var(--display);line-height:1.3;margin:0;text-wrap:balance}
 h1{font-size:clamp(30px,5.4vw,46px);font-weight:800}
 h2{font-size:clamp(23px,3.4vw,30px);font-weight:800}
 .lead{color:var(--muted);font-size:17px;margin:0}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding-block:22px 10px}
-.d{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;display:grid;gap:12px;align-content:start}
-.phone{justify-self:center;width:234px;height:468px;border-radius:30px;background:#0E1F1A;padding:8px;box-shadow:0 18px 40px -24px rgba(16,47,39,.45);position:relative}
-.screen{width:218px;height:452px;border-radius:23px;overflow:hidden;background:#fff;position:relative}
-.screen iframe{width:390px;height:808px;border:0;transform:scale(.559);transform-origin:top right;position:absolute;top:0;right:0;pointer-events:none;background:#fff}
-.phone a.cover{position:absolute;inset:0;border-radius:30px}
-.d .meta{display:grid;gap:2px}
-.d .meta b{font-family:var(--display);font-size:19px}
-.d .meta span{color:var(--muted);font-size:14.5px}
-.sw{display:flex;gap:6px}
-.sw i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.08);display:block}
-.d .acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
-.d .acts .btn{min-height:42px;font-size:14px;padding:0 10px}
+
+/* الشاشة الكبيرة */
+.stage{margin-top:18px;background:var(--frame);border-radius:22px;padding:10px;box-shadow:0 30px 60px -36px rgba(16,47,39,.55)}
+.bar{display:flex;align-items:center;gap:10px;padding:2px 6px 10px}
+.dots{display:flex;gap:6px;direction:ltr}
+.dots i{width:11px;height:11px;border-radius:50%;background:#2E4A41;display:block}
+.url{flex:1;min-width:0;background:#183A30;color:#A9CBBE;border-radius:10px;padding:3px 12px;font-size:13px;direction:ltr;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen{position:relative;width:100%;border-radius:14px;overflow:hidden;background:#fff}
+.screen iframe{border:0;display:block;background:#fff;transform-origin:top right}
+.below{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:14px 6px}
+.below .nm{display:grid;gap:0;margin-inline-end:auto}
+.below .nm b{font-family:var(--display);font-size:22px}
+.below .nm span{color:var(--muted);font-size:15px}
+
+/* اختيار التصميم */
+.picks{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;padding-block:14px 6px}
+.pick{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:10px;display:grid;gap:8px;text-align:right;font:inherit;color:inherit;cursor:pointer}
+.pick:hover{border-color:#9FCDB9}
+.pick[aria-pressed="true"]{border-color:var(--green);box-shadow:0 0 0 3px var(--soft)}
+.pal{height:64px;border-radius:12px;display:grid;grid-template-columns:2fr 1fr 1fr;overflow:hidden;border:1px solid rgba(0,0,0,.06)}
+.pal i{display:block}
+.pick b{font-family:var(--display);font-size:16.5px;line-height:1.3}
+.pick span{color:var(--muted);font-size:13.5px;line-height:1.5}
+
 section.feat{padding-block:44px 10px;display:grid;gap:18px}
 .fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .f{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:grid;gap:8px;align-content:start}
@@ -59,8 +70,8 @@ section.feat{padding-block:44px 10px;display:grid;gap:18px}
 .cta .btn.pri{background:#fff;color:var(--ink)}
 footer{padding-block:24px 36px;color:var(--muted);font-size:14px;display:flex;gap:16px;flex-wrap:wrap}
 footer a{color:var(--muted)}
-@media (max-width:980px){.grid,.fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:620px){.grid,.fgrid{grid-template-columns:minmax(0,1fr)}.top .btn.gho{display:none}}
+@media (max-width:980px){.picks{grid-template-columns:repeat(3,minmax(0,1fr))}.fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.picks{grid-template-columns:repeat(2,minmax(0,1fr))}.fgrid{grid-template-columns:minmax(0,1fr)}.top .btn.gho{display:none}.stage{padding:6px;border-radius:16px}.bar{padding:0 2px 6px}}
 </style>
 </head>
 <body>
@@ -75,50 +86,30 @@ footer a{color:var(--muted)}
   <main>
     <section class="hero">
       <h1>موقع باسم نشاطك</h1>
-      <p class="lead">ستة تصاميم جاهزة. نختار معك واحد ونعبّيه بخدماتك وأسعارك وشعارك، وكل زر حجز فيه يوصل للرد الآلي على واتسابك.</p>
+      <p class="lead">ستة تصاميم جاهزة. اختر واحد من تحت وتشوفه كامل في الشاشة، وتقدر تتصفحه وتجرّب أزراره.</p>
     </section>
 
-    <div class="grid" id="designs">
-      <article class="d">
-        <div class="phone"><div class="screen"><iframe src="sites/carwash.html" title="تصميم مغسلة سيارات" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><a class="cover" href="sites/carwash.html" aria-label="افتح تصميم رغوة"></a></div>
-        <div class="meta"><b>رغوة</b><span>مغسلة سيارات متنقلة</span></div>
-        <div class="sw" aria-hidden="true"><i style="background:#0B1F33"></i><i style="background:#2CD3E1"></i><i style="background:#EEF8FA"></i></div>
-        <div class="acts"><a class="btn pri" href="sites/carwash.html">افتح التصميم</a><a class="btn gho" href="sim.html?demo=1">جرّب الحجز</a></div>
-      </article>
-      <article class="d">
-        <div class="phone"><div class="screen"><iframe src="sites/barber.html" title="تصميم صالون حلاقة" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><a class="cover" href="sites/barber.html" aria-label="افتح تصميم قصّة"></a></div>
-        <div class="meta"><b>قصّة</b><span>صالون حلاقة رجالي</span></div>
-        <div class="sw" aria-hidden="true"><i style="background:#0D0C0A"></i><i style="background:#C9A35E"></i><i style="background:#EEE7D9"></i></div>
-        <div class="acts"><a class="btn pri" href="sites/barber.html">افتح التصميم</a><a class="btn gho" href="sim.html?demo=1">جرّب الحجز</a></div>
-      </article>
-      <article class="d">
-        <div class="phone"><div class="screen"><iframe src="sites/salon.html" title="تصميم مشغل نسائي" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><a class="cover" href="sites/salon.html" aria-label="افتح تصميم لمسة"></a></div>
-        <div class="meta"><b>لمسة</b><span>مشغل وصالون نسائي</span></div>
-        <div class="sw" aria-hidden="true"><i style="background:#F8E6E8"></i><i style="background:#4B1D3F"></i><i style="background:#BE9157"></i></div>
-        <div class="acts"><a class="btn pri" href="sites/salon.html">افتح التصميم</a><a class="btn gho" href="sim.html?demo=1">جرّب الحجز</a></div>
-      </article>
-      <article class="d">
-        <div class="phone"><div class="screen"><iframe src="sites/maintenance.html" title="تصميم صيانة منزلية" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><a class="cover" href="sites/maintenance.html" aria-label="افتح تصميم سند"></a></div>
-        <div class="meta"><b>سند</b><span>صيانة منزلية</span></div>
-        <div class="sw" aria-hidden="true"><i style="background:#10243A"></i><i style="background:#F26A1B"></i><i style="background:#EDF1F5"></i></div>
-        <div class="acts"><a class="btn pri" href="sites/maintenance.html">افتح التصميم</a><a class="btn gho" href="sim.html?demo=1">جرّب الحجز</a></div>
-      </article>
-      <article class="d">
-        <div class="phone"><div class="screen"><iframe src="sites/kitchen.html" title="تصميم مطبخ بيتي" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><a class="cover" href="sites/kitchen.html" aria-label="افتح تصميم مطبخ دارنا"></a></div>
-        <div class="meta"><b>مطبخ دارنا</b><span>أسرة منتجة</span></div>
-        <div class="sw" aria-hidden="true"><i style="background:#1E2A16"></i><i style="background:#E8A317"></i><i style="background:#F6F6EF"></i></div>
-        <div class="acts"><a class="btn pri" href="sites/kitchen.html">افتح التصميم</a><a class="btn gho" href="sim.html?demo=1">جرّب الطلب</a></div>
-      </article>
-      <article class="d">
-        <div class="phone"><div class="screen"><iframe src="sites/clinic.html" title="تصميم عيادة أسنان" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><a class="cover" href="sites/clinic.html" aria-label="افتح تصميم ابتسامة"></a></div>
-        <div class="meta"><b>ابتسامة</b><span>عيادة أسنان</span></div>
-        <div class="sw" aria-hidden="true"><i style="background:#E8F6F3"></i><i style="background:#0B7A70"></i><i style="background:#0E2240"></i></div>
-        <div class="acts"><a class="btn pri" href="sites/clinic.html">افتح التصميم</a><a class="btn gho" href="sim.html?demo=1">جرّب الحجز</a></div>
-      </article>
+    <div class="stage" aria-label="معاينة التصميم">
+      <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="url" id="url">almunawib.com/sites/carwash.html</span></div>
+      <div class="screen" id="screen"><iframe id="view" src="sites/carwash.html" title="معاينة التصميم"></iframe></div>
+    </div>
+    <div class="below">
+      <div class="nm"><b id="nm">رغوة</b><span id="kind">مغسلة سيارات متنقلة</span></div>
+      <a class="btn gho" id="tryBtn" href="sim.html?demo=1">جرّب الحجز</a>
+      <a class="btn pri" id="openBtn" href="sites/carwash.html">افتح بصفحة كاملة</a>
+    </div>
+
+    <div class="picks" id="picks" role="group" aria-label="اختر التصميم">
+      <button class="pick" type="button" data-s="carwash" aria-pressed="true"><span class="pal" aria-hidden="true"><i style="background:#0B1F33"></i><i style="background:#2CD3E1"></i><i style="background:#EEF8FA"></i></span><b>رغوة</b><span>مغسلة سيارات متنقلة</span></button>
+      <button class="pick" type="button" data-s="barber" aria-pressed="false"><span class="pal" aria-hidden="true"><i style="background:#0D0C0A"></i><i style="background:#C9A35E"></i><i style="background:#EEE7D9"></i></span><b>قصّة</b><span>صالون حلاقة رجالي</span></button>
+      <button class="pick" type="button" data-s="salon" aria-pressed="false"><span class="pal" aria-hidden="true"><i style="background:#4B1D3F"></i><i style="background:#F8E6E8"></i><i style="background:#BE9157"></i></span><b>لمسة</b><span>مشغل وصالون نسائي</span></button>
+      <button class="pick" type="button" data-s="maintenance" aria-pressed="false"><span class="pal" aria-hidden="true"><i style="background:#10243A"></i><i style="background:#F26A1B"></i><i style="background:#EDF1F5"></i></span><b>سند</b><span>صيانة منزلية</span></button>
+      <button class="pick" type="button" data-s="kitchen" aria-pressed="false"><span class="pal" aria-hidden="true"><i style="background:#1E2A16"></i><i style="background:#E8A317"></i><i style="background:#F6F6EF"></i></span><b>مطبخ دارنا</b><span>أسرة منتجة</span></button>
+      <button class="pick" type="button" data-s="clinic" aria-pressed="false"><span class="pal" aria-hidden="true"><i style="background:#0E2240"></i><i style="background:#0B7A70"></i><i style="background:#E8F6F3"></i></span><b>ابتسامة</b><span>عيادة أسنان</span></button>
     </div>
 
     <section class="feat" aria-labelledby="h-feat">
-      <h2 id="h-feat">وش في موقعك</h2>
+      <h2 id="h-feat">مميزات الموقع</h2>
       <p class="lead">كل قسم في الموقع مربوط بالرد الآلي على واتسابك، فالعميل يشوف ويحجز ويدفع بدون ما تتدخل.</p>
       <div class="fgrid">
         <div class="f"><div class="h"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7.9 20.1A9 9 0 1 0 3.9 16.1L3 21z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span><h3>الحجز من الواتساب</h3></div><ul>
@@ -151,5 +142,40 @@ footer a{color:var(--muted)}
 
   <footer><a href="./">المناوب · حاضر عنك</a><a href="sim.html?demo=1">جرّبه كأنك عميل</a><a href="privacy.html">الخصوصية</a><span>الصور في التصاميم من Unsplash</span></footer>
 </div>
+<script>
+(function () {
+  var view = document.getElementById('view'), screen = document.getElementById('screen');
+  var W = 1280, H = 800;
+  // الشاشة الكبيرة: نسخة الكمبيوتر مصغّرة على العرض كامل، وعلى الجوال نسخته نفسها بدون تصغير
+  function fit() {
+    var w = screen.clientWidth;
+    if (w >= 700) {
+      var s = w / W;
+      view.style.width = W + 'px'; view.style.height = H + 'px'; view.style.transform = 'scale(' + s + ')';
+      screen.style.height = Math.round(H * s) + 'px';
+    } else {
+      view.style.width = w + 'px'; view.style.transform = 'none';
+      var h = Math.round(Math.min(window.innerHeight * 0.72, 640));
+      view.style.height = h + 'px'; screen.style.height = h + 'px';
+    }
+  }
+  var picks = [].slice.call(document.querySelectorAll('.pick'));
+  function show(slug, push) {
+    var b = picks.find(function (x) { return x.dataset.s === slug; }) || picks[0];
+    picks.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    var src = 'sites/' + b.dataset.s + '.html';
+    if (view.getAttribute('src') !== src) view.setAttribute('src', src);
+    document.getElementById('url').textContent = 'almunawib.com/' + src;
+    document.getElementById('nm').textContent = b.querySelector('b').textContent;
+    document.getElementById('kind').textContent = b.querySelector('span:last-child').textContent;
+    document.getElementById('openBtn').href = src;
+    if (push) { try { history.replaceState(null, '', '#' + b.dataset.s); } catch (e) { /* */ } }
+  }
+  picks.forEach(function (b) { b.onclick = function () { show(b.dataset.s, true); document.querySelector('.stage').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }; });
+  window.addEventListener('resize', fit);
+  show((location.hash || '').slice(1), false);
+  fit();
+})();
+</script>
 </body>
 </html>
