@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لمسة · مشغل وصالون نسائي بالرياض</title>
+<meta name="description" content="لمسة، مشغل وصالون نسائي في الرياض: سشوار، صبغة، مكياج، أظافر، حمام مغربي وتنظيف بشرة. الحجز كله من الواتساب.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFAF9">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFAF9;
+  --paper:#FFFFFF;
+  --blush:#F8E6E8;
+  --blush-2:#FCF1F2;
+  --rose:#E8C4CB;
+  --plum:#4B1D3F;
+  --plum-2:#7A3567;
+  --plum-deep:#2E1228;
+  --ink:#2A1624;
+  --muted:#735D6B;
+  --gold:#BE9157;
+  --gold-d:#8A5F2A;
+  --gold-soft:#E6CFA6;
+  --line:#EEDBDE;
+  --ok:#2F7D5B;
+  --focus:#8A5F2A;
+  --f-display:'Alexandria','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans Arabic','Alexandria',system-ui,sans-serif;
+  --shadow:0 24px 50px -28px rgba(75,29,63,.38);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-display);color:var(--plum);margin:0;line-height:1.3;font-weight:500}
+p{margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:10px}
+.num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;top:-60px;inset-inline-start:12px;z-index:100;background:var(--plum);color:#fff;padding:10px 16px;border-radius:12px;text-decoration:none}
+.skip:focus{top:12px}
+.ic{width:22px;height:22px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.wrap{width:100%;max-width:1200px;margin-inline:auto;padding-inline:16px}
+@media (min-width:768px){.wrap{padding-inline:32px}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 22px;border-radius:999px;font-weight:600;font-size:.98rem;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .2s ease,background-color .2s ease,box-shadow .2s ease;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--plum);color:#fff;box-shadow:0 14px 30px -16px rgba(75,29,63,.7)}
+.btn-primary:hover{background:#5E2650}
+.btn-ghost{background:transparent;color:var(--plum);border-color:rgba(75,29,63,.35)}
+.btn-ghost:hover{background:var(--blush-2);border-color:var(--plum)}
+.btn-gold{background:var(--gold-soft);color:var(--plum-deep)}
+.btn-gold:hover{background:#EEDCBC}
+.btn-block{width:100%}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:40;background:rgba(255,250,249,.9);-webkit-backdrop-filter:saturate(1.2) blur(10px);backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:66px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--plum)}
+.brand svg{width:26px;height:34px}
+.brand b{display:block;font-family:var(--f-display);font-weight:600;font-size:1.5rem;line-height:1}
+.brand small{display:block;font-size:.72rem;color:var(--muted);line-height:1.4;margin-top:3px}
+.nav{display:none;gap:2px;margin-inline-start:auto}
+.nav a{padding:8px 12px;border-radius:999px;text-decoration:none;font-size:.92rem;color:var(--ink)}
+.nav a:hover{background:var(--blush-2);color:var(--plum)}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;white-space:nowrap;color:var(--ink)}
+.top .chip{margin-inline-start:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(47,125,91,.16);flex:0 0 auto}
+.dot.closed{background:#B04A5E;box-shadow:0 0 0 3px rgba(176,74,94,.16)}
+.top-cta{display:none;min-height:42px;padding:0 16px;font-size:.9rem}
+@media (min-width:760px){.top-cta{display:inline-flex}}
+@media (min-width:1120px){.nav{display:flex}.top .chip{margin-inline-start:6px}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:26px 0 60px}
+.hero-grid{display:grid;gap:40px}
+.demo-badge{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;color:var(--plum-2);border:1px dashed var(--rose);border-radius:999px;padding:5px 12px;background:#fff}
+.demo-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.kicker{margin:22px 0 12px;color:var(--gold-d);font-size:.92rem;display:flex;align-items:center;gap:12px}
+.kicker::before{content:"";width:30px;height:1px;background:var(--gold)}
+.hero h1{font-size:clamp(2.25rem,8.4vw,4.5rem);font-weight:500;line-height:1.18;letter-spacing:-.005em}
+.hero h1 .soft{display:block;font-weight:300;color:var(--plum-2)}
+.lead{font-size:1.08rem;color:var(--muted);max-width:36ch;margin:18px 0 20px}
+.hero .chip{font-size:.85rem;padding:8px 14px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+@media (max-width:440px){.cta-row .btn{flex:1 1 100%}}
+.facts{list-style:none;margin:30px 0 0;padding:16px 0 0;display:flex;flex-wrap:wrap;gap:12px 28px;border-top:1px solid var(--line);max-width:460px}
+.facts li{font-size:.85rem;color:var(--muted);line-height:1.4}
+.facts b{display:block;font-family:var(--f-display);font-weight:500;font-size:1.45rem;color:var(--plum);margin-bottom:2px}
+
+.hero-media{position:relative;padding-top:18px}
+.arch{position:relative;margin:0;width:min(80%,470px);margin-inline-start:auto;aspect-ratio:3/4;border-radius:50% 50% 22px 22px/37.5% 37.5% 22px 22px;overflow:hidden;background:var(--blush);z-index:1}
+.arch img{width:100%;height:100%;object-fit:cover}
+.hero .arch img{object-position:58% 40%}
+.arch-ghost{position:absolute;top:0;inset-inline-end:0;width:min(80%,470px);aspect-ratio:3/4;border:1px solid var(--gold);border-radius:50% 50% 22px 22px/37.5% 37.5% 22px 22px;transform:translate(14px,0);opacity:.75}
+.orb{position:absolute;z-index:2;margin:0;inset-inline-start:0;bottom:-8px;width:min(40%,210px);aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 0 0 6px var(--bg),0 0 0 7px var(--gold-soft)}
+.orb img{width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.confirm{position:absolute;z-index:3;inset-inline-start:0;top:16%;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px 14px;box-shadow:var(--shadow);max-width:64%}
+.confirm .ck{width:34px;height:34px;border-radius:50%;background:#E6F2EC;color:var(--ok);display:grid;place-items:center;flex:0 0 auto}
+.confirm .ck .ic{width:18px;height:18px;stroke-width:2}
+.confirm small{display:block;font-size:.72rem;color:var(--muted);line-height:1.4}
+.confirm b{display:block;font-size:.86rem;font-weight:600;line-height:1.45}
+@media (min-width:960px){
+  .hero{padding:60px 0 96px}
+  .hero-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:48px}
+  .hero h1{font-size:clamp(3rem,5.4vw,4.5rem)}
+  .hero-media{padding-top:10px}
+  .orb{bottom:-20px;width:200px}
+  .confirm{top:20%;max-width:270px}
+}
+
+/* sections */
+.sec{padding:68px 0;scroll-margin-top:66px}
+@media (min-width:960px){.sec{padding:116px 0}}
+.eyebrow{display:flex;align-items:center;gap:12px;color:var(--gold-d);font-size:.92rem;font-weight:500}
+.eyebrow .num{font-family:var(--f-display);font-weight:300;font-size:1rem}
+.eyebrow::after{content:"";flex:0 1 90px;height:1px;background:var(--gold)}
+.sec-head h2{font-size:clamp(1.85rem,5.6vw,3.05rem);font-weight:400;margin:14px 0 12px;line-height:1.25}
+.sec-head .sub{color:var(--muted);max-width:46ch}
+
+/* services */
+.svc-wrap{display:grid;gap:30px}
+.svc-photo{margin:28px 0 0;width:62%;max-width:330px;margin-inline-start:auto;aspect-ratio:4/5;border-radius:50% 50% 20px 20px/40% 40% 20px 20px;overflow:hidden;background:var(--blush)}
+.svc-photo img{width:100%;height:100%;object-fit:cover}
+.svc-note{margin-top:22px;display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:var(--muted);max-width:40ch}
+.svc-note .ic{color:var(--gold-d);margin-top:3px}
+@media (min-width:1000px){
+  .svc-wrap{grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:56px;align-items:start}
+  .svc-aside{position:sticky;top:96px}
+  .svc-photo{width:100%;margin-inline-start:0}
+}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.filters button{min-height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:.9rem;cursor:pointer;transition:background-color .2s ease,color .2s ease}
+.filters button:hover{border-color:var(--rose)}
+.filters button[aria-pressed="true"]{background:var(--plum);border-color:var(--plum);color:#fff}
+.svc-list{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:640px){.svc-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.svc{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px 20px 18px;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.svc:hover{border-color:var(--rose);transform:translateY(-2px);box-shadow:var(--shadow)}
+.svc[hidden],.svc-tile[hidden]{display:none}
+.svc-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px}
+.svc-ic{width:46px;height:46px;border-radius:50% 50% 12px 12px;background:var(--blush-2);color:var(--plum);display:grid;place-items:center}
+.svc h3{font-size:1.14rem}
+.price{text-align:end;line-height:1.1;white-space:nowrap}
+.price small{display:block;font-size:.7rem;color:var(--muted);margin-bottom:2px}
+.price b{font-family:var(--f-display);font-weight:500;font-size:1.65rem;color:var(--plum)}
+.price span{font-size:.75rem;color:var(--muted);margin-inline-start:3px}
+.dur{display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--plum-2);margin-top:3px;line-height:1.4}
+.dur .ic{width:15px;height:15px}
+.incl-label{font-size:.76rem;color:var(--gold-d);font-weight:600;margin:16px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
+.incl{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:.92rem}
+.incl li{display:flex;gap:10px;align-items:flex-start}
+.incl li::before{content:"";flex:0 0 7px;height:7px;border-radius:50%;border:1px solid var(--gold);margin-top:.68em}
+.svc-tile{position:relative;margin:0;border-radius:24px;overflow:hidden;min-height:240px;background:var(--blush)}
+.svc-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.svc-tile figcaption{position:absolute;inset-inline:12px;bottom:12px;background:rgba(255,250,249,.92);border-radius:16px;padding:10px 14px;font-size:.88rem;line-height:1.55}
+.svc-tile figcaption b{display:block;color:var(--plum);font-weight:600}
+.extras{margin-top:16px;padding:16px 18px;border:1px dashed var(--rose);border-radius:24px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.extras h3{font-size:.98rem;font-weight:500;margin-inline-end:6px}
+.extras span{display:inline-flex;gap:6px;align-items:baseline;font-size:.86rem;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.extras span b{font-weight:600;color:var(--plum)}
+
+/* packages */
+.packs{position:relative;overflow:hidden;background:var(--blush-2)}
+.deco{position:absolute;pointer-events:none;color:var(--gold);opacity:.55}
+.packs .deco{width:420px;height:620px;top:-40px;inset-inline-start:-210px}
+.packs .sec-head{position:relative;max-width:620px;margin-inline-start:auto}
+.pk-grid{position:relative;display:grid;gap:16px;margin-top:40px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:640px) and (max-width:919px){.pk-grid{max-width:560px;margin-inline:auto}}
+@media (min-width:920px){.pk-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;margin-top:56px}}
+.pk{position:relative;background:#fff;border:1px solid var(--line);border-radius:30px;padding:26px 22px 22px;display:flex;flex-direction:column;gap:14px}
+.pk h3{font-size:1.32rem}
+.pk .for{font-size:.86rem;color:var(--muted);margin-top:-8px}
+.pk ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.94rem}
+.pk li{display:flex;gap:10px;align-items:flex-start}
+.pk li .ic{width:18px;height:18px;color:var(--gold-d);margin-top:4px;stroke-width:2}
+.pk-price{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding-top:14px;border-top:1px solid var(--line)}
+.pk-price b{font-family:var(--f-display);font-weight:500;font-size:2.4rem;line-height:1.1;color:var(--plum)}
+.pk-price .cur{font-size:.85rem;color:var(--muted)}
+.pk-price del{font-size:.85rem;color:var(--muted)}
+.save{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;background:#F5E8D3;color:#6A461A;border-radius:999px;padding:4px 12px}
+.pk .small{font-size:.82rem;color:var(--muted)}
+.pk .btn{margin-top:4px}
+.pk.feat{background:var(--plum);border-color:var(--plum);color:#F7E9EF;box-shadow:0 30px 60px -30px rgba(46,18,40,.7)}
+.pk.feat h3,.pk.feat .pk-price b{color:#fff}
+.pk.feat .for,.pk.feat .pk-price .cur,.pk.feat .pk-price del,.pk.feat .small{color:#E2C7D6}
+.pk.feat li .ic{color:var(--gold-soft)}
+.pk.feat .pk-price{border-top-color:rgba(255,255,255,.18)}
+.pk.feat .save{background:var(--gold-soft);color:var(--plum-deep)}
+.pk.feat :focus-visible{outline-color:var(--gold-soft)}
+.ribbon{position:absolute;top:-13px;inset-inline-start:22px;background:var(--gold-soft);color:var(--plum-deep);font-size:.76rem;font-weight:600;padding:4px 12px;border-radius:999px}
+@media (min-width:920px){.pk.feat{transform:translateY(-22px)}}
+.balance{position:relative;margin-top:30px;display:grid;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px 20px}
+@media (min-width:760px){.balance{grid-template-columns:auto minmax(0,1fr) auto;gap:18px;padding:18px 24px}}
+.balance .bi{width:48px;height:48px;border-radius:50%;background:var(--plum);color:var(--gold-soft);display:grid;place-items:center}
+.balance strong{display:block;font-family:var(--f-display);font-weight:500;font-size:1.12rem;color:var(--plum);line-height:1.5}
+.balance p{font-size:.9rem;color:var(--muted)}
+.meter{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--muted);white-space:nowrap}
+.pills{display:flex;gap:5px}
+.pills i{width:22px;height:10px;border-radius:999px;background:var(--plum)}
+.pills i.used{background:transparent;border:1px solid var(--rose)}
+
+/* points */
+.pts-grid{display:grid;gap:30px}
+@media (min-width:960px){.pts-grid{grid-template-columns:minmax(0,5fr) minmax(0,6fr);column-gap:64px;row-gap:0;align-items:start}.pts-visual{grid-column:1;grid-row:1 / span 2;align-self:center}.pts-head{grid-column:2;grid-row:1}.pts-body{grid-column:2;grid-row:2}}
+.pts-visual{position:relative;padding:26px 0 26px 18px;max-width:460px;width:100%;margin-inline:auto}
+.pts-visual::before{content:"";position:absolute;inset:0 36px 0 0;background:var(--blush);border-radius:40px 40px 40px 140px}
+.pcard{position:relative;background:var(--plum);color:#F6E8EF;border-radius:26px;padding:22px;overflow:hidden;box-shadow:0 30px 60px -28px rgba(46,18,40,.75);margin-inline-end:20px}
+.pcard svg.lines{position:absolute;width:220px;height:260px;inset-inline-end:-120px;top:-20px;color:var(--gold-soft);opacity:.35;pointer-events:none}
+.pc-top{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pc-top>span:first-child{font-size:.85rem;color:#E2C7D6}
+.lvl{border:1px solid var(--gold-soft);color:var(--gold-soft);font-size:.78rem;border-radius:999px;padding:3px 12px}
+.pc-num{position:relative;margin-top:16px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pc-num b{font-family:var(--f-display);font-weight:300;font-size:clamp(2.6rem,11vw,3.4rem);line-height:1;color:#fff}
+.pc-num span{font-size:.9rem;color:#E2C7D6}
+.pc-worth{position:relative;margin-top:6px;font-size:.92rem;color:var(--gold-soft)}
+.pc-bar{position:relative;margin-top:18px}
+.pc-bar .labels{display:flex;justify-content:space-between;font-size:.74rem;color:#E2C7D6;margin-bottom:6px}
+.track{height:6px;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden}
+.track i{display:block;height:100%;width:41%;background:var(--gold-soft);border-radius:999px}
+.pc-bar small{display:block;margin-top:8px;font-size:.78rem;color:#E2C7D6}
+.rules{display:grid;gap:12px;margin-top:26px}
+@media (min-width:560px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rule{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px}
+.rule .ri{width:42px;height:42px;border-radius:50%;background:var(--blush-2);color:var(--plum);display:grid;place-items:center;flex:0 0 auto}
+.rule b{display:block;font-family:var(--f-display);font-weight:500;color:var(--plum);font-size:1.05rem;line-height:1.5}
+.rule div>span{font-size:.88rem;color:var(--muted)}
+.levels{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid var(--line)}
+.levels li{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:2px 10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line)}
+.levels .sw{width:14px;height:14px;border-radius:50% 50% 4px 4px}
+.levels b{font-weight:600;color:var(--plum)}
+.levels .th{font-size:.82rem;color:var(--muted)}
+.levels .pk2{font-size:.9rem;grid-column:2 / -1}
+@media (min-width:560px){.levels li{grid-template-columns:auto 56px 110px minmax(0,1fr)}.levels .pk2{grid-column:auto}}
+.calc{margin-top:20px;background:var(--blush-2);border-radius:22px;padding:18px 20px}
+.calc label{display:flex;justify-content:space-between;gap:10px;font-size:.92rem;font-weight:500}
+.calc label output{font-weight:600;color:var(--plum)}
+.calc input[type=range]{width:100%;margin:12px 0 8px;accent-color:var(--plum);height:28px}
+.calc .res{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.9rem;color:var(--muted)}
+.calc .res b{font-family:var(--f-display);font-weight:500;font-size:1.25rem;color:var(--plum)}
+
+/* gift */
+.gift{position:relative;overflow:hidden;background:var(--blush)}
+.gift .deco{width:380px;height:560px;bottom:-150px;inset-inline-start:-150px}
+@media (max-width:959px){.gift .deco,.book .deco{display:none}}
+.gift-grid{position:relative;display:grid;gap:28px}
+@media (min-width:960px){.gift-grid{grid-template-columns:minmax(0,6fr) minmax(0,5fr);column-gap:64px;row-gap:0;align-items:start}.gcard-wrap{grid-column:1;grid-row:1 / span 2;align-self:center}.gift-head{grid-column:2;grid-row:1}.gift-body{grid-column:2;grid-row:2}}
+.gcard-wrap{padding:16px 6px}
+.gcard{position:relative;max-width:440px;margin-inline:auto;background:#FFFDFC;border-radius:26px;padding:26px 24px 22px;box-shadow:0 34px 70px -34px rgba(75,29,63,.55);transform:rotate(-2deg)}
+.gcard::before{content:"";position:absolute;inset:9px;border:1px solid var(--gold-soft);border-radius:19px;pointer-events:none}
+.gc-top{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.gc-brand{display:flex;align-items:center;gap:8px;color:var(--plum);font-family:var(--f-display);font-weight:600}
+.gc-brand svg{width:18px;height:24px}
+.gc-code{font-size:.75rem;color:var(--muted);border:1px dashed var(--rose);border-radius:999px;padding:2px 10px;direction:ltr}
+.gc-label{position:relative;margin-top:26px;font-size:.8rem;color:var(--gold-d)}
+.gc-name{position:relative;font-size:clamp(1.8rem,7vw,2.4rem);font-weight:400;margin-top:2px}
+.gc-val{position:relative;margin-top:4px;color:var(--muted);font-size:.95rem}
+.gc-val b{color:var(--plum);font-weight:600}
+.gc-to{position:relative;margin-top:22px;padding-top:14px;border-top:1px dashed var(--rose);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.92rem}
+.gc-to b{color:var(--plum);font-weight:600;overflow-wrap:anywhere}
+.gc-msg{position:relative;margin-top:8px;font-size:.88rem;color:var(--muted)}
+.seal{position:absolute;inset-inline-end:22px;bottom:-18px;width:56px;height:56px;border-radius:50%;background:var(--plum);color:var(--gold-soft);display:grid;place-items:center;box-shadow:0 0 0 4px var(--blush)}
+.seal svg{width:20px;height:26px}
+.gift form{display:grid;gap:18px;margin-top:26px}
+.opts{border:0;margin:0;padding:0;min-width:0}
+.opts legend,.field label{font-size:.9rem;font-weight:600;color:var(--plum);margin-bottom:10px;padding:0}
+.opts .row{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt span{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid rgba(75,29,63,.2);background:#fff;font-size:.9rem;cursor:pointer;transition:background-color .2s ease}
+.opt span em{font-style:normal;color:var(--muted);font-size:.8rem}
+.opt input:checked+span{background:var(--plum);border-color:var(--plum);color:#fff}
+.opt input:checked+span em{color:var(--gold-soft)}
+.opt input:focus-visible+span{outline:3px solid var(--focus);outline-offset:3px}
+.field{display:grid}
+.field input{min-height:50px;border-radius:16px;border:1px solid rgba(75,29,63,.22);background:#fff;padding:0 16px;font-size:1rem;width:100%}
+.field input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.gift-steps{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.86rem;color:var(--muted)}
+.gift-steps span{display:inline-flex;align-items:center;gap:6px}
+.gift-steps .ic{width:16px;height:16px;color:var(--gold-d)}
+
+/* booking */
+.book{background:var(--plum);color:#F3E3EB;position:relative;overflow:hidden}
+.book .deco{color:var(--gold-soft);opacity:.25;width:420px;height:620px;top:-60px;inset-inline-end:-240px}
+.book .eyebrow{color:var(--gold-soft)}
+.book .eyebrow::after{background:var(--gold-soft)}
+.book .sec-head h2{color:#fff}
+.book .sec-head .sub{color:#E2C7D6}
+.book :focus-visible{outline-color:var(--gold-soft)}
+.book-grid{position:relative;display:grid;gap:44px}
+@media (min-width:960px){.book-grid{grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:72px;align-items:center}}
+.steps{list-style:none;margin:30px 0 30px;padding:0;display:grid}
+.steps li{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;padding-bottom:24px}
+.steps li:last-child{padding-bottom:0}
+.steps li::before{content:"";position:absolute;top:52px;bottom:4px;inset-inline-start:25px;width:1px;background:rgba(230,207,166,.4)}
+.steps li:last-child::before{display:none}
+.steps .n{width:52px;height:52px;border-radius:50%;border:1px solid var(--gold-soft);display:grid;place-items:center;color:var(--gold-soft)}
+.steps b{display:block;font-family:var(--f-display);font-weight:500;color:#fff;font-size:1.12rem;margin-top:4px}
+.steps p{font-size:.94rem;color:#E2C7D6}
+.chat{background:#FBF3F4;color:var(--ink);border-radius:30px;padding:16px;max-width:400px;width:100%;margin-inline:auto;box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+.chat-h{display:flex;align-items:center;gap:10px;padding:4px 6px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.chat-h .av{width:38px;height:38px;border-radius:50%;background:var(--plum);color:var(--gold-soft);display:grid;place-items:center}
+.chat-h .av svg{width:15px;height:20px}
+.chat-h b{display:block;font-size:.95rem;line-height:1.3;color:var(--plum)}
+.chat-h small{font-size:.74rem;color:var(--muted)}
+.msgs{display:grid;gap:8px}
+.b{max-width:84%;padding:9px 13px;border-radius:18px;font-size:.9rem;line-height:1.6;background:#fff;border:1px solid var(--line);justify-self:start}
+.b.me{justify-self:end;background:#F3D9DE;border-color:#F3D9DE}
+.b time{display:block;font-size:.68rem;color:var(--muted);margin-top:2px}
+.b .qr{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.b .qr span{border:1px solid var(--plum-2);color:var(--plum-2);border-radius:999px;padding:2px 10px;font-size:.8rem}
+.b.ok{border-color:#CFE6DA}
+.b.ok strong{display:flex;align-items:center;gap:6px;color:var(--ok);font-weight:600}
+.b.ok .ic{width:16px;height:16px;stroke-width:2.2}
+
+/* testimonials */
+.tst-grid{display:grid;gap:16px;margin-top:40px}
+@media (min-width:860px){.tst-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.tst:nth-child(2){margin-top:48px}.tst:nth-child(3){margin-top:16px}}
+.tst{position:relative;background:#fff;border:1px solid var(--line);border-radius:26px;padding:24px 22px 20px;margin:0}
+.tst .q{width:30px;height:30px;color:var(--gold)}
+.tag-ex{position:absolute;top:18px;inset-inline-end:18px;font-size:.74rem;font-weight:600;padding:2px 11px;border-radius:999px;background:var(--blush-2);color:var(--plum-2);border:1px solid var(--rose)}
+.tst blockquote{margin:12px 0 16px;font-size:1.02rem;line-height:1.8}
+.tst figcaption{font-size:.84rem;color:var(--muted);padding-top:12px;border-top:1px solid var(--line)}
+.tst figcaption b{color:var(--plum);font-weight:600}
+
+/* location */
+.loc{background:var(--blush-2)}
+.loc-grid{display:grid;gap:28px}
+@media (min-width:960px){.loc-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:72px;row-gap:0;align-items:start}.loc-photo{grid-column:1;grid-row:1 / span 2;align-self:center}.loc-head{grid-column:2;grid-row:1}.loc-body{grid-column:2;grid-row:2}}
+.loc-photo{margin:0;margin-inline-start:auto;width:70%;max-width:400px;aspect-ratio:3/4;border-radius:50% 50% 22px 22px/37.5% 37.5% 22px 22px;overflow:hidden;background:var(--blush)}
+.loc-photo img{width:100%;height:100%;object-fit:cover;object-position:72% 50%}
+@media (min-width:960px){.loc-photo{width:100%;margin-inline-start:0}}
+.hours{list-style:none;margin:24px 0 0;padding:0;border-top:1px solid var(--line);max-width:520px}
+.hours li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--line);font-size:.95rem}
+.hours li>span:last-child{color:var(--muted)}
+.hours li.today{background:#fff;border-radius:14px;border-bottom-color:transparent;font-weight:600;color:var(--plum)}
+.hours li.today>span:last-child{color:var(--plum)}
+.today-tag{font-size:.7rem;font-weight:600;color:#fff;background:var(--plum);border-radius:999px;padding:1px 9px;margin-inline-start:8px;vertical-align:2px}
+.area{margin-top:24px;display:flex;gap:12px;align-items:flex-start}
+.area .ai{width:44px;height:44px;border-radius:50%;background:var(--plum);color:var(--gold-soft);display:grid;place-items:center;flex:0 0 auto}
+.area b{display:block;font-family:var(--f-display);font-weight:500;color:var(--plum);font-size:1.1rem;line-height:1.5}
+.area span{font-size:.9rem;color:var(--muted)}
+.loc .cta-row{margin-top:26px}
+
+/* footer */
+.foot{background:var(--plum-deep);color:#E9D6E0;padding:60px 0 36px}
+.foot :focus-visible{outline-color:var(--gold-soft)}
+.foot-grid{display:grid;gap:30px}
+@media (min-width:860px){.foot-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:end}}
+.foot .brand{color:#fff}
+.foot .brand small{color:#D5BCCB}
+.foot .brand svg{color:var(--gold-soft)}
+.foot-line{margin-top:14px;max-width:40ch;color:#D5BCCB;font-size:.95rem}
+.foot-act{display:grid;gap:16px;justify-items:start}
+@media (min-width:860px){.foot-act{justify-items:end}}
+.social{display:flex;gap:10px}
+.social a{width:44px;height:44px;border-radius:50%;border:1px solid rgba(230,207,166,.4);display:grid;place-items:center;color:var(--gold-soft);transition:background-color .2s ease}
+.social a:hover{background:rgba(255,255,255,.08)}
+.foot-bottom{margin-top:40px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.84rem;color:#CDB3C2}
+.foot-bottom a{color:#F1E2EA;text-underline-offset:3px}
+
+/* floating button */
+.fab{position:fixed;z-index:60;bottom:calc(14px + env(safe-area-inset-bottom,0px));inset-inline-end:14px;display:none;align-items:center;gap:8px;height:52px;padding:0 18px 0 20px;border-radius:999px;background:var(--plum);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;box-shadow:0 0 0 2px rgba(255,250,249,.85),0 16px 34px -12px rgba(46,18,40,.65);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease,visibility .25s}
+.fab.show{opacity:1;visibility:visible;transform:none}
+@media (max-width:959px){.fab{display:inline-flex}.foot{padding-bottom:96px}}
+
+/* load motion */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-copy>*{animation:rise .7s ease both}
+.hero-copy>*:nth-child(2){animation-delay:.05s}
+.hero-copy>*:nth-child(3){animation-delay:.1s}
+.hero-copy>*:nth-child(4){animation-delay:.15s}
+.hero-copy>*:nth-child(5){animation-delay:.2s}
+.hero-copy>*:nth-child(6){animation-delay:.25s}
+.hero-copy>*:nth-child(7){animation-delay:.3s}
+.hero-media{animation:rise .9s .15s ease both}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4.4 19.6l1.2-3.7A8.2 8.2 0 1 1 8.3 18.5z"/><path d="M9.3 8.4c.2-.4.5-.5.8-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .5-.1.6l-.5.6c.6 1.2 1.5 2.1 2.7 2.7l.6-.5c.2-.2.4-.2.6-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3-.2.6-.6.8-.6.3-1.6.4-2.9-.2a8.6 8.6 0 0 1-4.3-4.3c-.6-1.3-.5-2.3-.2-2.9z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4L19 7"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11" rx="2"/><path d="M3.5 13h17M12 9v11"/><path d="M12 9c-1.4-3.4-5.6-4.1-5.6-1.6 0 1.3 2.3 1.6 5.6 1.6zM12 9c1.4-3.4 5.6-4.1 5.6-1.6 0 1.3-2.3 1.6-5.6 1.6z"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M15.5 14.5h2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4.5 5.5h15v10h-9l-6 4z"/><path d="M8.5 10.5h7"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5l1.4 2.9 3.1.4-2.3 2.2.6 3.1-2.8-1.5-2.8 1.5.6-3.1-2.3-2.2 3.1-.4z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.3V4.5a1 1 0 0 1 1-1h7.8l8.2 8.2a1.4 1.4 0 0 1 0 2l-6.8 6.8a1.4 1.4 0 0 1-2 0z"/><circle cx="8" cy="8" r="1.5"/></symbol>
+  <symbol id="i-leafs" viewBox="0 0 24 24"><path d="M12 20.5c-4.5-1.6-7-5-7-9.5 3.6 0 6 1.6 7 4.3 1-2.7 3.4-4.3 7-4.3 0 4.5-2.5 7.9-7 9.5z"/><path d="M12 15.3V9.5M9.6 6.5c.6-1.6 1.4-2.6 2.4-3.3 1 .7 1.8 1.7 2.4 3.3"/></symbol>
+  <symbol id="i-dryer" viewBox="0 0 24 24"><path d="M15 6.5H9.5a4.5 4.5 0 1 0 0 9H15l5 2v-13z"/><circle cx="9.5" cy="11" r="1.6"/><path d="M10.5 15.5l-1.3 5h3l1-5"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z"/><path d="M9 14.5a3 3 0 0 0 3 3"/></symbol>
+  <symbol id="i-comb" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="5" rx="1.6"/><path d="M6 10v8.5M9 10v8.5M12 10v8.5M15 10v8.5M18 10v8.5"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M14.5 3.5l6 6-4.6 1.8-3.2-3.2z"/><path d="M12.7 8.1L4.3 16.5a2.2 2.2 0 0 0 3.2 3.2l8.4-8.4"/></symbol>
+  <symbol id="i-face" viewBox="0 0 24 24"><path d="M12 3.5c-4 0-6.5 3-6.5 7.2 0 4.5 3 9.8 6.5 9.8s6.5-5.3 6.5-9.8c0-4.2-2.5-7.2-6.5-7.2z"/><path d="M9.5 15.2c1.5 1 3.5 1 5 0M9 10.5h.01M15 10.5h.01"/></symbol>
+  <symbol id="i-polish" viewBox="0 0 24 24"><rect x="6.5" y="10" width="11" height="11" rx="2.8"/><path d="M9.5 10V6.5h5V10M11 6.5V3h2v3.5"/></symbol>
+  <symbol id="i-steam" viewBox="0 0 24 24"><path d="M3.5 13.5h17a8.5 7 0 0 1-17 0z"/><path d="M8.5 4c-.9 1.3.9 2.3 0 3.7M12 3c-.9 1.3.9 2.3 0 3.7M15.5 4c-.9 1.3.9 2.3 0 3.7"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8h.01"/></symbol>
+  <symbol id="i-snap" viewBox="0 0 24 24"><path d="M12 3.5c-3 0-5 2.2-5 5.2v2l-1.6.6c-.5.2-.5.8 0 1l1.5.6c-.5 1.6-1.6 2.8-3.1 3.4.3.8 1.4 1 2.4 1.1.2.6.3 1.1 1 1 1.2-.2 2.3 0 3.2.7.6.5 1 .8 1.6.8s1-.3 1.6-.8c.9-.7 2-.9 3.2-.7.7.1.8-.4 1-1 1-.1 2.1-.3 2.4-1.1-1.5-.6-2.6-1.8-3.1-3.4l1.5-.6c.5-.2.5-.8 0-1l-1.6-.6v-2c0-3-2-5.2-5-5.2z"/></symbol>
+  <symbol id="i-tt" viewBox="0 0 24 24"><path d="M14 3.5v11a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3.5c.4 2.6 2.2 4.3 5 4.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M4.5 4.5h4.2l10.8 15h-4.2z"/><path d="M19.2 4.5l-6.3 6.8M11 12.8l-6.3 6.7"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M10.5 6.5C7.3 7.4 5 9.9 5 13.6v3.9h5v-5H7.3c.3-2 1.5-3.3 3.7-4zM19.5 6.5c-3.2.9-5.5 3.4-5.5 7.1v3.9h5v-5h-2.7c.3-2 1.5-3.3 3.7-4z"/></symbol>
+  <symbol id="mark" viewBox="0 0 28 36"><path d="M3 34.5V14a11 11 0 0 1 22 0v20.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 34.5V15.5a5.5 5.5 0 0 1 11 0v19" fill="none" stroke="#BE9157" stroke-width="1.3"/><circle cx="14" cy="27" r="1.6" fill="#BE9157"/></symbol>
+</svg>
+
+<a class="skip" href="#main">تخطى إلى المحتوى</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="لمسة، الرجوع لأعلى الصفحة">
+      <svg aria-hidden="true"><use href="#mark"/></svg>
+      <span><b>لمسة</b><small>مشغل وصالون نسائي</small></span>
+    </a>
+    <nav class="nav" aria-label="أقسام الصفحة">
+      <a href="#services">الخدمات</a>
+      <a href="#packages">الباقات</a>
+      <a href="#points">النقاط</a>
+      <a href="#gift">الإهداء</a>
+      <a href="#how">الحجز</a>
+      <a href="#visit">الموقع</a>
+    </nav>
+    <span class="chip" aria-live="polite"><span class="dot" data-dot></span><span data-short>يوميًا من 10 الصبح</span></span>
+    <a class="btn btn-primary top-cta" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="demo-badge">تصميم تجريبي من المناوب</span>
+        <p class="kicker">مشغل وصالون نسائي · الرياض</p>
+        <h1 id="hero-title">وقتك عندنا،<span class="soft">والتفاصيل علينا</span></h1>
+        <p class="lead">شعر وبشرة وأظافر بأيدي خبيرات، وحجزك كله من الواتساب بدقيقة.</p>
+        <span class="chip"><span class="dot" data-dot></span><span data-long>يوميًا 10 الصبح إلى 11 الليل · الجمعة من 4 العصر</span></span>
+        <div class="cta-row" data-hide-fab>
+          <a class="btn btn-primary" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+          <a class="btn btn-ghost" href="https://maps.google.com/?q=الرياض" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>موقعنا على قوقل ماب</a>
+        </div>
+        <ul class="facts">
+          <li><b class="num">7</b>خدمات بأسعار واضحة</li>
+          <li><b class="num">3</b>باقات توفّر عليك</li>
+          <li><b>تذكير</b>قبل كل موعد</li>
+        </ul>
+      </div>
+      <div class="hero-media">
+        <span class="arch-ghost" aria-hidden="true"></span>
+        <figure class="arch">
+          <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=70" alt="شعر طويل مموج من الخلف أمام جدار وردي" width="900" height="1200" fetchpriority="high">
+        </figure>
+        <figure class="orb">
+          <img src="https://images.unsplash.com/photo-1612887390768-fb02affea7a6?auto=format&fit=crop&w=1200&q=70" alt="يد بأظافر وردية لامعة" width="600" height="600">
+        </figure>
+        <div class="confirm" aria-hidden="true">
+          <span class="ck"><svg class="ic"><use href="#i-check"/></svg></span>
+          <span><small>تم تأكيد موعدك</small><b>سشوار · الخميس <span class="num">7:30</span> م</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="services" aria-labelledby="svc-title">
+    <div class="wrap svc-wrap">
+      <div class="svc-aside">
+        <div class="sec-head">
+          <p class="eyebrow"><span class="num">01</span>الخدمات</p>
+          <h2 id="svc-title">كل خدمة بسعرها ووقتها</h2>
+          <p class="sub">أسعار واضحة من البداية، وكل خدمة مكتوب وش تشمل وكم تاخذ من وقتك.</p>
+        </div>
+        <figure class="svc-photo">
+          <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=70" alt="فرش مكياج وردية مع أحمر شفاه وبودرة" width="800" height="1000">
+        </figure>
+        <p class="svc-note"><svg class="ic" aria-hidden="true"><use href="#i-leafs"/></svg>منتجات أصلية، وأدوات معقمة لكل عميلة.</p>
+      </div>
+
+      <div class="svc-body">
+        <div class="filters" role="group" aria-label="تصفية الخدمات">
+          <button type="button" data-f="all" aria-pressed="true">الكل</button>
+          <button type="button" data-f="hair" aria-pressed="false">الشعر</button>
+          <button type="button" data-f="face" aria-pressed="false">المكياج والبشرة</button>
+          <button type="button" data-f="body" aria-pressed="false">الأظافر والجسم</button>
+        </div>
+
+        <div class="svc-list">
+          <article class="svc" data-cat="hair">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-dryer"/></svg></span>
+              <div class="svc-name"><h3>سشوار</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><span class="num">45</span> دقيقة</p></div>
+              <p class="price"><b class="num">80</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>غسيل بشامبو يناسب نوع شعرك</li><li>سشوار ناعم أو ويفي حسب طلبك</li><li>سيروم لمعان وحماية من الحرارة</li></ul>
+          </article>
+
+          <article class="svc" data-cat="hair">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-drop"/></svg></span>
+              <div class="svc-name"><h3>صبغة شعر</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>ساعتين</p></div>
+              <p class="price"><small>يبدأ من</small><b class="num">250</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>استشارة لون قبل البدء</li><li>صبغة لطيفة على الشعر والفروة</li><li>غسيل وسشوار بعد الصبغة</li></ul>
+          </article>
+
+          <article class="svc" data-cat="face">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-brush"/></svg></span>
+              <div class="svc-name"><h3>مكياج سهرة</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>ساعة ونص</p></div>
+              <p class="price"><b class="num">350</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>تحضير وترطيب البشرة قبل المكياج</li><li>رموش جاهزة مع المكياج</li><li>تثبيت يدوم لآخر الليل</li></ul>
+          </article>
+
+          <figure class="svc-tile">
+            <img src="https://images.unsplash.com/photo-1741896136069-f3588d8993b5?auto=format&fit=crop&w=1200&q=70" alt="عبوات سيروم للعناية بالبشرة على خلفية وردية" width="1200" height="800">
+            <figcaption><b>عناية تناسب بشرتك</b>نختار المنتج بعد ما نشوف نوع البشرة.</figcaption>
+          </figure>
+
+          <article class="svc" data-cat="face">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg></span>
+              <div class="svc-name"><h3>تنظيف بشرة</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>ساعة</p></div>
+              <p class="price"><b class="num">180</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>تنظيف عميق وإزالة الرؤوس السوداء</li><li>ماسك حسب نوع البشرة</li><li>ترطيب وواقي شمس بالنهاية</li></ul>
+          </article>
+
+          <article class="svc" data-cat="body">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-polish"/></svg></span>
+              <div class="svc-name"><h3>أظافر جل</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>ساعة</p></div>
+              <p class="price"><b class="num">120</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>تنظيف الجلدة وتشكيل الأظافر</li><li>أكثر من <span class="num">60</span> لون تختار منها</li><li>زيت مغذي للأظافر</li></ul>
+          </article>
+
+          <article class="svc" data-cat="body">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-steam"/></svg></span>
+              <div class="svc-name"><h3>حمام مغربي</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>ساعة ونص</p></div>
+              <p class="price"><b class="num">200</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>صابون بلدي وتقشير بالكيس</li><li>ماسك طين للجسم</li><li>ترطيب وشاي بعد الجلسة</li></ul>
+          </article>
+
+          <article class="svc" data-cat="hair">
+            <div class="svc-top">
+              <span class="svc-ic"><svg class="ic" aria-hidden="true"><use href="#i-comb"/></svg></span>
+              <div class="svc-name"><h3>تسريحة</h3><p class="dur"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>ساعة</p></div>
+              <p class="price"><b class="num">150</b><span>ر.س</span></p>
+            </div>
+            <p class="incl-label">وش يشمل</p>
+            <ul class="incl"><li>تسريحة تناسب المناسبة واللبس</li><li>تثبيت يدوم للسهرة</li><li>إكسسوار شعر عند الطلب</li></ul>
+          </article>
+        </div>
+
+        <div class="extras">
+          <h3>إضافات على أي خدمة</h3>
+          <span>ماسك شعر <b class="num">60</b> ر.س</span>
+          <span>رموش <b class="num">70</b> ر.س</span>
+          <span>رسم حواجب <b class="num">40</b> ر.س</span>
+          <span>بارافين لليدين <b class="num">50</b> ر.س</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec packs" id="packages" aria-labelledby="pk-title">
+    <svg class="deco" viewBox="0 0 420 620" aria-hidden="true"><path d="M20 620V210a190 190 0 0 1 380 0v410" fill="none" stroke="currentColor"/><path d="M70 620V220a140 140 0 0 1 280 0v400" fill="none" stroke="currentColor"/></svg>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow"><span class="num">02</span>الباقات</p>
+        <h2 id="pk-title">باقات تريّحك وتوفّر عليك</h2>
+        <p class="sub">تدفع مرة وحدة، وتستخدم الباقة على راحتك خلال مدتها.</p>
+      </div>
+
+      <div class="pk-grid">
+        <article class="pk">
+          <h3>باقة الصديقات</h3>
+          <p class="for">لثلاث أشخاص بنفس الموعد</p>
+          <ul>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span><span class="num">3</span> سشوار</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span><span class="num">3</span> أظافر جل</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>ضيافة قهوة وحلا</span></li>
+          </ul>
+          <div class="pk-price"><b class="num">499</b><span class="cur">ر.س</span><del class="num">600 ر.س</del></div>
+          <span class="save"><svg class="ic" aria-hidden="true" style="width:16px;height:16px"><use href="#i-tag"/></svg>توفّر <span class="num">101</span> ر.س</span>
+          <p class="small">تُستخدم خلال <span class="num">30</span> يوم</p>
+          <a class="btn btn-ghost btn-block" href="../sim.html?demo=1">اطلب الباقة</a>
+        </article>
+
+        <article class="pk feat">
+          <span class="ribbon">الأكثر طلبًا</span>
+          <h3>الباقة الشهرية للعناية</h3>
+          <p class="for">لمن تحب تكون مرتبة طول الشهر</p>
+          <ul>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span><span class="num">4</span> سشوار كل شهر</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>تنظيف بشرة</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>أظافر جل</span></li>
+          </ul>
+          <div class="pk-price"><b class="num">469</b><span class="cur">ر.س بالشهر</span><del class="num">620 ر.س</del></div>
+          <span class="save"><svg class="ic" aria-hidden="true" style="width:16px;height:16px"><use href="#i-tag"/></svg>توفّر <span class="num">151</span> ر.س كل شهر</span>
+          <p class="small">تتجدد كل شهر، وتوقفها متى ما تبي</p>
+          <a class="btn btn-gold btn-block" href="../sim.html?demo=1">اطلب الباقة</a>
+        </article>
+
+        <article class="pk">
+          <h3>باقة العروس</h3>
+          <p class="for">كل تجهيزات الزواج عند وحدة</p>
+          <ul>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>مكياج العروس مع جلسة تجربة</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>تسريحة العروس</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>حمام مغربي وتنظيف بشرة</span></li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>أظافر جل</span></li>
+          </ul>
+          <div class="pk-price"><b class="num">1,499</b><span class="cur">ر.س</span><del class="num">1,850 ر.س</del></div>
+          <span class="save"><svg class="ic" aria-hidden="true" style="width:16px;height:16px"><use href="#i-tag"/></svg>توفّر <span class="num">351</span> ر.س</span>
+          <p class="small">تتوزع على أيام قبل الزواج</p>
+          <a class="btn btn-ghost btn-block" href="../sim.html?demo=1">اطلب الباقة</a>
+        </article>
+      </div>
+
+      <div class="balance">
+        <span class="bi"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span>
+        <div>
+          <strong>الرصيد ينخصم لحاله مع كل حجز</strong>
+          <p>وبعد كل زيارة توصلك رسالة واتساب فيها كم باقي من باقتك.</p>
+        </div>
+        <div class="meter" aria-label="مثال: باقي 3 سشوار من 4">
+          <span>سشوار</span>
+          <span class="pills" aria-hidden="true"><i class="used"></i><i></i><i></i><i></i></span>
+          <span>باقي <b class="num" style="color:var(--plum)">3</b> من <span class="num">4</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="points" aria-labelledby="pt-title">
+    <div class="wrap pts-grid">
+        <div class="sec-head pts-head">
+          <p class="eyebrow"><span class="num">03</span>نقاط الولاء</p>
+          <h2 id="pt-title">كل زيارة ترجع لك</h2>
+          <p class="sub">النقاط تنحسب لحالها مع كل حجز، وتشوف رصيدك برسالة الواتساب.</p>
+        </div>
+      <div class="pts-visual">
+        <div class="pcard" role="img" aria-label="مثال لبطاقة نقاط: 1,240 نقطة بمستوى وردة، تساوي 120 ريال خصم">
+          <svg class="lines" viewBox="0 0 220 260" aria-hidden="true"><path d="M10 260V110a100 100 0 0 1 200 0v150" fill="none" stroke="currentColor"/><path d="M45 260V115a65 65 0 0 1 130 0v145" fill="none" stroke="currentColor"/></svg>
+          <div class="pc-top"><span>بطاقة نقاط لمسة</span><span class="lvl">مستوى وردة</span></div>
+          <div class="pc-num"><b class="num">1,240</b><span>نقطة</span></div>
+          <p class="pc-worth">تساوي <span class="num">120</span> ر.س خصم على حجزك الجاي</p>
+          <div class="pc-bar">
+            <div class="labels"><span>وردة</span><span>ذهبية</span></div>
+            <div class="track"><i></i></div>
+            <small>باقي <span class="num">1,760</span> نقطة على المستوى الذهبي</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="pts-body">
+        <div class="rules">
+          <div class="rule"><span class="ri"><svg class="ic" aria-hidden="true"><use href="#i-coin"/></svg></span><div><b>نقطة لكل ريال</b><span>على كل الخدمات والباقات</span></div></div>
+          <div class="rule"><span class="ri"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg></span><div><b><span class="num">100</span> نقطة = <span class="num">10</span> ر.س</b><span>خصم تستخدمه وقت ما تحجز</span></div></div>
+        </div>
+        <ul class="levels" aria-label="مستويات العضوية">
+          <li><span class="sw" style="background:var(--rose)"></span><b>بتلة</b><span class="th">من أول زيارة</span><span class="pk2">نقطة لكل ريال</span></li>
+          <li><span class="sw" style="background:var(--plum-2)"></span><b>وردة</b><span class="th">من <span class="num">1,000</span> نقطة</span><span class="pk2">نقاط مضاعفة بشهر ميلادك</span></li>
+          <li><span class="sw" style="background:var(--gold)"></span><b>ذهبية</b><span class="th">من <span class="num">3,000</span> نقطة</span><span class="pk2"><span class="num">1.5</span> نقطة لكل ريال وأولوية بالمواعيد</span></li>
+        </ul>
+        <div class="calc">
+          <label for="spend"><span>لو تصرف بالشهر</span><output for="spend" id="spendOut" class="num">450 ر.س</output></label>
+          <input type="range" id="spend" min="100" max="2000" step="50" value="450">
+          <div class="res" aria-live="polite">
+            <span>تجمع <b class="num" id="ptsMonth">450</b> نقطة بالشهر</span>
+            <span>وخلال سنة <b class="num" id="ptsYear">540</b> ر.س خصم</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec gift" id="gift" aria-labelledby="gf-title">
+    <svg class="deco" viewBox="0 0 380 560" aria-hidden="true"><path d="M20 560V190a170 170 0 0 1 340 0v370" fill="none" stroke="currentColor"/><path d="M65 560V200a125 125 0 0 1 250 0v360" fill="none" stroke="currentColor"/></svg>
+    <div class="wrap gift-grid">
+        <div class="sec-head gift-head">
+          <p class="eyebrow"><span class="num">04</span>الإهداء</p>
+          <h2 id="gf-title">هدية تفرّح، وتوصل بالواتساب</h2>
+          <p class="sub">اختر الخدمة أو الباقة، ونرسلها باسمك برسالة فيها رمز الهدية.</p>
+        </div>
+      <div class="gcard-wrap">
+        <div class="gcard" aria-live="polite">
+          <div class="gc-top">
+            <span class="gc-brand"><svg aria-hidden="true"><use href="#mark"/></svg>هدية من لمسة</span>
+            <span class="gc-code num">LMS 2410</span>
+          </div>
+          <p class="gc-label">الهدية</p>
+          <h3 class="gc-name" id="gName">حمام مغربي</h3>
+          <p class="gc-val">بقيمة <b class="num" id="gPrice">200</b> ر.س</p>
+          <div class="gc-to"><span>إلى: <b id="gTo">شخص غالي</b></span><span class="num" style="color:var(--muted)">صالحة 6 شهور</span></div>
+          <p class="gc-msg">يومك لك، والموعد على كيفك.</p>
+          <span class="seal" aria-hidden="true"><svg><use href="#mark"/></svg></span>
+        </div>
+      </div>
+
+      <div class="gift-body">
+        <form id="giftForm" onsubmit="return false">
+          <fieldset class="opts">
+            <legend>اختر الهدية</legend>
+            <div class="row">
+              <label class="opt"><input type="radio" name="g" value="حمام مغربي|200" checked><span>حمام مغربي <em class="num">200</em></span></label>
+              <label class="opt"><input type="radio" name="g" value="تنظيف بشرة|180"><span>تنظيف بشرة <em class="num">180</em></span></label>
+              <label class="opt"><input type="radio" name="g" value="أظافر جل|120"><span>أظافر جل <em class="num">120</em></span></label>
+              <label class="opt"><input type="radio" name="g" value="مكياج سهرة|350"><span>مكياج سهرة <em class="num">350</em></span></label>
+              <label class="opt"><input type="radio" name="g" value="الباقة الشهرية|469"><span>الباقة الشهرية <em class="num">469</em></span></label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="giftTo">اسم اللي بتهديه</label>
+            <input id="giftTo" type="text" maxlength="24" autocomplete="off" placeholder="مثلًا: أختي الغالية">
+          </div>
+          <div>
+            <a class="btn btn-primary" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-gift"/></svg>أرسل الهدية بالواتساب</a>
+          </div>
+          <p class="gift-steps">
+            <span><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>تختار وتدفع</span>
+            <span><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>توصل الهدية برسالة</span>
+            <span><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>يحجز موعده بنفسه</span>
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec book" id="how" aria-labelledby="bk-title">
+    <svg class="deco" viewBox="0 0 420 620" aria-hidden="true"><path d="M20 620V210a190 190 0 0 1 380 0v410" fill="none" stroke="currentColor"/><path d="M70 620V220a140 140 0 0 1 280 0v400" fill="none" stroke="currentColor"/></svg>
+    <div class="wrap book-grid">
+      <div>
+        <div class="sec-head">
+          <p class="eyebrow"><span class="num">05</span>كيف تحجز</p>
+          <h2 id="bk-title">ثلاث خطوات، وكلها بالواتساب</h2>
+          <p class="sub">بدون اتصالات ولا انتظار رد، مساعد الحجز يرد عليك على طول.</p>
+        </div>
+        <ol class="steps">
+          <li><span class="n"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg></span><div><b>ترسل</b><p>ترسل «هلا» على رقمنا بالواتساب.</p></div></li>
+          <li><span class="n"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg></span><div><b>تختار الموعد</b><p>تختار الخدمة واليوم والساعة من الأوقات الفاضية.</p></div></li>
+          <li><span class="n"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></span><div><b>يوصلك التأكيد والتذكير</b><p>تأكيد فوري، وتذكير قبل موعدك بساعتين.</p></div></li>
+        </ol>
+        <a class="btn btn-gold" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+      </div>
+
+      <div class="chat" role="img" aria-label="مثال محادثة حجز سشوار على الواتساب">
+        <div class="chat-h">
+          <span class="av"><svg aria-hidden="true"><use href="#mark"/></svg></span>
+          <div><b>لمسة</b><small>مساعد الحجز</small></div>
+        </div>
+        <div class="msgs" aria-hidden="true">
+          <div class="b me">هلا، أبي موعد سشوار<time class="num">7:02 م</time></div>
+          <div class="b">هلا والله! أي يوم يناسبك؟<div class="qr"><span>الأربعاء</span><span>الخميس</span></div><time class="num">7:02 م</time></div>
+          <div class="b me">الخميس <span class="num">7:30</span> المسا<time class="num">7:03 م</time></div>
+          <div class="b ok"><strong><svg class="ic"><use href="#i-check"/></svg>تم الحجز</strong>سشوار · الخميس <span class="num">7:30</span> م. نذكرك قبل الموعد بساعتين.<time class="num">7:03 م</time></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="reviews" aria-labelledby="rv-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow"><span class="num">06</span>آراء العملاء</p>
+        <h2 id="rv-title">وش قالوا عن لمسة</h2>
+      </div>
+      <div class="tst-grid">
+        <figure class="tst">
+          <span class="tag-ex">مثال</span>
+          <svg class="ic q" aria-hidden="true"><use href="#i-quote"/></svg>
+          <blockquote>حجزت من الواتساب بأقل من دقيقة، ووصلني تذكير قبل الموعد. والسشوار ثبت لين آخر الليل.</blockquote>
+          <figcaption><b>عميلة من الرياض</b> · سشوار</figcaption>
+        </figure>
+        <figure class="tst">
+          <span class="tag-ex">مثال</span>
+          <svg class="ic q" aria-hidden="true"><use href="#i-quote"/></svg>
+          <blockquote>مشتركة بالباقة الشهرية، وبعد كل زيارة توصلني رسالة فيها كم باقي من رصيدي.</blockquote>
+          <figcaption><b>عميلة من حي النرجس</b> · الباقة الشهرية</figcaption>
+        </figure>
+        <figure class="tst">
+          <span class="tag-ex">مثال</span>
+          <svg class="ic q" aria-hidden="true"><use href="#i-quote"/></svg>
+          <blockquote>أهديت أختي حمام مغربي، وصلتها الهدية برسالة حلوة وحجزت موعدها بنفسها.</blockquote>
+          <figcaption><b>عميلة من حي الملقا</b> · إهداء</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec loc" id="visit" aria-labelledby="vs-title">
+    <div class="wrap loc-grid">
+        <div class="sec-head loc-head">
+          <p class="eyebrow"><span class="num">07</span>الأوقات والموقع</p>
+          <h2 id="vs-title">حياكم في حي الياسمين</h2>
+        </div>
+      <figure class="loc-photo">
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=70" alt="منشفة مطوية وعبوة كريم وشمعة بجانب زهور توليب وردية" width="900" height="1200">
+      </figure>
+      <div class="loc-body">
+        <ul class="hours" aria-label="أوقات العمل">
+          <li data-d="6"><span>السبت</span><span class="num">10:00 ص إلى 11:00 م</span></li>
+          <li data-d="0"><span>الأحد</span><span class="num">10:00 ص إلى 11:00 م</span></li>
+          <li data-d="1"><span>الاثنين</span><span class="num">10:00 ص إلى 11:00 م</span></li>
+          <li data-d="2"><span>الثلاثاء</span><span class="num">10:00 ص إلى 11:00 م</span></li>
+          <li data-d="3"><span>الأربعاء</span><span class="num">10:00 ص إلى 11:00 م</span></li>
+          <li data-d="4"><span>الخميس</span><span class="num">10:00 ص إلى 11:00 م</span></li>
+          <li data-d="5"><span>الجمعة</span><span class="num">4:00 م إلى 11:00 م</span></li>
+        </ul>
+        <div class="area">
+          <span class="ai"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg></span>
+          <div><b>الرياض، حي الياسمين</b><span>طريق أنس بن مالك · مدخل خاص ومواقف قدام الباب</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-ghost" href="https://maps.google.com/?q=الرياض" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>افتح الخريطة</a>
+          <a class="btn btn-primary" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" data-hide-fab>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top" aria-label="لمسة، الرجوع لأعلى الصفحة">
+          <svg aria-hidden="true"><use href="#mark"/></svg>
+          <span><b>لمسة</b><small>مشغل وصالون نسائي · الرياض</small></span>
+        </a>
+        <p class="foot-line">شعر، بشرة، أظافر وتجهيز مناسبات. الحجز والباقات والنقاط كلها من الواتساب.</p>
+      </div>
+      <div class="foot-act">
+        <a class="btn btn-gold" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+        <div class="social">
+          <a href="#" aria-label="انستقرام"><svg class="ic" aria-hidden="true"><use href="#i-ig"/></svg></a>
+          <a href="#" aria-label="سناب شات"><svg class="ic" aria-hidden="true"><use href="#i-snap"/></svg></a>
+          <a href="#" aria-label="تيك توك"><svg class="ic" aria-hidden="true"><use href="#i-tt"/></svg></a>
+          <a href="#" aria-label="إكس"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>لمسة · الرياض</span>
+      <a href="https://unsplash.com" target="_blank" rel="noopener">الصور من Unsplash</a>
+      <a href="../">يعمل بالمناوب</a>
+    </div>
+  </div>
+</footer>
+
+<a class="fab" href="../sim.html?demo=1" aria-label="احجز على الواتساب"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>احجز</a>
+
+<script>
+(function(){
+  var fmt = function(n){ return Number(n).toLocaleString('en-US'); };
+
+  /* hours status (Riyadh time) */
+  var d, h, m;
+  try {
+    var p = new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Riyadh',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+    var g = function(t){ for (var i=0;i<p.length;i++){ if(p[i].type===t) return p[i].value; } return ''; };
+    d = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(g('weekday')); h = parseInt(g('hour'),10) % 24; m = parseInt(g('minute'),10);
+    if (d < 0 || isNaN(h)) throw 0;
+  } catch(e){ var n = new Date(); d = n.getDay(); h = n.getHours(); m = n.getMinutes(); }
+  var openAt = function(day){ return day === 5 ? 16 : 10; };
+  var label = function(hr){ return hr === 16 ? '4 العصر' : '10 الصبح'; };
+  var t = h + m/60, longTxt, shortTxt, isOpen = false;
+  if (t >= openAt(d) && t < 23){ isOpen = true; longTxt = 'مفتوح الحين · نسكّر 11 الليل'; shortTxt = 'مفتوح الحين'; }
+  else if (t < openAt(d)){ longTxt = 'مسكّر الحين · نفتح اليوم ' + label(openAt(d)); shortTxt = 'نفتح ' + label(openAt(d)); }
+  else { var nd = (d+1)%7; longTxt = 'مسكّر الحين · نفتح بكرة ' + label(openAt(nd)); shortTxt = 'نفتح بكرة ' + label(openAt(nd)); }
+  document.querySelectorAll('[data-long]').forEach(function(el){ el.textContent = longTxt; });
+  document.querySelectorAll('[data-short]').forEach(function(el){ el.textContent = shortTxt; });
+  document.querySelectorAll('[data-dot]').forEach(function(el){ el.classList.toggle('closed', !isOpen); });
+  var row = document.querySelector('.hours li[data-d="'+d+'"]');
+  if (row){ row.classList.add('today'); var tag = document.createElement('span'); tag.className = 'today-tag'; tag.textContent = 'اليوم'; row.firstElementChild.appendChild(tag); }
+
+  /* service filters */
+  var btns = document.querySelectorAll('.filters button');
+  var cards = document.querySelectorAll('.svc');
+  var tile = document.querySelector('.svc-tile');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var f = b.getAttribute('data-f');
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      cards.forEach(function(c){ c.hidden = !(f === 'all' || c.getAttribute('data-cat') === f); });
+      if (tile) tile.hidden = f !== 'all';
+    });
+  });
+
+  /* points calculator */
+  var spend = document.getElementById('spend');
+  var upd = function(){
+    var s = parseInt(spend.value,10);
+    document.getElementById('spendOut').textContent = fmt(s) + ' ر.س';
+    document.getElementById('ptsMonth').textContent = fmt(s);
+    document.getElementById('ptsYear').textContent = fmt(Math.floor(s*12/100)*10);
+  };
+  spend.addEventListener('input', upd); upd();
+
+  /* gift preview */
+  var gName = document.getElementById('gName'), gPrice = document.getElementById('gPrice'), gTo = document.getElementById('gTo');
+  document.querySelectorAll('input[name="g"]').forEach(function(r){
+    r.addEventListener('change', function(){ var v = r.value.split('|'); gName.textContent = v[0]; gPrice.textContent = fmt(v[1]); });
+  });
+  document.getElementById('giftTo').addEventListener('input', function(e){ var v = e.target.value.trim(); gTo.textContent = v || 'شخص غالي'; });
+
+  /* floating booking button: hidden while another booking button or the footer is on screen */
+  var fab = document.querySelector('.fab');
+  if ('IntersectionObserver' in window){
+    var seen = new Set();
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
+      fab.classList.toggle('show', seen.size === 0);
+    });
+    document.querySelectorAll('[data-hide-fab], main a[href*="sim.html"]').forEach(function(el){ io.observe(el); });
+  } else { fab.classList.add('show'); }
+})();
+</script>
+</body>
+</html>

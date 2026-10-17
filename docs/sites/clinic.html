@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ابتسامة · عيادة أسنان في الخبر</title>
+<meta name="description" content="عيادة ابتسامة لطب الأسنان في الخبر: كشف وتنظيف وتبييض وحشوات وأسنان الأطفال، احجز موعدك على الواتساب.">
+<meta name="theme-color" content="#E9F5F1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#FFFFFF;
+  --tint:#F3F9F7;
+  --mint:#E9F5F1;
+  --mint-2:#D5EDE6;
+  --line:#DCE9E5;
+  --ink:#0E2240;
+  --ink-2:#2B3F5C;
+  --muted:#56677D;
+  --teal:#0B7A70;
+  --teal-d:#08655D;
+  --teal-2:#15A394;
+  --teal-soft:#A9DDD3;
+  --amber:#E2A33A;
+  --navy-2:#13335A;
+  --r-lg:28px;
+  --r:22px;
+  --r-sm:14px;
+  --shadow:0 1px 2px rgba(14,34,64,.05),0 10px 30px -12px rgba(14,34,64,.16);
+  --shadow-lg:0 2px 4px rgba(14,34,64,.06),0 24px 50px -20px rgba(14,34,64,.28);
+  --head:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --body:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:84px;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.75;overflow-x:clip;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+svg{flex-shrink:0}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--head);margin:0;line-height:1.32;font-weight:600;color:var(--ink)}
+p{margin:0;text-wrap:pretty}
+ul,ol{margin:0;padding:0;list-style:none}
+button,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--teal-2);outline-offset:3px;border-radius:10px}
+.skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;text-decoration:none;font-weight:600}
+.skip:focus{top:12px}
+.wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+@media (min-width:768px){.wrap{width:min(1180px,100% - 56px)}}
+section{position:relative}
+.sec{padding-block:clamp(60px,8vw,104px)}
+.sec.tint{background:var(--tint)}
+.hero + .sec{padding-top:clamp(24px,4vw,44px)}
+
+/* section heads: start aligned, two columns on wide screens */
+.head{display:grid;gap:12px;margin-bottom:clamp(28px,4vw,46px)}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--teal);font-weight:600;font-size:14.5px;font-family:var(--head)}
+.eyebrow svg{width:30px;height:12px;color:var(--teal-2)}
+.head h2{font-size:clamp(27px,3.7vw,41px);font-weight:600;text-wrap:balance}
+.head p{color:var(--muted);font-size:clamp(16px,1.6vw,18px);max-width:52ch}
+@media (min-width:920px){
+  .head{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:end;column-gap:48px}
+  .head .t{display:grid;gap:12px}
+  .head p{padding-bottom:6px}
+}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:12px 24px;border-radius:999px;font-family:var(--head);font-weight:500;font-size:16px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;line-height:1.3;text-align:center}
+.btn svg{width:21px;height:21px}
+.btn-primary{background:var(--teal);color:#fff;box-shadow:0 10px 24px -12px rgba(11,122,112,.7)}
+.btn-primary:hover{background:var(--teal-d)}
+.btn-ghost{background:#fff;color:var(--ink);border-color:var(--mint-2)}
+.btn-ghost:hover{border-color:var(--teal-2)}
+.btn-light{background:#fff;color:var(--ink)}
+.btn-light:hover{background:var(--mint)}
+.btn-block{width:100%}
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+  .btn,.card,.chip,.opt,.fab{transition:background-color .2s,border-color .2s,transform .25s,box-shadow .25s,opacity .25s}
+  .card.lift:hover{transform:translateY(-3px)}
+}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid rgba(220,233,229,.8)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.brand svg{width:40px;height:40px}
+.brand b{display:block;font-family:var(--head);font-weight:700;font-size:20px;line-height:1.1;color:var(--ink)}
+.brand small{display:block;font-size:12.5px;color:var(--muted);line-height:1.3;margin-top:3px}
+.nav{display:none;gap:4px}
+.nav a{text-decoration:none;color:var(--ink-2);font-size:15px;font-weight:500;padding:8px 12px;border-radius:999px}
+.nav a:hover{background:var(--mint);color:var(--ink)}
+.top-cta{display:none;min-height:44px;padding:8px 18px;font-size:15px}
+@media (min-width:600px){.top-cta{display:inline-flex}}
+@media (min-width:1000px){.nav{display:flex}}
+
+/* hero */
+.hero{background:var(--mint);padding-block:26px clamp(84px,10vw,128px);overflow:clip}
+.hero-grid{display:grid;gap:34px;position:relative;z-index:1}
+@media (min-width:960px){.hero-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center;padding-top:20px}}
+.demo-badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink-2);background:rgba(255,255,255,.7);border:1.5px dashed #9CCFC4;border-radius:999px;padding:5px 12px 5px 14px}
+.demo-badge i{width:7px;height:7px;border-radius:50%;background:var(--teal-2);display:block}
+.hero-copy{display:grid;gap:20px;justify-items:start}
+.kicker{font-family:var(--head);font-weight:500;color:var(--teal);font-size:15.5px}
+.hero h1{font-size:clamp(34px,5.5vw,60px);line-height:1.28;font-weight:600;text-wrap:balance}
+.nw{white-space:nowrap}
+.sw{position:relative;display:inline-block;color:var(--teal);white-space:nowrap}
+.sw svg{position:absolute;inset-inline:0;bottom:-.16em;width:100%;height:.34em;color:var(--teal-2)}
+.hero-sub{font-size:clamp(16.5px,1.8vw,19px);color:var(--ink-2);max-width:46ch}
+.hours-chip{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px 7px 12px;font-size:14.5px;color:var(--ink-2);box-shadow:0 4px 14px -8px rgba(14,34,64,.25)}
+.hours-chip svg{width:18px;height:18px;color:var(--teal)}
+.hours-chip .dot{width:9px;height:9px;border-radius:50%;background:var(--teal-2);box-shadow:0 0 0 4px rgba(21,163,148,.18)}
+.hours-chip.closed .dot{background:var(--amber);box-shadow:0 0 0 4px rgba(226,163,58,.2)}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px;width:100%}
+@media (max-width:520px){.hero-btns .btn{width:100%}}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;padding-top:4px}
+.facts li{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--ink-2)}
+.facts svg{width:20px;height:20px;color:var(--teal)}
+
+.hero-media{position:relative;padding-bottom:6px}
+.hero-photo{position:relative;border-radius:30px 30px 50% 50% / 30px 30px 15% 15%;overflow:hidden;aspect-ratio:4/3.3;background:#dfeee9;box-shadow:var(--shadow-lg)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+@media (min-width:960px){.hero-photo{aspect-ratio:4/4.7;max-height:600px}}
+.ring{position:absolute;width:62%;aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(21,163,148,.35);inset-inline-start:-14%;top:-10%;z-index:-1}
+.confirm{position:absolute;inset-inline-end:12px;bottom:14px;width:min(264px,calc(100% - 24px));background:#fff;border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-lg);display:grid;gap:6px;font-size:14px}
+@media (min-width:960px){.confirm{inset-inline-end:-22px;bottom:54px}}
+.confirm .row{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12.5px}
+.confirm .row svg{width:16px;height:16px;color:#1FA855}
+.confirm b{font-family:var(--head);font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:8px}
+.confirm b svg{width:18px;height:18px;color:var(--teal);background:var(--mint);border-radius:50%;padding:2px}
+.confirm .meta{color:var(--ink-2)}
+.confirm .note{color:var(--muted);font-size:12.5px;border-top:1px dashed var(--line);padding-top:7px;margin-top:2px}
+.hero-curve{position:absolute;inset-inline:0;bottom:-1px;width:100%;height:clamp(44px,6.5vw,92px);color:var(--bg);z-index:0}
+.hero-arc{position:absolute;width:140%;height:auto;inset-inline-start:-20%;top:56%;color:rgba(21,163,148,.1);z-index:0;pointer-events:none}
+
+/* about */
+.about-grid{display:grid;gap:30px}
+@media (min-width:960px){.about-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}}
+.mosaic{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto;gap:12px}
+.mosaic figure{margin:0;border-radius:var(--r);overflow:hidden;background:var(--mint)}
+.mosaic img{width:100%;height:100%;object-fit:cover}
+.mosaic .m1{grid-row:span 2;min-height:300px;border-radius:var(--r) var(--r) var(--r) 90px}
+.mosaic .m2,.mosaic .m3{aspect-ratio:1/1}
+@media (min-width:960px){.mosaic .m1{min-height:440px}}
+.points-list{display:grid;gap:14px;margin-top:26px}
+.points-list li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;padding:16px 18px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.points-list .ic{width:42px;height:42px;border-radius:14px;background:var(--mint);color:var(--teal);display:grid;place-items:center}
+.points-list .ic svg{width:22px;height:22px}
+.points-list b{font-family:var(--head);font-weight:600;font-size:16.5px;display:block;line-height:1.4}
+.points-list span{color:var(--muted);font-size:15px}
+
+/* cards */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card.lift:hover{border-color:var(--teal-soft)}
+
+/* services */
+.svc-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr))}
+.svc{padding:22px;display:flex;flex-direction:column;gap:14px}
+.svc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ico{width:50px;height:50px;border-radius:16px;background:var(--mint);color:var(--teal);display:grid;place-items:center}
+.ico svg{width:26px;height:26px}
+.dur{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-2);background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.dur svg{width:15px;height:15px;color:var(--teal)}
+.svc h3{font-size:20px}
+.price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.price .from{font-size:13.5px;color:var(--muted);font-weight:500}
+.price .amt{font-family:var(--head);font-weight:600;font-size:30px;line-height:1;color:var(--ink)}
+.price .cur{font-size:14.5px;color:var(--muted)}
+.incl{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:8px}
+.incl h4{font-size:13.5px;color:var(--muted);font-weight:500;font-family:var(--body)}
+.ticks{display:grid;gap:7px}
+.ticks li{display:flex;gap:9px;align-items:flex-start;font-size:15px;color:var(--ink-2);line-height:1.6}
+.ticks svg{width:18px;height:18px;color:var(--teal);margin-top:3px}
+.svc-link{margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;color:var(--teal);font-weight:600;font-family:var(--head);font-size:15px;text-decoration:none;padding:6px 0;min-height:40px}
+.svc-link svg{width:18px;height:18px}
+.svc-link:hover{color:var(--teal-d);text-decoration:underline;text-underline-offset:5px}
+
+/* packages */
+.pkg-grid{display:grid;gap:16px}
+@media (min-width:920px){.pkg-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}}
+.pkg{padding:26px 24px;display:flex;flex-direction:column;gap:16px;position:relative}
+.pkg .who{color:var(--muted);font-size:14.5px;margin-top:-8px}
+.pkg h3{font-size:21px}
+.pkg .tag{position:absolute;top:-13px;inset-inline-start:22px;background:var(--teal);box-shadow:0 0 0 3px #fff;color:#fff;font-size:13px;font-weight:600;font-family:var(--head);border-radius:999px;padding:4px 13px}
+.pkg-price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pkg-price .amt{font-family:var(--head);font-weight:600;font-size:38px;line-height:1}
+.pkg-price .cur{color:var(--muted);font-size:15px}
+.pkg-price s{color:var(--muted);font-size:15px;text-decoration-thickness:1.5px}
+.save{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:var(--mint);color:var(--teal-d);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600}
+.save svg{width:16px;height:16px}
+.pkg .ticks{border-top:1px dashed var(--line);padding-top:16px;gap:10px}
+.pkg .btn{margin-top:auto}
+.pkg.feat{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:var(--shadow-lg)}
+.pkg.feat h3,.pkg.feat .pkg-price .amt{color:#fff}
+.pkg.feat .who,.pkg.feat .pkg-price .cur,.pkg.feat .pkg-price s{color:#B9C6D6}
+.pkg.feat .ticks li{color:#DCE5EF}
+.pkg.feat .ticks svg{color:#7FD8C9}
+.pkg.feat .ticks{border-color:rgba(255,255,255,.18)}
+.pkg.feat .save{background:rgba(127,216,201,.16);color:#9BE6D9}
+@media (min-width:920px){.pkg.feat{transform:translateY(-10px)}}
+.balance{margin-top:26px;display:grid;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);border:1.5px dashed #A8D9CF;background:var(--tint)}
+@media (min-width:760px){.balance{grid-template-columns:auto minmax(0,1fr) auto;gap:20px;padding:18px 24px}}
+.balance .ic{width:48px;height:48px;border-radius:16px;background:var(--teal);color:#fff;display:grid;place-items:center}
+.balance .ic svg{width:24px;height:24px}
+.balance strong{font-family:var(--head);font-weight:600;font-size:18px;display:block;line-height:1.45}
+.balance span.sub{color:var(--muted);font-size:15px}
+.meter{display:grid;gap:8px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px;min-width:0}
+.meter .lbl{font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;gap:12px}
+.meter .lbl b{color:var(--ink);font-weight:600}
+.dots{display:flex;gap:6px}
+.dots i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--mint-2);background:#fff}
+.dots i.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.dots i svg{width:16px;height:16px}
+
+/* loyalty */
+.loy-grid{display:grid;gap:30px}
+@media (min-width:960px){.loy-grid{grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:56px;align-items:center}}
+.rules{display:grid;gap:14px}
+@media (min-width:600px){.rules{grid-template-columns:1fr 1fr}}
+.rule{padding:20px}
+.rule h3{font-size:18px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rule h3 span{width:36px;height:36px;border-radius:12px;background:var(--mint);color:var(--teal);display:grid;place-items:center}
+.rule h3 svg{width:20px;height:20px}
+.calc{margin-top:14px;padding:20px;display:grid;gap:12px}
+.calc h3{font-size:16.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 15px;font-size:14.5px;cursor:pointer;min-height:42px;color:var(--ink-2)}
+.chip:hover{border-color:var(--teal-soft)}
+.chip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.calc-out{background:var(--tint);border-radius:14px;padding:12px 14px;color:var(--ink-2);font-size:15.5px}
+.calc-out b{color:var(--teal-d);font-family:var(--head);font-weight:600}
+
+.pcard-wrap{position:relative;display:grid;place-items:center;padding:8px 0}
+.pcard{position:relative;width:100%;max-width:460px;min-height:240px;border-radius:26px;padding:22px 24px;color:#fff;overflow:hidden;background:radial-gradient(120% 90% at 0% 100%,rgba(21,163,148,.55),transparent 55%),linear-gradient(150deg,#0E2240 0%,#13335A 70%,#164a63 100%);box-shadow:0 30px 60px -28px rgba(14,34,64,.6);display:grid;gap:18px}
+@media (min-width:420px){.pcard{aspect-ratio:1.586/1}}
+.pcard .arcs{position:absolute;inset:0;width:100%;height:100%;color:rgba(255,255,255,.08);pointer-events:none}
+.pcard>*:not(.arcs){position:relative}
+.pc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pc-top .b{display:flex;align-items:center;gap:9px;font-family:var(--head);font-weight:600;font-size:16px}
+.pc-top .b svg{width:30px;height:30px}
+.pc-top small{font-size:12.5px;color:#B9C6D6;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px 10px}
+.pc-mid .l{font-size:13px;color:#B9C6D6}
+.pc-mid .v{display:flex;align-items:baseline;gap:8px}
+.pc-mid .v b{font-family:var(--head);font-weight:600;font-size:clamp(38px,6vw,48px);line-height:1.1}
+.pc-mid .v span{font-size:15px;color:#DCE5EF}
+.pc-mid .eq{display:inline-flex;margin-top:6px;font-size:13.5px;background:rgba(127,216,201,.16);color:#A6EADF;border-radius:999px;padding:3px 11px}
+.pc-bot{align-self:end;display:grid;gap:8px}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;width:50%;border-radius:inherit;background:linear-gradient(90deg,#7FD8C9,#15A394)}
+.pc-bot p{font-size:13px;color:#B9C6D6}
+.float-tag{position:absolute;z-index:3;inset-inline-start:4%;top:-14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:13.5px;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+.float-tag b{color:var(--teal);font-family:var(--head)}
+.float-tag svg{width:18px;height:18px;color:var(--teal)}
+@media (max-width:959px){.float-tag{position:static;margin-bottom:12px;justify-self:start}}
+
+/* gift */
+.gift-grid{display:grid;gap:30px}
+@media (min-width:960px){.gift-grid{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:56px;align-items:center}}
+.opts{border:0;margin:0;padding:0;display:grid;gap:10px;min-width:0}
+.opts legend{font-family:var(--head);font-weight:500;font-size:15px;margin-bottom:10px;padding:0}
+.opt{display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--teal-soft)}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt .rd{width:22px;height:22px;border-radius:50%;border:2px solid #A9C4BE;display:grid;place-items:center;flex-shrink:0}
+.opt .rd::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--teal);transform:scale(0)}
+.opt:has(input:checked){border-color:var(--teal);background:var(--tint)}
+.opt:has(input:checked) .rd{border-color:var(--teal)}
+.opt:has(input:checked) .rd::after{transform:scale(1)}
+.opt:has(input:focus-visible){outline:3px solid var(--teal-2);outline-offset:3px}
+.opt .tx{flex:1;min-width:0}
+.opt b{display:block;font-family:var(--head);font-weight:500;font-size:16px;line-height:1.4}
+.opt small{color:var(--muted);font-size:13.5px}
+.opt .p{font-family:var(--head);font-weight:600;font-size:18px;white-space:nowrap}
+.field{display:grid;gap:8px;margin-top:16px}
+.field label{font-family:var(--head);font-weight:500;font-size:15px}
+.field input{min-height:52px;border:1.5px solid var(--line);border-radius:16px;padding:10px 16px;background:#fff;font-size:16px;width:100%}
+.field input:focus-visible{outline:3px solid var(--teal-2);outline-offset:1px;border-color:var(--teal)}
+.gift-form .btn{margin-top:18px}
+.gift-stage{position:relative;border-radius:var(--r-lg);overflow:hidden;min-height:380px;display:grid;place-items:center;padding:28px 18px;background:#cfe6e0}
+.gift-stage>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gift-stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(233,245,241,.15),rgba(14,34,64,.18))}
+.gcard{position:relative;z-index:1;width:min(380px,100%);background:#fff;border-radius:24px;padding:22px;box-shadow:0 30px 60px -24px rgba(14,34,64,.45);display:grid;gap:14px;overflow:hidden}
+@media (min-width:600px){.gcard{transform:rotate(-2.5deg)}}
+.gcard .band{position:absolute;inset-block:0;inset-inline-end:0;width:22%;background:linear-gradient(180deg,var(--mint),var(--mint-2))}
+.gcard .band svg{position:absolute;bottom:18px;inset-inline:10px;width:calc(100% - 20px);color:var(--teal-2)}
+.gcard>*:not(.band){position:relative;max-width:78%}
+.gcard .from{font-size:13px;color:var(--teal);font-weight:600;font-family:var(--head);display:flex;align-items:center;gap:8px}
+.gcard .from svg{width:20px;height:20px}
+.gcard h3{font-size:clamp(19px,5.2vw,22px);line-height:1.35}
+.gcard .val{font-size:14.5px;color:var(--ink-2)}
+.gcard .to{font-size:15px;border-top:1px dashed var(--line);padding-top:12px;overflow-wrap:anywhere}
+.gcard .to b{font-family:var(--head);font-weight:600}
+.gcard .code{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted)}
+.gcard .code b{color:var(--ink);letter-spacing:.06em;font-family:var(--head);font-weight:500}
+
+/* how */
+.how-grid{display:grid;gap:30px}
+@media (min-width:960px){.how-grid{grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:56px;align-items:center}}
+.steps{display:grid;gap:0;counter-reset:s}
+.step{display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;position:relative;padding-bottom:26px}
+.step:last-child{padding-bottom:0}
+.step::before{content:"";position:absolute;inset-inline-start:27px;top:56px;bottom:4px;border-inline-start:2px dashed var(--teal-soft)}
+.step:last-child::before{display:none}
+.step .n{width:56px;height:56px;border-radius:50%;background:#fff;border:1.5px solid var(--mint-2);display:grid;place-items:center;color:var(--teal);box-shadow:var(--shadow);position:relative}
+.step .n svg{width:24px;height:24px}
+.step .n em{position:absolute;top:-6px;inset-inline-end:-6px;width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;font-style:normal;font-size:12.5px;font-weight:600;display:grid;place-items:center;font-family:var(--head)}
+.step h3{font-size:19px;padding-top:4px}
+.step p{color:var(--muted);font-size:15.5px;margin-top:4px}
+.chat{max-width:440px;width:100%;justify-self:center;border-radius:26px;overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line);background:#fff}
+.chat-h{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--ink);color:#fff}
+.chat-h svg{width:36px;height:36px}
+.chat-h b{display:block;font-family:var(--head);font-weight:500;font-size:15.5px;line-height:1.3}
+.chat-h small{display:block;font-size:12.5px;color:#9FE0D4}
+.chat-b{padding:18px 14px;display:grid;gap:10px;background-color:#EEF6F3;background-image:radial-gradient(rgba(11,122,112,.07) 1.2px,transparent 1.3px);background-size:16px 16px}
+.bub{max-width:86%;padding:9px 13px 7px;border-radius:16px;font-size:14.5px;line-height:1.65;box-shadow:0 1px 1px rgba(14,34,64,.08)}
+.bub time{display:block;font-size:11px;color:var(--muted);margin-top:2px;text-align:end}
+.bub.me{justify-self:end;background:#D8F6D0;border-end-end-radius:5px}
+.bub.them{justify-self:start;background:#fff;border-end-start-radius:5px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.slots span{border:1px solid var(--teal-soft);color:var(--teal-d);border-radius:999px;padding:1px 10px;font-size:13px;background:var(--tint)}
+.ok{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--teal-d)}
+.ok svg{width:16px;height:16px}
+
+/* reviews */
+.rev-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.rev{padding:22px;display:flex;flex-direction:column;gap:14px}
+.rev-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.stars{display:flex;gap:2px;color:var(--amber)}
+.stars svg{width:17px;height:17px}
+.ex{font-size:12.5px;font-weight:600;color:var(--ink-2);border:1.5px dashed #A9C4BE;border-radius:999px;padding:2px 11px;font-family:var(--head)}
+.rev blockquote{margin:0;font-size:16.5px;line-height:1.8;color:var(--ink)}
+.rev-who{margin-top:auto;display:flex;align-items:center;gap:10px;border-top:1px dashed var(--line);padding-top:14px}
+.rev-who span.av{width:38px;height:38px;border-radius:50%;background:var(--mint);color:var(--teal);display:grid;place-items:center}
+.rev-who span.av svg{width:20px;height:20px}
+.rev-who b{display:block;font-family:var(--head);font-weight:500;font-size:15px;line-height:1.35}
+.rev-who small{color:var(--muted);font-size:13px}
+
+/* hours */
+.hrs-grid{display:grid;gap:16px}
+@media (min-width:920px){.hrs-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:20px}}
+.hours{padding:10px 8px}
+.hours li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;font-size:15.5px}
+.hours li+li{border-top:1px solid var(--tint)}
+.hours .d{font-family:var(--head);font-weight:500;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.hours .tm{color:var(--ink-2);display:grid;justify-items:end;line-height:1.55}
+@media (min-width:600px){.hours .tm{display:flex;gap:2px 18px}.hours .tm span+span{position:relative}.hours .tm span+span::before{content:"";position:absolute;inset-inline-start:-9px;top:50%;width:3px;height:3px;border-radius:50%;background:#9AB3AD}}
+.hours li.today{background:var(--mint);border-top-color:transparent;border-radius:14px}
+.hours li.today+li{border-top-color:transparent}
+.hours .td{display:none;font-size:12px;background:var(--teal);color:#fff;border-radius:999px;padding:1px 9px;font-family:var(--body);font-weight:600}
+.hours li.today .td{display:inline-block}
+.loc{padding:24px;display:flex;flex-direction:column;gap:18px}
+.loc-pin{display:flex;align-items:center;gap:14px}
+.loc-pin span{width:56px;height:56px;border-radius:18px;background:var(--teal);color:#fff;display:grid;place-items:center}
+.loc-pin span svg{width:28px;height:28px}
+.loc-pin b{display:block;font-family:var(--head);font-weight:600;font-size:21px;line-height:1.35}
+.loc-pin small{color:var(--muted);font-size:14.5px}
+.loc .ticks li{font-size:15.5px}
+.loc-note{display:flex;gap:12px;align-items:flex-start;background:var(--tint);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:15px;color:var(--ink-2);margin-top:auto}
+.loc-note svg{width:22px;height:22px;color:var(--teal);margin-top:2px}
+.loc-note b{font-family:var(--head);font-weight:500;color:var(--ink)}
+.loc-btns{display:grid;gap:10px}
+@media (min-width:520px){.loc-btns{grid-template-columns:1fr 1fr}}
+
+/* footer */
+.foot{background:var(--ink);color:#DCE5EF;padding-block:56px 30px;position:relative;overflow:clip}
+.foot a{color:#fff}
+.foot-grid{display:grid;gap:30px;position:relative}
+@media (min-width:860px){.foot-grid{grid-template-columns:1.3fr 1fr 1fr;gap:40px}}
+.foot .brand b{color:#fff}
+.foot .brand small{color:#9FB2C8}
+.foot .btn-light{color:var(--ink)}
+.foot p{color:#B9C6D6;font-size:15px;margin-top:14px;max-width:36ch}
+.foot h4{color:#fff;font-size:15.5px;margin-bottom:12px;font-weight:500}
+.foot-links{display:grid;gap:4px}
+.foot-links a{text-decoration:none;color:#C9D5E2;font-size:15px;padding:4px 0;display:inline-block}
+.foot-links a:hover{color:#fff;text-decoration:underline;text-underline-offset:5px}
+.social{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.social a{text-decoration:none;font-size:14px;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 14px;color:#DCE5EF;min-height:38px;display:inline-flex;align-items:center}
+.social a:hover{border-color:#7FD8C9;color:#fff}
+.foot-bot{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;font-size:13.5px;color:#9FB2C8;position:relative}
+.foot-bot a{color:#DCE5EF}
+.by{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#fff!important;font-weight:500}
+.by i{width:8px;height:8px;border-radius:50%;background:#7FD8C9;display:block}
+.foot-arc{position:absolute;inset-inline:-10%;top:-40%;width:120%;color:rgba(127,216,201,.07);pointer-events:none}
+
+/* mobile floating booking button */
+.fab{position:fixed;z-index:50;inset-inline-start:16px;bottom:max(14px,env(safe-area-inset-bottom));display:flex;padding:0 22px;align-items:center;justify-content:center;gap:10px;min-height:54px;border-radius:999px;background:var(--teal);color:#fff;text-decoration:none;font-family:var(--head);font-weight:500;font-size:16px;box-shadow:0 14px 30px -10px rgba(11,122,112,.65),0 0 0 4px rgba(255,255,255,.85)}
+.fab svg{width:22px;height:22px}
+.fab.off{opacity:0;transform:translateY(130%);pointer-events:none;visibility:hidden}
+@media (max-width:599px){.foot{padding-bottom:104px}}
+@media (min-width:600px){.fab{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.4a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.9-1.3A9.5 9.5 0 1 0 12 2.4Zm0 1.75a7.75 7.75 0 1 1-3.95 14.42l-.28-.17-2.9.77.78-2.82-.18-.29A7.75 7.75 0 0 1 12 4.15Zm-3.2 3.98c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.07 3.17 5.03 4.44 2.46 1.06 2.96.85 3.5.8.53-.05 1.72-.7 1.96-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.2-.56-.34l-1.97-.97c-.27-.1-.46-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.63.07-.3-.15-1.24-.46-2.37-1.46-.87-.78-1.46-1.74-1.63-2.03-.17-.3-.02-.46.13-.6.13-.14.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.65-1.6-.9-2.18-.23-.57-.47-.49-.65-.5h-.56Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2s-7-6.1-7-11.6a7 7 0 0 1 14 0c0 5.5-7 11.6-7 11.6Z"/><circle cx="12" cy="9.6" r="2.6"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.8"/><path d="M12 7.2V12l3.2 2"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.6l4.3 4.2L19.2 7" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19 6v5.4c0 4.3-2.9 7.9-7 9.6-4.1-1.7-7-5.3-7-9.6V6l7-3Z"/><path d="m9 12 2.1 2.1L15.2 10"/></g></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3.5"/></g></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.2-4.5-7.2-10.1A4.1 4.1 0 0 1 12 7.3a4.1 4.1 0 0 1 7.2 2.6C19.2 15.5 12 20 12 20Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mirror" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="15" cy="9" r="5"/><path d="M11.4 12.6 4 20"/><path d="M13 7.2a2.6 2.6 0 0 1 2-.9"/></g></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4s6 6.3 6 10.5a6 6 0 0 1-12 0c0-4.2 6-10.5 6-10.5Z"/><path d="M9.3 14.6a2.8 2.8 0 0 0 2.4 2.3"/></g></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5c.6 3.9 2.2 5.5 6.1 6.1-3.9.6-5.5 2.2-6.1 6.1-.6-3.9-2.2-5.5-6.1-6.1 3.9-.6 5.5-2.2 6.1-6.1Z"/><path d="M18 15.5c.3 1.7.9 2.3 2.5 2.5-1.6.3-2.2.9-2.5 2.5-.3-1.6-.9-2.2-2.5-2.5 1.6-.2 2.2-.8 2.5-2.5Z"/></g></symbol>
+    <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M8 3.6c-2.6 0-4.3 2.1-3.9 4.8.3 2.2 1.3 3.8 1.7 6 .5 2.6.9 6.1 2.6 6.1 1.6 0 1.8-3.2 2.4-4.9.3-.8.6-1.2 1.2-1.2s.9.4 1.2 1.2c.6 1.7.8 4.9 2.4 4.9 1.7 0 2.1-3.5 2.6-6.1.4-2.2 1.4-3.8 1.7-6 .4-2.7-1.3-4.8-3.9-4.8-1.7 0-2.6.9-4 .9s-2.3-.9-4-.9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-braces" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><rect x="4.6" y="9.3" width="3.6" height="5.4" rx="1"/><rect x="10.2" y="9.3" width="3.6" height="5.4" rx="1"/><rect x="15.8" y="9.3" width="3.6" height="5.4" rx="1"/><path d="M5 5.5c4.5-2 9.5-2 14 0M5 18.5c4.5 2 9.5 2 14 0"/></g></symbol>
+    <symbol id="i-kid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.8"/><path d="M8.6 14.2a4.2 4.2 0 0 0 6.8 0"/><path d="M9 9.6h.01M15 9.6h.01" stroke-width="2.6"/><path d="M10.5 3.4c.3 1.3 1.6 1.9 2.9 1.4"/></g></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="4" rx="1.2"/><path d="M5.2 12v7.3c0 .7.5 1.2 1.2 1.2h11.2c.7 0 1.2-.5 1.2-1.2V12M12 8v12.5"/><path d="M12 8S10.6 4 8.3 4.4C6.6 4.7 6.9 8 12 8Zm0 0s1.4-4 3.7-3.6C17.4 4.7 17.1 8 12 8Z"/></g></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.75 5.82 6.35.8-4.66 4.4 1.2 6.3L12 17.04l-5.64 3.08 1.2-6.3L2.9 9.42l6.35-.8L12 2.8Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c.9-3.6 3.7-5.6 7.2-5.6s6.3 2 7.2 5.6"/></g></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11"/><rect x="4" y="7.5" width="16.5" height="12" rx="2.8"/><path d="M16 13.5h1.6"/></g></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="9" cy="7" rx="5.5" ry="2.6"/><path d="M3.5 7v4.4c0 1.4 2.5 2.6 5.5 2.6M3.5 11.4v4.4c0 1.4 2.5 2.6 5.5 2.6"/><ellipse cx="15.5" cy="13.4" rx="5" ry="2.4"/><path d="M10.5 13.4v4.2c0 1.3 2.2 2.4 5 2.4s5-1.1 5-2.4v-4.2"/></g></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 12.6V5.2c0-.8.6-1.4 1.4-1.4h7.4l7.6 7.6a1.4 1.4 0 0 1 0 2l-5.8 5.8a1.4 1.4 0 0 1-2 0l-7.6-7.6Z"/><circle cx="8.3" cy="8.3" r="1.4"/></g></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.6c0 4.2-3.6 7.4-8 7.4-1.1 0-2.2-.2-3.1-.6L4 19.6l1.3-3.7A7.1 7.1 0 0 1 4 11.6c0-4.1 3.6-7.4 8-7.4s8 3.3 8 7.4Z"/><path d="M8.6 11.6h.01M12 11.6h.01M15.4 11.6h.01" stroke-width="2.4"/></g></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5" width="16.8" height="15.2" rx="2.8"/><path d="M3.6 10h16.8M8.2 3v4M15.8 3v4"/><path d="m9.4 14.6 1.8 1.8 3.4-3.4"/></g></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.2v-5a6 6 0 0 1 12 0v5l1.6 2.1H4.4L6 16.2Z"/><path d="M10 20.8a2.1 2.1 0 0 0 4 0"/></g></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V12l1.8-4.6c.3-.8 1-1.3 1.8-1.3h6.8c.8 0 1.5.5 1.8 1.3L19 12v4.5"/><rect x="3.6" y="11.6" width="16.8" height="5.4" rx="1.6"/><path d="M6.4 17v2.2M17.6 17v2.2M7.4 14.3h.01M16.6 14.3h.01"/></g></symbol>
+    <symbol id="i-door" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20.5h14M7 20.5V4.6c0-.6.5-1.1 1.1-1.1h7.8c.6 0 1.1.5 1.1 1.1v15.9"/><path d="M13.6 12.2h.01" stroke-width="2.6"/></g></symbol>
+    <symbol id="smile" viewBox="0 0 120 24"><path d="M4 5 Q60 34 116 5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+    <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="13" fill="#0B7A70"/><path d="M10.5 16.5 Q20 31 29.5 16.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="29.5" cy="10.5" r="2.4" fill="#9FE0D4"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="ابتسامة، عيادة أسنان في الخبر">
+      <svg aria-hidden="true"><use href="#logo"/></svg>
+      <span><b>ابتسامة</b><small>عيادة أسنان · الخبر</small></span>
+    </a>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="#services">الخدمات</a>
+      <a href="#packages">الباقات</a>
+      <a href="#loyalty">النقاط</a>
+      <a href="#gift">الإهداء</a>
+      <a href="#hours">الأوقات والموقع</a>
+    </nav>
+    <a class="btn btn-primary top-cta" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>احجز موعدك</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- hero -->
+<section class="hero" id="top">
+  <svg class="hero-arc" viewBox="0 0 1400 260" aria-hidden="true"><path d="M10 20 Q700 470 1390 20" fill="none" stroke="currentColor" stroke-width="2"/><path d="M80 10 Q700 400 1320 10" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="demo-badge"><i aria-hidden="true"></i>تصميم تجريبي من المناوب</span>
+      <p class="kicker">عيادة ابتسامة لطب الأسنان · الخبر</p>
+      <h1>اعتنِ <span class="nw"><span class="sw">بابتسامتك<svg viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><use href="#smile"/></svg></span>،</span> والمواعيد علينا</h1>
+      <p class="hero-sub">كشف وتنظيف وتجميل وأسنان الأطفال في عيادة وحدة. تحجز من الواتساب في دقيقة، ويوصلك تذكير قبل موعدك.</p>
+      <span class="hours-chip" id="hoursChip"><span class="dot" aria-hidden="true"></span><svg aria-hidden="true"><use href="#i-clock"/></svg><span id="hoursText">السبت إلى الخميس · 9 الصبح إلى 10 الليل</span></span>
+      <div class="hero-btns" id="heroBtns">
+        <a class="btn btn-primary" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>احجز موعدك على الواتساب</a>
+        <a class="btn btn-ghost" href="https://maps.google.com/?q=الخبر" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg>موقعنا على قوقل ماب</a>
+      </div>
+      <ul class="facts">
+        <li><svg aria-hidden="true"><use href="#i-shield"/></svg>تعقيم بعد كل مراجع</li>
+        <li><svg aria-hidden="true"><use href="#i-doc"/></svg>السعر واضح قبل العلاج</li>
+        <li><svg aria-hidden="true"><use href="#i-kid"/></svg>ركن هادي للأطفال</li>
+      </ul>
+    </div>
+    <div class="hero-media">
+      <span class="ring" aria-hidden="true"></span>
+      <div class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1728342057953-94bfad8f0e7e?auto=format&fit=crop&w=1200&q=70" alt="كرسي أسنان أبيض في غرفة علاج مضيئة" width="1200" height="1500" fetchpriority="high">
+      </div>
+      <div class="confirm" aria-label="مثال على رسالة تأكيد الموعد">
+        <span class="row"><svg aria-hidden="true"><use href="#i-wa"/></svg>رسالة على الواتساب</span>
+        <b><svg aria-hidden="true"><use href="#i-check"/></svg>تم تأكيد موعدك</b>
+        <span class="meta">الأحد · <span class="num">6:30</span> مساءً · تنظيف وتلميع</span>
+        <span class="note">بنذكّرك قبل الموعد بساعتين</span>
+      </div>
+    </div>
+  </div>
+  <svg class="hero-curve" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0 Q720 150 1440 0 V90 H0 Z" fill="currentColor"/></svg>
+</section>
+
+<!-- about -->
+<section class="sec" aria-labelledby="about-t">
+  <div class="wrap about-grid">
+    <div>
+      <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>عن العيادة</span>
+      <h2 id="about-t" style="font-size:clamp(27px,3.7vw,41px);margin-top:12px">عيادة هادية، وكل شي واضح قبل نبدأ</h2>
+      <p style="color:var(--muted);font-size:clamp(16px,1.6vw,18px);margin-top:12px;max-width:48ch">نستقبلك بموعد، ونشرح لك وضع أسنانك بكلام بسيط، وتعرف السعر قبل أي علاج.</p>
+      <ul class="points-list">
+        <li><span class="ic"><svg aria-hidden="true"><use href="#i-shield"/></svg></span><div><b>تعقيم لكل مراجع</b><span>أدوات معقّمة ومغلّفة، تنفتح قدامك.</span></div></li>
+        <li><span class="ic"><svg aria-hidden="true"><use href="#i-doc"/></svg></span><div><b>خطة علاج مكتوبة</b><span>بالخطوات والأسعار، والقرار لك.</span></div></li>
+        <li><span class="ic"><svg aria-hidden="true"><use href="#i-heart"/></svg></span><div><b>وقت أطول للأطفال</b><span>أسلوب هادي يخلي الزيارة أسهل عليهم وعليك.</span></div></li>
+      </ul>
+    </div>
+    <div class="mosaic">
+      <figure class="m1"><img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=70" alt="غرفة علاج أسنان حديثة بكراسي بلون فيروزي" decoding="async" width="1200" height="800"></figure>
+      <figure class="m2"><img src="https://images.unsplash.com/photo-1771442873038-dda05b6ca447?auto=format&fit=crop&w=1200&q=70" alt="يد بقفاز طبي تمسك أدوات فحص الأسنان" decoding="async" width="1200" height="800"></figure>
+      <figure class="m3"><img src="https://images.unsplash.com/photo-1651146494264-1b3a54f71175?auto=format&fit=crop&w=1200&q=70" alt="طفلين يفرشون أسنانهم" decoding="async" width="1200" height="800"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- services -->
+<section class="sec tint" id="services" aria-labelledby="svc-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="t">
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>الخدمات</span>
+        <h2 id="svc-t">الخدمات والأسعار</h2>
+      </div>
+      <p>كل خدمة بسعرها ومدتها ووش تشمل، عشان تحجز وأنت مرتاح.</p>
+    </div>
+    <div class="svc-grid">
+      <article class="card lift svc">
+        <div class="svc-top"><span class="ico"><svg aria-hidden="true"><use href="#i-mirror"/></svg></span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="num">20</span> دقيقة</span></div>
+        <h3>كشف واستشارة</h3>
+        <p class="price"><span class="amt num">100</span><span class="cur">ريال</span></p>
+        <div class="incl"><h4>وش يشمل</h4>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>فحص الأسنان واللثة</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>خطة علاج مكتوبة بالأسعار</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>وقت لأسئلتك</li></ul>
+        </div>
+        <a class="svc-link" href="../sim.html?demo=1">احجز هالخدمة<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="card lift svc">
+        <div class="svc-top"><span class="ico"><svg aria-hidden="true"><use href="#i-drop"/></svg></span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="num">45</span> دقيقة</span></div>
+        <h3>تنظيف وتلميع</h3>
+        <p class="price"><span class="amt num">250</span><span class="cur">ريال</span></p>
+        <div class="incl"><h4>وش يشمل</h4>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>إزالة الجير والتصبغات</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>تلميع لكل الأسنان</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>نصايح للعناية اليومية</li></ul>
+        </div>
+        <a class="svc-link" href="../sim.html?demo=1">احجز هالخدمة<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="card lift svc">
+        <div class="svc-top"><span class="ico"><svg aria-hidden="true"><use href="#i-spark"/></svg></span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="num">60</span> إلى <span class="num">90</span> دقيقة</span></div>
+        <h3>تبييض الأسنان</h3>
+        <p class="price"><span class="amt num">900</span><span class="cur">ريال</span></p>
+        <div class="incl"><h4>وش يشمل</h4>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>تقييم قبل الجلسة</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>جلسة تبييض في العيادة</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>إرشادات بعد الجلسة</li></ul>
+        </div>
+        <a class="svc-link" href="../sim.html?demo=1">احجز هالخدمة<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="card lift svc">
+        <div class="svc-top"><span class="ico"><svg aria-hidden="true"><use href="#i-tooth"/></svg></span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="num">30</span> إلى <span class="num">60</span> دقيقة</span></div>
+        <h3>حشوة تجميلية</h3>
+        <p class="price"><span class="from">يبدأ من</span><span class="amt num">300</span><span class="cur">ريال</span></p>
+        <div class="incl"><h4>وش يشمل</h4>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>حشوة بلون السن</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>تنظيف التسوس قبلها</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>ضبط العضّة بعدها</li></ul>
+        </div>
+        <a class="svc-link" href="../sim.html?demo=1">احجز هالخدمة<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="card lift svc">
+        <div class="svc-top"><span class="ico"><svg aria-hidden="true"><use href="#i-braces"/></svg></span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="num">30</span> دقيقة</span></div>
+        <h3>استشارة تقويم</h3>
+        <p class="price"><span class="amt num">150</span><span class="cur">ريال</span></p>
+        <div class="incl"><h4>وش يشمل</h4>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>تقييم وضع الأسنان والفك</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>شرح الخيارات المتاحة</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>المدة والتكلفة التقريبية</li></ul>
+        </div>
+        <a class="svc-link" href="../sim.html?demo=1">احجز هالخدمة<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="card lift svc">
+        <div class="svc-top"><span class="ico"><svg aria-hidden="true"><use href="#i-kid"/></svg></span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="num">30</span> دقيقة</span></div>
+        <h3>أسنان الأطفال</h3>
+        <p class="price"><span class="from">يبدأ من</span><span class="amt num">150</span><span class="cur">ريال</span></p>
+        <div class="incl"><h4>وش يشمل</h4>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>كشف بأسلوب هادي يناسب الطفل</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>تنظيف وفلورايد</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>نصايح للأهل</li></ul>
+        </div>
+        <a class="svc-link" href="../sim.html?demo=1">احجز هالخدمة<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- packages -->
+<section class="sec" id="packages" aria-labelledby="pkg-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="t">
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>الباقات</span>
+        <h2 id="pkg-t">باقات توفّر عليك طول السنة</h2>
+      </div>
+      <p>تدفع مرة وحدة، وتحجز زياراتك على راحتك من الواتساب.</p>
+    </div>
+    <div class="pkg-grid">
+      <article class="card pkg">
+        <h3>متابعة الأطفال نص سنوية</h3>
+        <p class="who">لطفل واحد، زيارة كل 6 شهور</p>
+        <p class="pkg-price"><span class="amt num">450</span><span class="cur">ريال بالسنة</span><s class="num">600</s></p>
+        <span class="save"><svg aria-hidden="true"><use href="#i-tag"/></svg>توفّر <span class="num">150</span> ريال</span>
+        <ul class="ticks">
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>زيارتين بالسنة</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>كشف وتنظيف وفلورايد بكل زيارة</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>تذكير بالواتساب قبل كل زيارة</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>اشترك بالواتساب</a>
+      </article>
+      <article class="card pkg feat">
+        <span class="tag">الأوفر للعائلة</span>
+        <h3>باقة العائلة السنوية</h3>
+        <p class="who">فحص وتنظيف لأربعة أشخاص</p>
+        <p class="pkg-price"><span class="amt num">1,090</span><span class="cur">ريال بالسنة</span><s class="num">1,400</s></p>
+        <span class="save"><svg aria-hidden="true"><use href="#i-tag"/></svg>توفّر <span class="num">310</span> ريال</span>
+        <ul class="ticks">
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>كشف وتنظيف وتلميع لكل فرد</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>مواعيد متتالية بنفس اليوم</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>خصم <span class="num">10%</span> على الحشوات طول السنة</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>اشترك بالواتساب</a>
+      </article>
+      <article class="card pkg">
+        <h3>باقة الابتسامة</h3>
+        <p class="who">لشخص واحد</p>
+        <p class="pkg-price"><span class="amt num">990</span><span class="cur">ريال</span><s class="num">1,250</s></p>
+        <span class="save"><svg aria-hidden="true"><use href="#i-tag"/></svg>توفّر <span class="num">260</span> ريال</span>
+        <ul class="ticks">
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>كشف واستشارة</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>تنظيف وتلميع</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>جلسة تبييض في العيادة</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>اشترك بالواتساب</a>
+      </article>
+    </div>
+    <div class="balance">
+      <span class="ic"><svg aria-hidden="true"><use href="#i-wallet"/></svg></span>
+      <div><strong>الرصيد ينخصم لحاله مع كل موعد</strong><span class="sub">تحجز من الواتساب، وتنخصم الزيارة من باقتك، ويوصلك الباقي برسالة.</span></div>
+      <div class="meter" aria-label="مثال: باقي زيارتين من أربع في باقة العائلة">
+        <span class="lbl"><span>باقة العائلة</span><b>باقي <span class="num">2</span> من <span class="num">4</span></b></span>
+        <span class="dots" aria-hidden="true"><i class="on"><svg><use href="#i-check"/></svg></i><i class="on"><svg><use href="#i-check"/></svg></i><i></i><i></i></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- loyalty -->
+<section class="sec tint" id="loyalty" aria-labelledby="loy-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="t">
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>نقاط الولاء</span>
+        <h2 id="loy-t">كل زيارة ترجع لك نقاط</h2>
+      </div>
+      <p>النقاط تنضاف لحالها بعد كل زيارة، وتصرفها خصم على أي خدمة.</p>
+    </div>
+    <div class="loy-grid">
+      <div>
+        <div class="rules">
+          <div class="card rule">
+            <h3><span><svg aria-hidden="true"><use href="#i-coins"/></svg></span>تكسب</h3>
+            <ul class="ticks">
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>نقطة لكل ريال تدفعه</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><span class="num">100</span> نقطة إضافية لما تحضر موعد المتابعة بوقته</span></li>
+            </ul>
+          </div>
+          <div class="card rule">
+            <h3><span><svg aria-hidden="true"><use href="#i-tag"/></svg></span>تصرف</h3>
+            <ul class="ticks">
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><span class="num">100</span> نقطة = <span class="num">10</span> ريال خصم</span></li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>على أي خدمة أو باقة</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>تسأل عن رصيدك بالواتساب</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card calc">
+          <h3 id="calc-t">جرّب: كم تكسب من زيارة؟</h3>
+          <div class="chips" role="group" aria-labelledby="calc-t">
+            <button class="chip" type="button" data-amt="100" aria-pressed="false">كشف</button>
+            <button class="chip" type="button" data-amt="250" aria-pressed="true">تنظيف</button>
+            <button class="chip" type="button" data-amt="900" aria-pressed="false">تبييض</button>
+            <button class="chip" type="button" data-amt="1090" aria-pressed="false">باقة العائلة</button>
+          </div>
+          <p class="calc-out" id="calcOut" aria-live="polite">تكسب <b class="num">250</b> نقطة، تساوي <b class="num">25</b> ريال خصم بزيارتك الجاية.</p>
+        </div>
+      </div>
+      <div class="pcard-wrap">
+        <span class="float-tag"><svg aria-hidden="true"><use href="#i-spark"/></svg>بعد التنظيف: <b class="num">+250</b> نقطة</span>
+        <div class="pcard" role="img" aria-label="مثال لبطاقة نقاط: 1,250 نقطة تساوي 125 ريال خصم">
+          <svg class="arcs" viewBox="0 0 460 290" preserveAspectRatio="none" aria-hidden="true"><path d="M-40 40 Q230 360 500 40" fill="none" stroke="currentColor" stroke-width="2"/><path d="M-40 90 Q230 400 500 90" fill="none" stroke="currentColor" stroke-width="2"/><path d="M-40 140 Q230 440 500 140" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="pc-top"><span class="b"><svg aria-hidden="true"><use href="#logo"/></svg>بطاقة ابتسامة</span><small>نقاط الولاء</small></div>
+          <div class="pc-mid">
+            <span class="l">رصيدك</span>
+            <div class="v"><b class="num">1,250</b><span>نقطة</span></div>
+            <span class="eq">تساوي <span class="num">&nbsp;125&nbsp;</span> ريال خصم</span>
+          </div>
+          <div class="pc-bot">
+            <span class="bar"><i></i></span>
+            <p>باقي <span class="num">1,250</span> نقطة وتغطي جلسة تنظيف كاملة</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- gift -->
+<section class="sec" id="gift" aria-labelledby="gift-t">
+  <div class="wrap gift-grid">
+    <div class="gift-form">
+      <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>الإهداء</span>
+      <h2 id="gift-t" style="font-size:clamp(27px,3.7vw,41px);margin-top:12px">أهدِ أحد غالي جلسة عناية</h2>
+      <p style="color:var(--muted);font-size:clamp(16px,1.6vw,18px);margin:12px 0 24px;max-width:46ch">اختر الجلسة واكتب اسمه، ونرسل له بطاقة الهدية على الواتساب باسمك.</p>
+      <fieldset class="opts">
+        <legend>وش تبي تهدي؟</legend>
+        <label class="opt"><input type="radio" name="gift" value="clean" checked><span class="rd" aria-hidden="true"></span><span class="tx"><b>جلسة تنظيف وتلميع</b><small>تنفع لأي عمر</small></span><span class="p num">250 ريال</span></label>
+        <label class="opt"><input type="radio" name="gift" value="white"><span class="rd" aria-hidden="true"></span><span class="tx"><b>جلسة تبييض</b><small>مع تقييم قبل الجلسة</small></span><span class="p num">900 ريال</span></label>
+      </fieldset>
+      <div class="field">
+        <label for="giftName">اسم اللي بتهديه</label>
+        <input id="giftName" type="text" maxlength="24" placeholder="مثلًا: أبو فهد" autocomplete="off">
+      </div>
+      <a class="btn btn-primary" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-gift"/></svg>أرسل الهدية على الواتساب</a>
+    </div>
+    <div class="gift-stage">
+      <img src="https://images.unsplash.com/photo-1698749778813-ad5f2814e50f?auto=format&fit=crop&w=1200&q=70" alt="" decoding="async" width="1200" height="800">
+      <div class="gcard" aria-live="polite" aria-label="معاينة بطاقة الهدية">
+        <span class="band" aria-hidden="true"><svg viewBox="0 0 120 24" aria-hidden="true"><use href="#smile"/></svg></span>
+        <span class="from"><svg aria-hidden="true"><use href="#logo"/></svg>هدية من عيادة ابتسامة</span>
+        <h3 id="gTitle">جلسة تنظيف وتلميع</h3>
+        <span class="val">بقيمة <span class="num" id="gVal">250</span> ريال</span>
+        <span class="to">إلى: <b id="gTo">شخص غالي</b></span>
+        <span class="code"><span>رمز الهدية <b class="num">HD-2481</b></span><span>صالحة <span class="num">6</span> شهور</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- how to book -->
+<section class="sec tint" id="how" aria-labelledby="how-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="t">
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>كيف تحجز</span>
+        <h2 id="how-t">ثلاث خطوات على الواتساب</h2>
+      </div>
+      <p>بدون اتصال ولا انتظار على الخط، والرد يجيك فورًا.</p>
+    </div>
+    <div class="how-grid">
+      <ol class="steps">
+        <li class="step"><span class="n"><svg aria-hidden="true"><use href="#i-chat"/></svg><em class="num">1</em></span><div><h3>ترسل لنا على الواتساب</h3><p>اكتب الخدمة اللي تبيها، أو اسأل عن أي شي.</p></div></li>
+        <li class="step"><span class="n"><svg aria-hidden="true"><use href="#i-cal"/></svg><em class="num">2</em></span><div><h3>تختار الموعد والطبيب</h3><p>يجيك أقرب الأوقات المتاحة، وتختار اللي يناسبك.</p></div></li>
+        <li class="step"><span class="n"><svg aria-hidden="true"><use href="#i-bell"/></svg><em class="num">3</em></span><div><h3>يوصلك التأكيد والتذكير</h3><p>رسالة تأكيد على طول، وتذكير قبل الموعد.</p></div></li>
+      </ol>
+      <div class="chat" aria-label="مثال على محادثة حجز">
+        <div class="chat-h"><svg aria-hidden="true"><use href="#logo"/></svg><div><b>عيادة ابتسامة</b><small>يرد عليك فورًا</small></div></div>
+        <div class="chat-b">
+          <p class="bub me">السلام عليكم، أبي موعد تنظيف<time class="num">5:02 م</time></p>
+          <p class="bub them">وعليكم السلام، حيّاك الله. الأحد عندنا:<span class="slots"><span class="num">5:00</span><span class="num">6:30</span><span class="num">8:00</span></span><time class="num">5:02 م</time></p>
+          <p class="bub me"><span class="num">6:30</span> لو سمحت<time class="num">5:03 م</time></p>
+          <p class="bub them"><span class="ok"><svg aria-hidden="true"><use href="#i-check"/></svg>تم تأكيد موعدك</span>الأحد <span class="num">6:30</span> م، تنظيف وتلميع. بنذكّرك قبلها بساعتين.<time class="num">5:03 م</time></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- reviews -->
+<section class="sec" id="reviews" aria-labelledby="rev-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="t">
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>آراء المراجعين</span>
+        <h2 id="rev-t">وش قالوا بعد زيارتهم</h2>
+      </div>
+      <p>كلام مختصر من مراجعين، يوضح شكل التقييمات هنا.</p>
+    </div>
+    <div class="rev-grid">
+      <article class="card rev">
+        <div class="rev-top"><span class="stars" role="img" aria-label="5 من 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span><span class="ex">مثال</span></div>
+        <blockquote>حجزت تنظيف من الواتساب بدقيقة، ووصلني تذكير قبل الموعد. المكان هادي ونظيف.</blockquote>
+        <div class="rev-who"><span class="av"><svg aria-hidden="true"><use href="#i-user"/></svg></span><div><b>مراجع من الخبر</b><small>تنظيف وتلميع</small></div></div>
+      </article>
+      <article class="card rev">
+        <div class="rev-top"><span class="stars" role="img" aria-label="5 من 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span><span class="ex">مثال</span></div>
+        <blockquote>ولدي كان خايف من الكرسي، والطبيب أخذ وقته معه لين ارتاح.</blockquote>
+        <div class="rev-who"><span class="av"><svg aria-hidden="true"><use href="#i-user"/></svg></span><div><b>ولي أمر من الظهران</b><small>أسنان الأطفال</small></div></div>
+      </article>
+      <article class="card rev">
+        <div class="rev-top"><span class="stars" role="img" aria-label="5 من 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span><span class="ex">مثال</span></div>
+        <blockquote>عرفت السعر قبل نبدأ، وما طلع لي شي زيادة آخر الزيارة.</blockquote>
+        <div class="rev-who"><span class="av"><svg aria-hidden="true"><use href="#i-user"/></svg></span><div><b>مراجع من الدمام</b><small>حشوة تجميلية</small></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- hours & location -->
+<section class="sec tint" id="hours" aria-labelledby="hrs-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="t">
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#smile"/></svg>الأوقات والموقع</span>
+        <h2 id="hrs-t">نستقبلك الصبح والعصر</h2>
+      </div>
+      <p>فترتين باليوم، والجمعة فترة العصر بس.</p>
+    </div>
+    <div class="hrs-grid">
+      <div class="card hours">
+        <ul id="hoursList">
+          <li data-d="6"><span class="d">السبت<span class="td">اليوم</span></span><span class="tm num"><span>9:00 ص إلى 1:00 م</span><span>4:00 م إلى 10:00 م</span></span></li>
+          <li data-d="0"><span class="d">الأحد<span class="td">اليوم</span></span><span class="tm num"><span>9:00 ص إلى 1:00 م</span><span>4:00 م إلى 10:00 م</span></span></li>
+          <li data-d="1"><span class="d">الاثنين<span class="td">اليوم</span></span><span class="tm num"><span>9:00 ص إلى 1:00 م</span><span>4:00 م إلى 10:00 م</span></span></li>
+          <li data-d="2"><span class="d">الثلاثاء<span class="td">اليوم</span></span><span class="tm num"><span>9:00 ص إلى 1:00 م</span><span>4:00 م إلى 10:00 م</span></span></li>
+          <li data-d="3"><span class="d">الأربعاء<span class="td">اليوم</span></span><span class="tm num"><span>9:00 ص إلى 1:00 م</span><span>4:00 م إلى 10:00 م</span></span></li>
+          <li data-d="4"><span class="d">الخميس<span class="td">اليوم</span></span><span class="tm num"><span>9:00 ص إلى 1:00 م</span><span>4:00 م إلى 10:00 م</span></span></li>
+          <li data-d="5"><span class="d">الجمعة<span class="td">اليوم</span></span><span class="tm num"><span>4:00 م إلى 10:00 م</span></span></li>
+        </ul>
+      </div>
+      <div class="card loc">
+        <div class="loc-pin"><span><svg aria-hidden="true"><use href="#i-pin"/></svg></span><div><b>الخبر، حي العقربية</b><small>قريب من طريق الأمير فيصل بن فهد</small></div></div>
+        <ul class="ticks">
+          <li><svg aria-hidden="true"><use href="#i-car"/></svg>مواقف قدام العيادة</li>
+          <li><svg aria-hidden="true"><use href="#i-door"/></svg>دور أرضي، مدخل يناسب العربيات وكبار السن</li>
+          <li><svg aria-hidden="true"><use href="#i-kid"/></svg>ركن انتظار للأطفال</li>
+        </ul>
+        <p class="loc-note"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>اكتب <b>«الموقع»</b> على الواتساب، ويوصلك دبوس العيادة على طول.</span></p>
+        <div class="loc-btns">
+          <a class="btn btn-primary" href="https://maps.google.com/?q=الخبر" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg>افتح في قوقل ماب</a>
+          <a class="btn btn-ghost" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>اسأل على الواتساب</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot" id="footer">
+  <svg class="foot-arc" viewBox="0 0 1400 300" aria-hidden="true"><path d="M0 30 Q700 520 1400 30" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg><span><b>ابتسامة</b><small>عيادة أسنان · الخبر</small></span></a>
+        <p>نحجز لك ونذكّرك على الواتساب، وأنت بس تجي على موعدك.</p>
+        <a class="btn btn-light" id="footWa" href="../sim.html?demo=1" style="margin-top:20px"><svg aria-hidden="true" style="color:#1FA855"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+      </div>
+      <div>
+        <h4>روابط سريعة</h4>
+        <nav class="foot-links" aria-label="روابط الموقع">
+          <a href="#services">الخدمات والأسعار</a>
+          <a href="#packages">الباقات</a>
+          <a href="#loyalty">نقاط الولاء</a>
+          <a href="#gift">الإهداء</a>
+          <a href="#hours">الأوقات والموقع</a>
+        </nav>
+      </div>
+      <div>
+        <h4>تابعنا</h4>
+        <div class="social">
+          <a href="#">انستقرام</a>
+          <a href="#">سناب شات</a>
+          <a href="#">تيك توك</a>
+          <a href="#">إكس</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© <span class="num" id="yr">2026</span> عيادة ابتسامة · الصور من <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>
+      <a class="by" href="../"><i aria-hidden="true"></i>يعمل بالمناوب</a>
+    </div>
+  </div>
+</footer>
+
+<a class="fab" id="fab" href="../sim.html?demo=1"><svg aria-hidden="true"><use href="#i-wa"/></svg>احجز على الواتساب</a>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* opening hours in Riyadh time */
+  try {
+    var parts = new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Riyadh',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date());
+    var get = function(t){ for (var i=0;i<parts.length;i++) if (parts[i].type===t) return parts[i].value; return ''; };
+    var day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(get('weekday'));
+    var now = (+get('hour') % 24) + (+get('minute'))/60;
+    var shifts = function(d){ return d===5 ? [[16,22]] : [[9,13],[16,22]]; };
+    var label = function(h){ return h===9 ? '9 الصبح' : h===13 ? '1 الظهر' : h===16 ? '4 العصر' : '10 الليل'; };
+    if (day >= 0) {
+      var today = shifts(day), text = '', open = false;
+      for (var i=0;i<today.length;i++){ if (now>=today[i][0] && now<today[i][1]) { open = true; text = 'مفتوح الحين · لين ' + label(today[i][1]); } }
+      if (!open) {
+        var next = null;
+        for (var j=0;j<today.length;j++){ if (now < today[j][0]) { next = today[j][0]; break; } }
+        if (next !== null) text = 'مسكّر الحين · نفتح ' + label(next);
+        else text = 'مسكّر الحين · نفتح بكرة ' + label(shifts((day+1)%7)[0][0]);
+        $('hoursChip').classList.add('closed');
+      }
+      $('hoursText').textContent = text;
+      var row = document.querySelector('#hoursList li[data-d="'+day+'"]');
+      if (row) { row.classList.add('today'); row.setAttribute('aria-current','date'); }
+    }
+  } catch(e) {}
+
+  /* points calculator */
+  var chips = document.querySelectorAll('.chip');
+  var fmt = function(n){ return n.toLocaleString('en-US'); };
+  for (var k=0;k<chips.length;k++){
+    chips[k].addEventListener('click', function(){
+      for (var m=0;m<chips.length;m++) chips[m].setAttribute('aria-pressed','false');
+      this.setAttribute('aria-pressed','true');
+      var amt = +this.getAttribute('data-amt');
+      $('calcOut').innerHTML = 'تكسب <b class="num">'+fmt(amt)+'</b> نقطة، تساوي <b class="num">'+fmt(Math.floor(amt/10))+'</b> ريال خصم بزيارتك الجاية.';
+    });
+  }
+
+  /* gift preview */
+  var gifts = { clean:{t:'جلسة تنظيف وتلميع',v:'250'}, white:{t:'جلسة تبييض',v:'900'} };
+  var radios = document.querySelectorAll('input[name="gift"]');
+  for (var r=0;r<radios.length;r++){
+    radios[r].addEventListener('change', function(){ var g = gifts[this.value]; $('gTitle').textContent = g.t; $('gVal').textContent = g.v; });
+  }
+  $('giftName').addEventListener('input', function(){ var v = this.value.trim(); $('gTo').textContent = v || 'شخص غالي'; });
+
+  /* floating button: hide while another booking button or the footer is on screen */
+  var fab = $('fab');
+  if ('IntersectionObserver' in window && fab) {
+    var seen = new Map();
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ seen.set(e.target, e.isIntersecting); });
+      var any = false; seen.forEach(function(v){ if (v) any = true; });
+      fab.classList.toggle('off', any);
+    }, {threshold:0});
+    io.observe($('heroBtns')); io.observe($('footer'));
+    document.querySelectorAll('main .btn-primary').forEach(function(el){ io.observe(el); });
+  }
+
+  try { $('yr').textContent = new Date().getFullYear(); } catch(e) {}
+})();
+</script>
+</body>
+</html>

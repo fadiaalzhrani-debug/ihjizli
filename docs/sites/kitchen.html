@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مطبخ دارنا · أكل بيت في المدينة المنورة</title>
+<meta name="description" content="مطبخ دارنا، أسرة منتجة في المدينة المنورة: كبسة ومندي ومعجنات وحلا وصواني مناسبات، تطلبها من الواتساب استلام أو توصيل.">
+<meta name="theme-color" content="#1E2A16">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --olive-950:#161F10;
+  --olive-900:#1E2A16;
+  --olive-800:#2A3A1F;
+  --olive-700:#3A4F2A;
+  --olive-600:#4F6638;
+  --olive-300:#B9C4A0;
+  --olive-200:#D5DCC2;
+  --olive-100:#E7EBDB;
+  --olive-50:#EFF1E6;
+  --saffron:#E8A317;
+  --saffron-400:#F2C14E;
+  --saffron-600:#C98A0A;
+  --saffron-700:#8A5E04;
+  --saffron-100:#FCEFC7;
+  --paper:#F6F6EF;
+  --card:#FFFFFF;
+  --ink:#1B2214;
+  --muted:#545D4A;
+  --line:#DCE0CF;
+  --r-lg:28px;
+  --r:20px;
+  --r-sm:14px;
+  --shadow:0 1px 2px rgba(22,31,16,.06),0 10px 28px -12px rgba(22,31,16,.22);
+  --shadow-lg:0 2px 4px rgba(22,31,16,.08),0 24px 48px -18px rgba(22,31,16,.38);
+  --focus:#8A5E04;
+  --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20' viewBox='0 0 40 20'%3E%3Crect width='40' height='20' fill='%231E2A16'/%3E%3Cpath d='M0 0h40v1.6H0zM0 18.4h40V20H0z' fill='%23E8A317'/%3E%3Cpath d='M0 1.6l5 4 5-4 5 4 5-4 5 4 5-4 5 4 5-4zM0 18.4l5-4 5 4 5-4 5 4 5-4 5 4 5-4 5 4z' fill='%23F6F6EF' fill-opacity='.88'/%3E%3Cpath d='M20 6.4l3.6 3.6-3.6 3.6-3.6-3.6zM0 6.4l3.6 3.6L0 13.6zM40 6.4l-3.6 3.6 3.6 3.6z' fill='%23E8A317'/%3E%3Cpath d='M20 8.8l1.2 1.2-1.2 1.2-1.2-1.2zM10 9l1 1-1 1-1-1zM30 9l1 1-1 1-1-1z' fill='%23F6F6EF'/%3E%3C/svg%3E");
+  --lattice:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M32 4l28 28-28 28L4 32z' fill='none' stroke='%23E8A317' stroke-opacity='.08' stroke-width='1.2'/%3E%3Cpath d='M32 25l7 7-7 7-7-7z' fill='%23F6F6EF' fill-opacity='.05'/%3E%3C/svg%3E");
+}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+ul,ol{list-style:none}
+button,input,textarea{font:inherit;color:inherit}
+h1,h2,h3,.display{font-family:Alexandria,"IBM Plex Sans Arabic",system-ui,sans-serif;line-height:1.3;font-weight:700;text-wrap:balance}
+.num{font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:10px}
+.dark{--focus:var(--saffron-400)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;inset-inline-start:16px;top:-60px;z-index:100;background:var(--saffron);color:var(--olive-950);padding:10px 16px;border-radius:12px;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{width:100%;max-width:1180px;margin-inline:auto;padding-inline:16px}
+.ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic--sm{width:16px;height:16px}
+.ic--lg{width:26px;height:26px}
+section[id]{scroll-margin-top:76px}
+
+/* sadu ribbon */
+.sadu{height:20px;background:var(--sadu) repeat-x center/40px 20px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:12px 22px;border-radius:999px;font-weight:700;font-size:1rem;text-decoration:none;border:1.5px solid transparent;transition:transform .2s ease,background-color .2s ease,box-shadow .2s ease;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn--saffron{background:var(--saffron);color:var(--olive-950);box-shadow:0 8px 20px -10px rgba(232,163,23,.9)}
+.btn--saffron:hover{background:var(--saffron-400)}
+.btn--ghost{border-color:rgba(246,246,239,.38);color:var(--paper);background:rgba(246,246,239,.04)}
+.btn--ghost:hover{background:rgba(246,246,239,.1)}
+.btn--olive{background:var(--olive-800);color:var(--paper)}
+.btn--olive:hover{background:var(--olive-700)}
+.btn--line{border-color:var(--olive-300);color:var(--olive-800);background:transparent}
+.btn--line:hover{background:var(--olive-50)}
+.btn--block{width:100%}
+
+/* topbar */
+.top{position:sticky;top:0;z-index:50;background:rgba(30,42,22,.94);-webkit-backdrop-filter:saturate(140%) blur(10px);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid rgba(246,246,239,.08)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--paper);min-width:0}
+.brand-mark{width:38px;height:38px;flex:none}
+.brand b{font-family:Alexandria,sans-serif;font-weight:800;font-size:1.15rem;line-height:1.2;display:block}
+.brand small{display:block;font-size:.75rem;color:var(--olive-300);line-height:1.3;white-space:nowrap}
+.nav{display:none}
+.nav a{color:var(--olive-200);text-decoration:none;font-weight:500;font-size:.95rem;padding:8px 12px;border-radius:10px}
+.nav a:hover{color:var(--paper);background:rgba(246,246,239,.07)}
+.top-cta{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;border-radius:999px;background:var(--saffron);color:var(--olive-950);font-weight:700;text-decoration:none;font-size:.92rem;flex:none}
+.top-cta span{display:none}
+
+/* hero */
+.hero{position:relative;background:var(--olive-900);color:var(--paper);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:var(--lattice) center/64px 64px;pointer-events:none}
+.hero .wrap{position:relative;display:grid;gap:36px;padding-block:28px 48px}
+.demo-badge{display:inline-flex;align-items:center;gap:8px;width:fit-content;font-size:.8rem;font-weight:600;color:var(--saffron-400);border:1px dashed rgba(242,193,78,.6);border-radius:999px;padding:4px 12px 4px 14px}
+.demo-badge::before{content:"";width:7px;height:7px;background:var(--saffron-400);transform:rotate(45deg);border-radius:1px}
+.hero-eyebrow{margin-top:18px;color:var(--olive-300);font-weight:500;font-size:.98rem}
+.hero h1{font-size:clamp(2.7rem,12vw,5.2rem);font-weight:800;line-height:1.12;letter-spacing:-.5px;margin-top:4px}
+.hero h1 span{color:var(--saffron)}
+.promise{margin-top:14px;font-size:clamp(1.12rem,4.4vw,1.4rem);color:#DDE3CF;max-width:36ch;line-height:1.65}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.hchip{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(246,246,239,.07);border:1px solid rgba(246,246,239,.14);font-size:.88rem;color:var(--olive-100)}
+.status .dot{width:9px;height:9px;border-radius:50%;background:var(--olive-300);flex:none}
+.status.is-open .dot{background:#8FD16A;box-shadow:0 0 0 4px rgba(143,209,106,.18)}
+.hero-ctas{display:grid;gap:10px;margin-top:26px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:26px;color:var(--olive-200);font-size:.92rem}
+.facts li{display:flex;align-items:center;gap:8px}
+.facts .ic{color:var(--saffron)}
+.hero-photo{position:relative;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:4/3.4;background:var(--olive-800);box-shadow:var(--shadow-lg)}
+.hero-photo img{width:100%;height:100%;object-fit:cover}
+.hero-photo::after{content:"";position:absolute;inset-inline:0;bottom:0;height:20px;background:var(--sadu) repeat-x center/40px 20px}
+.ticket{position:absolute;bottom:34px;inset-inline-start:14px;background:var(--card);color:var(--ink);border-radius:16px;padding:10px 14px;box-shadow:var(--shadow-lg);max-width:calc(100% - 28px)}
+.ticket small{display:block;color:var(--saffron-700);font-weight:700;font-size:.74rem;line-height:1.4}
+.ticket b{display:block;font-family:Alexandria,sans-serif;font-size:1.05rem;line-height:1.4}
+.ticket span{display:block;font-size:.82rem;color:var(--muted)}
+
+/* sections */
+.sec{padding-block:64px}
+.sec--tint{background:var(--olive-50)}
+.sec--dark{background:var(--olive-900);color:var(--paper);position:relative;overflow:hidden}
+.sec--dark::before{content:"";position:absolute;inset:0;background:var(--lattice) center/64px 64px;pointer-events:none}
+.sec--dark .wrap{position:relative}
+.head{display:grid;gap:8px;margin-bottom:28px;max-width:680px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-weight:600;color:var(--saffron-700);font-size:.92rem}
+.eyebrow::before{content:"";width:9px;height:9px;background:var(--saffron);transform:rotate(45deg);border-radius:2px;flex:none}
+.sec--dark .eyebrow{color:var(--saffron-400)}
+.head h2{font-size:clamp(1.75rem,6.4vw,2.6rem);font-weight:800}
+.head p{color:var(--muted);font-size:1.04rem}
+.sec--dark .head p{color:var(--olive-200)}
+
+/* menu */
+.note{display:flex;gap:12px;align-items:flex-start;background:var(--saffron-100);border:1px solid #EFD58A;color:#4F3803;padding:12px 16px;border-radius:var(--r-sm);font-weight:500;margin-bottom:22px}
+.note .ic{color:var(--saffron-700);margin-top:3px}
+.menu-layout{display:grid;gap:22px}
+.menu-aside{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start}
+.pic{position:relative;margin:0;border-radius:var(--r);overflow:hidden;aspect-ratio:1/1;background:var(--olive-100)}
+.pic img{width:100%;height:100%;object-fit:cover}
+.pic figcaption{position:absolute;inset-inline:0;bottom:0;padding:28px 12px 10px;color:#fff;font-size:.84rem;font-weight:600;line-height:1.45;background:linear-gradient(to top,rgba(22,31,16,.86),rgba(22,31,16,0))}
+.menu-grid{display:grid;gap:14px}
+.dish{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 18px 16px;transition:box-shadow .25s ease,transform .25s ease}
+.dish:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.cat{font-size:.78rem;font-weight:600;color:var(--olive-600);display:flex;align-items:center;gap:6px}
+.cat::before{content:"";width:6px;height:6px;border-radius:1px;background:var(--olive-300);transform:rotate(45deg)}
+.dish-head{display:flex;align-items:baseline;gap:10px}
+.dish-head h3{font-size:1.24rem;font-weight:700;min-width:0}
+.dish-head h3 small{display:block;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:.8rem;font-weight:500;color:var(--muted);line-height:1.4;margin-top:2px}
+.leader{flex:1;min-width:14px;border-bottom:2px dotted var(--olive-300);align-self:center;transform:translateY(4px)}
+.price{font-size:1.55rem;font-weight:700;color:var(--olive-800);white-space:nowrap;line-height:1.2}
+.price small{font-size:.78rem;font-weight:600;color:var(--muted);margin-inline-start:2px}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--olive-50);color:var(--olive-700);border:1px solid var(--olive-100)}
+.chip--time{background:var(--saffron-100);color:#5E4204;border-color:#F3DC97}
+.ticks{display:grid;gap:5px;font-size:.93rem;color:#2E3626}
+.ticks li{position:relative;padding-inline-start:18px}
+.ticks li::before{content:"";position:absolute;inset-inline-start:2px;top:.68em;width:7px;height:7px;background:var(--saffron);transform:rotate(45deg);border-radius:1px}
+.dish-cta{margin-top:auto;display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-weight:700;font-size:.92rem;color:var(--olive-800);text-decoration:none;padding:6px 2px;border-bottom:2px solid var(--saffron)}
+.dish-cta:hover{color:var(--saffron-700)}
+
+/* packages */
+.tiers{display:grid;gap:16px}
+.tier{position:relative;display:flex;flex-direction:column;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px 20px 20px}
+.tier--feat{background:var(--olive-800);color:var(--paper);border-color:var(--olive-700);box-shadow:var(--shadow-lg)}
+.tier--feat{--focus:var(--saffron-400)}
+.flag{position:absolute;top:-13px;inset-inline-start:20px;background:var(--saffron);color:var(--olive-950);font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:999px}
+.tier-tag{font-size:.82rem;font-weight:600;color:var(--olive-600)}
+.tier--feat .tier-tag{color:var(--saffron-400)}
+.tier h3{font-size:1.5rem;font-weight:800;margin-top:-6px}
+.meals{display:grid;gap:8px}
+.meals p{font-weight:600;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.dots{display:flex;flex-wrap:wrap;gap:6px;padding:4px}
+.dots i{width:10px;height:10px;background:var(--saffron);transform:rotate(45deg);border-radius:2px}
+.dots--sm{gap:5px}
+.dots--sm i{width:8px;height:8px}
+.tier-price{display:flex;align-items:baseline;gap:6px}
+.tier-price b{font-size:2.6rem;line-height:1;font-weight:700}
+.tier-price span{font-weight:600;color:var(--muted)}
+.tier--feat .tier-price span{color:var(--olive-200)}
+.was{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.88rem;color:var(--muted)}
+.tier--feat .was{color:var(--olive-200)}
+.save{display:inline-flex;align-items:center;font-weight:700;font-size:.82rem;background:var(--saffron-100);color:#5E4204;padding:2px 10px;border-radius:999px}
+.feats{display:grid;gap:8px;font-size:.94rem;padding-top:14px;border-top:1px dashed var(--line)}
+.tier--feat .feats{border-top-color:rgba(246,246,239,.2)}
+.feats li{display:flex;gap:9px;align-items:flex-start}
+.feats .ic{color:var(--olive-600);margin-top:3px}
+.tier--feat .feats .ic{color:var(--saffron-400)}
+.tier .btn{margin-top:auto}
+.balance{display:flex;gap:14px;align-items:center;margin-top:18px;background:var(--card);border:1.5px dashed var(--olive-300);border-radius:var(--r);padding:16px 18px}
+.balance-ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--olive-800);color:var(--saffron);flex:none}
+.balance strong{display:block;font-family:Alexandria,sans-serif;font-size:1.12rem;line-height:1.45}
+.balance span{display:block;color:var(--muted);font-size:.93rem}
+.feast{position:relative;margin-top:22px;border-radius:var(--r-lg);overflow:hidden;min-height:400px;display:flex;align-items:flex-end;color:#fff;background:var(--olive-900)}
+.feast img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.feast::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(22,31,16,.95) 22%,rgba(22,31,16,.45) 62%,rgba(22,31,16,.05))}
+.feast-body{position:relative;z-index:2;padding:24px 20px 26px;max-width:480px;display:grid;gap:10px}
+.feast-body h3{font-size:clamp(1.6rem,6vw,2.2rem);font-weight:800}
+.feast-body p{color:#E3E8D6}
+.feast-body .btn{margin-top:6px;justify-self:start}
+
+/* loyalty */
+.loyal{display:grid;gap:32px;align-items:center}
+.rules{display:grid;gap:12px}
+.rule{display:flex;gap:14px;align-items:center;background:rgba(246,246,239,.06);border:1px solid rgba(246,246,239,.12);border-radius:var(--r);padding:16px}
+.rule-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(232,163,23,.16);color:var(--saffron-400);flex:none}
+.rule b{display:block;font-family:Alexandria,sans-serif;font-size:1.22rem;color:#fff;line-height:1.4}
+.rule span{display:block;color:var(--olive-200);font-size:.92rem}
+.calc{margin-top:16px;background:var(--paper);color:var(--ink);border-radius:var(--r);padding:18px;--focus:var(--saffron-700)}
+.calc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:600}
+.calc-top output{font-size:1.3rem;font-weight:700;color:var(--olive-800)}
+.calc input[type=range]{width:100%;margin-top:10px;accent-color:var(--saffron-600);height:30px;cursor:pointer}
+.calc-res{margin-top:6px;font-size:.98rem;color:#2E3626}
+.calc-res b{color:var(--olive-800);font-weight:700}
+.pcard-wrap{display:grid;justify-items:center}
+.pcard{position:relative;width:100%;max-width:420px;border-radius:24px;overflow:hidden;background:linear-gradient(140deg,#F5C54A 0%,#E8A317 52%,#CC8B0B 100%);color:var(--olive-950);box-shadow:0 30px 60px -20px rgba(0,0,0,.55);transform:rotate(-2deg)}
+.pcard::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 3l21 21-21 21L3 24z' fill='none' stroke='%231E2A16' stroke-opacity='.09' stroke-width='1.2'/%3E%3C/svg%3E") center/48px 48px;pointer-events:none}
+.pcard-in{position:relative;padding:22px 22px 18px}
+.pcard-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pcard-row b{font-family:Alexandria,sans-serif;font-weight:800;font-size:1.08rem}
+.pcard-row small{font-size:.8rem;font-weight:600;opacity:.8}
+.pcard-pts{margin-top:22px;display:flex;align-items:baseline;gap:8px}
+.pcard-pts strong{font-size:clamp(2.8rem,13vw,3.6rem);font-weight:700;line-height:1}
+.pcard-pts span{font-weight:700}
+.pcard-worth{margin-top:6px;font-weight:600}
+.bar{margin-top:16px;height:10px;border-radius:999px;background:rgba(22,31,16,.16);overflow:hidden}
+.bar i{display:block;height:100%;width:40%;background:var(--olive-900);border-radius:inherit}
+.bar-l{margin-top:6px;font-size:.82rem;font-weight:600;opacity:.85}
+
+/* gift */
+.gift{display:grid;row-gap:22px;align-items:start}
+.gift .head{margin-bottom:0}
+.gift-opts{border:0;min-width:0}
+.gift .gcard{margin-block:8px}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.opt{position:relative;display:grid;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:8px 8px 10px;cursor:pointer;transition:border-color .2s ease,box-shadow .2s ease}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:12px;background:var(--olive-100)}
+.opt b{display:block;font-size:.88rem;line-height:1.4}
+.opt small{display:block;color:var(--muted);font-size:.8rem}
+.opt:has(input:checked){border-color:var(--olive-700);box-shadow:0 0 0 3px rgba(232,163,23,.45)}
+.opt:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:3px}
+.fields{display:grid;gap:14px}
+.field label{display:block;font-weight:600;font-size:.93rem;margin-bottom:6px}
+.field input,.field textarea{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-size:1rem;line-height:1.5;resize:vertical}
+.field input:focus-visible,.field textarea:focus-visible{outline:none;border-color:var(--olive-700);box-shadow:0 0 0 3px rgba(232,163,23,.45)}
+.gift-fields .btn{margin-top:18px}
+.gcard{background:var(--card);border-radius:26px;overflow:hidden;box-shadow:var(--shadow-lg);max-width:440px;width:100%;justify-self:center;transform:rotate(1.5deg)}
+.gcard-photo{position:relative;aspect-ratio:16/10;background:var(--olive-100)}
+.gcard-photo img{width:100%;height:100%;object-fit:cover}
+.ribbon{position:absolute;top:14px;inset-inline-start:14px;display:inline-flex;align-items:center;gap:6px;background:var(--olive-900);color:var(--saffron-400);font-weight:700;font-size:.8rem;padding:6px 12px;border-radius:999px}
+.gcard-body{padding:20px 22px 22px;display:grid;gap:10px}
+.to{font-size:.85rem;color:var(--muted);font-weight:600}
+.to-name{font-family:Alexandria,sans-serif;font-size:1.6rem;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
+.msg{font-size:1.04rem;color:#2E3626;border-inline-start:3px solid var(--saffron);padding-inline-start:12px;overflow-wrap:anywhere;min-height:1.7em}
+.gcard-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px;border-top:1px dashed var(--line);font-size:.9rem}
+.gcard-foot b{font-weight:700}
+.gcard-foot .num{font-weight:700;color:var(--olive-800)}
+
+/* steps */
+.how{display:grid;gap:34px;align-items:center}
+.steps{display:grid;gap:4px;counter-reset:s}
+.step{position:relative;display:grid;grid-template-columns:52px 1fr;gap:16px;padding-bottom:24px}
+.step:not(:last-child)::after{content:"";position:absolute;top:56px;bottom:4px;inset-inline-start:25px;border-inline-start:2px dashed var(--olive-300)}
+.step-n{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--olive-800);color:var(--saffron);font-size:1.3rem;font-weight:700}
+.step h3{font-size:1.18rem;font-weight:700;padding-top:4px}
+.step p{color:var(--muted);margin-top:2px}
+.phone{width:100%;max-width:360px;justify-self:center;border-radius:32px;border:8px solid var(--olive-900);background:#E8EBDD;overflow:hidden;box-shadow:var(--shadow-lg)}
+.phone-top{display:flex;align-items:center;gap:10px;background:var(--olive-800);color:var(--paper);padding:12px 14px}
+.phone-top .brand-mark{width:34px;height:34px}
+.phone-top b{display:block;font-size:.95rem;line-height:1.3}
+.phone-top small{display:block;font-size:.74rem;color:var(--olive-300)}
+.chat{display:flex;flex-direction:column;gap:8px;padding:14px 12px;font-size:.9rem;line-height:1.6}
+.b{max-width:86%;padding:8px 12px 6px;border-radius:16px;box-shadow:0 1px 1px rgba(22,31,16,.08)}
+.b time{display:block;font-size:.68rem;color:#6B7360;text-align:end;margin-top:2px}
+.b--in{align-self:flex-start;background:#fff;border-start-start-radius:4px}
+.b--out{align-self:flex-end;background:#D7E5BE;border-start-end-radius:4px}
+.b--ok{border:1.5px solid var(--olive-300)}
+.b--ok strong{display:flex;align-items:center;gap:6px;color:var(--olive-700)}
+.phone-in{display:flex;align-items:center;gap:8px;margin:2px 10px 12px;background:#fff;border-radius:999px;padding:8px 14px;color:#7A8270;font-size:.86rem}
+
+/* reviews */
+.reviews{display:grid;gap:14px}
+.rev{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+.rev-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ex{font-size:.76rem;font-weight:700;color:var(--olive-700);background:var(--olive-50);border:1px dashed var(--olive-300);padding:2px 10px;border-radius:999px}
+.stars{display:flex;gap:2px;color:var(--saffron)}
+.stars svg{width:16px;height:16px;fill:currentColor;stroke:none}
+.rev blockquote{font-size:1.03rem;line-height:1.75;color:#2A3222}
+.who{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:12px;border-top:1px dashed var(--line)}
+.who-ic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--olive-100);color:var(--olive-700);flex:none}
+.who b{display:block;font-size:.92rem;line-height:1.4}
+.who small{display:block;font-size:.8rem;color:var(--muted)}
+
+/* hours */
+.info{display:grid;gap:14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.box-h{display:flex;align-items:center;gap:10px}
+.box-h span{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--olive-800);color:var(--saffron);flex:none}
+.box-h h3{font-size:1.15rem}
+.rows{display:grid}
+.rows div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.95rem}
+.rows div:last-child{border-bottom:0}
+.rows dt{color:#2E3626}
+.rows dd{font-weight:700;white-space:nowrap;color:var(--olive-800)}
+.rows .is-today{background:var(--saffron-100);margin-inline:-10px;padding-inline:10px;border-radius:10px;border-bottom-color:transparent}
+.rows .is-today dt::after{content:"اليوم";margin-inline-start:8px;font-size:.72rem;font-weight:700;color:#5E4204;background:#F6DB8E;padding:1px 8px;border-radius:999px}
+.rows .free dd{color:var(--saffron-700)}
+.box-note{font-size:.88rem;color:var(--muted)}
+.box .btn{margin-top:auto}
+.addr{font-family:Alexandria,sans-serif;font-weight:700;font-size:1.05rem}
+
+/* footer */
+.foot{background:var(--olive-950);color:var(--olive-200)}
+.foot .wrap{display:grid;gap:28px;padding-block:44px 36px}
+.foot .brand b{font-size:1.3rem}
+.foot-about p{margin-top:12px;max-width:34ch}
+.foot-about .btn{margin-top:18px}
+.foot h4{font-family:Alexandria,sans-serif;color:var(--paper);font-size:1rem;font-weight:700;margin-bottom:10px}
+.foot-links{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+.foot-links a{text-decoration:none;padding:4px 0;display:inline-block}
+.foot-links a:hover,.foot-bottom a:hover{color:var(--saffron-400)}
+.social{display:flex;gap:10px}
+.social a{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(246,246,239,.16);color:var(--paper)}
+.social a:hover{border-color:var(--saffron);color:var(--saffron-400)}
+.foot-bottom{border-top:1px solid rgba(246,246,239,.1)}
+.foot-bottom .wrap{display:flex;flex-wrap:wrap;gap:8px 18px;padding-block:18px 22px;font-size:.86rem;grid-template-columns:none}
+.foot-bottom a{text-decoration:none}
+.foot-bottom .made{color:var(--saffron-400);font-weight:700}
+
+/* floating order button (mobile) */
+.fab{position:fixed;z-index:60;bottom:calc(14px + env(safe-area-inset-bottom));left:14px;display:inline-flex;align-items:center;gap:8px;min-height:50px;padding:10px 18px;border-radius:999px;background:var(--saffron);color:var(--olive-950);font-weight:700;text-decoration:none;box-shadow:0 12px 26px -8px rgba(22,31,16,.55),0 0 0 3px rgba(246,246,239,.9);transform:translateY(160%);visibility:hidden;transition:transform .3s ease,visibility 0s linear .3s}
+.fab.show{transform:none;visibility:visible;transition:transform .3s ease,visibility 0s}
+
+@media (min-width:480px){
+  .hero-ctas{display:flex;flex-wrap:wrap}
+  .top-cta span{display:inline}
+  .rules{grid-template-columns:1fr 1fr}
+  .rule{flex-direction:column;align-items:flex-start}
+}
+@media (min-width:640px){
+  .wrap{padding-inline:24px}
+  .menu-grid{grid-template-columns:1fr 1fr}
+  .reviews{grid-template-columns:1fr 1fr}
+  .info{grid-template-columns:1fr 1fr}
+  .info .box:last-child{grid-column:1/-1}
+  .feast-body{padding:32px}
+  .foot .wrap{grid-template-columns:1.3fr 1fr}
+}
+@media (min-width:960px){
+  .wrap{padding-inline:32px}
+  .nav{display:flex;gap:2px}
+  .hero .wrap{grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-block:64px 88px}
+  .hero-photo{aspect-ratio:1/1}
+  .ticket{bottom:40px;inset-inline-start:22px;padding:14px 18px}
+  .ticket b{font-size:1.2rem}
+  .sec{padding-block:96px}
+  .head{margin-bottom:36px}
+  .tiers{grid-template-columns:repeat(3,1fr);align-items:stretch}
+  .tier--feat{transform:translateY(-10px)}
+  .feast{min-height:420px;align-items:center}
+  .feast::before{background:linear-gradient(to left,rgba(22,31,16,.95) 28%,rgba(22,31,16,.55) 52%,rgba(22,31,16,0) 78%)}
+  .feast-body{padding:48px}
+  .loyal{grid-template-columns:1.1fr .9fr;gap:64px}
+  .gift{grid-template-columns:1fr 1fr;grid-template-rows:auto auto 1fr;grid-template-areas:"head card" "opts card" "fields card";column-gap:56px;row-gap:24px}
+  .gift .head{grid-area:head}
+  .gift-opts{grid-area:opts}
+  .gift-fields{grid-area:fields}
+  .gift .gcard{grid-area:card;position:sticky;top:96px;margin-block:0}
+  .how{grid-template-columns:1.1fr .9fr;gap:64px}
+  .reviews{grid-template-columns:repeat(3,1fr)}
+  .info{grid-template-columns:repeat(3,1fr)}
+  .info .box:last-child{grid-column:auto}
+  .foot .wrap{grid-template-columns:1.4fr 1fr 1fr}
+  .fab{display:none}
+}
+@media (min-width:1024px){
+  .menu-layout{grid-template-columns:300px 1fr;gap:28px;align-items:start}
+  .menu-aside{grid-template-columns:1fr;position:sticky;top:88px}
+  .menu-aside .pic{aspect-ratio:4/3.6}
+}
+@media (max-width:959px){
+  .foot{padding-bottom:76px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .btn:hover,.dish:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3.6 20.4l1.2-4.3A8.6 8.6 0 1 1 8 19.3z"/><path d="M9.3 8.3c.2-.4.5-.6.8-.6h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .5-.1.7l-.5.6c.5 1 1.3 1.8 2.3 2.3l.6-.5c.2-.2.5-.2.7-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3-.2.6-.5.8-.6.4-1.4.5-2.1.3-2.4-.7-4.3-2.6-5-5-.2-.7-.1-1.5.1-2.2z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.1-7-11.4A7 7 0 0 1 19 9.6C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.6" r="2.6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3 2"/></symbol>
+    <symbol id="i-hour" viewBox="0 0 24 24"><path d="M7 3.5h10M7 20.5h10"/><path d="M8 3.5v2.2a4 4 0 0 0 1.6 3.2L12 10.8l2.4-1.9A4 4 0 0 0 16 5.7V3.5M8 20.5v-2.2a4 4 0 0 1 1.6-3.2l2.4-1.9 2.4 1.9a4 4 0 0 1 1.6 3.2v2.2"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.8 6.5h11v9.4h-11zM13.8 9.5h4l3.4 3.3v3.1h-7.4"/><circle cx="7" cy="17.6" r="1.8"/><circle cx="17.3" cy="17.6" r="1.8"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1.1 12.4H6.1z"/><path d="M9 10.5V6.8a3 3 0 0 1 6 0v3.7"/></symbol>
+    <symbol id="i-pot" viewBox="0 0 24 24"><path d="M4.5 10.5h15v5.2a4.3 4.3 0 0 1-4.3 4.3H8.8a4.3 4.3 0 0 1-4.3-4.3z"/><path d="M2.5 10.5h19M9.5 7c0-1.2 1-1.6 1-2.8M13.5 7c0-1.2 1-1.6 1-2.8"/></symbol>
+    <symbol id="i-plate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.4c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M15.8 5.1a3 3 0 0 1 0 5.8M18 14.6c1.6.8 2.7 2.3 3 4.8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.6l4.3 4.1L19 7.2"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><path d="M4.5 11.2h15v9.3h-15zM3 7.6h18v3.6H3zM12 7.6v12.9"/><path d="M12 7.6C10.6 4.8 7.3 4.3 7.3 6.3c0 1.3 2.3 1.3 4.7 1.3zM12 7.6c1.4-2.8 4.7-3.3 4.7-1.3 0 1.3-2.3 1.3-4.7 1.3z"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7.2h14.6a2 2 0 0 1 2 2v9.2a2 2 0 0 1-2 2H5.4A1.4 1.4 0 0 1 4 19.2z"/><path d="M4 7.2l11.4-3.4v3.4M16.4 13.8h1.8"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2l1.4 3 3.2.4-2.4 2.2.7 3.2L12 14.4l-2.9 1.6.7-3.2-2.4-2.2 3.2-.4z"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.6 12.6V4.4a.8.8 0 0 1 .8-.8h8.2l8 8a1.6 1.6 0 0 1 0 2.2l-6 6a1.6 1.6 0 0 1-2.2 0z"/><circle cx="8.2" cy="8.2" r="1.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5"/><circle cx="12" cy="12" r="3.9"/><path d="M17.2 6.8h.01"/></symbol>
+    <symbol id="i-snap" viewBox="0 0 24 24"><path d="M12 3.6c2.8 0 4.6 2 4.6 4.8v2.1l1.8-.6.6 1.1-2.2 1.3c.5 1.6 1.9 3 3.7 3.5l-.3 1.1c-.9.3-1.8.4-2.4.6l-.4 1.4c-1-.2-2-.1-3 .4-.8.5-1.5.9-2.4.9s-1.6-.4-2.4-.9c-1-.5-2-.6-3-.4l-.4-1.4c-.6-.2-1.5-.3-2.4-.6l-.3-1.1c1.8-.5 3.2-1.9 3.7-3.5L5 11l.6-1.1 1.8.6V8.4c0-2.8 1.8-4.8 4.6-4.8z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M4.5 4.5h4.2l10.8 15h-4.2zM19.2 4.5l-6.1 6.7M4.8 19.5l6.1-6.7"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24"><path d="M14 3.6v11.2a3.6 3.6 0 1 1-3.6-3.6"/><path d="M14 3.6c.4 2.6 2.2 4.4 5 4.7"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.2l2.6 5.5 6 .7-4.4 4.1 1.2 5.9L12 16.5l-5.4 2.9 1.2-5.9-4.4-4.1 6-.7z"/></symbol>
+    <symbol id="i-mark" viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#E8A317" stroke="none"/><path d="M20 7l13 13-13 13L7 20z" fill="#1E2A16" stroke="none"/><path d="M20 13.5l6.5 6.5-6.5 6.5-6.5-6.5z" fill="#E8A317" stroke="none"/><path d="M20 17.6l2.4 2.4-2.4 2.4-2.4-2.4z" fill="#F6F6EF" stroke="none"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#menu">تخطَّ إلى المنيو</a>
+
+<header class="top dark">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="مطبخ دارنا، الرئيسية">
+      <svg class="brand-mark" aria-hidden="true"><use href="#i-mark"/></svg>
+      <span><b>مطبخ دارنا</b><small>أسرة منتجة · المدينة المنورة</small></span>
+    </a>
+    <nav class="nav" aria-label="أقسام الصفحة">
+      <a href="#menu">المنيو</a>
+      <a href="#plans">الباقات</a>
+      <a href="#points">النقاط</a>
+      <a href="#gift">الإهداء</a>
+      <a href="#hours">الأوقات والتوصيل</a>
+    </nav>
+    <a class="top-cta" href="../sim.html?demo=1" aria-label="اطلب على الواتساب">
+      <svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg><span>اطلب الحين</span>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero dark" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <span class="demo-badge">تصميم تجريبي من المناوب</span>
+        <p class="hero-eyebrow">أسرة منتجة · المدينة المنورة</p>
+        <h1 id="hero-title">مطبخ <span>دارنا</span></h1>
+        <p class="promise">أكل بيت يومي، تطلبه من الواتساب ويوصلك حار في وقته.</p>
+        <div class="chips">
+          <span class="hchip status"><span class="dot" aria-hidden="true"></span><span data-open>نطبخ يوميًا من 11 الصبح</span></span>
+          <span class="hchip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-hour"/></svg>للمناسبات اطلب قبلها بيوم</span>
+        </div>
+        <div class="hero-ctas" id="hero-ctas">
+          <a class="btn btn--saffron" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>اطلب على الواتساب</a>
+          <a class="btn btn--ghost" href="https://maps.google.com/?q=المدينة%20المنورة" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>موقعنا على قوقل ماب</a>
+        </div>
+        <ul class="facts">
+          <li><svg class="ic" aria-hidden="true"><use href="#i-pot"/></svg>طبخ يومي من مطبخ البيت</li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-truck"/></svg>توصيل لأحياء المدينة</li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg>استلام من البيت بدون رسوم</li>
+        </ul>
+      </div>
+      <figure class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1696950169170-a433c9eefac4?auto=format&fit=crop&w=1200&q=70"
+             srcset="https://images.unsplash.com/photo-1696950169170-a433c9eefac4?auto=format&fit=crop&w=700&q=70 700w, https://images.unsplash.com/photo-1696950169170-a433c9eefac4?auto=format&fit=crop&w=1200&q=70 1200w"
+             sizes="(min-width:960px) 520px, 100vw" width="1200" height="1200" fetchpriority="high"
+             alt="صينية رز مندي عليها لحم مطبوخ، وجنبها صحون سلطة وصوص">
+        <figcaption class="ticket">
+          <small>طبخة اليوم</small>
+          <b>مندي لحم</b>
+          <span class="num">60 ريال للنفر · جاهز من 1 الظهر</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+  <div class="sadu" aria-hidden="true"></div>
+
+  <!-- المنيو -->
+  <section class="sec" id="menu" aria-labelledby="menu-title">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">المنيو</span>
+        <h2 id="menu-title">من قدر البيت لسفرتك</h2>
+        <p>نطبخ كل يوم بكميات محدودة، والأسعار بالريال للطلب الواحد.</p>
+      </div>
+      <p class="note"><svg class="ic" aria-hidden="true"><use href="#i-hour"/></svg><span>صواني المناسبات والقهوة والحلا نجهزها لك إذا طلبت قبلها بيوم.</span></p>
+      <div class="menu-layout">
+        <div class="menu-aside">
+          <figure class="pic">
+            <img src="https://images.unsplash.com/photo-1603496987674-79600a000f55?auto=format&fit=crop&w=1200&q=70"
+                 srcset="https://images.unsplash.com/photo-1603496987674-79600a000f55?auto=format&fit=crop&w=600&q=70 600w, https://images.unsplash.com/photo-1603496987674-79600a000f55?auto=format&fit=crop&w=1200&q=70 1200w"
+                 sizes="(min-width:1024px) 300px, 50vw" width="1200" height="1200"
+                 alt="دجاج محمّر فوق رز كبسة أصفر">
+            <figcaption>كبسة الدجاج، طبخة كل يوم</figcaption>
+          </figure>
+          <figure class="pic">
+            <img src="https://images.unsplash.com/photo-1786174045067-d5bb503aa362?auto=format&fit=crop&w=1200&q=70"
+                 srcset="https://images.unsplash.com/photo-1786174045067-d5bb503aa362?auto=format&fit=crop&w=600&q=70 600w, https://images.unsplash.com/photo-1786174045067-d5bb503aa362?auto=format&fit=crop&w=1200&q=70 1200w"
+                 sizes="(min-width:1024px) 300px, 50vw" width="1200" height="1200"
+                 alt="سمبوسة مقلية مع ليمون وخس">
+            <figcaption>سمبوسة وفطاير تنخبز يوم الطلب</figcaption>
+          </figure>
+        </div>
+
+        <div class="menu-grid">
+          <article class="dish">
+            <span class="cat">طبق يومي</span>
+            <div class="dish-head"><h3>كبسة دجاج</h3><span class="leader" aria-hidden="true"></span><p class="price num">35<small>ريال</small></p></div>
+            <div class="meta"><span class="chip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plate"/></svg>نفر واحد</span><span class="chip chip--time"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-clock"/></svg>جاهزة من 12 الظهر</span></div>
+            <ul class="ticks"><li>نص دجاجة متبلة ومحمّرة بالفرن</li><li>رز كبسة ببهارات البيت</li><li>معها دقوس وسلطة خضراء</li></ul>
+            <a class="dish-cta" href="../sim.html?demo=1">اطلبها<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+
+          <article class="dish">
+            <span class="cat">طبق يومي</span>
+            <div class="dish-head"><h3>مندي لحم</h3><span class="leader" aria-hidden="true"></span><p class="price num">60<small>ريال</small></p></div>
+            <div class="meta"><span class="chip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plate"/></svg>نفر واحد</span><span class="chip chip--time"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-clock"/></svg>جاهز من 1 الظهر</span></div>
+            <ul class="ticks"><li>لحم نعيمي طري مطبوخ على مهل</li><li>رز مندي بنكهة الفحم</li><li>معه سلطة حارة ولبن</li></ul>
+            <a class="dish-cta" href="../sim.html?demo=1">اطلبه<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+
+          <article class="dish">
+            <span class="cat">معجنات</span>
+            <div class="dish-head"><h3>صينية معجنات مشكلة</h3><span class="leader" aria-hidden="true"></span><p class="price num">90<small>ريال</small></p></div>
+            <div class="meta"><span class="chip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plate"/></svg>40 حبة</span><span class="chip chip--time"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-hour"/></svg>اطلب قبلها بـ 4 ساعات</span></div>
+            <ul class="ticks"><li>سمبوسة لحم وجبن</li><li>فطاير زعتر وسبانخ</li><li>تنخبز نفس يوم الطلب</li></ul>
+            <a class="dish-cta" href="../sim.html?demo=1">اطلبها<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+
+          <article class="dish">
+            <span class="cat">حلا</span>
+            <div class="dish-head"><h3>حلا البيت<small>كيكة أو بسبوسة</small></h3><span class="leader" aria-hidden="true"></span><p class="price num">70<small>ريال</small></p></div>
+            <div class="meta"><span class="chip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plate"/></svg>صينية 12 قطعة</span><span class="chip chip--time"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-hour"/></svg>اطلب قبلها بيوم</span></div>
+            <ul class="ticks"><li>بسبوسة بالقشطة أو كيكة تمر</li><li>نكتب الاسم على الكيكة مجانًا</li><li>سكر خفيف إذا تبي</li></ul>
+            <a class="dish-cta" href="../sim.html?demo=1">اطلبه<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+
+          <article class="dish">
+            <span class="cat">مناسبات</span>
+            <div class="dish-head"><h3>قهوة وتمر<small>للمناسبات والضيوف</small></h3><span class="leader" aria-hidden="true"></span><p class="price num">120<small>ريال</small></p></div>
+            <div class="meta"><span class="chip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-plate"/></svg>دلتين وكيلو تمر</span><span class="chip chip--time"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-hour"/></svg>اطلب قبلها بيوم</span></div>
+            <ul class="ticks"><li>قهوة شقراء بالهيل والزعفران</li><li>تمر عجوة وسكري من المدينة</li><li>معها فناجيل وترامس جاهزة</li></ul>
+            <a class="dish-cta" href="../sim.html?demo=1">اطلبها<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+
+          <article class="dish">
+            <span class="cat">مناسبات</span>
+            <div class="dish-head"><h3>صواني مناسبات</h3><span class="leader" aria-hidden="true"></span><p class="price num">650<small>ريال</small></p></div>
+            <div class="meta"><span class="chip"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-users"/></svg>تكفي 20 شخص</span><span class="chip chip--time"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-hour"/></svg>اطلب قبلها بيوم</span></div>
+            <ul class="ticks"><li>صينيتين رز مع لحم أو دجاج</li><li>سلطات ومقبلات ومعجنات</li><li>نوصلها ونرتب لك السفرة</li></ul>
+            <a class="dish-cta" href="../sim.html?demo=1">احجزها<svg class="ic ic--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- الباقات -->
+  <section class="sec sec--tint" id="plans" aria-labelledby="plans-title">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">الباقات والاشتراكات</span>
+        <h2 id="plans-title">غداك جاهز طول الشهر</h2>
+        <p>تشترك مرة، وكل يوم تختار طبختك ووقتها من الواتساب.</p>
+      </div>
+
+      <div class="tiers">
+        <article class="tier">
+          <span class="tier-tag">اشتراك غداء</span>
+          <h3>أسبوعي</h3>
+          <div class="meals">
+            <p class="num"><svg class="ic" aria-hidden="true"><use href="#i-plate"/></svg>5 وجبات غداء</p>
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <p class="tier-price num"><b>169</b><span>ريال</span></p>
+          <p class="was num"><s>190 ريال</s><span class="save">توفر 21 ريال</span></p>
+          <ul class="feats">
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>تختار من طبخة اليوم كل يوم</li>
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>استلام أو توصيل بالوقت اللي يناسبك</li>
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>تأجل يوم وتعوضه الأسبوع الجاي</li>
+          </ul>
+          <a class="btn btn--line btn--block" href="../sim.html?demo=1">اشترك من الواتساب</a>
+        </article>
+
+        <article class="tier tier--feat">
+          <span class="flag">الأكثر طلب</span>
+          <span class="tier-tag">اشتراك غداء</span>
+          <h3>شهري</h3>
+          <div class="meals">
+            <p class="num"><svg class="ic" aria-hidden="true"><use href="#i-plate"/></svg>20 وجبة غداء</p>
+            <div class="dots dots--sm" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <p class="tier-price num"><b>620</b><span>ريال</span></p>
+          <p class="was num"><s>760 ريال</s><span class="save">توفر 140 ريال</span></p>
+          <ul class="feats">
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>توصيل مجاني للأحياء القريبة</li>
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>تبدلها مندي بفرق 20 ريال</li>
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>نقاط مضاعفة على كل وجبة</li>
+          </ul>
+          <a class="btn btn--saffron btn--block" href="../sim.html?demo=1">اشترك من الواتساب</a>
+        </article>
+
+        <article class="tier">
+          <span class="tier-tag">للمناسبات</span>
+          <h3>باقة العزايم</h3>
+          <div class="meals">
+            <p class="num"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg>تكفي 20 شخص</p>
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <p class="tier-price num"><b>829</b><span>ريال</span></p>
+          <p class="was num"><s>930 ريال</s><span class="save">توفر 101 ريال</span></p>
+          <ul class="feats">
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>صواني مناسبات مع معجنات وحلا</li>
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>قهوة وتمر للضيوف</li>
+            <li><svg class="ic ic--sm" aria-hidden="true"><use href="#i-check"/></svg>توصيل وترتيب السفرة</li>
+          </ul>
+          <a class="btn btn--line btn--block" href="../sim.html?demo=1">احجز عزيمتك</a>
+        </article>
+      </div>
+
+      <div class="balance">
+        <span class="balance-ic" aria-hidden="true"><svg class="ic ic--lg"><use href="#i-wallet"/></svg></span>
+        <p><strong>الرصيد ينخصم لحاله مع كل طلب</strong><span>وبعد كل وجبة توصلك رسالة فيها كم باقي في اشتراكك.</span></p>
+      </div>
+
+      <div class="feast">
+        <img src="https://images.unsplash.com/photo-1661994215679-cde7c2c5c060?auto=format&fit=crop&w=1200&q=70"
+             srcset="https://images.unsplash.com/photo-1661994215679-cde7c2c5c060?auto=format&fit=crop&w=700&q=70 700w, https://images.unsplash.com/photo-1661994215679-cde7c2c5c060?auto=format&fit=crop&w=1200&q=70 1200w"
+             sizes="(min-width:1180px) 1120px, 100vw" width="1200" height="900"
+             alt="سفرة بيت فيها رز وفطاير وكبة وسلطات وعصيرات">
+        <div class="feast-body">
+          <h3>عندك عزيمة؟</h3>
+          <p>نجهز السفرة كاملة من الرز للحلا، وتوصلك مرتبة قبل ضيوفك بساعة.</p>
+          <a class="btn btn--saffron" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>رتّب عزيمتك على الواتساب</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- النقاط -->
+  <section class="sec sec--dark dark" id="points" aria-labelledby="points-title">
+    <div class="wrap loyal">
+      <div>
+        <div class="head">
+          <span class="eyebrow">نقاط الولاء</span>
+          <h2 id="points-title">كل طلب يرجع لك منه شي</h2>
+          <p>النقاط تنضاف لحالها بعد كل طلب، وتستخدمها خصم على طلبك الجاي.</p>
+        </div>
+        <div class="rules">
+          <div class="rule">
+            <span class="rule-ic" aria-hidden="true"><svg class="ic ic--lg"><use href="#i-coin"/></svg></span>
+            <p><b>نقطة لكل ريال</b><span>تكسبها مع كل طلب واشتراك</span></p>
+          </div>
+          <div class="rule">
+            <span class="rule-ic" aria-hidden="true"><svg class="ic ic--lg"><use href="#i-tag"/></svg></span>
+            <p><b class="num">100 نقطة = 10 ريال</b><span>خصم مباشر على أي طلب</span></p>
+          </div>
+        </div>
+        <div class="calc">
+          <div class="calc-top"><label for="calc">جرّب: قيمة طلبك</label><output class="num" id="calc-v" for="calc">650 ريال</output></div>
+          <input type="range" id="calc" min="35" max="1000" step="5" value="650">
+          <p class="calc-res" id="calc-r" aria-live="polite">تكسب <b class="num">650</b> نقطة، تخصم فيها <b class="num">60</b> ريال ويبقى لك <b class="num">50</b> نقطة.</p>
+        </div>
+      </div>
+
+      <div class="pcard-wrap">
+        <div class="pcard" role="img" aria-label="بطاقة نقاط مثال: 1,240 نقطة تكفي لخصم 120 ريال">
+          <div class="pcard-in" aria-hidden="true">
+            <div class="pcard-row">
+              <b>نقاط دارنا</b>
+              <svg class="brand-mark" style="width:34px;height:34px"><use href="#i-mark"/></svg>
+            </div>
+            <small class="num" style="display:block;font-weight:600;opacity:.8;margin-top:2px">بطاقة عميل · مثال</small>
+            <div class="pcard-pts"><strong class="num" id="pts">1,240</strong><span>نقطة</span></div>
+            <p class="pcard-worth num">تقدر تخصم 120 ريال الحين</p>
+            <div class="bar"><i></i></div>
+            <p class="bar-l num">40 من 100 نقطة للخصم الجاي</p>
+          </div>
+          <div class="sadu"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- الإهداء -->
+  <section class="sec" id="gift" aria-labelledby="gift-title">
+    <div class="wrap gift">
+        <div class="head">
+          <span class="eyebrow">الإهداء</span>
+          <h2 id="gift-title">فرّح أحد بطبخة من دارنا</h2>
+          <p>تختار الهدية وتكتب رسالتك، ونوصلها باسمك في الوقت اللي تحدده.</p>
+        </div>
+        <fieldset class="gift-opts">
+          <legend class="sr-only">اختر الهدية</legend>
+          <div class="opts">
+            <label class="opt">
+              <input type="radio" name="g" value="sweet" checked data-name="صينية حلا" data-price="70" data-img="https://images.unsplash.com/photo-1786174045066-72297be6e9f4?auto=format&fit=crop&w=1200&q=70" data-alt="صحن بقلاوة بالفستق">
+              <img src="https://images.unsplash.com/photo-1786174045066-72297be6e9f4?auto=format&fit=crop&w=400&q=70" width="400" height="400" alt="">
+              <span><b>صينية حلا</b><small class="num">70 ريال</small></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="g" value="coffee" data-name="قهوة وتمر" data-price="120" data-img="https://images.unsplash.com/photo-1774791500971-ddaafd214520?auto=format&fit=crop&w=1200&q=70" data-alt="دلة قهوة ذهبية وسلة خوص فيها تمر">
+              <img src="https://images.unsplash.com/photo-1774791500971-ddaafd214520?auto=format&fit=crop&w=400&q=70" width="400" height="400" alt="">
+              <span><b>قهوة وتمر</b><small class="num">120 ريال</small></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="g" value="pastry" data-name="صينية معجنات" data-price="90" data-img="https://images.unsplash.com/photo-1786174045067-d5bb503aa362?auto=format&fit=crop&w=1200&q=70" data-alt="سمبوسة مقلية مع ليمون وخس">
+              <img src="https://images.unsplash.com/photo-1786174045067-d5bb503aa362?auto=format&fit=crop&w=400&q=70" width="400" height="400" alt="">
+              <span><b>صينية معجنات</b><small class="num">90 ريال</small></span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="gcard" aria-live="polite">
+          <div class="gcard-photo">
+            <img id="g-img" src="https://images.unsplash.com/photo-1786174045066-72297be6e9f4?auto=format&fit=crop&w=1200&q=70" width="1200" height="750" alt="صحن بقلاوة بالفستق">
+            <span class="ribbon"><svg class="ic ic--sm" aria-hidden="true"><use href="#i-gift"/></svg>هدية من دارنا</span>
+          </div>
+          <div class="sadu" aria-hidden="true"></div>
+          <div class="gcard-body">
+            <span class="to">إلى</span>
+            <p class="to-name" id="g-to-v">الغالي</p>
+            <p class="msg" id="g-msg-v">بالعافية عليك، طبخة من القلب.</p>
+            <div class="gcard-foot"><b id="g-name">صينية حلا</b><span class="num" id="g-price">70 ريال</span></div>
+          </div>
+        </div>
+
+        <div class="gift-fields">
+          <div class="fields">
+            <div class="field">
+              <label for="g-to">اسم اللي تهديه</label>
+              <input id="g-to" type="text" maxlength="28" placeholder="مثلًا: الوالدة" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="g-msg">رسالتك</label>
+              <textarea id="g-msg" rows="2" maxlength="90" placeholder="اكتب رسالة قصيرة تنكتب على الكرت"></textarea>
+            </div>
+          </div>
+          <a class="btn btn--olive btn--block" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-gift"/></svg>أرسل الهدية على الواتساب</a>
+        </div>
+    </div>
+  </section>
+
+  <!-- كيف تطلب -->
+  <section class="sec sec--tint" id="how" aria-labelledby="how-title">
+    <div class="wrap how">
+      <div>
+        <div class="head">
+          <span class="eyebrow">كيف تطلب</span>
+          <h2 id="how-title">ثلاث خطوات على الواتساب</h2>
+          <p>يرد عليك مساعد الطلبات على طول، حتى وقت الزحمة.</p>
+        </div>
+        <ol class="steps">
+          <li class="step"><span class="step-n num" aria-hidden="true">1</span><div><h3>ترسل لنا على الواتساب</h3><p>رسالة وحدة مثل «هلا» تكفي، ويوصلك المنيو وأسعار اليوم.</p></div></li>
+          <li class="step"><span class="step-n num" aria-hidden="true">2</span><div><h3>تختار الأكل ووقت الاستلام أو التوصيل</h3><p>تحدد الكمية والوقت، وإذا تبي توصيل ترسل موقعك.</p></div></li>
+          <li class="step"><span class="step-n num" aria-hidden="true">3</span><div><h3>يوصلك التأكيد</h3><p>رقم الطلب والمبلغ ووقت الجاهزية، ورسالة أول ما يطلع الأكل.</p></div></li>
+        </ol>
+        <a class="btn btn--olive" href="../sim.html?demo=1" style="margin-top:4px"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>جرّب الطلب الحين</a>
+      </div>
+
+      <div class="phone" role="img" aria-label="مثال محادثة طلب على الواتساب مع مطبخ دارنا">
+        <div class="phone-top" aria-hidden="true">
+          <svg class="brand-mark"><use href="#i-mark"/></svg>
+          <div><b>مطبخ دارنا</b><small>مساعد الطلبات · متصل</small></div>
+        </div>
+        <div class="chat" aria-hidden="true">
+          <p class="b b--out">السلام عليكم، أبي غدا اليوم<time class="num">12:10</time></p>
+          <p class="b b--in">وعليكم السلام، حياك. طبخة اليوم: كبسة دجاج 35 ريال، مندي لحم 60 ريال. وش تختار؟<time class="num">12:10</time></p>
+          <p class="b b--out">2 كبسة، استلام الساعة 1:30<time class="num">12:11</time></p>
+          <div class="b b--in b--ok"><strong><svg class="ic ic--sm"><use href="#i-check"/></svg>تم تأكيد طلبك</strong><span class="num">رقم 1042 · 70 ريال · جاهز 1:30 الظهر</span><br><span class="num">كسبت 70 نقطة</span><time class="num">12:11</time></div>
+        </div>
+        <div class="phone-in" aria-hidden="true"><svg class="ic ic--sm"><use href="#i-wa"/></svg>اكتب رسالة</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- آراء العملاء -->
+  <section class="sec" id="reviews" aria-labelledby="rev-title">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">آراء العملاء</span>
+        <h2 id="rev-title">من سفرتهم</h2>
+      </div>
+      <div class="reviews">
+        <figure class="rev">
+          <div class="rev-top"><span class="ex">مثال</span><span class="stars" role="img" aria-label="5 من 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></div>
+          <blockquote>الكبسة طعمها طعم بيت، ووصلت حارة على الوقت بالضبط.</blockquote>
+          <figcaption class="who"><span class="who-ic" aria-hidden="true"><svg class="ic"><use href="#i-user"/></svg></span><span><b>عميل من المدينة</b><small>طلب يومي</small></span></figcaption>
+        </figure>
+        <figure class="rev">
+          <div class="rev-top"><span class="ex">مثال</span><span class="stars" role="img" aria-label="5 من 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></div>
+          <blockquote>طلبت صواني لعزيمة 20 شخص، كل شي وصل مرتب والضيوف مدحوه.</blockquote>
+          <figcaption class="who"><span class="who-ic" aria-hidden="true"><svg class="ic"><use href="#i-user"/></svg></span><span><b>عميل من حي قباء</b><small>باقة العزايم</small></span></figcaption>
+        </figure>
+        <figure class="rev">
+          <div class="rev-top"><span class="ex">مثال</span><span class="stars" role="img" aria-label="5 من 5"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span></div>
+          <blockquote>الاشتراك الشهري ريحني من هم الغداء، والرصيد ينخصم بدون ما أحسب.</blockquote>
+          <figcaption class="who"><span class="who-ic" aria-hidden="true"><svg class="ic"><use href="#i-user"/></svg></span><span><b>عميل من حي العزيزية</b><small>اشتراك شهري</small></span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- الأوقات والتوصيل -->
+  <section class="sec sec--tint" id="hours" aria-labelledby="hours-title">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">الأوقات والتوصيل</span>
+        <h2 id="hours-title">متى نطبخ ووين نوصل</h2>
+      </div>
+      <div class="info">
+        <div class="box">
+          <div class="box-h"><span aria-hidden="true"><svg class="ic"><use href="#i-clock"/></svg></span><h3>أوقات الطلب</h3></div>
+          <dl class="rows">
+            <div data-day="week"><dt>السبت إلى الخميس</dt><dd class="num">11 ص إلى 9 م</dd></div>
+            <div data-day="fri"><dt>الجمعة</dt><dd class="num">1 م إلى 10 م</dd></div>
+            <div><dt>طلبات الغداء</dt><dd class="num">قبل 12 الظهر</dd></div>
+            <div><dt>المناسبات والصواني</dt><dd>قبلها بيوم</dd></div>
+          </dl>
+        </div>
+        <div class="box">
+          <div class="box-h"><span aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg></span><h3>التوصيل</h3></div>
+          <dl class="rows">
+            <div><dt>قباء والعوالي وقربان</dt><dd class="num">10 ريال</dd></div>
+            <div><dt>العزيزية ووسط المدينة</dt><dd class="num">15 ريال</dd></div>
+            <div><dt>باقي أحياء المدينة</dt><dd class="num">20 ريال</dd></div>
+            <div class="free"><dt>الطلبات فوق 250 ريال</dt><dd>مجاني</dd></div>
+          </dl>
+          <p class="box-note">نوصل من 12 الظهر إلى 9 الليل.</p>
+        </div>
+        <div class="box">
+          <div class="box-h"><span aria-hidden="true"><svg class="ic"><use href="#i-bag"/></svg></span><h3>الاستلام من البيت</h3></div>
+          <p class="addr">حي قباء، المدينة المنورة</p>
+          <p class="box-note">بدون رسوم. يوصلك موقع البيت بالضبط مع رسالة التأكيد، وطلبك يكون جاهز في وقته.</p>
+          <a class="btn btn--olive btn--block" href="https://maps.google.com/?q=المدينة%20المنورة" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>افتح الموقع على قوقل ماب</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot dark" id="foot">
+  <div class="sadu" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="foot-about">
+      <a class="brand" href="#top"><svg class="brand-mark" aria-hidden="true"><use href="#i-mark"/></svg><span><b>مطبخ دارنا</b><small>أسرة منتجة · المدينة المنورة</small></span></a>
+      <p>أكل بيت يومي من المدينة المنورة، تطلبه من الواتساب استلام أو توصيل.</p>
+      <a class="btn btn--saffron" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>اطلب على الواتساب</a>
+    </div>
+    <div>
+      <h4>تصفح</h4>
+      <div class="foot-links">
+        <a href="#menu">المنيو</a>
+        <a href="#plans">الباقات</a>
+        <a href="#points">نقاط الولاء</a>
+        <a href="#gift">الإهداء</a>
+        <a href="#how">كيف تطلب</a>
+        <a href="#hours">الأوقات والتوصيل</a>
+      </div>
+    </div>
+    <div>
+      <h4>تابعنا</h4>
+      <div class="social">
+        <a href="#" aria-label="انستقرام"><svg class="ic"><use href="#i-insta"/></svg></a>
+        <a href="#" aria-label="سناب شات"><svg class="ic"><use href="#i-snap"/></svg></a>
+        <a href="#" aria-label="إكس"><svg class="ic"><use href="#i-x"/></svg></a>
+        <a href="#" aria-label="تيك توك"><svg class="ic"><use href="#i-tiktok"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div class="wrap">
+      <a href="https://unsplash.com" target="_blank" rel="noopener">الصور من Unsplash</a>
+      <span aria-hidden="true">·</span>
+      <a class="made" href="../">يعمل بالمناوب</a>
+      <span aria-hidden="true">·</span>
+      <span>تصميم تجريبي</span>
+    </div>
+  </div>
+</footer>
+
+<a class="fab" id="fab" href="../sim.html?demo=1"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>اطلب على الواتساب</a>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fmtN = function (n) { return Number(n).toLocaleString('en-US'); };
+
+  // حالة الفتح بتوقيت المدينة
+  try {
+    var parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Riyadh', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    var get = function (t) { var p = parts.find(function (x) { return x.type === t; }); return p ? p.value : ''; };
+    var wd = get('weekday');
+    var h = Number(get('hour')) + Number(get('minute')) / 60;
+    var fri = wd === 'Fri';
+    var open = fri ? 13 : 11, close = fri ? 22 : 21;
+    var hr = function (x) { return x < 12 ? x + ' الصبح' : (x === 12 ? '12 الظهر' : (x - 12) + (x < 17 ? ' الظهر' : (x < 19 ? ' العصر' : ' الليل'))); };
+    var txt, on = false;
+    if (h >= open && h < close) { on = true; txt = 'مفتوح الحين · نقفل ' + hr(close); }
+    else if (h < open) { txt = 'مقفل الحين · نفتح ' + hr(open); }
+    else { txt = 'مقفل الحين · نفتح بكرة ' + hr(wd === 'Thu' ? 13 : 11); }
+    document.querySelectorAll('[data-open]').forEach(function (el) {
+      el.textContent = txt;
+      var s = el.closest('.status'); if (s) s.classList.toggle('is-open', on);
+    });
+    var row = document.querySelector(fri ? '[data-day="fri"]' : '[data-day="week"]');
+    if (row) row.classList.add('is-today');
+  } catch (e) {}
+
+  // حاسبة النقاط
+  var r = document.getElementById('calc'), rv = document.getElementById('calc-v'), rr = document.getElementById('calc-r');
+  function calc() {
+    var v = Number(r.value), disc = Math.floor(v / 100) * 10, rest = v % 100;
+    rv.textContent = fmtN(v) + ' ريال';
+    rr.innerHTML = disc > 0
+      ? 'تكسب <b class="num">' + fmtN(v) + '</b> نقطة، تخصم فيها <b class="num">' + disc + '</b> ريال' + (rest ? ' ويبقى لك <b class="num">' + rest + '</b> نقطة.' : '.')
+      : 'تكسب <b class="num">' + fmtN(v) + '</b> نقطة، باقي لك <b class="num">' + (100 - v) + '</b> نقطة وتخصم 10 ريال.';
+  }
+  if (r) { r.addEventListener('input', calc); calc(); }
+
+  // عدّاد بطاقة النقاط
+  var pts = document.getElementById('pts');
+  if (pts && !reduce && 'IntersectionObserver' in window) {
+    var done = false;
+    new IntersectionObserver(function (es, ob) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting || done) return;
+        done = true; ob.disconnect();
+        var t0 = performance.now(), end = 1240, dur = 1100;
+        (function tick(t) {
+          var k = Math.min(1, (t - t0) / dur), eased = 1 - Math.pow(1 - k, 3);
+          pts.textContent = fmtN(Math.round(end * eased));
+          if (k < 1) requestAnimationFrame(tick);
+        })(t0);
+      });
+    }, { threshold: .5 }).observe(pts);
+  }
+
+  // معاينة الإهداء
+  var gImg = document.getElementById('g-img'), gName = document.getElementById('g-name'), gPrice = document.getElementById('g-price');
+  var gTo = document.getElementById('g-to'), gMsg = document.getElementById('g-msg');
+  var gToV = document.getElementById('g-to-v'), gMsgV = document.getElementById('g-msg-v');
+  document.querySelectorAll('input[name="g"]').forEach(function (inp) {
+    inp.addEventListener('change', function () {
+      if (!inp.checked) return;
+      gImg.src = inp.dataset.img; gImg.alt = inp.dataset.alt;
+      gName.textContent = inp.dataset.name; gPrice.textContent = inp.dataset.price + ' ريال';
+    });
+  });
+  gTo.addEventListener('input', function () { gToV.textContent = gTo.value.trim() || 'الغالي'; });
+  gMsg.addEventListener('input', function () { gMsgV.textContent = gMsg.value.trim() || 'بالعافية عليك، طبخة من القلب.'; });
+
+  // زر الطلب العائم للجوال
+  var fab = document.getElementById('fab');
+  var watch = [document.getElementById('hero-ctas'), document.getElementById('foot')];
+  if (fab && 'IntersectionObserver' in window) {
+    var seen = new Map();
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { seen.set(e.target, e.isIntersecting); });
+      var any = false; seen.forEach(function (v) { if (v) any = true; });
+      fab.classList.toggle('show', !any);
+    });
+    watch.forEach(function (el) { if (el) io.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
