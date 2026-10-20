@@ -18,8 +18,8 @@ try {
   // خيار فاضي يوقف الحفظ ويوديه له
   await b.ev(`document.querySelector('#mtAdd').click()`); await sleep(200);
   await b.ev(`document.querySelector('#mtSave').click()`); await sleep(500);
-  ok(await b.ev(`!!document.querySelector('.mt-opt.err')`), 'خيار بدون اسم يوقف الحفظ ويتعلّم بالأحمر');
-  await b.ev(`(() => { const li = [...document.querySelectorAll('.mt-opt')].at(-1); li.querySelector('[data-del]').click(); })()`); await sleep(200);
+  ok(await b.ev(`!!document.querySelector('.mt-row.err')`), 'خيار بدون اسم يوقف الحفظ ويتعلّم بالأحمر');
+  await b.ev(`(() => { [...document.querySelectorAll('[data-more]')].at(-1).click(); document.querySelector('.mt-pop [data-v="del"]').click(); })()`); await sleep(200);
   await b.ev(`document.querySelector('#mtSave').click()`);
   await b.waitFor(`/انحفظت الردود/.test(document.body.innerText)`, 15000);
   const saved = sql(`select st.menu from settings st join businesses b on b.id = st.business_id where b.slug = 'mahalak'`)[0].menu;

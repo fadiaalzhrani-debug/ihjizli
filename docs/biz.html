@@ -828,14 +828,14 @@ label.check input{width:20px;height:20px;flex:none;margin:0}
       const m = (S.set.menu && typeof S.set.menu === 'object') ? S.set.menu : {}, tx = S.set.texts || {};
       treeDraft = { tree: Array.isArray(m.tree) && m.tree.length ? JSON.parse(JSON.stringify(m.tree)) : MenuTree.fromMain(m.main, S.set.faq), welcome: { ar: (tx.ar && tx.ar.welcome) || '', en: (tx.en && tx.en.welcome) || '' }, def: { ar: defOf('ar', 'welcome'), en: defOf('en', 'welcome') }, path: [] };
     }
-    return `<div class="card stack"><div class="sec-h"><h3>شجرة الردود</h3><span class="tiny">أول رسالة وخياراتها، وكل خيار يفتح رسالة جديدة بخياراتها أو يسوي شي (يحجز، يرسل الأسعار…)</span></div><div id="mTree"></div></div>
-      <div class="card stack"><div class="sec-h"><h3>تحت كل جواب</h3><span class="tiny">الأزرار اللي تطلع تحت أي جواب (مثل جواب «كم السعر؟»)، 3 كحد أقصى</span></div>
+    return `<div class="card stack"><div class="sec-h"><h3 style="white-space:nowrap">شجرة الردود</h3><span class="tiny">كل خيار يا يفتح رسالة جديدة لها خياراتها، يا يسوي شي على طول</span></div><div id="mTree"></div></div>
+      <div class="card stack"><div class="sec-h"><h3 style="white-space:nowrap">تحت كل جواب</h3><span class="tiny">الأزرار اللي تطلع تحت أي جواب (مثل جواب «كم السعر؟»)، 3 كحد أقصى</span></div>
       <div class="mpick" id="mAfter"></div>
       <div class="row"><span class="sp"></span><button class="btn sm ghost" type="button" id="mSave">${icon('check')}حفظ</button></div></div>`;
   }
   function paintMenu() {
     if (!$('mTree')) return;
-    MenuTree.mount($('mTree'), { draft: treeDraft, lang: txLang, bizName: txLang === 'en' ? (S.biz.name_en || S.biz.name) : S.biz.name, services: S.services, faq: S.set.faq || [], onSave: saveTree });
+    MenuTree.mount($('mTree'), { draft: treeDraft, lang: txLang, bizName: txLang === 'en' ? (S.biz.name_en || S.biz.name) : S.biz.name, logo: S.biz.logo_url || '', services: S.services, faq: S.set.faq || [], onSave: saveTree });
     const faq = Array.isArray(S.set.faq) ? S.set.faq : [];
     const keys = [...Object.keys(MITEMS), ...faq.map((_, i) => 'faq:' + i)];
     const label = (k) => { const f = /^faq:(\d+)$/.exec(k); return f ? ((faq[+f[1]] || {}).chip || 'سؤال ' + (+f[1] + 1)) : MITEMS[k]; };
@@ -862,8 +862,8 @@ label.check input{width:20px;height:20px;flex:none;margin:0}
       await q1(sb.from('settings').update({ menu, texts }).eq('business_id', BIZ).select('business_id'));
       S.set.menu = menu; S.set.texts = texts; treeDraft.tree = JSON.parse(JSON.stringify(tree));
       I.toast('انحفظت الردود ✓ والرد الآلي يستخدمها الحين');
-      paintMenu();
-    } catch (x) { I.fail(x); }
+      treeDraft.dirty = false; paintMenu(); return true;
+    } catch (x) { I.fail(x); return false; }
   }
   function faqCard() {
     if (!faqDraft) faqDraft = (Array.isArray(S.set.faq) ? S.set.faq : []).map((x) => ({ chip: x.chip || '', q: x.q || '', a: x.a || '' }));
