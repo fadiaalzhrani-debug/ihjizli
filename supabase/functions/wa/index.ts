@@ -3,7 +3,7 @@
 //   GET/POST /wa/hook                    ويبهوك مشترك (تطبيق ميتا واحد للمنصة) والمنشأة تنعرف من رقمها
 //   POST /wa/sim  ·  GET /wa/sim  ·  POST /wa/sim/reset  ·  GET /wa/sim/info   محاكي الواتساب (بدون إرسال حقيقي)
 import { background, clip, clipLines, CORS, db, errMsg, hmacHex, ipOf, json, limiter, readJson, routeParts, sameSecret } from "../_shared/util.ts";
-import { handleMessage, type Inbound, loadCtx } from "../_shared/bot.ts";
+import { cleanTree, handleMessage, type Inbound, loadCtx } from "../_shared/bot.ts";
 import { loadSecrets, markRead } from "../_shared/wa.ts";
 import { metaApp } from "../_shared/metaes.ts";
 import { channelTest, templatesSync } from "../_shared/channel.ts";
@@ -234,7 +234,8 @@ async function sim(req: Request, sub: string): Promise<Response> {
     const okKey = (x: unknown) => typeof x === "string" && /^(book|orders|prices|location|hours|services|pay|contact|lang|faq:\d{1,2})$/.test(x);
     if (c.menu && typeof c.menu === "object") {
       const main = Array.isArray(c.menu.main) ? c.menu.main.filter(okKey).slice(0, 9) : [], after = Array.isArray(c.menu.after) ? c.menu.after.filter(okKey).slice(0, 3) : [];
-      if (main.length || after.length) (cfg as any).menu = { main, after };
+      const tree = cleanTree(c.menu.tree);
+      if (main.length || after.length || tree.length) (cfg as any).menu = tree.length ? { main, after, tree } : { main, after };
     }
     if (Array.isArray(c.faq)) {
       const faq = c.faq.slice(0, 6).map((e: any) => ({ chip: clip(e?.chip, 20), q: clip(e?.q, 120) || clip(e?.chip, 20).replace(/[؟?]/g, ""), a: clipLines(e?.a, 500) })).filter((e: any) => e.chip && e.a);

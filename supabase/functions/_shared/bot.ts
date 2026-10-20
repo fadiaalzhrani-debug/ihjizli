@@ -74,6 +74,29 @@ export function faqMatch(faq: any, text: string): { a: string } | null {
   return best ? { a: best.a } : null;
 }
 
+// شجرة الردود (settings.menu.tree): خيارات الترحيب، وكل خيار يا إجراء (احجز، الأسعار، خدمة معيّنة…)
+// يا رسالة جديدة فوقها خياراتها (go: "msg")، وهكذا لأي عمق. المالك يكتبها من لوحته فننظفها هنا
+export type TNode = { id: string; t: string; t_en: string; go: string; text: string; text_en: string; opts: TNode[] };
+const TGO = /^(msg|book|orders|prices|location|hours|services|pay|contact|lang|packages|balance|home|back|svc:[0-9a-f-]{36}|faq:\d{1,2})$/;
+export function cleanTree(raw: unknown): TNode[] {
+  let n = 0;
+  const walk = (arr: unknown, depth: number): TNode[] => {
+    if (!Array.isArray(arr) || depth > 8) return [];
+    const out: TNode[] = [];
+    for (const x of arr.slice(0, 10)) {
+      if (!x || typeof x !== "object" || ++n > 200) break;
+      const o = x as any, id = String(o.id || ""), go = String(o.go || ""), t = String(o.t || "").trim().slice(0, 20);
+      if (!/^[a-z0-9]{3,16}$/i.test(id) || !TGO.test(go) || !t || out.some((y) => y.id === id)) continue;
+      const msg = go === "msg";
+      out.push({ id, t, t_en: String(o.t_en || "").trim().slice(0, 20), go,
+        text: msg ? String(o.text || "").trim().slice(0, 1000) : "", text_en: msg ? String(o.text_en || "").trim().slice(0, 1000) : "",
+        opts: msg ? walk(o.opts, depth + 1) : [] });
+    }
+    return out;
+  };
+  return walk(raw, 0);
+}
+
 const STATES_WITH_LIST = new Set(["svc", "branch", "day", "time", "orders", "order", "cancel_confirm", "qty", "pkgq", "addon", "pkgs", "pkg"]);
 const UUID = /^[0-9a-f-]{36}$/i;
 const YES = /^(نعم|ايه|ايوه|اي|اكيد|تمام|طيب|اوكي|yes|yeah|ok|okay|sure)$/;
@@ -132,6 +155,46 @@ class Bot {
   }
   menuRows(keys: string[]): Row[] { const out: Row[] = []; for (const k of keys) { const r = this.menuItem(k); if (r && !out.some((x) => x.id === r.id)) out.push(r); } return out; }
   menuButtons() { return this.menuRows(this.menuCfg().after).slice(0, 3); }
+  _tree: TNode[] | null = null;
+  tree(): TNode[] { return this._tree ??= cleanTree(this.s.menu?.tree); }
+  treeFind(id: string): { node: TNode; parent: TNode | null } | null {
+    const walk = (arr: TNode[], parent: TNode | null): { node: TNode; parent: TNode | null } | null => {
+      for (const x of arr) { if (x.id === id) return { node: x, parent }; const r = walk(x.opts, x); if (r) return r; }
+      return null;
+    };
+    return walk(this.tree(), null);
+  }
+  // خيارات رسالة: backTo = الرسالة اللي قبلها (لزر «رجوع»)، وnull = الترحيب
+  treeRows(opts: TNode[], backTo: string | null): Row[] {
+    const out: Row[] = [];
+    for (const o of opts) {
+      const title = (this.lang === "en" ? (o.t_en || (o.go !== "msg" ? this.menuItem(o.go)?.title : "") || o.t) : o.t).slice(0, 20);
+      let id = "";
+      if (o.go === "msg") id = "t:" + o.id;
+      else if (o.go === "home") id = "m:home";
+      else if (o.go === "back") id = backTo ? "t:" + backTo : "m:home";
+      else if (o.go.startsWith("svc:")) id = this.ctx.services.some((x: any) => x.id === o.go.slice(4)) ? "m:" + o.go : "";
+      else id = this.menuItem(o.go)?.id || "";
+      if (id && title && !out.some((r) => r.id === id)) out.push({ id, title });
+    }
+    return out;
+  }
+  // يرسل رسالة بخياراتها: 3 وأقل أزرار، وأكثر قائمة. ويحفظ الخيارات عشان لو كتب الرقم أو اسم الخيار
+  treeSay(text: string, all: Row[], button = this.T("btn_more")) {
+    const rows = all.slice(0, 10);
+    this.data.rows = rows.map((r) => r.id); this.data.rowt = rows.map((r) => norm(r.title));
+    if (rows.length <= 3) this.say({ t: "buttons", text, buttons: rows });
+    else this.say({ t: "list", text, button, sections: [{ rows }] });
+  }
+  treeNode(id: string) {
+    const f = this.treeFind(id);
+    if (!f || f.node.go !== "msg") return this.welcome();
+    const n = f.node, text = (this.lang === "en" && n.text_en) || n.text || n.t;
+    this.set("idle", {});
+    const rows = this.treeRows(n.opts, f.parent?.id ?? null);
+    if (!rows.length) return this.reply(text);
+    this.treeSay(text, rows);
+  }
   over(k: string): string { const v = this.s.texts?.[this.lang]?.[k]; return (typeof v === "string" && v.trim()) ? v : ""; }
   // رد معلوماتي + «وش بعده» حسب التخصيص
   reply(text: string) { this.say({ t: "buttons", text, buttons: this.menuButtons() }); }
@@ -180,6 +243,10 @@ class Bot {
       if (/^\d{1,2}$/.test(num) && (STATES_WITH_LIST.has(this.state) || this.state === "idle") && Array.isArray(this.data.rows)) {
         const id = this.data.rows[+num - 1];
         if (id) return this.onId(id);
+      }
+      if (this.state === "idle" && Array.isArray(this.data.rowt) && Array.isArray(this.data.rows)) {
+        const i = this.data.rowt.indexOf(t0);
+        if (i >= 0 && this.data.rows[i]) return this.onId(this.data.rows[i]);
       }
       const it = intentOf(text);
       if (it === "lang_en") return this.setLang("en");
@@ -244,7 +311,10 @@ class Bot {
         if (v === "packages") return this.packagesList();
         if (v === "balance") return this.balanceInfo();
         if (v.startsWith("faq:")) { const e = (Array.isArray(this.s.faq) ? this.s.faq : [])[+v.slice(4)]; if (e?.a) return this.reply(String(e.a)); }
+        // من شجرة الردود: حجز خدمة معيّنة على طول
+        if (v.startsWith("svc:")) { this.set("idle", {}); return this.onService(v.slice(4)); }
         return this.welcome();
+      case "t": return this.treeNode(v);
       case "qty": return this.onQty(+v);
       case "pku": return this.onUsePkg(v);
       case "ad": return this.onAddon(v);
@@ -270,8 +340,8 @@ class Bot {
   // ───────── الترحيب واللغة ─────────
   async welcome() {
     this.set("idle", {});
-    const cfg = this.menuCfg();
-    let rows = this.menuRows(cfg.main);
+    const cfg = this.menuCfg(), tree = this.tree();
+    let rows = tree.length ? this.treeRows(tree, null) : this.menuRows(cfg.main);
     let text = this.T("welcome", { biz: this.bizName() });
     // مشترك في بكج: نذكّره برصيده، وزر الحجز يصير «احجز من رصيدي» (ينخصم بدون دفع)
     const bal = await this.balances();
@@ -280,6 +350,7 @@ class Bot {
       const bk = { id: "m:bookbal", title: this.T("btn_book_balance") };
       rows = rows.some((r) => r.id === "m:book") ? rows.map((r) => r.id === "m:book" ? bk : r) : [bk, ...rows];
     }
+    if (tree.length && rows.length) return this.treeSay(text, rows);
     if (rows.length <= 3) {
       // الافتراضي: الحجز وطلباتي وزر اللغة (لو ما اختار المالك قائمته)
       const btns = (this.s.menu && Array.isArray(this.s.menu.main) && this.s.menu.main.length) ? rows : [...rows, { id: this.lang === "en" ? "m:lang:ar" : "m:lang:en", title: this.T("btn_lang") }];
