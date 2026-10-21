@@ -835,7 +835,7 @@ label.check input{width:20px;height:20px;flex:none;margin:0}
   }
   function paintMenu() {
     if (!$('mTree')) return;
-    MenuTree.mount($('mTree'), { draft: treeDraft, lang: txLang, bizName: txLang === 'en' ? (S.biz.name_en || S.biz.name) : S.biz.name, logo: S.biz.logo_url || '', services: S.services, faq: S.set.faq || [], onSave: saveTree });
+    MenuTree.mount($('mTree'), { draft: treeDraft, lang: txLang, bizName: txLang === 'en' ? (S.biz.name_en || S.biz.name) : S.biz.name, logo: S.biz.logo_url || '', services: S.services, faq: S.set.faq || [], fresh: !(S.set.menu && Array.isArray(S.set.menu.tree) && S.set.menu.tree.length), onSave: saveTree });
     const faq = Array.isArray(S.set.faq) ? S.set.faq : [];
     const keys = [...Object.keys(MITEMS), ...faq.map((_, i) => 'faq:' + i)];
     const label = (k) => { const f = /^faq:(\d+)$/.exec(k); return f ? ((faq[+f[1]] || {}).chip || 'سؤال ' + (+f[1] + 1)) : MITEMS[k]; };

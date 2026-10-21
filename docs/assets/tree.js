@@ -1,5 +1,5 @@
 // الردود: المالك يضبط ردود واتساب كأنه يشوفها في الجوال: رسالة فوق، وأزرار تحتها، وكل زر يا يفتح رسالة ثانية يا يسوي شي على طول.
-// MenuTree.mount(el, { draft, lang, bizName, logo, services, faq, onSave }) · draft = { tree: [...], welcome: {ar, en}, def: {ar, en}, path: [] }
+// MenuTree.mount(el, { draft, lang, bizName, logo, services, faq, fresh, onSave }) · draft = { tree: [...], welcome: {ar, en}, def: {ar, en}, path: [], mode }
 // العقدة: { id, t, t_en, go, text, text_en, opts } · go: msg أو إجراء (نفس اللي يفهمه الرد الآلي في _shared/bot.ts)
 (function () {
   const I = window.IHJ, { esc, icon } = I;
@@ -24,6 +24,10 @@
   const ACT = Object.fromEntries(ACTS.map((a) => [a[0], a]));
   const MAIN = ['msg', 'book', 'prices', 'location', 'hours', 'contact'];
   const MORE = ['services', 'pay', 'orders', 'packages', 'balance', 'lang', 'svc', 'back', 'home'];
+  // وش يصير للعميل لما يضغط (في المعاينة)
+  const WHAT = { book: 'هنا يبدأ الحجز: يختار الخدمة واليوم والوقت', prices: 'يرد بالأسعار من خدماتك', services: 'يرد بقائمة خدماتك', location: 'يرد بموقعكم أو المدن اللي تغطونها', hours: 'يرد بأوقات الدوام', pay: 'يرد بطريقة الدفع', orders: 'يعرض طلباته ويقدر يغيّر الموعد أو يلغي', packages: 'يعرض البكجات ويقدر يشتري', balance: 'يعرض رصيده من البكجات', contact: 'تجيك محادثته في لوحتك وترد عليه بنفسك', lang: 'يحوّل الردود للغة الثانية' };
+  const EMOJI = ['👋', '👇', '✅', '📍', '🕐', '💳', '🚗', '✨', '🌷', '😊'];
+  const SUGGEST = ['اختر الخدمة اللي تبيها 👇', 'وش تبي تعرف؟ 👇', 'تفضّل التفاصيل 👇', 'اختر اللي يناسبك:'];
   const MAXO = 10;
   const newId = () => (Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2, 8)).replace(/[^a-z0-9]/g, '').padEnd(8, 'x');
   const kindOf = (o) => (o.go || '').startsWith('svc:') ? 'svc' : (o.go || 'msg');
@@ -39,6 +43,9 @@
     dup: '<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
     list: '<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
     wand: '<path d="m15 4 5 5L9 20H4v-5z"/><path d="M13 6l5 5"/>',
+    reply: '<path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/>',
+    eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
   };
   const ic = (n) => XI[n] ? `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${XI[n]}</svg>` : icon(n);
 
@@ -101,11 +108,15 @@
 .rt{position:relative;display:grid;gap:18px;grid-template-columns:minmax(0,470px) minmax(240px,1fr);align-items:start}
 @media (max-width:900px){.rt{grid-template-columns:minmax(0,1fr)}}
 .rt-main{display:grid;gap:12px;min-width:0}
+.rt-mode{display:flex;gap:4px;background:var(--soft2);border-radius:14px;padding:4px;align-self:start;width:max-content;max-width:100%}
+.rt-mode button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--muted);border-radius:11px;min-height:36px;padding:0 14px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.rt-mode button .i{width:16px;height:16px}
+.rt-mode button.on{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(30,20,80,.12)}
 /* الجوال بشكل واتساب، وهو المحرّر نفسه */
-.rt-phone{--wa-head:#008069;--wa-head-ink:#fff;--wa-wall:#EFEAE2;--wa-dot:rgba(0,0,0,.035);--wa-in:#fff;--wa-out:#D9FDD3;--wa-ink:#111B21;--wa-sub:#667781;--wa-link:#027EB5;--wa-sep:#E9EDEF;--wa-soft:rgba(2,126,181,.09);--wa-hover:rgba(0,0,0,.04);
+.rt-phone{--wa-head:#008069;--wa-head-ink:#fff;--wa-wall:#EFEAE2;--wa-dot:rgba(0,0,0,.035);--wa-in:#fff;--wa-out:#D9FDD3;--wa-ink:#111B21;--wa-sub:#667781;--wa-link:#027EB5;--wa-sep:#E9EDEF;--wa-soft:rgba(2,126,181,.09);--wa-hover:rgba(0,0,0,.04);--wa-note:#FFF5C4;--wa-note-ink:#54656F;
   border-radius:30px;padding:8px;background:linear-gradient(160deg,#2A2B3D,#14151F);box-shadow:0 24px 50px -28px rgba(20,16,60,.6)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rt-phone{--wa-head:#202C33;--wa-head-ink:#E9EDEF;--wa-wall:#0B141A;--wa-dot:rgba(255,255,255,.03);--wa-in:#202C33;--wa-out:#005C4B;--wa-ink:#E9EDEF;--wa-sub:#8696A0;--wa-link:#53BDEB;--wa-sep:#2A3942;--wa-soft:rgba(83,189,235,.14);--wa-hover:rgba(255,255,255,.05)}}
-:root[data-theme="dark"] .rt-phone{--wa-head:#202C33;--wa-head-ink:#E9EDEF;--wa-wall:#0B141A;--wa-dot:rgba(255,255,255,.03);--wa-in:#202C33;--wa-out:#005C4B;--wa-ink:#E9EDEF;--wa-sub:#8696A0;--wa-link:#53BDEB;--wa-sep:#2A3942;--wa-soft:rgba(83,189,235,.14);--wa-hover:rgba(255,255,255,.05)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rt-phone{--wa-head:#202C33;--wa-head-ink:#E9EDEF;--wa-wall:#0B141A;--wa-dot:rgba(255,255,255,.03);--wa-in:#202C33;--wa-out:#005C4B;--wa-ink:#E9EDEF;--wa-sub:#8696A0;--wa-link:#53BDEB;--wa-sep:#2A3942;--wa-soft:rgba(83,189,235,.14);--wa-hover:rgba(255,255,255,.05);--wa-note:#1D2A30;--wa-note-ink:#C9D3D8}}
+:root[data-theme="dark"] .rt-phone{--wa-head:#202C33;--wa-head-ink:#E9EDEF;--wa-wall:#0B141A;--wa-dot:rgba(255,255,255,.03);--wa-in:#202C33;--wa-out:#005C4B;--wa-ink:#E9EDEF;--wa-sub:#8696A0;--wa-link:#53BDEB;--wa-sep:#2A3942;--wa-soft:rgba(83,189,235,.14);--wa-hover:rgba(255,255,255,.05);--wa-note:#1D2A30;--wa-note-ink:#C9D3D8}
 .rt-wrap{border-radius:23px;overflow:hidden;background:var(--wa-wall);display:flex;flex-direction:column}
 .rt-head{display:flex;align-items:center;gap:10px;background:var(--wa-head);color:var(--wa-head-ink);padding:10px 12px}
 .rt-back{width:36px;height:36px;border:0;background:rgba(255,255,255,.16);color:inherit;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none}
@@ -120,12 +131,17 @@
 .rt-crumbs button:hover{color:var(--wa-ink)}
 .rt-crumbs button.on{color:var(--wa-ink);font-weight:700;cursor:default}
 .rt-crumbs i{color:var(--wa-sub);font-style:normal;opacity:.6}
+@keyframes rtIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .rt-chat{padding:12px 10px 14px;display:flex;flex-direction:column;gap:6px;min-height:320px;background-image:radial-gradient(var(--wa-dot) 1.2px,transparent 1.2px);background-size:16px 16px}
+.rt-chat>*{animation:rtIn .18s ease-out both}
+@media (prefers-reduced-motion:reduce){.rt-chat>*{animation:none}}
 .rt-day{align-self:center;background:var(--wa-in);color:var(--wa-sub);font-size:11.5px;border-radius:8px;padding:3px 10px;box-shadow:0 1px .5px rgba(11,20,26,.13);margin-bottom:4px}
 .rt-out{align-self:flex-end;max-width:72%;background:var(--wa-out);color:var(--wa-ink);border-radius:10px;border-start-end-radius:3px;padding:6px 9px 4px;box-shadow:0 1px .5px rgba(11,20,26,.13);font-size:14px;line-height:1.5}
-.rt-out p{margin:0;white-space:pre-wrap}
+.rt-out p,.rt-in p{margin:0;white-space:pre-wrap;word-break:break-word}
 .rt-out time,.rt-in time{display:block;text-align:end;font-size:10.5px;color:var(--wa-sub)}
 .rt-in{position:relative;align-self:stretch;background:var(--wa-in);border-radius:10px 10px 3px 3px;border-start-start-radius:3px;padding:6px 10px 5px;box-shadow:0 1px .5px rgba(11,20,26,.13);transition:box-shadow .15s}
+.rt-in.solo{border-radius:10px;border-start-start-radius:3px}
+.rt-in p{font-size:14.5px;line-height:1.6;color:var(--wa-ink);padding:4px 0 2px}
 .rt-in:focus-within{box-shadow:0 0 0 2px var(--wa-link)}
 .rt-in textarea{display:block;width:100%;border:0;background:transparent;resize:none;padding:4px 26px 2px 0;font:inherit;font-size:14.5px;line-height:1.6;color:var(--wa-ink);outline:0;box-shadow:none;min-height:46px;overflow:hidden;border-radius:0}
 .rt-in textarea[dir="ltr"]{padding:4px 0 2px 26px}
@@ -133,16 +149,24 @@
 .rt-in .pen{position:absolute;top:8px;inset-inline-end:9px;color:var(--wa-sub);opacity:.55;pointer-events:none}
 .rt-in .pen .i{width:15px;height:15px}
 .rt-in:focus-within .pen{opacity:0}
+.rt-tools{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:4px 0 2px;border-top:1px solid var(--wa-sep);margin-top:2px}
+.rt-tools button{border:0;background:transparent;border-radius:8px;min-width:30px;height:30px;padding:0 6px;font:inherit;font-size:17px;cursor:pointer;line-height:1}
+.rt-tools button:hover{background:var(--wa-hover)}
+.rt-tools .sg{font-size:12.5px;color:var(--wa-link);font-weight:600;background:var(--wa-soft);padding:0 10px;height:28px;border-radius:99px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.rt-tools .lb{font-size:11.5px;color:var(--wa-sub);margin-inline-end:2px}
 .rt-list{align-self:stretch;display:grid;gap:2px}
 .rt-btn{display:flex;align-items:center;gap:6px;background:var(--wa-in);padding:4px 6px 4px 8px;box-shadow:0 1px .5px rgba(11,20,26,.13);min-height:46px;transition:box-shadow .15s}
 .rt-btn:last-of-type{border-radius:0 0 10px 10px}
 .rt-btn.err{box-shadow:inset 0 0 0 2px var(--bad)}
 .rt-btn .ti{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--wa-link);background:var(--wa-soft);flex:none}
 .rt-btn .ti .i{width:16px;height:16px}
+.rt-namew{position:relative;flex:1;min-width:0;display:flex}
 .rt-name{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14.5px;font-weight:600;color:var(--wa-link);padding:6px 6px;border-radius:8px;min-height:36px;box-shadow:none}
 .rt-name:hover{background:var(--wa-hover)}
 .rt-name:focus{outline:0;background:var(--wa-soft);color:var(--wa-ink)}
 .rt-name::placeholder{font-weight:400;color:var(--wa-sub)}
+.rt-cnt{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);font-size:10.5px;color:var(--wa-sub);pointer-events:none;display:none}
+.rt-cnt.show{display:block} .rt-cnt.full{color:var(--bad);font-weight:700}
 .rt-act{display:inline-flex;align-items:center;gap:3px;border:0;background:var(--wa-hover);color:var(--wa-sub);border-radius:99px;padding:0 8px 0 10px;min-height:30px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none;max-width:44%}
 .rt-act span{overflow:hidden;text-overflow:ellipsis}
 .rt-act:hover,.rt-act[aria-expanded="true"]{background:var(--wa-soft);color:var(--wa-ink)}
@@ -158,6 +182,28 @@
 .rt-empty{align-self:stretch;background:var(--wa-in);color:var(--wa-sub);border-radius:0 0 10px 10px;padding:10px 12px;font-size:13px;text-align:center;box-shadow:0 1px .5px rgba(11,20,26,.13)}
 .rt-hint{align-self:center;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--wa-sub);text-align:center;margin-top:6px;background:var(--wa-in);border-radius:8px;padding:3px 10px;box-shadow:0 1px .5px rgba(11,20,26,.1)}
 .rt-hint .i{width:13px;height:13px}
+.rt-tip{align-self:stretch;display:flex;align-items:center;gap:8px;background:var(--wa-note);color:var(--wa-note-ink);border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.5;box-shadow:0 1px .5px rgba(11,20,26,.1)}
+.rt-tip span{flex:1}
+.rt-tip button{border:0;background:var(--wa-link);color:#fff;border-radius:99px;padding:0 12px;min-height:30px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.rt-tip button.gh{background:transparent;color:var(--wa-note-ink);padding:0 6px}
+/* المعاينة كعميل */
+.rt-pv{align-self:flex-start;width:min(86%,290px);display:grid;gap:2px}
+.rt-pv .rt-in{max-width:none}
+.rt-pv .bt{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:0;background:var(--wa-in);color:var(--wa-link);font:inherit;font-size:14px;font-weight:600;padding:9px 8px;cursor:pointer;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.rt-pv .bt:last-child{border-radius:0 0 10px 10px}
+.rt-pv .bt .i{width:15px;height:15px}
+.rt-pv .bt:hover{filter:brightness(.97)}
+.rt-lbtn{display:flex;align-items:center;justify-content:center;gap:6px;width:calc(100% + 20px);margin:6px -10px -5px;border:0;border-top:1px solid var(--wa-sep);background:none;color:var(--wa-link);font:inherit;font-size:14px;font-weight:600;padding:9px 8px;cursor:pointer;border-radius:0 0 10px 10px}
+.rt-lbtn .i{width:15px;height:15px}
+.rt-sheet{align-self:stretch;background:var(--wa-in);border-radius:14px;box-shadow:0 1px .5px rgba(11,20,26,.13);overflow:hidden;margin-top:2px}
+.rt-sheet .hd{text-align:center;font-weight:700;font-size:14px;color:var(--wa-ink);padding:9px;border-bottom:1px solid var(--wa-sep)}
+.rt-sheet button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;border-bottom:1px solid var(--wa-sep);background:var(--wa-in);color:var(--wa-ink);font:inherit;font-size:14px;padding:10px 14px;cursor:pointer;text-align:start}
+.rt-sheet button:last-child{border-bottom:0}
+.rt-sheet button i{width:17px;height:17px;border:2px solid var(--wa-sub);border-radius:50%;flex:none}
+.rt-note{align-self:center;max-width:92%;background:var(--wa-note);color:var(--wa-note-ink);font-size:12px;line-height:1.5;border-radius:8px;padding:5px 10px;text-align:center;box-shadow:0 1px .5px rgba(11,20,26,.1);margin-top:4px}
+.rt-bar{display:flex;align-items:center;gap:8px;padding:7px 8px 9px;background:var(--wa-sep)}
+.rt-bar span{flex:1;background:var(--wa-in);color:var(--wa-sub);border-radius:20px;padding:7px 14px;font-size:13.5px}
+.rt-bar i{width:34px;height:34px;border-radius:50%;background:#00A884;flex:none}
 .rt-under{font-size:12.5px;color:var(--muted);padding:0 6px}
 .rt-under code{background:var(--soft2);border-radius:6px;padding:0 5px;font-family:inherit;color:var(--fg)}
 .rt-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -165,6 +211,7 @@
 .rt-dirty{display:none;align-items:center;gap:6px;font-size:13px;color:var(--warn);font-weight:600}
 .rt-dirty::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .rt.dirty .rt-dirty{display:inline-flex}
+@media (max-width:900px){.rt.dirty .rt-foot{position:sticky;bottom:calc(70px + env(safe-area-inset-bottom));z-index:5;background:var(--card);padding:8px 0;margin:0 -4px;padding-inline:4px;box-shadow:0 -10px 20px -14px rgba(30,20,80,.25)}}
 /* كل الردود */
 .rt-map{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:4px 12px 8px;min-width:0}
 .rt-map summary{cursor:pointer;font-family:var(--display);font-weight:800;font-size:15px;padding:8px 0;list-style:none;display:flex;align-items:center;gap:8px}
@@ -226,9 +273,11 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
     style();
     const D = o.draft, en = o.lang === 'en';
     if (!Array.isArray(D.path)) D.path = [];
+    if (D.mode !== 'preview') D.mode = 'edit';
     const svcs = (o.services || []).filter((s) => s.active !== false);
     const svcOf = (x) => svcs.find((s) => 'svc:' + s.id === x.go);
     const now = new Date().toLocaleTimeString('ar-SA-u-nu-latn', { hour: 'numeric', minute: '2-digit' });
+    let undo = null, undoT = 0, note = '', sheet = false;
     const dirty = () => { D.dirty = true; const m = el.querySelector('.rt'); if (m) m.classList.add('dirty'); };
     // الرسالة الحالية من المسار (لو انحذفت وحدة منه نرجع لأقرب موجودة)
     function at() {
@@ -241,40 +290,65 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
     const defLabel = (k, svc) => k === 'svc' ? (svc ? (en ? (svc.name_en || svc.name) : svc.name) : '') : (ACT[k] ? ACT[k][en ? 4 : 3] : '');
     const shown = (x) => labelOf(x) || defLabel(kindOf(x), svcOf(x)) || '…';
     const badge = (x) => { const k = kindOf(x); if (k === 'svc') return svcOf(x) ? 'يحجز ' + svcOf(x).name : 'اختر الخدمة'; return ACT[k][1]; };
-    const go = (path) => { D.path = path; closePop(); paint(); };
+    const msgText = (n) => n ? (en ? (n.text_en || n.text) : (n.text || n.text_en)) || '' : (D.welcome[en ? 'en' : 'ar'] || D.def[en ? 'en' : 'ar']);
+    const fill = (t) => String(t || '').replace(/\{biz\}/g, o.bizName || '');
+    const go = (path) => { D.path = path; note = ''; sheet = false; closePop(); paint(); };
 
     function row(x, i) {
       const k = kindOf(x), a = ACT[k], lbl = en ? (x.t_en || '') : (x.t || '');
       const ph = en ? (x.t || defLabel(k, svcOf(x)) || 'Button name') : (defLabel(k, svcOf(x)) || 'اسم الزر');
-      const c = (x.opts || []).length;
+      const c = (x.opts || []).length, n = [...lbl].length;
       return `<div class="rt-btn" data-i="${i}"><span class="ti">${ic(a[5])}</span>
-        <input class="rt-name" data-name="${i}" value="${esc(lbl)}" maxlength="20" placeholder="${esc(ph)}" aria-label="اسم الزر ${i + 1}" ${en ? 'dir="ltr"' : ''}>
+        <span class="rt-namew"><input class="rt-name" data-name="${i}" value="${esc(lbl)}" maxlength="20" placeholder="${esc(ph)}" aria-label="اسم الزر ${i + 1}" ${en ? 'dir="ltr"' : ''}><span class="rt-cnt ${n >= 15 ? 'show' : ''} ${n >= 20 ? 'full' : ''}">${n}/20</span></span>
         <button type="button" class="rt-act ${k === 'svc' && !svcOf(x) ? 'need' : ''}" data-act="${i}" aria-haspopup="dialog" aria-expanded="false" title="وش يسوي هالزر"><span>${esc(badge(x))}</span>${ic('down')}</button>
         ${k === 'msg' ? `<button type="button" class="rt-go" data-open="${i}" title="افتح رسالته">${c ? c : 'افتح'}${ic('chev')}</button>` : ''}</div>`;
     }
 
-    function paint() {
-      const { node, opts, nodes } = at();
+    // المحادثة في وضع المعاينة: زي ما يشوفها العميل بالضبط، وأزرارها تنضغط
+    function previewChat(node, opts, nodes) {
+      const rows = opts.map((x) => ({ x, t: shown(x) }));
+      const body = fill(msgText(node)) || '…';
+      let h = `<div class="rt-day">${en ? 'Today' : 'اليوم'}</div><div class="rt-out"><p>${esc(node ? (labelOf(node) || '…') : (en ? 'Hi' : 'السلام عليكم'))}</p><time>${now}</time></div>`;
+      if (rows.length && rows.length <= 3) h += `<div class="rt-pv"><div class="rt-in"><p>${esc(body)}</p><time>${now}</time></div>${rows.map((r, i) => `<button type="button" class="bt" data-tap="${i}">${ic('reply')}${esc(r.t)}</button>`).join('')}</div>`;
+      else if (rows.length) {
+        h += `<div class="rt-pv"><div class="rt-in"><p>${esc(body)}</p><time>${now}</time><button type="button" class="rt-lbtn" data-lbtn>${ic('list')}${en ? 'More options' : 'خيارات أكثر'}</button></div></div>`;
+        if (sheet) h += `<div class="rt-sheet"><div class="hd">${en ? 'More options' : 'خيارات أكثر'}</div>${rows.map((r, i) => `<button type="button" data-tap="${i}"><span>${esc(r.t)}</span><i></i></button>`).join('')}</div>`;
+      } else h += `<div class="rt-in solo" style="align-self:flex-start;max-width:86%"><p>${esc(body)}</p><time>${now}</time></div>`;
+      if (note) h += `<div class="rt-note">${esc(note)}</div>`;
+      return h;
+    }
+
+    function editChat(node, opts) {
       const txt = node ? (en ? (node.text_en || '') : (node.text || '')) : (D.welcome[en ? 'en' : 'ar'] || D.def[en ? 'en' : 'ar']);
+      let h = '';
+      if (undo) h += `<div class="rt-tip" id="rtUndo"><span>انحذف زر «${esc(shown(undo.item))}»</span><button type="button" data-undo>${ic('undo')}تراجع</button></div>`;
+      else if (o.fresh && !D.dirty && !node) h += `<div class="rt-tip"><span>ردودك للحين الافتراضية. تبيها جاهزة من خدماتك وأسئلتك بضغطة؟</span><button type="button" data-starter>جهّزها</button></div>`;
+      h += `<div class="rt-day">${en ? 'Today' : 'اليوم'}</div>
+        <div class="rt-out"><p>${esc(node ? (labelOf(node) || '…') : (en ? 'Hi' : 'السلام عليكم'))}</p><time>${now}</time></div>
+        <div class="rt-in ${opts.length ? '' : 'solo'}"><span class="pen">${icon('edit')}</span><textarea id="rtText" rows="2" maxlength="1000" ${en ? 'dir="ltr"' : ''} placeholder="${esc(node ? (en ? 'Message' : 'اكتب الرسالة اللي تطلع له') : D.def[en ? 'en' : 'ar'])}" aria-label="نص الرسالة">${esc(txt)}</textarea>
+          <div class="rt-tools" id="rtTools">${node && !txt.trim() && !en ? `<span class="lb">اقتراح:</span>${SUGGEST.map((s) => `<button type="button" class="sg" data-sg="${esc(s)}">${esc(s)}</button>`).join('')}` : `${EMOJI.map((e) => `<button type="button" data-em="${e}" aria-label="أضف ${e}">${e}</button>`).join('')}`}</div><time>${now}</time></div>
+        <div class="rt-list">${opts.length ? opts.map(row).join('') : `<div class="rt-empty">ما فيه أزرار تحت هالرسالة. أضف زر، ${node ? 'أو خلها رسالة بس' : 'أو جهّزها من خدماتك'}.</div>`}<button type="button" class="rt-add" id="rtAdd" ${opts.length >= MAXO ? 'disabled' : ''}>${icon('plus')}${opts.length >= MAXO ? 'وصلت 10 أزرار' : 'أضف زر'}</button></div>
+        ${opts.length > 3 ? `<div class="rt-hint">${ic('list')}أكثر من 3 أزرار تطلع للعميل كقائمة «خيارات أكثر»، شوفها في المعاينة</div>` : ''}`;
+      return h;
+    }
+
+    function paint() {
+      const { node, opts, nodes } = at(), pv = D.mode === 'preview';
       const crumbs = node ? `<nav class="rt-crumbs" aria-label="وين أنت"><button type="button" data-p="-1">أول رسالة</button>${nodes.map((n, i) => `<i>›</i><button type="button" data-p="${i}" class="${i === nodes.length - 1 ? 'on' : ''}">${esc(labelOf(n) || 'بدون اسم')}</button>`).join('')}</nav>` : '';
       el.innerHTML = `<div class="rt ${D.dirty ? 'dirty' : ''}">
         <div class="rt-main">
+          <div class="rt-mode" role="tablist" aria-label="طريقة العرض"><button type="button" role="tab" data-mode="edit" class="${pv ? '' : 'on'}" aria-selected="${!pv}">${icon('edit')}تعديل</button><button type="button" role="tab" data-mode="preview" class="${pv ? 'on' : ''}" aria-selected="${pv}">${ic('eye')}معاينة كعميل</button></div>
           <div class="rt-phone"><div class="rt-wrap">
-            <div class="rt-head">${node ? `<button type="button" class="rt-back" data-p="${nodes.length - 2}" aria-label="رجوع">${ic('chev')}</button>` : ''}<span class="rt-av">${o.logo ? `<img src="${esc(o.logo)}" alt="">` : esc((o.bizName || 'م').trim().charAt(0))}</span><div style="min-width:0"><b>${esc(o.bizName || '')}</b><small>${node ? `الرسالة لما يضغط «${esc(labelOf(node) || '…')}»` : 'أول رسالة يشوفها العميل'}</small></div></div>
-            ${crumbs}
-            <div class="rt-chat">
-              <div class="rt-day">${en ? 'Today' : 'اليوم'}</div>
-              <div class="rt-out"><p>${esc(node ? (labelOf(node) || '…') : (en ? 'Hi' : 'السلام عليكم'))}</p><time>${now}</time></div>
-              <div class="rt-in"><span class="pen">${icon('edit')}</span><textarea id="rtText" rows="2" maxlength="1000" ${en ? 'dir="ltr"' : ''} placeholder="${esc(node ? (en ? 'Message' : 'اكتب الرسالة اللي تطلع له، مثل: اختر الخدمة 👇') : D.def[en ? 'en' : 'ar'])}" aria-label="نص الرسالة">${esc(txt)}</textarea><time>${now}</time></div>
-              <div class="rt-list">${opts.length ? opts.map(row).join('') : `<div class="rt-empty">ما فيه أزرار تحت هالرسالة. أضف زر، ${node ? 'أو خلها رسالة بس' : 'أو جهّزها من خدماتك'}.</div>`}<button type="button" class="rt-add" id="rtAdd" ${opts.length >= MAXO ? 'disabled' : ''}>${icon('plus')}${opts.length >= MAXO ? 'وصلت 10 أزرار' : 'أضف زر'}</button></div>
-              ${opts.length > 3 ? `<div class="rt-hint">${ic('list')}أكثر من 3 أزرار تطلع للعميل كقائمة «خيارات أكثر»</div>` : ''}
-            </div>
+            <div class="rt-head">${node ? `<button type="button" class="rt-back" data-p="${nodes.length - 2}" aria-label="رجوع">${ic('chev')}</button>` : ''}<span class="rt-av">${o.logo ? `<img src="${esc(o.logo)}" alt="">` : esc((o.bizName || 'م').trim().charAt(0))}</span><div style="min-width:0"><b>${esc(o.bizName || '')}</b><small>${pv ? (en ? 'Business account' : 'حساب تجاري') : node ? `الرسالة لما يضغط «${esc(labelOf(node) || '…')}»` : 'أول رسالة يشوفها العميل'}</small></div></div>
+            ${pv ? '' : crumbs}
+            <div class="rt-chat" id="rtChat">${pv ? previewChat(node, opts, nodes) : editChat(node, opts)}</div>
+            ${pv ? `<div class="rt-bar" aria-hidden="true"><span>${en ? 'Message' : 'اكتب رسالة'}</span><i></i></div>` : ''}
           </div></div>
-          ${node ? '' : `<div class="rt-under">اكتب <code>{biz}</code> ويطلع مكانها اسم محلك</div>`}
-          <div class="rt-foot">${node ? '' : `<button class="btn sm ghost" type="button" id="rtStarter">${ic('wand')}جهّزها من خدماتي</button>`}<span class="sp"></span><span class="rt-dirty">تعديلات ما انحفظت</span><button class="btn" type="button" id="rtSave">${icon('check')}حفظ الردود</button></div>
+          ${pv ? `<div class="rt-under">اضغط الأزرار وامشِ في الردود مثل العميل. ولو تبي تعدّل شي ارجع لـ«تعديل».</div>` : node ? '' : `<div class="rt-under">اكتب <code>{biz}</code> ويطلع مكانها اسم محلك</div>`}
+          <div class="rt-foot">${pv || node ? '' : `<button class="btn sm ghost" type="button" id="rtStarter">${ic('wand')}جهّزها من خدماتي</button>`}<span class="sp"></span><span class="rt-dirty">تعديلات ما انحفظت</span><button class="btn" type="button" id="rtSave">${icon('check')}حفظ الردود</button></div>
         </div>
         <details class="rt-map" ${innerWidth > 900 ? 'open' : ''}><summary>${ic('list')}كل الردود<span id="rtCount"></span></summary><div class="rt-tree" id="rtTree"></div></details></div>`;
-      bind(node, opts);
+      bind(node, opts, pv);
       side();
       autosize();
     }
@@ -347,8 +421,9 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
         else if (v === 'down' && i < opts.length - 1) [opts[i + 1], opts[i]] = [opts[i], opts[i + 1]];
         else if (v === 'dup' && opts.length < MAXO) opts.splice(i + 1, 0, clone(x));
         else if (v === 'del') {
-          if (x.go === 'msg' && ((x.opts || []).some((y) => y.go !== 'back') || (x.text || '').trim()) && !confirm(`حذف زر «${shown(x)}» ورسالته وكل اللي تحته؟`)) return;
-          opts.splice(i, 1);
+          // بدون سؤال: فيه «تراجع» لحظي
+          undo = { opts, i, item: opts[i] }; opts.splice(i, 1);
+          clearTimeout(undoT); undoT = setTimeout(() => { undo = null; const u = el.querySelector('#rtUndo'); if (u) u.remove(); }, 9000);
         } else return;
         dirty(); closePop(); paint();
       };
@@ -363,24 +438,25 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
     document.addEventListener('mousedown', closeDoc, true);
     el.onkeydown = (e) => { if (e.key === 'Escape' && pop) { const b = popBtn; closePop(); if (b) b.focus(); } };
 
-    function bind(node, opts) {
+    function addBtn(opts) {
+      if (opts.length >= MAXO) return;
+      opts.push({ id: newId(), t: '', go: 'msg', text: '', opts: [backBtn()] }); dirty(); paint();
+      const ins = el.querySelectorAll('[data-name]'); if (ins.length) ins[ins.length - 1].focus();
+    }
+    function insertAt(ta, s) {
+      const a = ta.selectionStart ?? ta.value.length, b = ta.selectionEnd ?? a;
+      ta.value = ta.value.slice(0, a) + s + ta.value.slice(b);
+      ta.selectionStart = ta.selectionEnd = a + s.length; ta.focus();
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function bind(node, opts, pv) {
+      el.querySelectorAll('[data-mode]').forEach((b) => b.onclick = () => { if (D.mode === b.dataset.mode) return; D.mode = b.dataset.mode; note = ''; sheet = false; closePop(); paint(); });
       el.querySelectorAll('[data-p]').forEach((b) => b.onclick = () => go(D.path.slice(0, +b.dataset.p + 1)));
-      const ta = el.querySelector('#rtText');
-      ta.oninput = () => { if (node) node[en ? 'text_en' : 'text'] = ta.value; else D.welcome[en ? 'en' : 'ar'] = ta.value; dirty(); autosize(); };
-      el.querySelectorAll('[data-name]').forEach((inp) => inp.oninput = () => { opts[+inp.dataset.name][en ? 't_en' : 't'] = inp.value; inp.closest('.rt-btn').classList.remove('err'); dirty(); side(); });
-      el.querySelectorAll('[data-act]').forEach((b) => b.onclick = () => openSheet(b, opts, +b.dataset.act));
-      el.querySelectorAll('[data-open]').forEach((b) => b.onclick = () => { go([...D.path, opts[+b.dataset.open].id]); const t = el.querySelector('#rtText'); if (t && !t.value) t.focus(); });
-      el.querySelector('#rtAdd').onclick = () => {
-        if (opts.length >= MAXO) return;
-        opts.push({ id: newId(), t: '', go: 'msg', text: '', opts: [backBtn()] }); dirty(); paint();
-        const ins = el.querySelectorAll('[data-name]'); if (ins.length) ins[ins.length - 1].focus();
-      };
-      const st = el.querySelector('#rtStarter');
-      if (st) st.onclick = () => { if (D.tree.length && !confirm('تبدّل الأزرار الحالية بردود جاهزة من خدماتك وأسئلتك؟')) return; D.tree.splice(0, D.tree.length, ...starter(svcs, o.faq)); dirty(); go([]); };
       el.querySelector('#rtSave').onclick = async (e) => {
         const r = check(D.tree);
         if (r.err) {
-          go(r.path); I.toast(r.err, true);
+          D.mode = 'edit'; go(r.path); I.toast(r.err, true);
           if (r.field.text) el.querySelector('#rtText').focus();
           else if (r.field.o != null) { const b = el.querySelector(`.rt-btn[data-i="${r.field.o}"]`); if (b) { b.classList.add('err'); (r.field.act ? b.querySelector('[data-act]') : b.querySelector('input')).focus(); } }
           return;
@@ -389,6 +465,43 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
         try { if (await o.onSave(r.tree) !== false) { D.dirty = false; const m = el.querySelector('.rt'); if (m) m.classList.remove('dirty'); } }
         finally { const b = el.querySelector('#rtSave'); if (b) b.disabled = false; }
       };
+      if (pv) {
+        const chat = el.querySelector('#rtChat');
+        const lb = chat.querySelector('[data-lbtn]'); if (lb) lb.onclick = () => { sheet = !sheet; paint(); };
+        chat.querySelectorAll('[data-tap]').forEach((b) => b.onclick = () => {
+          const x = opts[+b.dataset.tap], k = kindOf(x);
+          if (k === 'msg') return go([...D.path, x.id]);
+          if (k === 'back') return go(D.path.slice(0, -1));
+          if (k === 'home') return go([]);
+          note = k === 'svc' ? (svcOf(x) ? `يبدأ حجز «${svcOf(x).name}» على طول` : 'هالزر ما له خدمة بعد، اختارها من التعديل') : (WHAT[k] || ACT[k][2]);
+          sheet = false; paint();
+        });
+        return;
+      }
+      const ta = el.querySelector('#rtText');
+      ta.oninput = () => {
+        if (node) node[en ? 'text_en' : 'text'] = ta.value; else D.welcome[en ? 'en' : 'ar'] = ta.value;
+        dirty(); autosize();
+        // أول ما يكتب تختفي الاقتراحات ويرجع الإيموجي
+        const tools = el.querySelector('#rtTools'); if (tools && tools.querySelector('[data-sg]') && ta.value.trim()) { tools.innerHTML = EMOJI.map((e) => `<button type="button" data-em="${e}" aria-label="أضف ${e}">${e}</button>`).join(''); bindTools(ta); }
+      };
+      bindTools(ta);
+      el.querySelectorAll('[data-name]').forEach((inp) => {
+        inp.oninput = () => { opts[+inp.dataset.name][en ? 't_en' : 't'] = inp.value; inp.closest('.rt-btn').classList.remove('err'); const n = [...inp.value].length, c = inp.nextElementSibling; c.textContent = n + '/20'; c.classList.toggle('show', n >= 15); c.classList.toggle('full', n >= 20); dirty(); side(); };
+        // Enter في آخر زر = زر جديد، وفي غيره ينتقل للي بعده
+        inp.onkeydown = (e) => { if (e.key !== 'Enter') return; e.preventDefault(); const i = +inp.dataset.name; const nx = el.querySelector(`[data-name="${i + 1}"]`); if (nx) nx.focus(); else addBtn(opts); };
+      });
+      el.querySelectorAll('[data-act]').forEach((b) => b.onclick = () => openSheet(b, opts, +b.dataset.act));
+      el.querySelectorAll('[data-open]').forEach((b) => b.onclick = () => { go([...D.path, opts[+b.dataset.open].id]); const t = el.querySelector('#rtText'); if (t && !t.value) t.focus(); });
+      el.querySelector('#rtAdd').onclick = () => addBtn(opts);
+      const un = el.querySelector('[data-undo]');
+      if (un) un.onclick = () => { if (!undo) return; undo.opts.splice(Math.min(undo.i, undo.opts.length), 0, undo.item); undo = null; clearTimeout(undoT); dirty(); paint(); };
+      const starter2 = () => { if (D.tree.length && D.dirty && !confirm('تبدّل الأزرار الحالية بردود جاهزة من خدماتك وأسئلتك؟')) return; D.tree.splice(0, D.tree.length, ...starter(svcs, o.faq)); dirty(); go([]); };
+      el.querySelectorAll('#rtStarter,[data-starter]').forEach((b) => b.onclick = starter2);
+    }
+    function bindTools(ta) {
+      el.querySelectorAll('[data-em]').forEach((b) => b.onclick = () => insertAt(ta, b.dataset.em));
+      el.querySelectorAll('[data-sg]').forEach((b) => b.onclick = () => { ta.value = ''; insertAt(ta, b.dataset.sg); });
     }
     paint();
   }

@@ -1,4 +1,4 @@
-// لقطات «الردود» في لوحة المنشأة (كمبيوتر وجوال) بدون حفظ: أول رسالة، الجاهزة من الخدمات، رسالة فرعية، «وش يسوي الزر»، كل الردود
+// لقطات «الردود» في لوحة المنشأة (كمبيوتر وجوال) بدون حفظ: أول رسالة، الجاهزة من الخدمات، رسالة فرعية، «وش يسوي الزر»، المعاينة كعميل بقائمة، كل الردود
 // usage: node tests/shot-tree.mjs [outDir]
 import { launch, sleep } from '../tools/cdp.mjs';
 import { testLinks } from './links.mjs';
@@ -28,8 +28,20 @@ for (const [tag, o] of [['desk', { width: 1440, height: 1000 }], ['mob', { width
     await b.ev(`document.querySelector('[data-act="0"]').click()`); await sleep(350);
     await b.shot(`${OUT}/tree-${tag}-4.png`);
     await b.ev(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); const v = document.querySelector('.rt-veil'); if (v) v.click(); else document.querySelector('#rtText').dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))`); await sleep(200);
-    await b.ev(`const d = document.querySelector('.rt-map'); d.open = true; d.scrollIntoView({ block: 'center' })`); await sleep(300);
+    // المعاينة كعميل من أول رسالة (4 أزرار = قائمة «خيارات أكثر») ونفتح القائمة
+    await b.ev(`document.querySelector('[data-p="-1"]').click()`); await sleep(200);
+    await b.ev(`document.querySelector('[data-mode="preview"]').click()`); await sleep(300);
+    await b.ev(`document.querySelector('[data-lbtn]').click()`); await sleep(300);
+    await top(); await sleep(300);
     await b.shot(`${OUT}/tree-${tag}-5.png`);
+    await b.ev(`[...document.querySelectorAll('#rtChat [data-tap]')].find((x) => /خدماتنا/.test(x.textContent)).click()`); await sleep(300);
+    await b.ev(`document.querySelector('#rtChat [data-tap]').click()`); await sleep(300);
+    await b.ev(`document.querySelector('#rtChat [data-tap]').click()`); await sleep(300);
+    await top(); await sleep(300);
+    await b.shot(`${OUT}/tree-${tag}-6.png`);
+    await b.ev(`document.querySelector('[data-mode="edit"]').click()`); await sleep(200);
+    await b.ev(`const d = document.querySelector('.rt-map'); d.open = true; d.scrollIntoView({ block: 'center' })`); await sleep(300);
+    await b.shot(`${OUT}/tree-${tag}-7.png`);
     const ov = await b.ev(`document.documentElement.scrollWidth - innerWidth`);
     if (ov > 0) errs.push(`${tag}: overflow ${ov}px`);
     for (const l of b.log) if (l.type === 'error' || l.type === 'exception') errs.push(`${tag}: ${l.text}`);
