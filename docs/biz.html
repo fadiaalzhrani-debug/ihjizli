@@ -828,7 +828,7 @@ label.check input{width:20px;height:20px;flex:none;margin:0}
       const m = (S.set.menu && typeof S.set.menu === 'object') ? S.set.menu : {}, tx = S.set.texts || {};
       treeDraft = { tree: Array.isArray(m.tree) && m.tree.length ? JSON.parse(JSON.stringify(m.tree)) : MenuTree.fromMain(m.main, S.set.faq), welcome: { ar: (tx.ar && tx.ar.welcome) || '', en: (tx.en && tx.en.welcome) || '' }, def: { ar: defOf('ar', 'welcome'), en: defOf('en', 'welcome') }, path: [] };
     }
-    return `<div class="card stack"><div class="sec-h"><h3 style="white-space:nowrap">شجرة الردود</h3><span class="tiny">كل خيار يا يفتح رسالة جديدة لها خياراتها، يا يسوي شي على طول</span></div><div id="mTree"></div></div>
+    return `<div class="card stack"><div class="sec-h"><h3 style="white-space:nowrap">الردود</h3><span class="tiny">زي ما يشوفها العميل: اكتب الرسالة، وضيف أزرارها تحت، وكل زر يفتح رسالة ثانية أو يسوي شي على طول</span></div><div id="mTree"></div></div>
       <div class="card stack"><div class="sec-h"><h3 style="white-space:nowrap">تحت كل جواب</h3><span class="tiny">الأزرار اللي تطلع تحت أي جواب (مثل جواب «كم السعر؟»)، 3 كحد أقصى</span></div>
       <div class="mpick" id="mAfter"></div>
       <div class="row"><span class="sp"></span><button class="btn sm ghost" type="button" id="mSave">${icon('check')}حفظ</button></div></div>`;
