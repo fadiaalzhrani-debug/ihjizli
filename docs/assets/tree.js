@@ -46,6 +46,8 @@
     reply: '<path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/>',
     eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
+    grip: '<circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/>',
+    warn: '<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   };
   const ic = (n) => XI[n] ? `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${XI[n]}</svg>` : icon(n);
 
@@ -81,6 +83,7 @@
       const t = String(o.t || '').trim() || String(o.t_en || '').trim();
       if (!t) { bad = { err: 'اكتب اسم الزر رقم ' + (i + 1), path, field: { o: i } }; return o; }
       if (o.go === 'svc:' || o.go === 'svc') { bad = { err: `اختر الخدمة اللي يحجزها زر «${t}»`, path, field: { o: i, act: 1 } }; return o; }
+      if (arr.slice(0, i).some((p) => String(p.t || p.t_en || '').trim().toLowerCase() === t.toLowerCase())) { bad = { err: `فيه زرين بنفس الاسم «${t}»، غيّر واحد منهم`, path, field: { o: i } }; return o; }
       const n = { id: o.id, t: t.slice(0, 20), go: o.go };
       if (String(o.t_en || '').trim()) n.t_en = String(o.t_en).trim().slice(0, 20);
       if (o.go === 'msg') {
@@ -98,6 +101,24 @@
   }
 
   function count(arr) { let n = 0; const w = (a) => a.forEach((o) => { if (o.go === 'msg') { n++; w(o.opts || []); } }); w(arr); return n; }
+  // كل النواقص مرة وحدة (للخريطة وشريط «ناقص»): [{path, o?, text?, msg}]
+  function problems(tree) {
+    const out = [];
+    const walk = (arr, path) => arr.forEach((o, i) => {
+      const t = String(o.t || '').trim() || String(o.t_en || '').trim();
+      if (!t) out.push({ path, o: i, msg: 'زر بدون اسم' });
+      else if (o.go === 'svc:' || o.go === 'svc') out.push({ path, o: i, msg: `زر «${t}» بدون خدمة` });
+      else if (arr.slice(0, i).some((p) => String(p.t || p.t_en || '').trim().toLowerCase() === t.toLowerCase())) out.push({ path, o: i, msg: `زرين باسم «${t}»` });
+      if (o.go === 'msg') {
+        if (!String(o.text || '').trim() && !String(o.text_en || '').trim()) out.push({ path: [...path, o.id], text: 1, msg: `رسالة «${t || 'بدون اسم'}» فاضية` });
+        walk(o.opts || [], [...path, o.id]);
+      }
+    });
+    walk(tree, []);
+    return out;
+  }
+  // تنسيق واتساب في المعاينة: *غامق* _مائل_ ~مشطوب~
+  const fmt = (t) => esc(t).replace(/\*([^*\n]+)\*/g, '<b>$1</b>').replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,!?؟،]|$)/g, '$1<i>$2</i>').replace(/~([^~\n]+)~/g, '<s>$1</s>');
   const clone = (x) => { const c = JSON.parse(JSON.stringify(x)); const re = (n) => { n.id = newId(); (n.opts || []).forEach(re); }; re(c); return c; };
 
   let styled = false;
@@ -158,6 +179,25 @@
 .rt-btn{display:flex;align-items:center;gap:6px;background:var(--wa-in);padding:4px 6px 4px 8px;box-shadow:0 1px .5px rgba(11,20,26,.13);min-height:46px;transition:box-shadow .15s}
 .rt-btn:last-of-type{border-radius:0 0 10px 10px}
 .rt-btn.err{box-shadow:inset 0 0 0 2px var(--bad)}
+.rt-btn.dragging{position:relative;z-index:3;opacity:.92;box-shadow:0 10px 24px -8px rgba(11,20,26,.35);transform:scale(1.015);border-radius:10px}
+.rt-grip{width:22px;height:36px;border:0;background:none;color:var(--wa-sub);opacity:.45;display:grid;place-items:center;cursor:grab;flex:none;touch-action:none;margin-inline-start:-4px;border-radius:7px}
+.rt-grip:hover,.rt-grip:active{opacity:1;background:var(--wa-hover)}
+.rt-grip:active{cursor:grabbing}
+.rt-grip .i{width:16px;height:16px}
+.rt-dragging,.rt-dragging *{user-select:none!important;-webkit-user-select:none!important}
+.rt-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.rt-quick .lb{font-size:11.5px;color:var(--wa-sub)}
+.rt-quick button{display:inline-flex;align-items:center;gap:5px;border:0;background:var(--wa-in);color:var(--wa-ink);border-radius:99px;padding:0 10px 0 8px;min-height:30px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.rt-quick button .i{width:14px;height:14px;color:var(--wa-link)}
+.rt-quick button:hover{background:var(--wa-soft)}
+.rt-tools .fm{font-size:13.5px;font-weight:800;min-width:28px;color:var(--wa-ink);font-family:Georgia,serif}
+.rt-tools .fm.it{font-style:italic;font-weight:400}
+.rt-tools .sep{width:1px;height:18px;background:var(--wa-sep);margin:0 2px}
+.rt-tcnt{font-size:10.5px;color:var(--wa-sub);margin-inline-end:6px}
+.rt-tcnt.full{color:var(--bad);font-weight:700}
+.rt-prob{display:inline-flex;align-items:center;gap:6px;border:0;background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--warn);border-radius:99px;padding:0 12px;min-height:34px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.rt-prob .i{width:15px;height:15px}
+.rt-node .dot{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none;box-shadow:0 0 0 2px var(--card)}
 .rt-btn .ti{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--wa-link);background:var(--wa-soft);flex:none}
 .rt-btn .ti .i{width:16px;height:16px}
 .rt-namew{position:relative;flex:1;min-width:0;display:flex}
@@ -298,10 +338,10 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
       const k = kindOf(x), a = ACT[k], lbl = en ? (x.t_en || '') : (x.t || '');
       const ph = en ? (x.t || defLabel(k, svcOf(x)) || 'Button name') : (defLabel(k, svcOf(x)) || 'اسم الزر');
       const c = (x.opts || []).length, n = [...lbl].length;
-      return `<div class="rt-btn" data-i="${i}"><span class="ti">${ic(a[5])}</span>
+      return `<div class="rt-btn" data-i="${i}"><button type="button" class="rt-grip" data-grip aria-label="اسحب لترتيب الزر" title="اسحب لترتيبه">${ic('grip')}</button><span class="ti">${ic(a[5])}</span>
         <span class="rt-namew"><input class="rt-name" data-name="${i}" value="${esc(lbl)}" maxlength="20" placeholder="${esc(ph)}" aria-label="اسم الزر ${i + 1}" ${en ? 'dir="ltr"' : ''}><span class="rt-cnt ${n >= 15 ? 'show' : ''} ${n >= 20 ? 'full' : ''}">${n}/20</span></span>
         <button type="button" class="rt-act ${k === 'svc' && !svcOf(x) ? 'need' : ''}" data-act="${i}" aria-haspopup="dialog" aria-expanded="false" title="وش يسوي هالزر"><span>${esc(badge(x))}</span>${ic('down')}</button>
-        ${k === 'msg' ? `<button type="button" class="rt-go" data-open="${i}" title="افتح رسالته">${c ? c : 'افتح'}${ic('chev')}</button>` : ''}</div>`;
+        ${k === 'msg' ? `<button type="button" class="rt-go" data-open="${i}" title="${c ? nOpts(c) + ' تحتها' : 'افتح رسالته'}">افتح${ic('chev')}</button>` : ''}</div>`;
     }
 
     // المحادثة في وضع المعاينة: زي ما يشوفها العميل بالضبط، وأزرارها تنضغط
@@ -309,11 +349,11 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
       const rows = opts.map((x) => ({ x, t: shown(x) }));
       const body = fill(msgText(node)) || '…';
       let h = `<div class="rt-day">${en ? 'Today' : 'اليوم'}</div><div class="rt-out"><p>${esc(node ? (labelOf(node) || '…') : (en ? 'Hi' : 'السلام عليكم'))}</p><time>${now}</time></div>`;
-      if (rows.length && rows.length <= 3) h += `<div class="rt-pv"><div class="rt-in"><p>${esc(body)}</p><time>${now}</time></div>${rows.map((r, i) => `<button type="button" class="bt" data-tap="${i}">${ic('reply')}${esc(r.t)}</button>`).join('')}</div>`;
+      if (rows.length && rows.length <= 3) h += `<div class="rt-pv"><div class="rt-in"><p>${fmt(body)}</p><time>${now}</time></div>${rows.map((r, i) => `<button type="button" class="bt" data-tap="${i}">${ic('reply')}${esc(r.t)}</button>`).join('')}</div>`;
       else if (rows.length) {
-        h += `<div class="rt-pv"><div class="rt-in"><p>${esc(body)}</p><time>${now}</time><button type="button" class="rt-lbtn" data-lbtn>${ic('list')}${en ? 'More options' : 'خيارات أكثر'}</button></div></div>`;
+        h += `<div class="rt-pv"><div class="rt-in"><p>${fmt(body)}</p><time>${now}</time><button type="button" class="rt-lbtn" data-lbtn>${ic('list')}${en ? 'More options' : 'خيارات أكثر'}</button></div></div>`;
         if (sheet) h += `<div class="rt-sheet"><div class="hd">${en ? 'More options' : 'خيارات أكثر'}</div>${rows.map((r, i) => `<button type="button" data-tap="${i}"><span>${esc(r.t)}</span><i></i></button>`).join('')}</div>`;
-      } else h += `<div class="rt-in solo" style="align-self:flex-start;max-width:86%"><p>${esc(body)}</p><time>${now}</time></div>`;
+      } else h += `<div class="rt-in solo" style="align-self:flex-start;max-width:86%"><p>${fmt(body)}</p><time>${now}</time></div>`;
       if (note) h += `<div class="rt-note">${esc(note)}</div>`;
       return h;
     }
@@ -326,11 +366,20 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
       h += `<div class="rt-day">${en ? 'Today' : 'اليوم'}</div>
         <div class="rt-out"><p>${esc(node ? (labelOf(node) || '…') : (en ? 'Hi' : 'السلام عليكم'))}</p><time>${now}</time></div>
         <div class="rt-in ${opts.length ? '' : 'solo'}"><span class="pen">${icon('edit')}</span><textarea id="rtText" rows="2" maxlength="1000" ${en ? 'dir="ltr"' : ''} placeholder="${esc(node ? (en ? 'Message' : 'اكتب الرسالة اللي تطلع له') : D.def[en ? 'en' : 'ar'])}" aria-label="نص الرسالة">${esc(txt)}</textarea>
-          <div class="rt-tools" id="rtTools">${node && !txt.trim() && !en ? `<span class="lb">اقتراح:</span>${SUGGEST.map((s) => `<button type="button" class="sg" data-sg="${esc(s)}">${esc(s)}</button>`).join('')}` : `${EMOJI.map((e) => `<button type="button" data-em="${e}" aria-label="أضف ${e}">${e}</button>`).join('')}`}</div><time>${now}</time></div>
-        <div class="rt-list">${opts.length ? opts.map(row).join('') : `<div class="rt-empty">ما فيه أزرار تحت هالرسالة. أضف زر، ${node ? 'أو خلها رسالة بس' : 'أو جهّزها من خدماتك'}.</div>`}<button type="button" class="rt-add" id="rtAdd" ${opts.length >= MAXO ? 'disabled' : ''}>${icon('plus')}${opts.length >= MAXO ? 'وصلت 10 أزرار' : 'أضف زر'}</button></div>
+          <div class="rt-tools" id="rtTools">${node && !txt.trim() && !en ? `<span class="lb">اقتراح:</span>${SUGGEST.map((s) => `<button type="button" class="sg" data-sg="${esc(s)}">${esc(s)}</button>`).join('')}` : toolsHtml()}</div><time><span class="rt-tcnt ${[...txt].length >= 1000 ? 'full' : ''}" id="rtTcnt" ${[...txt].length >= 900 ? '' : 'hidden'}>${[...txt].length}/1000</span>${now}</time></div>
+        <div class="rt-list">${opts.length ? opts.map(row).join('') : `<div class="rt-empty">ما فيه أزرار تحت هالرسالة. أضف زر، ${node ? 'أو خلها رسالة بس' : 'أو جهّزها من خدماتك'}.</div>`}<button type="button" class="rt-add" id="rtAdd" ${opts.length >= MAXO ? 'disabled' : ''}>${icon('plus')}${opts.length >= MAXO ? 'وصلت 10 أزرار' : 'أضف زر'}</button>${quickHtml(node, opts)}</div>
         ${opts.length > 3 ? `<div class="rt-hint">${ic('list')}أكثر من 3 أزرار تطلع للعميل كقائمة «خيارات أكثر»، شوفها في المعاينة</div>` : ''}`;
       return h;
     }
+
+    const toolsHtml = () => `${EMOJI.map((e) => `<button type="button" data-em="${e}" aria-label="أضف ${e}">${e}</button>`).join('')}<span class="sep"></span><button type="button" class="fm" data-fm="*" title="غامق">B</button><button type="button" class="fm it" data-fm="_" title="مائل">I</button>`;
+    // أزرار جاهزة بضغطة: اللي ما هي موجودة تحت هالرسالة
+    const quickHtml = (node, opts) => {
+      if (opts.length >= MAXO) return '';
+      const have = new Set(opts.map((x) => kindOf(x)));
+      const keys = ['book', 'prices', 'location', 'hours', 'contact', 'pay', ...(node ? ['back'] : [])].filter((k) => !have.has(k)).slice(0, 6);
+      return keys.length ? `<div class="rt-quick"><span class="lb">أو زر جاهز:</span>${keys.map((k) => `<button type="button" data-quick="${k}">${ic(ACT[k][5])}${esc(ACT[k][en ? 4 : 3])}</button>`).join('')}</div>` : '';
+    };
 
     function paint() {
       const { node, opts, nodes } = at(), pv = D.mode === 'preview';
@@ -345,7 +394,7 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
             ${pv ? `<div class="rt-bar" aria-hidden="true"><span>${en ? 'Message' : 'اكتب رسالة'}</span><i></i></div>` : ''}
           </div></div>
           ${pv ? `<div class="rt-under">اضغط الأزرار وامشِ في الردود مثل العميل. ولو تبي تعدّل شي ارجع لـ«تعديل».</div>` : node ? '' : `<div class="rt-under">اكتب <code>{biz}</code> ويطلع مكانها اسم محلك</div>`}
-          <div class="rt-foot">${pv || node ? '' : `<button class="btn sm ghost" type="button" id="rtStarter">${ic('wand')}جهّزها من خدماتي</button>`}<span class="sp"></span><span class="rt-dirty">تعديلات ما انحفظت</span><button class="btn" type="button" id="rtSave">${icon('check')}حفظ الردود</button></div>
+          <div class="rt-foot">${pv || node ? '' : `<button class="btn sm ghost" type="button" id="rtStarter">${ic('wand')}جهّزها من خدماتي</button>`}<span class="sp"></span><span id="rtProb"></span><span class="rt-dirty">تعديلات ما انحفظت</span><button class="btn" type="button" id="rtSave" title="أو Ctrl+S">${icon('check')}حفظ الردود</button></div>
         </div>
         <details class="rt-map" ${innerWidth > 900 ? 'open' : ''}><summary>${ic('list')}كل الردود<span id="rtCount"></span></summary><div class="rt-tree" id="rtTree"></div></details></div>`;
       bind(node, opts, pv);
@@ -357,16 +406,24 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
 
     // «كل الردود» تتحدث مع الكتابة بدون ما يضيع المؤشر
     function side() {
+      // النواقص: نقطة على الرسالة اللي فيها ناقص (نصها أو أزرارها)، وشريط «ناقص» جنب الحفظ
+      const probs = problems(D.tree), bad = new Set(probs.map((p) => p.path.join('/')));
       const li = (arr, path) => arr.map((x) => {
         const k = kindOf(x), t = esc(shown(x));
-        if (k === 'msg') { const p = [...path, x.id], on = p.join('/') === D.path.join('/'), c = (x.opts || []).length; return `<li><button type="button" class="rt-node ${on ? 'on' : ''}" data-go="${p.join('/')}"><span class="ti">${ic('chat')}</span><span class="t">${t}</span><small>${c ? nOpts(c) : 'رسالة بس'}</small></button>${c ? `<ul>${li(x.opts, p)}</ul>` : ''}</li>`; }
+        if (k === 'msg') { const p = [...path, x.id], key = p.join('/'), on = key === D.path.join('/'), c = (x.opts || []).length; return `<li><button type="button" class="rt-node ${on ? 'on' : ''}" data-go="${key}"><span class="ti">${ic('chat')}</span><span class="t">${t}</span><small>${c ? nOpts(c) : 'رسالة بس'}</small>${bad.has(key) ? '<span class="dot" title="فيها ناقص"></span>' : ''}</button>${c ? `<ul>${li(x.opts, p)}</ul>` : ''}</li>`; }
         const what = badge(x);
         return `<li><span class="rt-node"><span class="ti">${ic(ACT[k][5])}</span><span class="t">${t}</span>${what !== shown(x) ? `<small>${esc(what)}</small>` : ''}</span></li>`;
       }).join('');
       const tree = el.querySelector('#rtTree'); if (!tree) return;
-      tree.innerHTML = `<ul><li><button type="button" class="rt-node ${D.path.length ? '' : 'on'}" data-go=""><span class="ti">${ic('chat')}</span><span class="t">أول رسالة</span><small>${D.tree.length ? nOpts(D.tree.length) : 'بدون أزرار'}</small></button>${D.tree.length ? `<ul>${li(D.tree, [])}</ul>` : ''}</li></ul>`;
+      tree.innerHTML = `<ul><li><button type="button" class="rt-node ${D.path.length ? '' : 'on'}" data-go=""><span class="ti">${ic('chat')}</span><span class="t">أول رسالة</span><small>${D.tree.length ? nOpts(D.tree.length) : 'بدون أزرار'}</small>${bad.has('') ? '<span class="dot" title="فيها ناقص"></span>' : ''}</button>${D.tree.length ? `<ul>${li(D.tree, [])}</ul>` : ''}</li></ul>`;
       el.querySelector('#rtCount').textContent = (count(D.tree) + 1) + ' رسائل';
       tree.querySelectorAll('[data-go]').forEach((b) => b.onclick = () => go(b.dataset.go ? b.dataset.go.split('/') : []));
+      const pr = el.querySelector('#rtProb');
+      if (pr) {
+        pr.innerHTML = probs.length ? `<button type="button" class="rt-prob" data-prob title="${esc(probs[0].msg)}">${ic('warn')}ناقص ${probs.length === 1 ? 'شي واحد' : probs.length === 2 ? 'شيئين' : probs.length + ' أشياء'}</button>` : '';
+        const b = pr.querySelector('[data-prob]');
+        if (b) b.onclick = () => { const p = probs[0]; D.mode = 'edit'; go(p.path); I.toast(p.msg, true); if (p.text) el.querySelector('#rtText').focus(); else { const r = el.querySelector(`.rt-btn[data-i="${p.o}"]`); if (r) { r.classList.add('err'); r.querySelector('input').focus(); } } };
+      }
     }
 
     // «وش يسوي الزر»: نافذة صغيرة جنب الزر بالكمبيوتر، ومن تحت بالجوال
@@ -450,21 +507,54 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
       ta.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
+    async function save() {
+      const btn = el.querySelector('#rtSave'); if (!btn || btn.disabled) return;
+      const r = check(D.tree);
+      if (r.err) {
+        D.mode = 'edit'; go(r.path); I.toast(r.err, true);
+        if (r.field.text) el.querySelector('#rtText').focus();
+        else if (r.field.o != null) { const b = el.querySelector(`.rt-btn[data-i="${r.field.o}"]`); if (b) { b.classList.add('err'); (r.field.act ? b.querySelector('[data-act]') : b.querySelector('input')).focus(); } }
+        return;
+      }
+      btn.disabled = true;
+      try { if (await o.onSave(r.tree) !== false) { D.dirty = false; const m = el.querySelector('.rt'); if (m) m.classList.remove('dirty'); } }
+      finally { const b = el.querySelector('#rtSave'); if (b) b.disabled = false; }
+    }
+    // ما تضيع تعديلاتها لو سكّرت الصفحة بالغلط، وCtrl+S يحفظ
+    if (window.__rtUnload) window.removeEventListener('beforeunload', window.__rtUnload);
+    window.__rtUnload = (e) => { if (D.dirty) { e.preventDefault(); e.returnValue = ''; } };
+    window.addEventListener('beforeunload', window.__rtUnload);
+    el.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === 's') { e.preventDefault(); save(); } });
+
+    // ترتيب الأزرار بالسحب من المقبض (ماوس ولمس): نحرّك العنصر نفسه وبالنهاية نقرأ الترتيب من الشاشة
+    function bindDrag(opts) {
+      el.querySelectorAll('[data-grip]').forEach((g) => g.onpointerdown = (e) => {
+        if (e.button) return;
+        const rowEl = g.closest('.rt-btn'), list = rowEl.parentElement;
+        const order0 = [...list.querySelectorAll('.rt-btn')].map((r) => +r.dataset.i).join();
+        try { g.setPointerCapture(e.pointerId); } catch { /* أحداث مصطنعة بدون مؤشر فعلي */ }
+        e.preventDefault();
+        rowEl.classList.add('dragging'); document.body.classList.add('rt-dragging');
+        const move = (ev) => {
+          const rows = [...list.querySelectorAll('.rt-btn')].filter((r) => r !== rowEl);
+          const before = rows.find((r) => { const b = r.getBoundingClientRect(); return ev.clientY < b.top + b.height / 2; });
+          if (before) { if (before.previousElementSibling !== rowEl) list.insertBefore(rowEl, before); }
+          else { const last = rows[rows.length - 1]; if (last && last.nextElementSibling !== rowEl) last.after(rowEl); }
+        };
+        const up = () => {
+          g.onpointermove = null; g.onpointerup = g.onpointercancel = null;
+          rowEl.classList.remove('dragging'); document.body.classList.remove('rt-dragging');
+          const order = [...list.querySelectorAll('.rt-btn')].map((r) => +r.dataset.i);
+          if (order.join() !== order0) { const next = order.map((i) => opts[i]); opts.splice(0, opts.length, ...next); dirty(); paint(); }
+        };
+        g.onpointermove = move; g.onpointerup = up; g.onpointercancel = up;
+      });
+    }
+
     function bind(node, opts, pv) {
       el.querySelectorAll('[data-mode]').forEach((b) => b.onclick = () => { if (D.mode === b.dataset.mode) return; D.mode = b.dataset.mode; note = ''; sheet = false; closePop(); paint(); });
       el.querySelectorAll('[data-p]').forEach((b) => b.onclick = () => go(D.path.slice(0, +b.dataset.p + 1)));
-      el.querySelector('#rtSave').onclick = async (e) => {
-        const r = check(D.tree);
-        if (r.err) {
-          D.mode = 'edit'; go(r.path); I.toast(r.err, true);
-          if (r.field.text) el.querySelector('#rtText').focus();
-          else if (r.field.o != null) { const b = el.querySelector(`.rt-btn[data-i="${r.field.o}"]`); if (b) { b.classList.add('err'); (r.field.act ? b.querySelector('[data-act]') : b.querySelector('input')).focus(); } }
-          return;
-        }
-        e.currentTarget.disabled = true;
-        try { if (await o.onSave(r.tree) !== false) { D.dirty = false; const m = el.querySelector('.rt'); if (m) m.classList.remove('dirty'); } }
-        finally { const b = el.querySelector('#rtSave'); if (b) b.disabled = false; }
-      };
+      el.querySelector('#rtSave').onclick = save;
       if (pv) {
         const chat = el.querySelector('#rtChat');
         const lb = chat.querySelector('[data-lbtn]'); if (lb) lb.onclick = () => { sheet = !sheet; paint(); };
@@ -482,10 +572,17 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
       ta.oninput = () => {
         if (node) node[en ? 'text_en' : 'text'] = ta.value; else D.welcome[en ? 'en' : 'ar'] = ta.value;
         dirty(); autosize();
+        const n = [...ta.value].length, tc = el.querySelector('#rtTcnt'); if (tc) { tc.hidden = n < 900; tc.textContent = n + '/1000'; tc.classList.toggle('full', n >= 1000); }
         // أول ما يكتب تختفي الاقتراحات ويرجع الإيموجي
-        const tools = el.querySelector('#rtTools'); if (tools && tools.querySelector('[data-sg]') && ta.value.trim()) { tools.innerHTML = EMOJI.map((e) => `<button type="button" data-em="${e}" aria-label="أضف ${e}">${e}</button>`).join(''); bindTools(ta); }
+        const tools = el.querySelector('#rtTools'); if (tools && tools.querySelector('[data-sg]') && ta.value.trim()) { tools.innerHTML = toolsHtml(); bindTools(ta); }
+        if (node) side();
       };
       bindTools(ta);
+      bindDrag(opts);
+      el.querySelectorAll('[data-quick]').forEach((b) => b.onclick = () => {
+        const k = b.dataset.quick; if (opts.length >= MAXO) return;
+        opts.push({ id: newId(), t: ACT[k][3], t_en: ACT[k][4], go: k }); dirty(); paint();
+      });
       el.querySelectorAll('[data-name]').forEach((inp) => {
         inp.oninput = () => { opts[+inp.dataset.name][en ? 't_en' : 't'] = inp.value; inp.closest('.rt-btn').classList.remove('err'); const n = [...inp.value].length, c = inp.nextElementSibling; c.textContent = n + '/20'; c.classList.toggle('show', n >= 15); c.classList.toggle('full', n >= 20); dirty(); side(); };
         // Enter في آخر زر = زر جديد، وفي غيره ينتقل للي بعده
@@ -502,6 +599,13 @@ button.rt-node.on .ti{background:var(--accent);color:var(--accent-ink)}
     function bindTools(ta) {
       el.querySelectorAll('[data-em]').forEach((b) => b.onclick = () => insertAt(ta, b.dataset.em));
       el.querySelectorAll('[data-sg]').forEach((b) => b.onclick = () => { ta.value = ''; insertAt(ta, b.dataset.sg); });
+      // غامق ومائل مثل واتساب: يلفّ المحدد، أو يحط العلامتين ويخلي المؤشر بينهم
+      el.querySelectorAll('[data-fm]').forEach((b) => b.onclick = () => {
+        const m = b.dataset.fm, a = ta.selectionStart ?? ta.value.length, z = ta.selectionEnd ?? a, sel = ta.value.slice(a, z);
+        ta.value = ta.value.slice(0, a) + m + sel + m + ta.value.slice(z);
+        ta.selectionStart = a + 1; ta.selectionEnd = a + 1 + sel.length; ta.focus();
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
+      });
     }
     paint();
   }
