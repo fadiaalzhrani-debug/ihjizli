@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المناوب</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=block">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+@page{size:540px 675px;margin:0}
+:root{--bg:#F6FAF8;--ink:#102F27;--muted:#5E766C;--line:#DCEAE2;--soft:#E9F7EF;--green:#008C62;--green-3:#05AA71;--dark:#0F231D;--mint:#7FE0B5;
+  --wa-bg:#EFEAE2;--wa-in:#FFFFFF;--wa-out:#D9FDD3;--wa-ink:#111B21;--wa-sub:#667781;--wa-link:#027EB5;--wa-head:#008069}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#ccc}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:540px;height:675px;position:relative;overflow:hidden;background:var(--bg);padding:34px 34px 26px;display:flex;flex-direction:column;page-break-after:always;break-after:page}
+.pg:last-child{page-break-after:auto;break-after:auto}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1,h2,.brand,.big{font-family:Cairo,sans-serif}
+.top{display:flex;align-items:center;justify-content:space-between}
+.brand{display:inline-flex;align-items:center;gap:8px;font-size:21px;font-weight:800;letter-spacing:-.3px}
+.mark{width:30px;height:32px;display:grid;place-items:center;background:linear-gradient(145deg,#05AA71,#00764F);color:#fff;border-radius:11px 11px 11px 4px}
+.mark .ico{width:19px;height:19px;stroke-width:2.2}
+.num{font:600 13px/1 'IBM Plex Sans Arabic',sans-serif;color:var(--muted);direction:ltr}
+.foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+.site{direction:ltr;font-weight:700;color:var(--green);font-size:14px}
+.dots{display:flex;gap:5px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--green);width:20px;border-radius:9px}
+h1{font-size:33px;line-height:1.3;font-weight:900;margin:0;letter-spacing:-.4px}
+h1 em{font-style:normal;color:var(--green)}
+.lead{font-size:16px;line-height:1.75;color:var(--muted);margin:10px 0 0}
+
+/* 1: الرسائل اللي تنتظر */
+.p1{background:radial-gradient(120% 80% at 85% 0%,#1C4D3D 0,#0F231D 55%,#0B1B16 100%);color:#fff}
+.p1 .brand{color:#fff}
+.p1 .num,.p1 .foot{color:#A9CBBE}
+.p1 .site{color:var(--mint)}
+.p1 .dots i{background:#2A4A3F}.p1 .dots i.on{background:var(--mint)}
+.p1 h1{margin-top:26px;font-size:35px}
+.p1 h1 em{color:var(--mint)}
+.p1 .lead{color:#C4DDD3}
+.notes{margin-top:24px;display:grid;gap:10px;position:relative}
+.nt{display:flex;gap:11px;align-items:center;background:rgba(255,255,255,.96);color:var(--wa-ink);border-radius:16px;padding:11px 13px;box-shadow:0 10px 24px rgba(0,0,0,.28)}
+.nt .ap{width:36px;height:36px;border-radius:10px;background:#25D366;color:#fff;display:grid;place-items:center;flex:none}
+.nt .ap .ico{width:21px;height:21px;stroke-width:2}
+.nt .tx{flex:1;min-width:0;display:grid;gap:1px}
+.nt .tx b{font-size:13px;font-weight:700;display:flex;justify-content:space-between;gap:8px}
+.nt .tx b small{font-weight:500;color:var(--wa-sub);font-size:12px}
+.nt .tx span{font-size:15px}
+.nt:nth-child(2){margin-inline-start:12px}.nt:nth-child(3){margin-inline-start:24px}.nt:nth-child(4){margin-inline-start:36px}
+.unread{margin-top:16px;display:inline-flex;align-self:flex-start;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:99px;padding:6px 14px;font-size:14px;font-weight:600}
+.unread i{width:9px;height:9px;border-radius:50%;background:#FF5A5A;box-shadow:0 0 0 4px rgba(255,90,90,.22)}
+
+/* 2: الجوال */
+.p2 h1{margin-top:20px;font-size:30px}
+.p2body{flex:1;display:flex;gap:16px;align-items:center;margin-top:12px}
+.phone{width:262px;height:440px;flex:none;border-radius:36px;background:#101912;padding:8px;box-shadow:0 22px 40px rgba(16,47,39,.25)}
+.scr{height:100%;border-radius:29px;overflow:hidden;display:flex;flex-direction:column;background:var(--wa-bg)}
+.wah{background:var(--wa-head);color:#fff;display:flex;align-items:center;gap:8px;padding:16px 11px 9px}
+.wah .av{width:31px;height:31px;border-radius:50%;background:#F2B705;color:#3A2A00;display:grid;place-items:center;font:800 15px Cairo,sans-serif;flex:none}
+.wah b{font:700 13.5px Cairo,sans-serif;display:block;line-height:1.2}
+.wah small{font-size:10.5px;opacity:.9}
+.chat{flex:1;padding:4px 10px;display:flex;flex-direction:column;font-size:12.3px;line-height:1.5;color:var(--wa-ink)}
+.m{max-width:88%;margin-top:6px;display:grid;gap:3px}
+.m.out{align-self:flex-end}.m.in{align-self:flex-start}
+.m .b{padding:5px 8px 6px;border-radius:8px;box-shadow:0 1px .5px rgba(11,20,26,.13);white-space:pre-line}
+.m.out .b{background:var(--wa-out)}
+.m.in .b{background:var(--wa-in)}
+.m .t{float:left;position:relative;top:5px;margin-right:9px;font-size:9.5px;color:var(--wa-sub);white-space:nowrap}
+.m .btns{display:grid;gap:3px}
+.m .btns span{background:var(--wa-in);color:var(--wa-link);font-weight:600;text-align:center;padding:6px 8px;border-radius:8px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.m .btns span.pick{background:#E7F3FF}
+.side{display:grid;gap:10px;flex:1}
+.chip{background:#fff;border:1px solid var(--line);border-radius:16px;padding:11px 12px;display:grid;gap:3px}
+.chip .t{width:32px;height:32px;border-radius:10px;background:var(--soft);color:var(--green);display:grid;place-items:center;margin-bottom:3px}
+.chip b{font-family:Cairo,sans-serif;font-size:16px;font-weight:800;line-height:1.3}
+.chip span{font-size:12.5px;color:var(--muted);line-height:1.55}
+
+/* 3: الدائرة كاملة */
+.p3 h1{margin-top:20px;font-size:31px}
+.steps{margin-top:18px;display:grid;gap:9px;position:relative}
+.st{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 13px;position:relative}
+.st .n{width:38px;height:38px;border-radius:12px;background:var(--soft);color:var(--green);display:grid;place-items:center;flex:none}
+.st .n .ico{width:21px;height:21px}
+.st b{font-size:15.5px;font-weight:700;display:block;line-height:1.4}
+.st span{font-size:12.8px;color:var(--muted);display:block;line-height:1.5}
+.st.last{background:var(--dark);border-color:var(--dark);color:#fff}
+.st.last .n{background:#183A30;color:var(--mint)}
+.st.last span{color:#A9CBBE}
+
+/* 4: التجهيز علينا */
+.p4 h1{margin-top:20px;font-size:31px}
+.give{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.give div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 10px;text-align:center;display:grid;justify-items:center;gap:6px}
+.give .t{width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--green);display:grid;place-items:center}
+.give .t .ico{width:22px;height:22px}
+.give b{font-size:13.5px;line-height:1.45;font-weight:700}
+.arrow{display:flex;align-items:center;gap:10px;margin:14px 0 12px;color:var(--green);font:800 16px Cairo,sans-serif}
+.arrow:before,.arrow:after{content:"";flex:1;height:1.5px;background:var(--line)}
+.get{background:var(--dark);color:#fff;border-radius:20px;padding:16px 18px;display:grid;gap:10px}
+.get .h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.get .h b{font:800 18px Cairo,sans-serif}
+.get .h small{color:var(--mint);font-weight:700;font-size:13.5px;white-space:nowrap}
+.get ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.get li{display:flex;gap:9px;align-items:center;font-size:14.5px;color:#E6F4EE}
+.get li .ico{color:var(--mint);width:19px;height:19px}
+.own{margin-top:12px;display:flex;gap:10px;align-items:center;background:var(--soft);border-radius:14px;padding:10px 13px;font-size:14px;font-weight:600;color:var(--ink)}
+.own .ico{color:var(--green)}
+
+/* 5: جرّبه */
+.p5{background:radial-gradient(110% 70% at 10% 100%,#DDF5E9 0,var(--bg) 60%)}
+.p5 h1{margin-top:20px;font-size:36px}
+.try{margin-top:18px;background:#fff;border:1.5px solid var(--green);box-shadow:0 0 0 6px var(--soft);border-radius:24px;padding:18px;display:flex;gap:16px;align-items:center}
+.qr{width:128px;height:128px;flex:none;border-radius:14px;border:1px solid var(--line);padding:7px;background:#fff}
+.qr svg{width:100%;height:100%;display:block}
+.try .tx{display:grid;gap:6px}
+.try .tx small{color:var(--muted);font-size:13px;font-weight:600}
+.try .url{direction:ltr;text-align:right;font:800 23px Cairo,sans-serif;color:var(--green);letter-spacing:-.2px}
+.try .tx span{font-size:13.5px;color:var(--muted);line-height:1.6}
+.reply{margin-top:16px;display:flex;gap:12px;align-items:center;background:var(--dark);color:#fff;border-radius:20px;padding:15px 17px}
+.reply .bub{background:var(--wa-out);color:var(--wa-ink);font:800 19px Cairo,sans-serif;padding:7px 15px;border-radius:12px 12px 4px 12px;flex:none}
+.reply p{margin:0;font-size:15px;line-height:1.65;color:#E6F4EE}
+.reply p b{color:#fff}
+.p5 .foot{margin-top:0}
+.fit{margin-top:auto;padding-top:14px;margin-bottom:8px;display:grid;gap:9px}
+.fit small{font-size:13px;font-weight:600;color:var(--muted)}
+.fit div{display:flex;flex-wrap:wrap;gap:7px}
+.fit span{background:#fff;border:1px solid var(--line);border-radius:99px;padding:5px 13px;font-size:13.5px;font-weight:600}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-okc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+</svg>
+
+<!-- 1 -->
+<section class="pg p1">
+  <div class="top"><span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span><span class="num">1/5</span></div>
+  <h1>عملاؤك يراسلونك<br><em>وأنت مشغول</em></h1>
+  <p class="lead">والعميل اللي ما ينرد عليه بسرعة، يروح لغيرك.</p>
+  <div class="notes">
+    <div class="nt"><span class="ap"><svg class="ico"><use href="#i-wa"/></svg></span><div class="tx"><b>عميل جديد<small>11:48 م</small></b><span>السلام عليكم، كم السعر؟</span></div></div>
+    <div class="nt"><span class="ap"><svg class="ico"><use href="#i-wa"/></svg></span><div class="tx"><b>عميل جديد<small>11:52 م</small></b><span>فيه موعد بكرة العصر؟</span></div></div>
+    <div class="nt"><span class="ap"><svg class="ico"><use href="#i-wa"/></svg></span><div class="tx"><b>عميل جديد<small>12:05 ص</small></b><span>وين موقعكم بالضبط؟</span></div></div>
+    <div class="nt"><span class="ap"><svg class="ico"><use href="#i-wa"/></svg></span><div class="tx"><b>عميل جديد<small>12:31 ص</small></b><span>تشتغلون يوم الجمعة؟</span></div></div>
+  </div>
+  <span class="unread"><i></i>4 رسائل تنتظر ردك</span>
+  <div class="foot"><span class="site">almunawib.com</span><span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+</section>
+
+<!-- 2 -->
+<section class="pg p2">
+  <div class="top"><span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span><span class="num">2/5</span></div>
+  <h1>المناوب يرد عنك<br><em>ويحجز لهم بنفسه</em></h1>
+  <div class="p2body">
+    <div class="phone"><div class="scr">
+      <div class="wah"><span class="av">م</span><span><b>محلك</b><small>متصل الآن</small></span></div>
+      <div class="chat">
+        <div class="m out"><div class="b">السلام عليكم، أبي أحجز موعد بكرة<span class="t">11:52 م</span></div></div>
+        <div class="m in"><div class="b">حياك الله 👋 هذي الأوقات المتاحة بكرة الخميس:<span class="t">11:52 م</span></div>
+          <div class="btns"><span>4:00 العصر</span><span class="pick">5:30 العصر</span><span>7:00 المغرب</span></div></div>
+        <div class="m out"><div class="b">5:30 العصر<span class="t">11:53 م</span></div></div>
+        <div class="m in"><div class="b">تم حجز موعدك ✅ الخميس 5:30 العصر، ونذكّرك قبلها بساعة<span class="t">11:53 م</span></div></div>
+      </div>
+    </div></div>
+    <div class="side">
+      <div class="chip"><span class="t"><svg class="ico"><use href="#i-bolt"/></svg></span><b>يرد في ثواني</b><span>بدون ما يستنى العميل</span></div>
+      <div class="chip"><span class="t"><svg class="ico"><use href="#i-moon"/></svg></span><b>ليل ونهار</b><span>حتى بعد الدوام ويوم الإجازة</span></div>
+      <div class="chip"><span class="t"><svg class="ico"><use href="#i-phone"/></svg></span><b>على نفس رقمك</b><span>وترد بنفسك متى ما تبي</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="site">almunawib.com</span><span class="dots"><i></i><i class="on"></i><i></i><i></i><i></i></span></div>
+</section>
+
+<!-- 3 -->
+<section class="pg p3">
+  <div class="top"><span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span><span class="num">3/5</span></div>
+  <h1>مو بس رد آلي<br><em>شغلك كله يمشي لحاله</em></h1>
+  <div class="steps">
+    <div class="st"><span class="n"><svg class="ico"><use href="#i-q"/></svg></span><div><b>يجاوب على أسئلتهم</b><span>الأسعار، الموقع، الدوام، وأي سؤال يتكرر</span></div></div>
+    <div class="st"><span class="n"><svg class="ico"><use href="#i-cal"/></svg></span><div><b>يحجز في الوقت الفاضي</b><span>بدون تعارض، وتعديل وإلغاء من الواتساب</span></div></div>
+    <div class="st"><span class="n"><svg class="ico"><use href="#i-bell"/></svg></span><div><b>يذكّرهم قبل الموعد</b><span>عشان ما يفوتهم ولا يضيع وقتك</span></div></div>
+    <div class="st"><span class="n"><svg class="ico"><use href="#i-card"/></svg></span><div><b>يرسل الفاتورة ورابط الدفع</b><span>مدى وأبل باي، والمبلغ يدخل حسابك</span></div></div>
+    <div class="st"><span class="n"><svg class="ico"><use href="#i-team"/></svg></span><div><b>يوصل الطلب لموظفك</b><span>بالعربي أو الإنجليزي، حسب لغته</span></div></div>
+    <div class="st last"><span class="n"><svg class="ico"><use href="#i-hand"/></svg></span><div><b>ويحوّل لك اللي يحتاجك أنت</b><span>وأنت تركّز على شغلك بدل الرد على الجوال</span></div></div>
+  </div>
+  <div class="foot"><span class="site">almunawib.com</span><span class="dots"><i></i><i></i><i class="on"></i><i></i><i></i></span></div>
+</section>
+
+<!-- 4 -->
+<section class="pg p4">
+  <div class="top"><span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span><span class="num">4/5</span></div>
+  <h1>التجهيز كله علينا<br><em>أنت بس أرسل لنا</em></h1>
+  <div class="give">
+    <div><span class="t"><svg class="ico"><use href="#i-img"/></svg></span><b>صورة قائمة أسعارك</b></div>
+    <div><span class="t"><svg class="ico"><use href="#i-clock"/></svg></span><b>أوقات دوامك</b></div>
+    <div><span class="t"><svg class="ico"><use href="#i-pin"/></svg></span><b>موقعك أو المدن اللي تخدمها</b></div>
+  </div>
+  <div class="arrow">ونسلّمك</div>
+  <div class="get">
+    <div class="h"><b>كل شي جاهز ومجرّب</b><small>خلال 7 أيام عمل</small></div>
+    <ul>
+      <li><svg class="ico"><use href="#i-okc"/></svg>الرد الآلي مربوط على رقم واتسابك</li>
+      <li><svg class="ico"><use href="#i-okc"/></svg>موقع خاص باسم نشاطك وشعارك</li>
+      <li><svg class="ico"><use href="#i-okc"/></svg>لوحة لك ولموظفينك بكل الطلبات</li>
+      <li><svg class="ico"><use href="#i-okc"/></svg>عربي وإنجليزي، يرد على كل عميل بلغته</li>
+    </ul>
+  </div>
+  <div class="own"><svg class="ico"><use href="#i-phone"/></svg>رقمك يبقى نفسه، وتقدر ترد بنفسك من جوالك متى ما تبي</div>
+  <div class="foot"><span class="site">almunawib.com</span><span class="dots"><i></i><i></i><i></i><i class="on"></i><i></i></span></div>
+</section>
+
+<!-- 5 -->
+<section class="pg p5">
+  <div class="top"><span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span><span class="num">5/5</span></div>
+  <h1>جرّبه بنفسك الحين<br><em>كأنك عميل عندك</em></h1>
+  <p class="lead">دقيقة وحدة تكفي تشوف كيف يرد ويحجز.</p>
+  <div class="try">
+    <div class="qr" id="qr"></div>
+    <div class="tx"><small>افتح الرابط من جوالك</small><div class="url">almunawib.com/try</div><span>أو صوّر الرمز بكاميرا الجوال</span></div>
+  </div>
+  <div class="reply"><span class="bub">أبيه</span><p><b>عجبك؟</b> رد على هالرسالة بكلمة «أبيه»، ونجهّزه لنشاطك.</p></div>
+  <div class="fit"><small>يناسب أي نشاط يستقبل طلبات على الواتساب</small><div><span>صالونات ومشاغل</span><span>حلاقين</span><span>مغاسل سيارات</span><span>عيادات</span><span>صيانة منزلية</span><span>أسر منتجة</span></div></div>
+  <div class="foot"><span class="site">almunawib.com</span><span class="dots"><i></i><i></i><i></i><i></i><i class="on"></i></span></div>
+</section>
+
+<script>
+(function () {
+  var q = qrcode(0, 'M');
+  q.addData('https://almunawib.com/try');
+  q.make();
+  document.getElementById('qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  var s = document.querySelector('#qr svg path'); if (s) s.setAttribute('fill', '#102F27');
+})();
+</script>
+</body>
+</html>
