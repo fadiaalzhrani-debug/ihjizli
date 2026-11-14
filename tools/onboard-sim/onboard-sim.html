@@ -1,0 +1,667 @@
+<title>محاكي اشتراك المناوب</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* التخطيط: جوال واتساب يمين وملف العميل يسار على الكمبيوتر؛ على الجوال المحادثة تملأ الشاشة وملف العميل ورقة من تحت */
+:root{
+  --page:#EAF1ED; --ink:#102F27; --muted:#5E766C; --panel:#FFFFFF; --line:#DCEAE2; --soft:#E9F7EF; --accent:#008C62; --frame:#13201B;
+  --wa-bg:#EFEAE2; --wa-in:#FFFFFF; --wa-out:#D9FDD3; --wa-ink:#111B21; --wa-sub:#667781; --wa-link:#027EB5; --wa-head:#008069; --wa-head-ink:#FFFFFF;
+  --wa-field:#FFFFFF; --wa-send:#00A884; --wa-check:#53BDEB; --wa-chip:#FFFFFF; --wa-btn:#FFFFFF; --wa-card:#F5F6F6; --sheet:#FFFFFF; --scrim:rgba(11,20,26,.42);
+  --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23000' stroke-opacity='.06' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 20h26a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H29l-8 7v-7h-5a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z'/%3E%3Cpath d='m110 18 3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z'/%3E%3Crect x='96' y='92' width='30' height='30' rx='5'/%3E%3Cpath d='M96 102h30M104 88v8M118 88v8'/%3E%3Ccircle cx='38' cy='112' r='13'/%3E%3Cpath d='M38 105v7l5 3'/%3E%3Cpath d='M66 62c4-6 12-6 16 0M62 70h24'/%3E%3C/svg%3E");
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif; --display:"Cairo","IBM Plex Sans Arabic",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#08100D; --ink:#E3EEE9; --muted:#8FA89E; --panel:#111B18; --line:#22332D; --soft:#16302A; --accent:#2BC48A; --frame:#000000;
+  --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-ink:#E9EDEF; --wa-sub:#8696A0; --wa-link:#53BDEB; --wa-head:#202C33; --wa-head-ink:#E9EDEF;
+  --wa-field:#2A3942; --wa-send:#00A884; --wa-check:#53BDEB; --wa-chip:#182229; --wa-btn:#202C33; --wa-card:#1A262D; --sheet:#111B21; --scrim:rgba(0,0,0,.55);
+  --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23fff' stroke-opacity='.04' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 20h26a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H29l-8 7v-7h-5a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z'/%3E%3Cpath d='m110 18 3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z'/%3E%3Crect x='96' y='92' width='30' height='30' rx='5'/%3E%3Cpath d='M96 102h30M104 88v8M118 88v8'/%3E%3Ccircle cx='38' cy='112' r='13'/%3E%3Cpath d='M38 105v7l5 3'/%3E%3Cpath d='M66 62c4-6 12-6 16 0M62 70h24'/%3E%3C/svg%3E");
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --page:#08100D; --ink:#E3EEE9; --muted:#8FA89E; --panel:#111B18; --line:#22332D; --soft:#16302A; --accent:#2BC48A; --frame:#000000;
+  --wa-bg:#0B141A; --wa-in:#202C33; --wa-out:#005C4B; --wa-ink:#E9EDEF; --wa-sub:#8696A0; --wa-link:#53BDEB; --wa-head:#202C33; --wa-head-ink:#E9EDEF;
+  --wa-field:#2A3942; --wa-send:#00A884; --wa-check:#53BDEB; --wa-chip:#182229; --wa-btn:#202C33; --wa-card:#1A262D; --sheet:#111B21; --scrim:rgba(0,0,0,.55);
+  --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23fff' stroke-opacity='.04' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 20h26a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H29l-8 7v-7h-5a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z'/%3E%3Cpath d='m110 18 3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z'/%3E%3Crect x='96' y='92' width='30' height='30' rx='5'/%3E%3Cpath d='M96 102h30M104 88v8M118 88v8'/%3E%3Ccircle cx='38' cy='112' r='13'/%3E%3Cpath d='M38 105v7l5 3'/%3E%3Cpath d='M66 62c4-6 12-6 16 0M62 70h24'/%3E%3C/svg%3E");
+  color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--page);color:var(--ink);font-family:var(--body);font-size:15px;direction:rtl;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.wrap{max-width:1020px;margin:0 auto;height:100%;display:grid;grid-template-columns:410px minmax(0,1fr);gap:28px;padding-block:18px}
+.phone{min-height:0;height:100%;max-height:860px;border-radius:38px;background:var(--frame);padding:10px;box-shadow:0 24px 50px rgba(16,47,39,.22);display:flex}
+.screen{flex:1;min-width:0;min-height:0;border-radius:29px;overflow:hidden;display:flex;flex-direction:column;background:var(--wa-bg);position:relative}
+
+.wa-head{display:flex;align-items:center;gap:10px;padding:14px 12px 10px;background:var(--wa-head);color:var(--wa-head-ink)}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(145deg,#05AA71,#00764F);color:#fff;display:grid;place-items:center;flex:none}
+.av .ico{width:22px;height:22px;stroke-width:2.1}
+.who{flex:1;min-width:0;display:grid;line-height:1.3}
+.who b{font-family:var(--display);font-size:16.5px;font-weight:800}
+.who small{font-size:12.5px;opacity:.85;min-height:16px}
+.hbtn{width:40px;height:40px;border:0;background:transparent;border-radius:50%;display:grid;place-items:center;color:var(--wa-head-ink)}
+.hbtn:hover{background:rgba(255,255,255,.12)}
+.hbtn.list{display:none;position:relative}
+.hbtn.list i{position:absolute;top:4px;inset-inline-start:2px;min-width:18px;height:18px;border-radius:9px;background:#25D366;color:#063B2A;font:700 11px/18px var(--body);font-style:normal;padding:0 4px}
+
+.chat{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:10px 14px 12px;display:flex;flex-direction:column;background-color:var(--wa-bg);background-image:var(--wa-doodle);background-size:220px;color:var(--wa-ink);font-size:14.6px;line-height:1.55}
+.day{align-self:center;background:var(--wa-chip);color:var(--wa-sub);font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:8px;margin:4px 0 8px;box-shadow:0 1px .5px rgba(11,20,26,.13)}
+.m{max-width:84%;display:grid;gap:3px;margin-top:6px}
+.m.in{align-self:flex-start}.m.out{align-self:flex-end}
+.m.cont{margin-top:2px}
+.b{position:relative;padding:6px 9px 7px;border-radius:9px;box-shadow:0 1px .5px rgba(11,20,26,.13);overflow-wrap:anywhere}
+.m.in .b{background:var(--wa-in);border-start-start-radius:0}
+.m.out .b{background:var(--wa-out);border-start-end-radius:0}
+.m.cont .b{border-radius:9px}
+.b .txt{white-space:pre-line}
+.t{float:left;position:relative;top:7px;margin-right:12px;display:inline-flex;gap:3px;align-items:center;font-size:11px;line-height:1;color:var(--wa-sub);white-space:nowrap}
+.t .tick{width:17px;height:11px;color:var(--wa-sub)}
+.m.out.read .tick{color:var(--wa-check)}
+.btns{display:grid;gap:3px}
+.btns button,.lbtn{display:flex;align-items:center;justify-content:center;gap:7px;border:0;background:var(--wa-btn);color:var(--wa-link);font-weight:600;font-size:14.4px;padding:9px 10px;border-radius:9px;box-shadow:0 1px .5px rgba(11,20,26,.13);min-height:42px}
+.btns button:hover:not(:disabled),.lbtn:hover:not(:disabled){filter:brightness(.97)}
+.btns button:disabled,.lbtn:disabled{cursor:default;opacity:.55}
+.btns button.picked{opacity:1;box-shadow:inset 0 0 0 1.5px var(--wa-link)}
+.lbtn .ico{width:18px;height:18px}
+.typing{display:inline-flex;gap:4px;padding:12px 14px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--wa-sub);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.photo{padding:3px;border-radius:9px}
+.photo img{display:block;width:240px;max-width:100%;max-height:300px;object-fit:cover;border-radius:7px}
+.photo .t{position:absolute;bottom:9px;left:10px;top:auto;margin:0;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.photo .t .tick{color:#fff}
+.doc{display:flex;align-items:center;gap:10px;background:var(--wa-card);border-radius:7px;padding:10px;min-width:210px;margin-bottom:4px}
+.doc span{display:grid;line-height:1.35;min-width:0}
+.doc b{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc small{color:var(--wa-sub);font-size:12px}
+.doc .ico{color:#E5484D;width:30px;height:30px}
+.card{display:grid;border-radius:7px;overflow:hidden;background:var(--wa-card);margin-bottom:5px;border:0;padding:0;text-align:right;width:100%;color:inherit}
+.card .th{height:92px;display:grid;place-items:center;background:linear-gradient(135deg,#05AA71,#00553B);color:#fff}
+.card .th .ico{width:40px;height:40px;stroke-width:1.7}
+.card .cx{padding:8px 10px;display:grid;gap:1px}
+.card .cx b{font-size:14px}
+.card .cx small{color:var(--wa-sub);font-size:12.5px;direction:ltr;text-align:right}
+.lnk{color:var(--wa-link);text-decoration:none;direction:ltr;unicode-bidi:isolate}
+
+.bar{display:flex;align-items:flex-end;gap:7px;padding:6px 8px 9px;background:var(--wa-bg)}
+.field{flex:1;min-width:0;display:flex;align-items:flex-end;gap:2px;background:var(--wa-field);border-radius:24px;padding:2px 6px 2px 10px;box-shadow:0 1px .5px rgba(11,20,26,.1)}
+#msg{flex:1;min-width:0;border:0;background:transparent;resize:none;font:inherit;font-size:15px;color:var(--wa-ink);max-height:110px;padding:11px 4px;line-height:1.45;outline:none}
+#msg::placeholder{color:var(--wa-sub)}
+.att{width:40px;height:44px;border:0;background:transparent;color:var(--wa-sub);display:grid;place-items:center;border-radius:50%}
+.att:hover{color:var(--wa-ink)}
+.send{width:48px;height:48px;border:0;border-radius:50%;background:var(--wa-send);color:#fff;display:grid;place-items:center;flex:none}
+.send:disabled{opacity:.55;cursor:default}
+.send .ico{width:22px;height:22px;transform:scaleX(-1)}
+
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;inset:auto 0 0 0;z-index:6;background:var(--sheet);color:var(--wa-ink);border-radius:18px 18px 0 0;padding:10px 0 14px;max-height:80%;display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(0,0,0,.2)}
+.sheet .grip{width:38px;height:4px;border-radius:2px;background:var(--wa-sub);opacity:.4;margin:0 auto 8px}
+.sheet h3{margin:0;padding:4px 18px 10px;font-family:var(--display);font-size:17px;font-weight:800;text-align:center}
+.rows{overflow-y:auto;padding:0 6px}
+.row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:13px 12px;border-radius:10px;text-align:right;font-size:15px}
+.row:hover{background:var(--wa-card)}
+.radio{width:21px;height:21px;border-radius:50%;border:2px solid var(--wa-sub);flex:none;margin-inline-start:auto;display:grid;place-items:center}
+.row[aria-checked="true"] .radio{border-color:var(--wa-send)}
+.row[aria-checked="true"] .radio::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--wa-send)}
+.sheet .go{margin:10px 16px 0;border:0;border-radius:24px;background:var(--wa-send);color:#fff;font-weight:700;padding:12px;font-size:15px}
+.sheet .go:disabled{opacity:.45;cursor:default}
+
+.pay{padding:6px 20px 18px;display:grid;gap:12px;overflow-y:auto}
+.pay .url{direction:ltr;text-align:center;color:var(--wa-sub);font-size:12.5px}
+.pay .amt{text-align:center;display:grid;gap:2px}
+.pay .amt small{color:var(--wa-sub);font-weight:600}
+.pay .amt b{font-family:var(--display);font-size:34px;font-weight:800;color:var(--wa-ink)}
+.pay .amt span{color:var(--wa-sub);font-size:13px}
+.agree{display:flex;gap:10px;align-items:center;background:var(--wa-card);border-radius:12px;padding:12px;font-weight:600;cursor:pointer}
+.agree input{width:20px;height:20px;accent-color:#00A884;flex:none}
+
+.panel{min-height:0;align-self:start;max-height:100%;overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:16px}
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-size:19px;font-weight:800}
+.mark{width:28px;height:30px;display:grid;place-items:center;background:linear-gradient(145deg,#05AA71,#00764F);color:#fff;border-radius:10px 10px 10px 4px}
+.mark .ico{width:17px;height:17px;stroke-width:2.2}
+.pclose{display:none;width:38px;height:38px;border:0;border-radius:50%;background:var(--soft);color:var(--ink);place-items:center}
+.phead{display:grid;gap:8px}
+.phead h2{margin:0;font-family:var(--display);font-size:22px;font-weight:800;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.phead h2 span{font-family:var(--body);font-size:14px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.prog{height:7px;border-radius:4px;background:var(--soft);overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--accent);border-radius:4px;transition:width .4s ease}
+.items{list-style:none;margin:0;padding:0;display:grid}
+.items li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;align-items:start;padding:9px 0;border-top:1px solid var(--line)}
+.items li:first-child{border-top:0}
+.items .st{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;margin-top:1px}
+.items li.ok .st{background:var(--accent);border-color:var(--accent);color:#fff}
+.items li.ok .st .ico{width:14px;height:14px;stroke-width:3}
+.items li:not(.ok) .st .ico{display:none}
+.items li.now .st{border-color:var(--accent)}
+.items b{display:block;font-size:14.5px;font-weight:600}
+.items li:not(.ok) b{color:var(--muted)}
+.items span{display:block;font-size:13.5px;color:var(--muted);overflow-wrap:anywhere}
+.restart{justify-self:start;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 16px;font-weight:600;color:var(--ink)}
+.restart:hover{background:var(--soft)}
+.restart .ico{width:18px;height:18px}
+.pscrim{display:none}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr);padding-block:10px}
+  .phone{padding:0;background:transparent;box-shadow:none;max-height:none;border-radius:22px}
+  .screen{border-radius:22px}
+  .hbtn.list{display:grid}
+  .panel{position:fixed;z-index:20;inset:auto 0 0 0;max-height:82%;border-radius:22px 22px 0 0;border-bottom:0;
+    padding:18px max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));
+    transform:translateY(105%);transition:transform .25s ease;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+  .panel.open{transform:none}
+  .pclose{display:grid}
+  .pscrim.open{display:block;position:fixed;inset:0;z-index:19;background:var(--scrim)}
+}
+@media (prefers-reduced-motion:reduce){.typing i{animation:none}.prog i,.panel{transition:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><path d="m21.4 11.1-9.2 9.2a6 6 0 0 1-8.5-8.5l8.6-8.6a4 4 0 0 1 5.7 5.7l-8.6 8.6a2 2 0 0 1-2.8-2.8l8.5-8.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 18 11"><path d="M1 6l3.2 3.2L11 2.2M7 9.2l.2.2L14 2.2" stroke-width="1.6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 15h6M9 18h4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 9 5 3-5 3Z"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+</svg>
+
+<div class="wrap">
+  <section class="phone" aria-label="محادثة واتساب مع المناوب">
+    <div class="screen" id="screen">
+      <header class="wa-head">
+        <span class="av"><svg class="ico"><use href="#i-mark"/></svg></span>
+        <span class="who"><b>المناوب</b><small id="status">متصل</small></span>
+        <button class="hbtn list" id="openPanel" type="button" aria-label="ملف العميل"><svg class="ico"><use href="#i-list"/></svg><i id="badge">0</i></button>
+      </header>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <form class="bar" id="bar" autocomplete="off">
+        <div class="field">
+          <textarea id="msg" rows="1" placeholder="اكتب رسالة" enterkeyhint="send" aria-label="الرسالة"></textarea>
+          <button class="att" id="attach" type="button" aria-label="إرفاق صورة أو ملف"><svg class="ico"><use href="#i-clip"/></svg></button>
+        </div>
+        <button class="send" id="send" type="submit" aria-label="إرسال" disabled><svg class="ico"><use href="#i-send"/></svg></button>
+        <input type="file" id="file" accept="image/*,application/pdf" hidden>
+      </form>
+    </div>
+  </section>
+
+  <div class="pscrim" id="pscrim"></div>
+  <aside class="panel" id="panel" aria-label="ملف العميل">
+    <div class="ptop">
+      <span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span>
+      <button class="pclose" id="closePanel" type="button" aria-label="إغلاق"><svg class="ico"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="phead">
+      <h2>ملف العميل <span id="count">0 من 13</span></h2>
+      <div class="prog"><i id="bar2"></i></div>
+    </div>
+    <ul class="items" id="items"></ul>
+    <button class="restart" id="restart" type="button"><svg class="ico"><use href="#i-redo"/></svg>ابدأ من جديد</button>
+  </aside>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const chat = $('chat'), msg = $('msg'), sendBtn = $('send'), fileIn = $('file'), screen = $('screen'), statusEl = $('status');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = (s) => esc(s).replace(/\*([^*\n]+)\*/g, '<b>$1</b>').replace(/_([^_\n]+)_/g, '<i>$1</i>');
+  const money = (n) => n.toLocaleString('en-US');
+  const clock = () => { const d = new Date(); let h = d.getHours(); const m = String(d.getMinutes()).padStart(2, '0'); const ap = h < 12 ? 'ص' : 'م'; h = h % 12 || 12; return h + ':' + m + ' ' + ap; };
+  const norm = (s) => String(s).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[إأآا]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[^\p{L}\p{N} ]/gu, '').replace(/\s+/g, ' ').trim();
+  const icon = (id, cls = 'ico') => `<svg class="${cls}"><use href="#${id}"/></svg>`;
+
+  let A, step, expect, editing, busy, lastSide, seq, lastTyped;
+
+  // ===== الرسائل =====
+  function scroll() { chat.scrollTo({ top: chat.scrollHeight, behavior: reduce ? 'auto' : 'smooth' }); }
+  function tickHtml() { return `<span class="t">${clock()}${icon('i-tick', 'ico tick')}</span>`; }
+  function add(side, inner, cls = '') {
+    const m = document.createElement('div');
+    const cont = lastSide === side;
+    m.className = `m ${side}${cont ? ' cont' : ''}${cls ? ' ' + cls : ''}`;
+    m.innerHTML = inner;
+    chat.appendChild(m); lastSide = side; scroll();
+    return m;
+  }
+  function userText(text) {
+    markRead();
+    return add('out', `<div class="b"><span class="txt">${esc(text)}</span>${tickHtml()}</div>`);
+  }
+  function markRead() { chat.querySelectorAll('.m.out:not(.read)').forEach((m) => m.classList.add('read')); }
+  function typingOn() {
+    statusEl.textContent = 'يكتب…';
+    const t = document.createElement('div'); t.className = 'm in'; t.id = 'typing';
+    t.innerHTML = '<div class="b typing"><i></i><i></i><i></i></div>';
+    chat.appendChild(t); scroll();
+  }
+  function typingOff() { statusEl.textContent = 'متصل'; const t = $('typing'); if (t) t.remove(); }
+
+  // رسالة من المناوب: نص + أزرار (3 وأقل) أو قائمة (أكثر) أو بطاقة رابط
+  async function bot(text, opt = {}) {
+    const my = seq;
+    markRead();
+    if (!opt.instant) {
+      typingOn();
+      await wait(reduce ? 250 : Math.min(1700, 520 + text.length * 11));
+      typingOff();
+      if (my !== seq) return null;
+    }
+    let inner = '<div class="b">';
+    if (opt.card) {
+      const body = `<span class="th">${icon(opt.card.icon || 'i-mark')}</span><span class="cx"><b>${esc(opt.card.title)}</b><small>${esc(opt.card.host)}</small></span>`;
+      inner += opt.card.href ? `<a class="card" href="${opt.card.href}" target="_blank" rel="noopener">${body}</a>` : `<button class="card" type="button" data-card="${opt.card.id}">${body}</button>`;
+    }
+    inner += `<span class="txt">${fmt(text)}</span><span class="t">${clock()}</span></div>`;
+    if (opt.buttons) inner += `<div class="btns">${opt.buttons.map((b) => `<button type="button" data-b="${esc(b)}">${esc(b)}</button>`).join('')}</div>`;
+    if (opt.list) inner += `<div class="btns"><button class="lbtn" type="button" data-list="1">${icon('i-list')}${esc(opt.list.button)}</button></div>`;
+    const m = add('in', inner);
+    m._opt = opt;
+    if (opt.list) m.querySelector('[data-list]').onclick = () => openList(opt.list, m);
+    if (opt.buttons) m.querySelectorAll('[data-b]').forEach((b) => b.onclick = () => { if (!busy && expect && expect.msg === m) choose(b.dataset.b, b); });
+    const c = m.querySelector('[data-card]'); if (c) c.onclick = () => cardTap(opt.card);
+    return m;
+  }
+  function disableOld() { chat.querySelectorAll('.btns button').forEach((b) => b.disabled = true); }
+
+  // ===== القائمة (أكثر من 3 خيارات) =====
+  function openList(list, m) {
+    if (busy || !expect || expect.msg !== m) return;
+    let picked = null;
+    const scrim = document.createElement('div'); scrim.className = 'scrim';
+    const sh = document.createElement('div'); sh.className = 'sheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-label', list.title);
+    sh.innerHTML = `<div class="grip"></div><h3>${esc(list.title)}</h3><div class="rows" role="radiogroup">${list.rows.map((r) => `<button class="row" type="button" role="radio" aria-checked="false" data-r="${esc(r)}"><span>${esc(r)}</span><span class="radio"></span></button>`).join('')}</div><button class="go" type="button" disabled>إرسال</button>`;
+    const close = () => { scrim.remove(); sh.remove(); };
+    scrim.onclick = close;
+    sh.querySelectorAll('.row').forEach((r) => r.onclick = () => { sh.querySelectorAll('.row').forEach((x) => x.setAttribute('aria-checked', 'false')); r.setAttribute('aria-checked', 'true'); picked = r.dataset.r; sh.querySelector('.go').disabled = false; });
+    sh.querySelector('.go').onclick = () => { close(); if (picked) choose(picked); };
+    sh.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    screen.append(scrim, sh);
+    sh.querySelector('.row').focus();
+  }
+
+  // ===== الخطوات =====
+  const FIELDS = ['صالون أو مشغل', 'حلاق', 'مغسلة سيارات', 'عيادة', 'صيانة منزلية', 'مطعم أو أسرة منتجة', 'متجر أونلاين', 'غيره'];
+  const HOURS = ['من 9 الصبح لين 9 الليل', 'من 4 العصر لين 12 الليل', 'فترتين: الصبح والعصر', 'أكتبها بنفسي'];
+  const GROUPS = { name: ['name'], biz: ['biz'], field: ['field', 'fieldOther'], place: ['place', 'city'], wa: ['wa', 'watype', 'waNote'], menu: ['menu', 'menuText'],
+    hours: ['hours', 'hoursText', 'off', 'offText'], cap: ['cap'], staff: ['staff', 'staffN', 'staffLang'], pay: ['pay', 'payDocs', 'payUp'], logo: ['logo'], cr: ['cr', 'crUp'], app: ['app'] };
+  const EDIT = [['name', 'اسمك'], ['biz', 'اسم النشاط'], ['field', 'المجال'], ['place', 'المكان'], ['wa', 'رقم الواتساب'], ['menu', 'الخدمات والأسعار'], ['hours', 'الدوام'], ['cap', 'بنفس الوقت'], ['staff', 'الموظفين'], ['pay', 'الدفع'], ['logo', 'الشعار'], ['cr', 'السجل'], ['app', 'التطبيق']];
+  const groupOf = (id) => Object.keys(GROUPS).find((g) => GROUPS[g].includes(id));
+  const first = () => (A.name || '').split(' ')[0];
+  const plan = () => {
+    const p = A.payMode && A.payMode !== 'cash' ? { name: 'الحجز + الدفع', setup: 5500, monthly: 600 } : { name: 'أتمتة الحجز', setup: 3500, monthly: 350 };
+    if (A.app) { p.name += ' + التطبيق'; p.setup += 9000; p.monthly += 150; }
+    return p;
+  };
+
+  const S = {
+    async welcome(instant) {
+      const m = await bot('وعليكم السلام، حياك الله في *المناوب* 👋\nنخلي واتسابك يرد على عملائك ويحجز لهم ويذكّرهم بمواعيدهم، على نفس رقمك. والتجهيز كله علينا.', { buttons: ['أبيه لنشاطي', 'كيف يشتغل؟', 'كم السعر؟'], instant });
+      wantChoice(m, { 'أبيه لنشاطي': 'name', 'كيف يشتغل؟': 'how', 'كم السعر؟': 'price' }, { name: ['ابي', 'ابغي', 'اشترك', 'نشاطي', 'تمام'], how: ['كيف', 'وش', 'يشتغل'], price: ['سعر', 'كم', 'بكم', 'اسعار'] });
+    },
+    async how() {
+      const m = await bot('ببساطة:\n1. عميلك يراسلك على واتسابك\n2. المناوب يرد عليه في ثواني ويعرض له الأوقات الفاضية\n3. يحجز له ويذكّره قبل موعده، ويرسل له الفاتورة\nوأنت تقدر ترد بنفسك من جوالك متى ما تبي.', { card: { href: 'https://almunawib.com/try', title: 'جرّبه كأنك عميل', host: 'almunawib.com/try', icon: 'i-play' }, buttons: ['أبيه لنشاطي', 'كم السعر؟'] });
+      wantChoice(m, { 'أبيه لنشاطي': 'name', 'كم السعر؟': 'price' }, { name: ['ابي', 'اشترك', 'تمام'], price: ['سعر', 'كم', 'بكم'] });
+    },
+    async price() {
+      const m = await bot('عندنا باقتين:\n*أتمتة الحجز*: 3,500 ريال تأسيس، و350 ريال شهريًا\n*الحجز + الدفع*: 5,500 ريال تأسيس، و600 ريال شهريًا\nوتطبيق باسمك في أبل وقوقل إضافة بـ9,000 ريال، و150 ريال شهريًا.\nالتأسيس على دفعتين، والشهري يبدأ من يوم التشغيل. والأسعار قبل الضريبة.', { buttons: ['أبيه لنشاطي', 'كيف يشتغل؟'] });
+      wantChoice(m, { 'أبيه لنشاطي': 'name', 'كيف يشتغل؟': 'how' }, { name: ['ابي', 'اشترك', 'تمام'], how: ['كيف', 'يشتغل'] });
+    },
+    async name() {
+      await bot(editing ? 'وش اسمك الكريم؟' : 'ممتاز! نجهّزه لك خطوة بخطوة، وكل اللي نحتاجه منك كم سؤال 👌\nوش اسمك الكريم؟');
+      wantText((v) => v.length >= 2 && v.length <= 40 ? null : 'اكتب اسمك بس 🙏', (v) => { A.name = v; next('biz'); });
+    },
+    async biz() {
+      await bot(editing ? 'وش اسم نشاطك؟' : `تشرفنا يا ${first()} 🤝\nوش اسم نشاطك؟`);
+      wantText((v) => v.length >= 2 && v.length <= 50 ? null : 'اكتب اسم النشاط بس 🙏', (v) => { A.biz = v; next('field'); });
+    },
+    async field() {
+      const m = await bot(`وش مجال *${A.biz}*؟`, { list: { button: 'اختر المجال', title: 'المجال', rows: FIELDS } });
+      wantList(m, FIELDS, (v) => { if (v === 'غيره') return next('fieldOther'); A.field = v; next('place'); }, (v) => { A.field = v; next('place'); });
+    },
+    async fieldOther() {
+      await bot('اكتب لي مجالك');
+      wantText((v) => v.length >= 2 ? null : 'اكتب المجال 🙏', (v) => { A.field = v; next('place'); });
+    },
+    async place() {
+      const m = await bot('عملاؤك يجونك، ولا أنت تروح لهم؟', { buttons: ['يجوني في المحل', 'أروح لهم', 'الاثنين'] });
+      wantChoice(m, { 'يجوني في المحل': 'shop', 'أروح لهم': 'go', 'الاثنين': 'both' }, null, (k, label) => { A.placeMode = k; A.placeLabel = label; next('city'); });
+    },
+    async city() {
+      const q = { shop: 'وين محلك؟ اكتب الحي والمدينة 📍', go: 'وش المدن أو الأحياء اللي تخدمها؟ 📍', both: 'اكتب حي محلك، والمدن اللي تخدمها 📍' }[A.placeMode];
+      await bot(q);
+      wantText((v) => v.length >= 2 ? null : 'اكتب الحي والمدينة 🙏', (v) => { A.city = v; next('wa'); });
+    },
+    async wa() {
+      await bot('وش رقم الواتساب اللي يراسلك عليه عملاؤك؟ 📱');
+      wantText((v) => phone(v) ? null : 'اكتب رقم جوال سعودي، مثل 0551234567', (v) => { A.wa = phone(v); next('watype'); });
+    },
+    async watype() {
+      const m = await bot('هالرقم على *واتساب للأعمال* ولا واتساب العادي؟', { buttons: ['واتساب للأعمال', 'العادي', 'ما أدري'] });
+      wantChoice(m, { 'واتساب للأعمال': 'biz', 'العادي': 'normal', 'ما أدري': 'unknown' }, { biz: ['اعمال', 'بزنس'], normal: ['عادي'], unknown: ['ادري', 'اعرف'] }, (k, label) => { A.waType = label; next(k === 'biz' ? 'menu' : 'waNote'); });
+    },
+    async waNote() {
+      await bot('ولا يهمك، قبل الربط ننقله معك لواتساب للأعمال. مجاني، ومحادثاتك تبقى مثل ما هي.');
+      next('menu');
+    },
+    async menu() {
+      const m = await bot('الحين أهم شي: *خدماتك وأسعارك* 📋\nأرسل صورة قائمة الأسعار، أو اكتبها هنا.', { buttons: ['أرسل صورة', 'أكتبها'] });
+      expect = { msg: m, kind: 'menu', file: (f) => { A.menuFile = f; ack('وصلت ✓ نقرا منها الخدمات والأسعار ونرتبها لك.', 'hours'); },
+        choose: (label) => label === 'أرسل صورة' ? (unpick(m), fileIn.click()) : next('menuText', label),
+        text: (v) => { if (v.length > 12) { A.menuText = v; ack('وصلت ✓ نرتبها لك خدمة خدمة.', 'hours'); } else if (/صور/.test(v)) { fileIn.click(); } else { next('menuText'); } } };
+    },
+    async menuText() {
+      await bot('تفضل، اكتب كل خدمة وسعرها في سطر ✍️\nمثلًا: قص شعر 40');
+      wantText((v) => v.length >= 4 ? null : 'اكتب الخدمات وأسعارها 🙏', (v) => { A.menuText = v; A.menuFile = null; ack('وصلت ✓ نرتبها لك خدمة خدمة.', 'hours'); }, (f) => { A.menuFile = f; ack('وصلت ✓ نقرا منها الخدمات والأسعار ونرتبها لك.', 'hours'); });
+    },
+    async hours() {
+      const m = await bot('وش أوقات دوامك؟ 🕘', { list: { button: 'اختر الوقت', title: 'أوقات الدوام', rows: HOURS } });
+      wantList(m, HOURS, (v) => { if (v === 'أكتبها بنفسي') return next('hoursText'); A.hours = v; next('off'); }, (v) => { A.hours = v; next('off'); });
+    },
+    async hoursText() {
+      await bot('اكتب أوقات دوامك');
+      wantText((v) => v.length >= 3 ? null : 'اكتب الأوقات 🙏', (v) => { A.hours = v; next('off'); });
+    },
+    async off() {
+      const m = await bot('ووش يوم إجازتك؟', { buttons: ['الجمعة', 'ما عندي إجازة', 'يوم ثاني'] });
+      wantChoice(m, { 'الجمعة': 'fri', 'ما عندي إجازة': 'none', 'يوم ثاني': 'other' }, { fri: ['جمعه'], none: ['ما عندي', 'لا'], other: ['ثاني', 'سبت', 'احد', 'خميس'] }, (k, label) => { if (k === 'other') { if (lastTyped && !/ثاني/.test(lastTyped)) { A.off = lastTyped; return next('cap'); } return next('offText'); } A.off = label; next('cap'); });
+    },
+    async offText() {
+      await bot('وش هو؟');
+      wantText((v) => v.length >= 3 ? null : 'اكتب اليوم 🙏', (v) => { A.off = v; next('cap'); });
+    },
+    async cap() {
+      const rows = ['عميل واحد', '2', '3', '4', '5 أو أكثر'];
+      const m = await bot('كم عميل تقدر تخدم *بنفس الوقت*؟\nعشان ما ينحجز موعدين وأنت ما تقدر عليهم.', { list: { button: 'اختر العدد', title: 'بنفس الوقت', rows } });
+      wantList(m, rows, (v) => { A.cap = { '2': 'عميلين', '3': '3 عملاء', '4': '4 عملاء', '5 أو أكثر': '5 عملاء أو أكثر' }[v] || v; next('staff'); });
+    },
+    async staff() {
+      const m = await bot('عندك موظفين تبي يوصلهم الطلب على واتسابهم؟', { buttons: ['إيه عندي', 'لا، أنا بس'] });
+      wantChoice(m, { 'إيه عندي': 'yes', 'لا، أنا بس': 'no' }, { yes: ['ايه', 'نعم', 'عندي'], no: ['لا', 'انا'] }, (k) => { if (k === 'yes') return next('staffN'); A.staff = 'أنا بس'; next('pay'); });
+    },
+    async staffN() {
+      const rows = ['1', '2', '3', '4', '5 أو أكثر'];
+      const m = await bot('كم موظف؟', { list: { button: 'اختر العدد', title: 'عدد الموظفين', rows } });
+      wantList(m, rows, (v) => { A.staffN = v; next('staffLang'); });
+    },
+    async staffLang() {
+      const m = await bot('ووش اللغة اللي يفهمونها؟', { buttons: ['عربي', 'إنجليزي', 'الاثنين'] });
+      wantChoice(m, { 'عربي': 'ar', 'إنجليزي': 'en', 'الاثنين': 'both' }, { ar: ['عربي'], en: ['انجليزي', 'english'], both: ['اثنين', 'كلها'] }, (k, label) => {
+        A.staff = `${{ '1': 'موظف واحد', '2': 'موظفين اثنين', '5 أو أكثر': '5 موظفين أو أكثر' }[A.staffN] || A.staffN + ' موظفين'} · ${label}`;
+        ack('تمام، كل موظف يوصله الطلب بلغته 👍 وأسماءهم وأرقامهم ناخذها منك وقت الربط.', 'pay');
+      });
+    },
+    async pay() {
+      const m = await bot('تبي عميلك يدفع من الواتساب برابط دفع؟ 💳\nمدى، أبل باي، بطاقة', { buttons: ['إيه، قبل الموعد', 'إيه، بعد الخدمة', 'لا، يدفع عندي'] });
+      wantChoice(m, { 'إيه، قبل الموعد': 'before', 'إيه، بعد الخدمة': 'after', 'لا، يدفع عندي': 'cash' }, { before: ['قبل'], after: ['بعد'], cash: ['لا', 'عندي', 'كاش'] }, (k, label) => {
+        A.payMode = k; A.pay = { before: 'رابط دفع قبل الموعد', after: 'رابط دفع بعد الخدمة', cash: 'يدفع في المحل' }[k];
+        if (k === 'cash') { A.docs = []; return next('logo'); }
+        next('payDocs');
+      });
+    },
+    async payDocs() {
+      const m = await bot('تمام 👌 الفلوس تدخل حسابك أنت مباشرة، عن طريق حساب في *ميسر* باسم نشاطك. نفتحه معك، ويحتاج:\n• السجل التجاري أو وثيقة العمل الحر\n• شهادة الآيبان باسم النشاط\n• هوية المالك', { buttons: ['أرسلها الحين', 'أرسلها بعدين'] });
+      wantChoice(m, { 'أرسلها الحين': 'now', 'أرسلها بعدين': 'later' }, { now: ['الحين', 'الان'], later: ['بعدين', 'بعد'] }, (k) => { if (k === 'later') { A.docsLater = true; return ack('ولا يهمك، نذكّرك فيها وقت التجهيز.', 'logo'); } next('payUp'); },
+        (f) => { addDoc(f); next('payUp', null, true); });
+    },
+    async payUp(skipAsk) {
+      const n = A.docs.length;
+      const m = skipAsk ? await bot(`وصل ${n} من 3 ✓`, { buttons: ['خلاص كذا'] }) : await bot('أرسلها هنا، صور أو PDF 📎', { buttons: ['خلاص كذا'] });
+      expect = { msg: m, kind: 'docs', file: (f) => { addDoc(f); if (A.docs.length >= 3) return ack('وصلت كلها ✓ نفتح حساب ميسر معك بعد الاتفاق.', 'logo'); next('payUp', null, true); },
+        choose: () => ack(A.docs.length ? 'وصلت ✓ والباقي ترسله بعدين.' : 'ولا يهمك، نذكّرك فيها وقت التجهيز.', 'logo'),
+        text: (v) => /خلاص|بس|بعدين/.test(v) ? expect.choose() : bot('أرسلها مرفقة من 📎 تحت') };
+    },
+    async logo() {
+      const m = await bot('أرسل *شعار* نشاطك، نحطه في موقعك وفواتيرك 🎨', { buttons: ['أرسل الشعار', 'ما عندي شعار'] });
+      expect = { msg: m, kind: 'logo', file: (f) => { A.logo = f; ack('شعار حلو 👌', after('logo')); },
+        choose: (label) => { if (label === 'أرسل الشعار') { unpick(m); return fileIn.click(); } A.logo = 'none'; ack(`ولا يهمك، نكتب اسم *${A.biz}* بخط مرتب.`, after('logo')); },
+        text: (v) => /ما عندي|لا/.test(v) ? expect.choose('ما عندي شعار') : bot('أرسل الشعار مرفق من 📎 تحت') };
+    },
+    async cr() {
+      const m = await bot('عندك سجل تجاري أو وثيقة عمل حر؟\nيفيدنا في توثيق اسم نشاطك عند واتساب.', { buttons: ['سجل تجاري', 'عمل حر', 'لا'] });
+      wantChoice(m, { 'سجل تجاري': 'cr', 'عمل حر': 'free', 'لا': 'none' }, { cr: ['سجل'], free: ['حر'], none: ['لا', 'ما عندي'] }, (k, label) => { A.cr = label; if (k === 'none') { A.cr = 'ما عنده'; return ack('عادي، نشغّله لك بدونه.', 'app'); } next('crUp'); });
+    },
+    async crUp() {
+      const m = await bot('أرسل صورته هنا 📎', { buttons: ['بعدين'] });
+      expect = { msg: m, kind: 'cr', file: (f) => { A.crFile = f; ack('وصل ✓', 'app'); }, choose: () => next('app'), text: (v) => /بعدين|بعد/.test(v) ? next('app') : bot('أرسله مرفق من 📎 تحت') };
+    },
+    async app() {
+      const m = await bot('وتبي معه *تطبيق باسمك* في أبل وقوقل بلاي؟ 📲\n9,000 ريال، و150 ريال شهريًا', { buttons: ['إيه أبيه', 'لا، الحين لا'] });
+      wantChoice(m, { 'إيه أبيه': 'yes', 'لا، الحين لا': 'no' }, { yes: ['ايه', 'نعم', 'ابي'], no: ['لا'] }, (k) => { A.app = k === 'yes'; next('summary'); });
+    },
+    async summary() {
+      editing = null;
+      const p = plan();
+      const lines = [
+        `تمام يا ${first()} ✅ هذا ملخص طلبك:`, '',
+        `*${A.biz}* · ${A.field}`,
+        `📍 ${A.placeLabel}: ${A.city}`,
+        `📱 ${A.wa} · ${A.waType}`,
+        `📋 ${A.menuFile ? 'صورة قائمة الأسعار' : 'الأسعار مكتوبة'}`,
+        `🕘 ${A.hours} · الإجازة: ${A.off}`,
+        `👥 ${A.cap} بنفس الوقت · ${A.staff}`,
+        `💳 ${A.pay}`, '',
+        `الباقة: *${p.name}*`,
+        `التأسيس: *${money(p.setup)} ريال* (النص الحين والنص عند التسليم)`,
+        `الشهري: *${money(p.monthly)} ريال* يبدأ من يوم التشغيل`,
+      ];
+      const m = await bot(lines.join('\n'), { buttons: ['تمام، كمّل', 'أبي أعدّل', 'أكلم شخص'] });
+      wantChoice(m, { 'تمام، كمّل': 'ok', 'أبي أعدّل': 'edit', 'أكلم شخص': 'human' }, { ok: ['تمام', 'كمل', 'موافق'], edit: ['عدل', 'تعديل', 'غير'], human: ['شخص', 'اكلم', 'موظف'] }, (k) => next({ ok: 'agree', edit: 'editPick', human: 'human' }[k]));
+    },
+    async editPick() {
+      const rows = EDIT.map((e) => e[1]);
+      const m = await bot('وش تبي تعدّل؟', { list: { button: 'اختر', title: 'تعديل', rows } });
+      wantList(m, rows, (v) => { const g = EDIT.find((e) => e[1] === v)[0]; editing = g; next(GROUPS[g][0]); });
+    },
+    async human() {
+      const m = await bot(`أبشر، يكلمك واحد من فريقنا على رقمك ${A.wa} في وقت الدوام 🤍`, { buttons: ['رجوع للملخص'] });
+      wantChoice(m, { 'رجوع للملخص': 'back' }, { back: ['رجوع', 'ملخص'] }, () => next('summary'));
+    },
+    async agree() {
+      const p = plan();
+      const m = await bot(`آخر خطوة: وافق على الاتفاقية وحوّل *الدفعة الأولى* (${money(p.setup / 2)} ريال) من هالرابط 👇`, { card: { id: 'pay', title: 'الدفعة الأولى · المناوب', host: 'almunawib.com/agree', icon: 'i-card' } });
+      expect = { msg: m, kind: 'agree', text: () => bot('افتح الرابط فوق 👆') };
+    },
+    async done() {
+      await bot(`وصلنا إشعار التحويل ✓ نتأكد منه ونبدأ تجهيز *${A.biz}* على طول.`);
+      const m = await bot('اللي بيصير الحين:\n1. نجهّز ردودك وأسعارك ومواعيدك\n2. نرسل لك رابط تجربة تشوف فيه ردودك كأنك عميل\n3. نربط رقمك، تاخذ دقيقتين من جوالك\n4. نسلّمك، وتحوّل النص الثاني\nويكون جاهز خلال 7 أيام عمل 🤍', { buttons: ['ابدأ من جديد'] });
+      expect = { msg: m, kind: 'end', choose: () => start(), text: () => bot('شكرًا لك 🤍 أي سؤال ثاني اكتبه هنا.') };
+    },
+  };
+
+  // بعد الشعار: نسأل عن السجل إلا لو أرسل أوراق ميسر
+  function after(id) { return id === 'logo' ? (A.docs.length ? 'app' : 'cr') : 'app'; }
+  function addDoc(f) { A.docs.push(f); if (!A.cr) A.cr = 'ضمن أوراق ميسر'; }
+
+  // ===== إدارة الانتظار =====
+  function next(id, label, arg) {
+    expect = null; disableOld();
+    if (editing && groupOf(id) !== editing) id = 'summary';
+    step = id; render();
+    S[id](arg);
+  }
+  function ack(text, to) { expect = null; disableOld(); render(); bot(text).then((m) => { if (m) next(to); }); }
+  function unpick(m) { m.querySelectorAll('.btns button').forEach((b) => { b.disabled = false; b.classList.remove('picked'); }); }
+  // يحسم الانتظار الحالي بخيار (من زر أو من كلام مكتوب)
+  function resolve(e, label) { expect = null; disableOld(); e.choose(label); }
+
+  function wantText(check, done, fileFn) { expect = { kind: 'text', check, done, file: fileFn }; }
+  function wantChoice(m, map, syn, done, fileFn) {
+    const keys = Object.keys(map);
+    expect = { msg: m, kind: 'choice', file: fileFn,
+      choose: (label) => { const v = map[label]; if (done) done(v, label); else next(v); },
+      text: (v) => {
+        const e = expect, n = norm(v);
+        let hit = keys.find((k) => norm(k) === n) || keys.find((k) => n.length >= 2 && (norm(k).includes(n) || n.includes(norm(k))));
+        if (!hit && syn) { const val = Object.keys(syn).find((s) => syn[s].some((w) => n.includes(norm(w)))); if (val) hit = keys.find((k) => map[k] === val); }
+        if (hit) { markPicked(e.msg, hit); return resolve(e, hit); }
+        nudge();
+      } };
+  }
+  function wantList(m, rows, done, free) {
+    expect = { msg: m, kind: 'list', choose: done,
+      text: (v) => {
+        const e = expect, n = norm(v);
+        const hit = rows.find((r) => norm(r) === n) || rows.find((r) => /^\d+$/.test(n) && norm(r).split(' ')[0] === n) || rows.find((r) => n.length >= 2 && norm(r).includes(n));
+        if (hit) return resolve(e, hit);
+        if (free && v.length >= 3) { expect = null; disableOld(); return free(v); }
+        nudge();
+      } };
+  }
+  function markPicked(m, label) { if (m) m.querySelectorAll('.btns button').forEach((b) => { if (b.dataset.b === label) b.classList.add('picked'); }); }
+  // كلام ما يطابق أي خيار: نعيد نفس الخيارات تحت رسالة قصيرة
+  async function nudge() {
+    const e = expect; if (!e) return;
+    const o = (e.msg && e.msg._opt) || {};
+    const m = await bot('اختر من الخيارات 👇', { buttons: o.buttons, list: o.list });
+    if (!m || expect !== e) return;
+    if (e.msg) e.msg.querySelectorAll('.btns button').forEach((b) => b.disabled = true);
+    e.msg = m;
+  }
+
+  // اختيار زر أو صف قائمة: يطلع كرسالة من العميل
+  function choose(label, btn) {
+    if (busy || !expect || !expect.choose) return;
+    const e = expect;
+    lastTyped = null;
+    if (btn) btn.classList.add('picked');
+    if ((e.kind === 'menu' && label === 'أرسل صورة') || (e.kind === 'logo' && label === 'أرسل الشعار')) return e.choose(label);
+    expect = null;
+    disableOld();
+    userText(label);
+    e.choose(label);
+  }
+
+  function onText(v) {
+    v = v.trim(); if (!v || busy) return;
+    const e = expect;
+    lastTyped = v;
+    userText(v);
+    if (!e) return;
+    if (e.kind === 'text') {
+      const err = e.check(v);
+      if (err) { bot(err); return; }
+      expect = null; disableOld(); e.done(v); return;
+    }
+    if (e.text) e.text(v);
+  }
+
+  function onFile(f) {
+    if (!f) return;
+    const isImg = /^image\//.test(f.type);
+    markRead();
+    if (isImg) {
+      const url = URL.createObjectURL(f);
+      add('out', `<div class="b photo"><img src="${url}" alt="${esc(f.name)}"><span class="t">${clock()}${icon('i-tick', 'ico tick')}</span></div>`);
+    } else {
+      const kb = Math.max(1, Math.round(f.size / 1024));
+      add('out', `<div class="b"><span class="doc">${icon('i-file')}<span><b>${esc(f.name)}</b><small>PDF · ${kb} KB</small></span></span>${tickHtml()}</div>`);
+    }
+    const item = { name: f.name, img: isImg };
+    const e = expect;
+    if (e && e.file) { expect = null; disableOld(); e.file(item); return; }
+    bot('وصل ✓ نحفظه مع ملفك.');
+  }
+
+  function cardTap(card) {
+    if (card.id === 'pay' && expect && expect.kind === 'agree') openPay();
+  }
+
+  function openPay() {
+    const p = plan();
+    const scrim = document.createElement('div'); scrim.className = 'scrim';
+    const sh = document.createElement('div'); sh.className = 'sheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-label', 'الدفعة الأولى');
+    sh.innerHTML = `<div class="grip"></div><div class="pay"><div class="url">almunawib.com/agree</div>
+      <div class="amt"><small>الدفعة الأولى</small><b>${money(p.setup / 2)} ريال</b><span>${esc(p.name)} · النص الثاني عند التسليم</span></div>
+      <label class="agree"><input type="checkbox" id="agreeChk">أوافق على اتفاقية خدمة المناوب</label>
+      <button class="go" type="button" id="paid" disabled>حوّلت المبلغ</button></div>`;
+    const close = () => { scrim.remove(); sh.remove(); };
+    scrim.onclick = close;
+    sh.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    screen.append(scrim, sh);
+    const chk = sh.querySelector('#agreeChk'), paid = sh.querySelector('#paid');
+    chk.onchange = () => { paid.disabled = !chk.checked; };
+    paid.onclick = () => { close(); A.paid = true; expect = null; render(); markRead(); userText('حوّلت الدفعة الأولى ✓'); next('done'); };
+    chk.focus();
+  }
+
+  // ===== ملف العميل =====
+  function items() {
+    const p = A.name ? plan() : null;
+    const fileTxt = (f) => f ? (f === 'none' ? 'بدون شعار' : (f.img ? 'صورة' : 'ملف') + ' ✓') : '';
+    return [
+      ['الاسم', A.name],
+      ['اسم النشاط', A.biz],
+      ['المجال', A.field],
+      ['المكان', A.city ? `${A.placeLabel}: ${A.city}` : ''],
+      ['رقم الواتساب', A.wa ? `${A.wa}${A.waType ? ' · ' + A.waType : ''}` : ''],
+      ['الخدمات والأسعار', A.menuFile ? 'صورة القائمة ✓' : (A.menuText ? A.menuText.split('\n').slice(0, 2).join('، ') : '')],
+      ['الدوام', A.hours && A.off ? `${A.hours} · الإجازة: ${A.off}` : ''],
+      ['بنفس الوقت', A.cap],
+      ['الموظفين', A.staff],
+      ['الدفع', A.pay ? A.pay + (A.payMode !== 'cash' ? (A.docs.length ? ` · أوراق ميسر ${A.docs.length} من 3` : (A.docsLater ? ' · أوراق ميسر بعدين' : '')) : '') : ''],
+      ['الشعار', fileTxt(A.logo)],
+      ['السجل التجاري', A.cr ? A.cr + (A.crFile ? ' · صورة ✓' : '') : ''],
+      ['الباقة والدفعة الأولى', A.paid && p ? `${p.name} · ${money(p.setup / 2)} ريال ✓` : ''],
+    ];
+  }
+  const NOW = { name: 0, biz: 1, field: 2, fieldOther: 2, place: 3, city: 3, wa: 4, watype: 4, waNote: 4, menu: 5, menuText: 5, hours: 6, hoursText: 6, off: 6, offText: 6, cap: 7, staff: 8, staffN: 8, staffLang: 8, pay: 9, payDocs: 9, payUp: 9, logo: 10, cr: 11, crUp: 11, app: 12, summary: 12, agree: 12 };
+  function render() {
+    const list = items();
+    const done = list.filter((x) => x[1]).length;
+    $('count').textContent = `${done} من ${list.length}`;
+    $('badge').textContent = done;
+    $('bar2').style.width = (done / list.length * 100) + '%';
+    const nowI = NOW[step];
+    $('items').innerHTML = list.map((x, i) => `<li class="${x[1] ? 'ok' : ''}${!x[1] && i === nowI ? ' now' : ''}"><span class="st">${icon('i-check')}</span><span><b>${esc(x[0])}</b>${x[1] ? `<span>${esc(x[1])}</span>` : ''}</span></li>`).join('');
+  }
+
+  function phone(v) {
+    const d = String(v).replace(/[٠-٩]/g, (c) => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/\D/g, '');
+    const m = d.match(/^(?:00966|966|0)?(5\d{8})$/);
+    return m ? '⁦' + '0' + m[1].slice(0, 2) + ' ' + m[1].slice(2, 5) + ' ' + m[1].slice(5) + '⁩' : null;
+  }
+
+  // ===== البداية =====
+  function start() {
+    seq = (seq || 0) + 1;
+    A = { docs: [] }; step = null; expect = null; editing = null; busy = false; lastSide = null;
+    chat.innerHTML = '<div class="day">اليوم</div>';
+    statusEl.textContent = 'متصل';
+    document.querySelectorAll('.scrim,.sheet').forEach((x) => x.remove());
+    render();
+    userText('السلام عليكم، أبي أعرف عن المناوب');
+    markRead();
+    S.welcome(true);
+  }
+
+  // الإدخال
+  const grow = () => { msg.style.height = 'auto'; msg.style.height = Math.min(110, msg.scrollHeight) + 'px'; sendBtn.disabled = !msg.value.trim(); };
+  msg.addEventListener('input', grow);
+  msg.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('bar').requestSubmit(); } });
+  $('bar').addEventListener('submit', (e) => { e.preventDefault(); const v = msg.value; msg.value = ''; grow(); onText(v); });
+  $('attach').onclick = () => fileIn.click();
+  fileIn.onchange = () => { const f = fileIn.files && fileIn.files[0]; fileIn.value = ''; onFile(f); };
+  $('restart').onclick = () => { closePanel(); start(); };
+  const panel = $('panel'), pscrim = $('pscrim');
+  const closePanel = () => { panel.classList.remove('open'); pscrim.classList.remove('open'); };
+  $('openPanel').onclick = () => { panel.classList.add('open'); pscrim.classList.add('open'); };
+  $('closePanel').onclick = closePanel; pscrim.onclick = closePanel;
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+  start();
+})();
+</script>
