@@ -202,7 +202,7 @@ button:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid
       <button class="pclose" id="closePanel" type="button" aria-label="إغلاق"><svg class="ico"><use href="#i-x"/></svg></button>
     </div>
     <div class="phead">
-      <h2>ملف العميل <span id="count">0 من 13</span></h2>
+      <h2>ملف العميل <span id="count">0 من 8</span></h2>
       <div class="prog"><i id="bar2"></i></div>
     </div>
     <ul class="items" id="items"></ul>
@@ -293,170 +293,79 @@ button:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid
     sh.querySelector('.row').focus();
   }
 
-  // ===== الخطوات =====
-  const FIELDS = ['صالون أو مشغل', 'حلاق', 'مغسلة سيارات', 'عيادة', 'صيانة منزلية', 'مطعم أو أسرة منتجة', 'متجر أونلاين', 'غيره'];
-  const HOURS = ['من 9 الصبح لين 9 الليل', 'من 4 العصر لين 12 الليل', 'فترتين: الصبح والعصر', 'أكتبها بنفسي'];
-  const GROUPS = { name: ['name'], biz: ['biz'], field: ['field', 'fieldOther'], place: ['place', 'city'], wa: ['wa', 'watype', 'waNote'], menu: ['menu', 'menuText'],
-    hours: ['hours', 'hoursText', 'off', 'offText'], cap: ['cap'], staff: ['staff', 'staffN', 'staffLang'], pay: ['pay', 'payDocs', 'payUp'], logo: ['logo'], cr: ['cr', 'crUp'], app: ['app'] };
-  const EDIT = [['name', 'اسمك'], ['biz', 'اسم النشاط'], ['field', 'المجال'], ['place', 'المكان'], ['wa', 'رقم الواتساب'], ['menu', 'الخدمات والأسعار'], ['hours', 'الدوام'], ['cap', 'بنفس الوقت'], ['staff', 'الموظفين'], ['pay', 'الدفع'], ['logo', 'الشعار'], ['cr', 'السجل'], ['app', 'التطبيق']];
+  // ===== الخطوات: اسم النشاط، الرقم، الأسعار، الدوام، الموقع، الدفع، الشعار =====
+  const GROUPS = { biz: ['biz'], wa: ['wa'], menu: ['menu', 'menuText'], hours: ['hours'], city: ['city'], pay: ['pay'], logo: ['logo'] };
+  const EDIT = [['biz', 'اسم النشاط'], ['wa', 'رقم الواتساب'], ['menu', 'الخدمات والأسعار'], ['hours', 'الدوام'], ['city', 'الموقع'], ['pay', 'الدفع'], ['logo', 'الشعار']];
   const groupOf = (id) => Object.keys(GROUPS).find((g) => GROUPS[g].includes(id));
-  const first = () => (A.name || '').split(' ')[0];
-  const plan = () => {
-    const p = A.payMode && A.payMode !== 'cash' ? { name: 'الحجز + الدفع', setup: 5500, monthly: 600 } : { name: 'أتمتة الحجز', setup: 3500, monthly: 350 };
-    if (A.app) { p.name += ' + التطبيق'; p.setup += 9000; p.monthly += 150; }
-    return p;
-  };
+  const plan = () => A.payMode === 'yes' ? { name: 'الحجز + الدفع', setup: 5500, monthly: 600 } : { name: 'أتمتة الحجز', setup: 3500, monthly: 350 };
 
   const S = {
     async welcome(instant) {
       const m = await bot('وعليكم السلام، حياك الله في *المناوب* 👋\nنخلي واتسابك يرد على عملائك ويحجز لهم ويذكّرهم بمواعيدهم، على نفس رقمك. والتجهيز كله علينا.', { buttons: ['أبيه لنشاطي', 'كيف يشتغل؟', 'كم السعر؟'], instant });
-      wantChoice(m, { 'أبيه لنشاطي': 'name', 'كيف يشتغل؟': 'how', 'كم السعر؟': 'price' }, { name: ['ابي', 'ابغي', 'اشترك', 'نشاطي', 'تمام'], how: ['كيف', 'وش', 'يشتغل'], price: ['سعر', 'كم', 'بكم', 'اسعار'] });
+      wantChoice(m, { 'أبيه لنشاطي': 'biz', 'كيف يشتغل؟': 'how', 'كم السعر؟': 'price' }, { biz: ['ابي', 'ابغي', 'اشترك', 'نشاطي', 'تمام'], how: ['كيف', 'وش', 'يشتغل'], price: ['سعر', 'كم', 'بكم', 'اسعار'] });
     },
     async how() {
       const m = await bot('ببساطة:\n1. عميلك يراسلك على واتسابك\n2. المناوب يرد عليه في ثواني ويعرض له الأوقات الفاضية\n3. يحجز له ويذكّره قبل موعده، ويرسل له الفاتورة\nوأنت تقدر ترد بنفسك من جوالك متى ما تبي.', { card: { href: 'https://almunawib.com/try', title: 'جرّبه كأنك عميل', host: 'almunawib.com/try', icon: 'i-play' }, buttons: ['أبيه لنشاطي', 'كم السعر؟'] });
-      wantChoice(m, { 'أبيه لنشاطي': 'name', 'كم السعر؟': 'price' }, { name: ['ابي', 'اشترك', 'تمام'], price: ['سعر', 'كم', 'بكم'] });
+      wantChoice(m, { 'أبيه لنشاطي': 'biz', 'كم السعر؟': 'price' }, { biz: ['ابي', 'اشترك', 'تمام'], price: ['سعر', 'كم', 'بكم'] });
     },
     async price() {
-      const m = await bot('عندنا باقتين:\n*أتمتة الحجز*: 3,500 ريال تأسيس، و350 ريال شهريًا\n*الحجز + الدفع*: 5,500 ريال تأسيس، و600 ريال شهريًا\nوتطبيق باسمك في أبل وقوقل إضافة بـ9,000 ريال، و150 ريال شهريًا.\nالتأسيس على دفعتين، والشهري يبدأ من يوم التشغيل. والأسعار قبل الضريبة.', { buttons: ['أبيه لنشاطي', 'كيف يشتغل؟'] });
-      wantChoice(m, { 'أبيه لنشاطي': 'name', 'كيف يشتغل؟': 'how' }, { name: ['ابي', 'اشترك', 'تمام'], how: ['كيف', 'يشتغل'] });
-    },
-    async name() {
-      await bot(editing ? 'وش اسمك الكريم؟' : 'ممتاز! نجهّزه لك خطوة بخطوة، وكل اللي نحتاجه منك كم سؤال 👌\nوش اسمك الكريم؟');
-      wantText((v) => v.length >= 2 && v.length <= 40 ? null : 'اكتب اسمك بس 🙏', (v) => { A.name = v; next('biz'); });
+      const m = await bot('عندنا باقتين:\n*أتمتة الحجز*: 3,500 ريال تأسيس، و350 ريال شهريًا\n*الحجز + الدفع*: 5,500 ريال تأسيس، و600 ريال شهريًا\nالتأسيس على دفعتين، والشهري يبدأ من يوم التشغيل. والأسعار قبل الضريبة.', { buttons: ['أبيه لنشاطي', 'كيف يشتغل؟'] });
+      wantChoice(m, { 'أبيه لنشاطي': 'biz', 'كيف يشتغل؟': 'how' }, { biz: ['ابي', 'اشترك', 'تمام'], how: ['كيف', 'يشتغل'] });
     },
     async biz() {
-      await bot(editing ? 'وش اسم نشاطك؟' : `تشرفنا يا ${first()} 🤝\nوش اسم نشاطك؟`);
-      wantText((v) => v.length >= 2 && v.length <= 50 ? null : 'اكتب اسم النشاط بس 🙏', (v) => { A.biz = v; next('field'); });
-    },
-    async field() {
-      const m = await bot(`وش مجال *${A.biz}*؟`, { list: { button: 'اختر المجال', title: 'المجال', rows: FIELDS } });
-      wantList(m, FIELDS, (v) => { if (v === 'غيره') return next('fieldOther'); A.field = v; next('place'); }, (v) => { A.field = v; next('place'); });
-    },
-    async fieldOther() {
-      await bot('اكتب لي مجالك');
-      wantText((v) => v.length >= 2 ? null : 'اكتب المجال 🙏', (v) => { A.field = v; next('place'); });
-    },
-    async place() {
-      const m = await bot('عملاؤك يجونك، ولا أنت تروح لهم؟', { buttons: ['يجوني في المحل', 'أروح لهم', 'الاثنين'] });
-      wantChoice(m, { 'يجوني في المحل': 'shop', 'أروح لهم': 'go', 'الاثنين': 'both' }, null, (k, label) => { A.placeMode = k; A.placeLabel = label; next('city'); });
-    },
-    async city() {
-      const q = { shop: 'وين محلك؟ اكتب الحي والمدينة 📍', go: 'وش المدن أو الأحياء اللي تخدمها؟ 📍', both: 'اكتب حي محلك، والمدن اللي تخدمها 📍' }[A.placeMode];
-      await bot(q);
-      wantText((v) => v.length >= 2 ? null : 'اكتب الحي والمدينة 🙏', (v) => { A.city = v; next('wa'); });
+      await bot(editing ? 'وش اسم نشاطك؟' : 'ممتاز! نحتاج منك كم شي بسيط، والباقي كله علينا 👌\nوش اسم نشاطك؟');
+      wantText((v) => v.length >= 2 && v.length <= 50 ? null : 'اكتب اسم النشاط بس 🙏', (v) => { A.biz = v; next('wa'); });
     },
     async wa() {
       await bot('وش رقم الواتساب اللي يراسلك عليه عملاؤك؟ 📱');
-      wantText((v) => phone(v) ? null : 'اكتب رقم جوال سعودي، مثل 0551234567', (v) => { A.wa = phone(v); next('watype'); });
-    },
-    async watype() {
-      const m = await bot('هالرقم على *واتساب للأعمال* ولا واتساب العادي؟', { buttons: ['واتساب للأعمال', 'العادي', 'ما أدري'] });
-      wantChoice(m, { 'واتساب للأعمال': 'biz', 'العادي': 'normal', 'ما أدري': 'unknown' }, { biz: ['اعمال', 'بزنس'], normal: ['عادي'], unknown: ['ادري', 'اعرف'] }, (k, label) => { A.waType = label; next(k === 'biz' ? 'menu' : 'waNote'); });
-    },
-    async waNote() {
-      await bot('ولا يهمك، قبل الربط ننقله معك لواتساب للأعمال. مجاني، ومحادثاتك تبقى مثل ما هي.');
-      next('menu');
+      wantText((v) => phone(v) ? null : 'اكتب رقم جوال سعودي، مثل 0551234567', (v) => { A.wa = phone(v); next('menu'); });
     },
     async menu() {
-      const m = await bot('الحين أهم شي: *خدماتك وأسعارك* 📋\nأرسل صورة قائمة الأسعار، أو اكتبها هنا.', { buttons: ['أرسل صورة', 'أكتبها'] });
-      expect = { msg: m, kind: 'menu', file: (f) => { A.menuFile = f; ack('وصلت ✓ نقرا منها الخدمات والأسعار ونرتبها لك.', 'hours'); },
+      const m = await bot('أرسل *خدماتك وأسعارك* 📋\nصورة قائمة الأسعار، أو اكتبها هنا.', { buttons: ['أرسل صورة', 'أكتبها'] });
+      expect = { msg: m, kind: 'menu', file: (f) => { A.menuFile = f; A.menuText = null; ack('وصلت ✓', 'hours'); },
         choose: (label) => label === 'أرسل صورة' ? (unpick(m), fileIn.click()) : next('menuText', label),
-        text: (v) => { if (v.length > 12) { A.menuText = v; ack('وصلت ✓ نرتبها لك خدمة خدمة.', 'hours'); } else if (/صور/.test(v)) { fileIn.click(); } else { next('menuText'); } } };
+        text: (v) => { if (v.length > 12) { A.menuText = v; A.menuFile = null; ack('وصلت ✓', 'hours'); } else if (/صور/.test(v)) { fileIn.click(); } else { next('menuText'); } } };
     },
     async menuText() {
-      await bot('تفضل، اكتب كل خدمة وسعرها في سطر ✍️\nمثلًا: قص شعر 40');
-      wantText((v) => v.length >= 4 ? null : 'اكتب الخدمات وأسعارها 🙏', (v) => { A.menuText = v; A.menuFile = null; ack('وصلت ✓ نرتبها لك خدمة خدمة.', 'hours'); }, (f) => { A.menuFile = f; ack('وصلت ✓ نقرا منها الخدمات والأسعار ونرتبها لك.', 'hours'); });
+      await bot('اكتب كل خدمة وسعرها في سطر ✍️\nمثلًا: قص شعر 40');
+      wantText((v) => v.length >= 4 ? null : 'اكتب الخدمات وأسعارها 🙏', (v) => { A.menuText = v; A.menuFile = null; ack('وصلت ✓', 'hours'); }, (f) => { A.menuFile = f; A.menuText = null; ack('وصلت ✓', 'hours'); });
     },
     async hours() {
-      const m = await bot('وش أوقات دوامك؟ 🕘', { list: { button: 'اختر الوقت', title: 'أوقات الدوام', rows: HOURS } });
-      wantList(m, HOURS, (v) => { if (v === 'أكتبها بنفسي') return next('hoursText'); A.hours = v; next('off'); }, (v) => { A.hours = v; next('off'); });
+      await bot('وش أوقات دوامك ويوم إجازتك؟ 🕘\nمثلًا: من 4 العصر لين 12 الليل، والجمعة إجازة');
+      wantText((v) => v.length >= 3 ? null : 'اكتب الأوقات 🙏', (v) => { A.hours = v; next('city'); });
     },
-    async hoursText() {
-      await bot('اكتب أوقات دوامك');
-      wantText((v) => v.length >= 3 ? null : 'اكتب الأوقات 🙏', (v) => { A.hours = v; next('off'); });
-    },
-    async off() {
-      const m = await bot('ووش يوم إجازتك؟', { buttons: ['الجمعة', 'ما عندي إجازة', 'يوم ثاني'] });
-      wantChoice(m, { 'الجمعة': 'fri', 'ما عندي إجازة': 'none', 'يوم ثاني': 'other' }, { fri: ['جمعه'], none: ['ما عندي', 'لا'], other: ['ثاني', 'سبت', 'احد', 'خميس'] }, (k, label) => { if (k === 'other') { if (lastTyped && !/ثاني/.test(lastTyped)) { A.off = lastTyped; return next('cap'); } return next('offText'); } A.off = label; next('cap'); });
-    },
-    async offText() {
-      await bot('وش هو؟');
-      wantText((v) => v.length >= 3 ? null : 'اكتب اليوم 🙏', (v) => { A.off = v; next('cap'); });
-    },
-    async cap() {
-      const rows = ['عميل واحد', '2', '3', '4', '5 أو أكثر'];
-      const m = await bot('كم عميل تقدر تخدم *بنفس الوقت*؟\nعشان ما ينحجز موعدين وأنت ما تقدر عليهم.', { list: { button: 'اختر العدد', title: 'بنفس الوقت', rows } });
-      wantList(m, rows, (v) => { A.cap = { '2': 'عميلين', '3': '3 عملاء', '4': '4 عملاء', '5 أو أكثر': '5 عملاء أو أكثر' }[v] || v; next('staff'); });
-    },
-    async staff() {
-      const m = await bot('عندك موظفين تبي يوصلهم الطلب على واتسابهم؟', { buttons: ['إيه عندي', 'لا، أنا بس'] });
-      wantChoice(m, { 'إيه عندي': 'yes', 'لا، أنا بس': 'no' }, { yes: ['ايه', 'نعم', 'عندي'], no: ['لا', 'انا'] }, (k) => { if (k === 'yes') return next('staffN'); A.staff = 'أنا بس'; next('pay'); });
-    },
-    async staffN() {
-      const rows = ['1', '2', '3', '4', '5 أو أكثر'];
-      const m = await bot('كم موظف؟', { list: { button: 'اختر العدد', title: 'عدد الموظفين', rows } });
-      wantList(m, rows, (v) => { A.staffN = v; next('staffLang'); });
-    },
-    async staffLang() {
-      const m = await bot('ووش اللغة اللي يفهمونها؟', { buttons: ['عربي', 'إنجليزي', 'الاثنين'] });
-      wantChoice(m, { 'عربي': 'ar', 'إنجليزي': 'en', 'الاثنين': 'both' }, { ar: ['عربي'], en: ['انجليزي', 'english'], both: ['اثنين', 'كلها'] }, (k, label) => {
-        A.staff = `${{ '1': 'موظف واحد', '2': 'موظفين اثنين', '5 أو أكثر': '5 موظفين أو أكثر' }[A.staffN] || A.staffN + ' موظفين'} · ${label}`;
-        ack('تمام، كل موظف يوصله الطلب بلغته 👍 وأسماءهم وأرقامهم ناخذها منك وقت الربط.', 'pay');
-      });
+    async city() {
+      await bot('وين موقعك؟ 📍\nاكتب الحي والمدينة، ولو تروح للعميل اكتب المدن اللي تخدمها.');
+      wantText((v) => v.length >= 2 ? null : 'اكتب الحي والمدينة 🙏', (v) => { A.city = v; next('pay'); });
     },
     async pay() {
-      const m = await bot('تبي عميلك يدفع من الواتساب برابط دفع؟ 💳\nمدى، أبل باي، بطاقة', { buttons: ['إيه، قبل الموعد', 'إيه، بعد الخدمة', 'لا، يدفع عندي'] });
-      wantChoice(m, { 'إيه، قبل الموعد': 'before', 'إيه، بعد الخدمة': 'after', 'لا، يدفع عندي': 'cash' }, { before: ['قبل'], after: ['بعد'], cash: ['لا', 'عندي', 'كاش'] }, (k, label) => {
-        A.payMode = k; A.pay = { before: 'رابط دفع قبل الموعد', after: 'رابط دفع بعد الخدمة', cash: 'يدفع في المحل' }[k];
-        if (k === 'cash') { A.docs = []; return next('logo'); }
-        next('payDocs');
+      const m = await bot('تبي عميلك يدفع من الواتساب برابط دفع؟ 💳\nمدى، أبل باي، بطاقة', { buttons: ['إيه', 'لا، يدفع عندي'] });
+      wantChoice(m, { 'إيه': 'yes', 'لا، يدفع عندي': 'no' }, { yes: ['ايه', 'نعم', 'ابي'], no: ['لا', 'عندي', 'كاش'] }, (k) => {
+        A.payMode = k; A.pay = k === 'yes' ? 'رابط دفع من الواتساب' : 'يدفع في المحل';
+        if (k === 'yes') return ack('تمام 👌 الفلوس تدخل حسابك مباشرة عن طريق ميسر، ونفتحه معك وقت التجهيز.', 'logo');
+        next('logo');
       });
     },
-    async payDocs() {
-      const m = await bot('تمام 👌 الفلوس تدخل حسابك أنت مباشرة، عن طريق حساب في *ميسر* باسم نشاطك. نفتحه معك، ويحتاج:\n• السجل التجاري أو وثيقة العمل الحر\n• شهادة الآيبان باسم النشاط\n• هوية المالك', { buttons: ['أرسلها الحين', 'أرسلها بعدين'] });
-      wantChoice(m, { 'أرسلها الحين': 'now', 'أرسلها بعدين': 'later' }, { now: ['الحين', 'الان'], later: ['بعدين', 'بعد'] }, (k) => { if (k === 'later') { A.docsLater = true; return ack('ولا يهمك، نذكّرك فيها وقت التجهيز.', 'logo'); } next('payUp'); },
-        (f) => { addDoc(f); next('payUp', null, true); });
-    },
-    async payUp(skipAsk) {
-      const n = A.docs.length;
-      const m = skipAsk ? await bot(`وصل ${n} من 3 ✓`, { buttons: ['خلاص كذا'] }) : await bot('أرسلها هنا، صور أو PDF 📎', { buttons: ['خلاص كذا'] });
-      expect = { msg: m, kind: 'docs', file: (f) => { addDoc(f); if (A.docs.length >= 3) return ack('وصلت كلها ✓ نفتح حساب ميسر معك بعد الاتفاق.', 'logo'); next('payUp', null, true); },
-        choose: () => ack(A.docs.length ? 'وصلت ✓ والباقي ترسله بعدين.' : 'ولا يهمك، نذكّرك فيها وقت التجهيز.', 'logo'),
-        text: (v) => /خلاص|بس|بعدين/.test(v) ? expect.choose() : bot('أرسلها مرفقة من 📎 تحت') };
-    },
     async logo() {
-      const m = await bot('أرسل *شعار* نشاطك، نحطه في موقعك وفواتيرك 🎨', { buttons: ['أرسل الشعار', 'ما عندي شعار'] });
-      expect = { msg: m, kind: 'logo', file: (f) => { A.logo = f; ack('شعار حلو 👌', after('logo')); },
-        choose: (label) => { if (label === 'أرسل الشعار') { unpick(m); return fileIn.click(); } A.logo = 'none'; ack(`ولا يهمك، نكتب اسم *${A.biz}* بخط مرتب.`, after('logo')); },
+      const m = await bot('وآخر شي: أرسل *شعار* نشاطك 🎨', { buttons: ['أرسل الشعار', 'ما عندي شعار'] });
+      expect = { msg: m, kind: 'logo', file: (f) => { A.logo = f; next('summary'); },
+        choose: (label) => { if (label === 'أرسل الشعار') { unpick(m); return fileIn.click(); } A.logo = 'none'; next('summary'); },
         text: (v) => /ما عندي|لا/.test(v) ? expect.choose('ما عندي شعار') : bot('أرسل الشعار مرفق من 📎 تحت') };
-    },
-    async cr() {
-      const m = await bot('عندك سجل تجاري أو وثيقة عمل حر؟\nيفيدنا في توثيق اسم نشاطك عند واتساب.', { buttons: ['سجل تجاري', 'عمل حر', 'لا'] });
-      wantChoice(m, { 'سجل تجاري': 'cr', 'عمل حر': 'free', 'لا': 'none' }, { cr: ['سجل'], free: ['حر'], none: ['لا', 'ما عندي'] }, (k, label) => { A.cr = label; if (k === 'none') { A.cr = 'ما عنده'; return ack('عادي، نشغّله لك بدونه.', 'app'); } next('crUp'); });
-    },
-    async crUp() {
-      const m = await bot('أرسل صورته هنا 📎', { buttons: ['بعدين'] });
-      expect = { msg: m, kind: 'cr', file: (f) => { A.crFile = f; ack('وصل ✓', 'app'); }, choose: () => next('app'), text: (v) => /بعدين|بعد/.test(v) ? next('app') : bot('أرسله مرفق من 📎 تحت') };
-    },
-    async app() {
-      const m = await bot('وتبي معه *تطبيق باسمك* في أبل وقوقل بلاي؟ 📲\n9,000 ريال، و150 ريال شهريًا', { buttons: ['إيه أبيه', 'لا، الحين لا'] });
-      wantChoice(m, { 'إيه أبيه': 'yes', 'لا، الحين لا': 'no' }, { yes: ['ايه', 'نعم', 'ابي'], no: ['لا'] }, (k) => { A.app = k === 'yes'; next('summary'); });
     },
     async summary() {
       editing = null;
       const p = plan();
       const lines = [
-        `تمام يا ${first()} ✅ هذا ملخص طلبك:`, '',
-        `*${A.biz}* · ${A.field}`,
-        `📍 ${A.placeLabel}: ${A.city}`,
-        `📱 ${A.wa} · ${A.waType}`,
+        'تمام ✅ هذا ملخص طلبك:', '',
+        `*${A.biz}*`,
+        `📱 ${A.wa}`,
         `📋 ${A.menuFile ? 'صورة قائمة الأسعار' : 'الأسعار مكتوبة'}`,
-        `🕘 ${A.hours} · الإجازة: ${A.off}`,
-        `👥 ${A.cap} بنفس الوقت · ${A.staff}`,
+        `🕘 ${A.hours}`,
+        `📍 ${A.city}`,
         `💳 ${A.pay}`, '',
         `الباقة: *${p.name}*`,
-        `التأسيس: *${money(p.setup)} ريال* (النص الحين والنص عند التسليم)`,
-        `الشهري: *${money(p.monthly)} ريال* يبدأ من يوم التشغيل`,
+        `التأسيس: *${money(p.setup)} ريال* على دفعتين`,
+        `الشهري: *${money(p.monthly)} ريال* من يوم التشغيل`,
       ];
       const m = await bot(lines.join('\n'), { buttons: ['تمام، كمّل', 'أبي أعدّل', 'أكلم شخص'] });
       wantChoice(m, { 'تمام، كمّل': 'ok', 'أبي أعدّل': 'edit', 'أكلم شخص': 'human' }, { ok: ['تمام', 'كمل', 'موافق'], edit: ['عدل', 'تعديل', 'غير'], human: ['شخص', 'اكلم', 'موظف'] }, (k) => next({ ok: 'agree', edit: 'editPick', human: 'human' }[k]));
@@ -476,15 +385,11 @@ button:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid
       expect = { msg: m, kind: 'agree', text: () => bot('افتح الرابط فوق 👆') };
     },
     async done() {
-      await bot(`وصلنا إشعار التحويل ✓ نتأكد منه ونبدأ تجهيز *${A.biz}* على طول.`);
+      await bot(`وصلنا إشعار التحويل ✓ نبدأ تجهيز *${A.biz}* على طول.`);
       const m = await bot('اللي بيصير الحين:\n1. نجهّز ردودك وأسعارك ومواعيدك\n2. نرسل لك رابط تجربة تشوف فيه ردودك كأنك عميل\n3. نربط رقمك، تاخذ دقيقتين من جوالك\n4. نسلّمك، وتحوّل النص الثاني\nويكون جاهز خلال 7 أيام عمل 🤍', { buttons: ['ابدأ من جديد'] });
       expect = { msg: m, kind: 'end', choose: () => start(), text: () => bot('شكرًا لك 🤍 أي سؤال ثاني اكتبه هنا.') };
     },
   };
-
-  // بعد الشعار: نسأل عن السجل إلا لو أرسل أوراق ميسر
-  function after(id) { return id === 'logo' ? (A.docs.length ? 'app' : 'cr') : 'app'; }
-  function addDoc(f) { A.docs.push(f); if (!A.cr) A.cr = 'ضمن أوراق ميسر'; }
 
   // ===== إدارة الانتظار =====
   function next(id, label, arg) {
@@ -600,25 +505,19 @@ button:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid
 
   // ===== ملف العميل =====
   function items() {
-    const p = A.name ? plan() : null;
-    const fileTxt = (f) => f ? (f === 'none' ? 'بدون شعار' : (f.img ? 'صورة' : 'ملف') + ' ✓') : '';
+    const p = plan();
     return [
-      ['الاسم', A.name],
       ['اسم النشاط', A.biz],
-      ['المجال', A.field],
-      ['المكان', A.city ? `${A.placeLabel}: ${A.city}` : ''],
-      ['رقم الواتساب', A.wa ? `${A.wa}${A.waType ? ' · ' + A.waType : ''}` : ''],
+      ['رقم الواتساب', A.wa],
       ['الخدمات والأسعار', A.menuFile ? 'صورة القائمة ✓' : (A.menuText ? A.menuText.split('\n').slice(0, 2).join('، ') : '')],
-      ['الدوام', A.hours && A.off ? `${A.hours} · الإجازة: ${A.off}` : ''],
-      ['بنفس الوقت', A.cap],
-      ['الموظفين', A.staff],
-      ['الدفع', A.pay ? A.pay + (A.payMode !== 'cash' ? (A.docs.length ? ` · أوراق ميسر ${A.docs.length} من 3` : (A.docsLater ? ' · أوراق ميسر بعدين' : '')) : '') : ''],
-      ['الشعار', fileTxt(A.logo)],
-      ['السجل التجاري', A.cr ? A.cr + (A.crFile ? ' · صورة ✓' : '') : ''],
-      ['الباقة والدفعة الأولى', A.paid && p ? `${p.name} · ${money(p.setup / 2)} ريال ✓` : ''],
+      ['الدوام', A.hours],
+      ['الموقع', A.city],
+      ['الدفع', A.pay],
+      ['الشعار', A.logo ? (A.logo === 'none' ? 'بدون شعار' : 'صورة ✓') : ''],
+      ['الدفعة الأولى', A.paid ? `${p.name} · ${money(p.setup / 2)} ريال ✓` : ''],
     ];
   }
-  const NOW = { name: 0, biz: 1, field: 2, fieldOther: 2, place: 3, city: 3, wa: 4, watype: 4, waNote: 4, menu: 5, menuText: 5, hours: 6, hoursText: 6, off: 6, offText: 6, cap: 7, staff: 8, staffN: 8, staffLang: 8, pay: 9, payDocs: 9, payUp: 9, logo: 10, cr: 11, crUp: 11, app: 12, summary: 12, agree: 12 };
+  const NOW = { biz: 0, wa: 1, menu: 2, menuText: 2, hours: 3, city: 4, pay: 5, logo: 6, summary: 7, agree: 7 };
   function render() {
     const list = items();
     const done = list.filter((x) => x[1]).length;
@@ -638,7 +537,7 @@ button:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid
   // ===== البداية =====
   function start() {
     seq = (seq || 0) + 1;
-    A = { docs: [] }; step = null; expect = null; editing = null; busy = false; lastSide = null;
+    A = {}; step = null; expect = null; editing = null; busy = false; lastSide = null;
     chat.innerHTML = '<div class="day">اليوم</div>';
     statusEl.textContent = 'متصل';
     document.querySelectorAll('.scrim,.sheet').forEach((x) => x.remove());
