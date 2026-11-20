@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <style>
-/* التخطيط: صفحة اشتراك بثلاث شاشات قصيرة ثم الملخص؛ على الكمبيوتر الخطوات يمين، وعلى الجوال شريط تقدّم بس. فاتح دايم مثل almunawib.com */
+/* التخطيط: صفحة اشتراك بأربع شاشات قصيرة (آخرها محرّر الردود بشكل جوال) ثم الملخص؛ على الكمبيوتر الخطوات يمين، وعلى الجوال شريط تقدّم بس. فاتح دايم مثل almunawib.com */
 :root{
   --bg:#F6FAF8; --ink:#102F27; --muted:#5E766C; --line:#DCEAE2; --soft:#E9F7EF; --card:#FFFFFF;
   --accent:#008C62; --accent-2:#007D56; --accent-ink:#FFFFFF; --dark:#0F231D; --dark-ink:#E6F4EE; --mint:#7FE0B5; --tile:#183A30; --err:#B4380C;
@@ -85,6 +85,26 @@ textarea.inp{min-height:150px;resize:vertical;line-height:1.7}
 .opt b .ico{color:var(--accent);width:20px;height:20px}
 .opt em{font-style:normal;font-weight:600;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
 
+.ph{width:100%;max-width:400px;margin:0 auto;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#EFE7DD}
+.ph-h{background:#075E54;color:#fff;padding:10px 12px;display:flex;gap:8px;align-items:center;font-weight:700;min-height:50px}
+.ph-h button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;flex:none}
+.ph-h button .ico{width:18px;height:18px}
+.ph-h span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-b{padding:14px 12px;display:grid;gap:8px}
+.bub{background:#fff;border-radius:14px 4px 14px 14px;padding:4px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.bub textarea{display:block;width:100%;border:0;background:transparent;outline:none;resize:none;padding:8px 10px;font-size:16px;line-height:1.7;min-height:84px}
+.bub:focus-within,.wb:focus-within{box-shadow:0 0 0 2px var(--accent)}
+.wb{background:#fff;border-radius:12px;padding:6px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.wb input{border:0;background:transparent;outline:none;padding:6px 8px;font-weight:700;color:#027EB5;font-size:16px;text-align:center;min-width:0}
+.wb .del{border:0;background:transparent;color:var(--muted);width:36px;height:36px;border-radius:50%;display:grid;place-items:center}
+.wb .del:hover{background:var(--soft);color:var(--err)}
+.wb .del .ico{width:16px;height:16px}
+.wb .sel{font-size:14.5px;padding:8px 10px 8px 34px;border-radius:10px}
+.wb .sel:last-child{grid-column:1/-1}
+.wb .open{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 14px;font-weight:700;font-size:14.5px}
+.wb.bad{box-shadow:0 0 0 2px var(--err)}
+.bub.bad{box-shadow:0 0 0 2px var(--err)}
+.addb{border:1.5px dashed #B9AFA2;background:transparent;border-radius:12px;padding:9px;font-weight:700;color:#075E54}
 .acts{margin-top:auto;padding-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 26px;font-weight:700;font-size:16px;background:var(--accent);color:var(--accent-ink);min-height:50px}
 .btn:hover{background:var(--accent-2)}
@@ -153,7 +173,7 @@ textarea.inp{min-height:150px;resize:vertical;line-height:1.7}
   <span class="brand"><span class="mark"><svg class="ico"><use href="#i-mark"/></svg></span>المناوب</span>
   <span class="site">almunawib.com</span>
 </header>
-<div class="prog" role="progressbar" aria-label="التقدّم" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="prog"><i id="progBar"></i></div>
+<div class="prog" role="progressbar" aria-label="التقدّم" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="prog"><i id="progBar"></i></div>
 <main class="wrap">
   <nav class="steps" aria-label="الخطوات"><ol id="stepList"></ol></nav>
   <section class="card" id="stage" aria-live="polite"></section>
@@ -174,13 +194,27 @@ textarea.inp{min-height:150px;resize:vertical;line-height:1.7}
     { id: 'biz', label: 'نشاطك' },
     { id: 'menu', label: 'أسعارك' },
     { id: 'work', label: 'الدوام والدفع' },
+    { id: 'bot', label: 'ردودك' },
     { id: 'sum', label: 'الاشتراك' },
   ];
   const PLANS = { yes: { name: 'الحجز + الدفع', setup: 5500, monthly: 600 }, no: { name: 'أتمتة الحجز', setup: 3500, monthly: 350 } };
   const TIMES = ['6 الصبح', '7 الصبح', '8 الصبح', '9 الصبح', '10 الصبح', '11 الصبح', '12 الظهر', '1 الظهر', '2 الظهر', '3 العصر', '4 العصر', '5 العصر', '6 المغرب', '7 الليل', '8 الليل', '9 الليل', '10 الليل', '11 الليل', '12 الليل', '1 الليل', '2 الليل', '3 الفجر'];
   const DAYS = ['الجمعة', 'السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
 
-  let A, cur, editing, fileTarget, paying;
+  const ACTS = { msg: 'يفتح رسالة', book: 'يحجز موعد', prices: 'يعرض الأسعار', location: 'يرسل الموقع', hours: 'يرسل الدوام', contact: 'يحوّلك للموظف', back: 'يرجع للي قبل' };
+  const sub = () => ({ t: '', go: 'msg', text: '', opts: [{ t: 'رجوع', go: 'back' }] });
+  const newTree = () => ({ text: 'هلا بك في ' + A.biz + '\nكيف نخدمك؟', opts: [{ t: 'احجز موعد', go: 'book' }, { t: 'الأسعار', go: 'prices' }, { t: 'موقعنا', go: 'location' }] });
+  const nodeAt = (p) => p.reduce((n, i) => n.opts[i], A.tree);
+  function treeBad(n, p) {
+    if (!n.text.trim()) return { p, i: -1, m: 'اكتب نص الرسالة' };
+    for (let i = 0; i < n.opts.length; i++) {
+      const o = n.opts[i];
+      if (!o.t.trim()) return { p, i, m: 'اكتب اسم الزر' };
+      if (o.go === 'msg') { const r = treeBad(o, p.concat(i)); if (r) return r; }
+    }
+    return null;
+  }
+  let A, cur, editing, fileTarget, paying, path = [];
 
   function phone(v) {
     const d = String(v).replace(/[٠-٩]/g, (c) => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/\D/g, '');
@@ -192,6 +226,7 @@ textarea.inp{min-height:150px;resize:vertical;line-height:1.7}
     biz: () => !!(A.biz && A.wa && A.city),
     menu: () => A.menuMode === 'photo' ? A.menuFiles.length > 0 : (A.menuText || '').trim().length >= 4,
     work: () => !!A.pay,
+    bot: () => !!A.treeOk,
     sum: () => !!A.paid,
   };
   const hoursText = () => {
@@ -274,10 +309,40 @@ textarea.inp{min-height:150px;resize:vertical;line-height:1.7}
       };
     },
 
+    bot(mark) {
+      if (!A.tree) A.tree = newTree();
+      const n = nodeAt(path), root = !path.length;
+      const acts = Object.keys(ACTS).filter((k) => !root || k !== 'back');
+      shell('ردودك', `<div class="ph">
+        <div class="ph-h">${root ? '' : `<button type="button" id="up" aria-label="رجوع">${icon('i-back')}</button>`}<span>${esc(root ? A.biz : (n.t || 'رسالة جديدة'))}</span></div>
+        <div class="ph-b">
+          <div class="bub" id="bub"><textarea id="msg" aria-label="نص الرسالة" placeholder="نص الرسالة">${esc(n.text)}</textarea></div>
+          ${n.opts.map((o, i) => `<div class="wb" data-row="${i}"><input data-t="${i}" maxlength="20" placeholder="اسم الزر" aria-label="اسم الزر" value="${esc(o.t)}"><button type="button" class="del" data-del="${i}" aria-label="حذف">${icon('i-x')}</button>
+            <select class="sel" data-go="${i}" aria-label="وش يسوي">${acts.map((k) => `<option value="${k}" ${o.go === k ? 'selected' : ''}>${ACTS[k]}</option>`).join('')}</select>${o.go === 'msg' ? `<button type="button" class="open" data-open="${i}">افتح</button>` : ''}</div>`).join('')}
+          ${n.opts.length < 10 ? '<button type="button" class="addb" id="add">+ أضف زر</button>' : ''}
+        </div></div>`);
+      const ta = $('msg'), fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+      fit(); ta.oninput = () => { n.text = ta.value; fit(); $('bub').classList.remove('bad'); err(); };
+      const q = (a) => stage.querySelectorAll(a);
+      q('[data-t]').forEach((x) => x.oninput = () => { n.opts[+x.dataset.t].t = x.value; x.closest('.wb').classList.remove('bad'); err(); });
+      q('[data-go]').forEach((x) => x.onchange = () => { const o = n.opts[+x.dataset.go]; o.go = x.value; if (o.go === 'msg') { o.text = o.text || ''; o.opts = o.opts || [{ t: 'رجوع', go: 'back' }]; } R.bot(); });
+      q('[data-del]').forEach((x) => x.onclick = () => { n.opts.splice(+x.dataset.del, 1); R.bot(); });
+      q('[data-open]').forEach((x) => x.onclick = () => { path = path.concat(+x.dataset.open); R.bot(); });
+      if ($('add')) $('add').onclick = () => { n.opts.push(sub()); R.bot(); const l = stage.querySelector('[data-t="' + (n.opts.length - 1) + '"]'); if (l) l.focus(); };
+      if ($('up')) $('up').onclick = () => { path = path.slice(0, -1); R.bot(); };
+      if (mark) { const el = mark.i < 0 ? $('bub') : stage.querySelector('[data-row="' + mark.i + '"]'); if (el) { el.classList.add('bad'); (el.querySelector('textarea,input') || el).focus(); } err(mark.m); }
+      $('f').onsubmit = (e) => {
+        e.preventDefault();
+        const b = treeBad(A.tree, []);
+        if (b) { path = b.p; return R.bot(b); }
+        A.treeOk = true; path = []; nextFrom();
+      };
+    },
+
     sum() {
       if (A.paid) return R.done();
       const p = PLANS[A.pay];
-      const rows = [['النشاط', `${A.biz} · ${A.city}`, 0], ['الواتساب', iso(A.wa), 0], ['الأسعار', menuText(), 1], ['الدوام', hoursText(), 2], ['الدفع', A.pay === 'yes' ? 'رابط دفع من الواتساب' : 'يدفع عندك', 2]];
+      const rows = [['النشاط', `${A.biz} · ${A.city}`, 0], ['الواتساب', iso(A.wa), 0], ['الأسعار', menuText(), 1], ['الدوام', hoursText(), 2], ['الدفع', A.pay === 'yes' ? 'رابط دفع من الواتساب' : 'يدفع عندك', 2], ['الردود', A.tree.opts.map((o) => o.t).join('، '), 3]];
       shell('اشتراكك', `<div class="sum">${rows.map((r) => `<div class="r"><b>${r[0]}</b><span>${esc(r[1])}</span><button class="edit" type="button" data-e="${r[2]}">تعديل</button></div>`).join('')}</div>
         <div class="plan"><div class="h"><b>${p.name}</b><small>جاهز خلال 7 أيام عمل</small></div>
           <div class="nums"><div><small>الحين</small><b>${money(p.setup / 2)} ريال</b></div><div><small>عند التسليم</small><b>${money(p.setup / 2)} ريال</b></div><div><small>شهريًا</small><b>${money(p.monthly)} ريال</b></div></div></div>
@@ -326,7 +391,7 @@ textarea.inp{min-height:150px;resize:vertical;line-height:1.7}
   }
   fileIn.onchange = () => { const fs = [...(fileIn.files || [])]; fileIn.value = ''; if (fs.length) addFiles(fs); };
 
-  function start() { A = { menuMode: 'photo', menuFiles: [], h1: ['9 الصبح', '10 الليل'], h2: null, off: ['الجمعة'] }; editing = false; paying = false; go(0); }
+  function start() { A = { menuMode: 'photo', menuFiles: [], h1: ['9 الصبح', '10 الليل'], h2: null, off: ['الجمعة'] }; editing = false; paying = false; path = []; go(0); }
   start();
 })();
 </script>
